@@ -1,0 +1,71 @@
+@font-face {
+  font-family: 'Anton';
+  src: url('/fonts/Anton-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'ArchivoNarrow';
+  src: url('/fonts/ArchivoNarrow-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ArchivoNarrowMedium';
+  src: url('/fonts/ArchivoNarrow-Medium.ttf') format('truetype');
+  font-weight: medium;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ArchivoNarrowSemiBold';
+  src: url('/fonts/ArchivoNarrow-SemiBold.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ArchivoNarrowBold';
+  src: url('/fonts/ArchivoNarrow-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Yahei';
+  src: url('/fonts/35yahei.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  font-family: 'ArchivoNarrow', Yahei, -apple-system, BlinkMacSystemFont, Helvetica, Tahoma, Arial, Hiragino Sans GB, Microsoft YaHei,
+    sans-serif;
+}
+/* 标题 */
+.font-Anton {
+  font-family: 'Anton';
+}
+/* 正文 */
+.font-ArchivoNarrow {
+  font-family: 'ArchivoNarrow';
+}
+.font-ArchivoNarrow-Medium {
+  font-family: 'ArchivoNarrowMedium';
+}
+.font-ArchivoNarrow-Semibold {
+  font-family: 'ArchivoNarrowSemibold';
+}
+.font-ArchivoNarrow-Bold {
+  font-family: 'ArchivoNarrowBold';
+}
+/* 中文 */
+.font-Yahei {
+  font-family: 'Yahei';
+  font-weight: 900;
+}

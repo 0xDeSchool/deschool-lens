@@ -1,0 +1,10 @@
+// Vitest Snapshot v1
+
+exports[`Link changes the class when hovered 1`] = `
+<a
+  className="normal"
+  href="https://deschool.app/landing"
+>
+  Deschool
+</a>
+`;
