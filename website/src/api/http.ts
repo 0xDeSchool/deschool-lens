@@ -27,8 +27,8 @@ instance.interceptors.request.use(
     // 附带鉴权的token
     // const tokenObj = session.getSession('token', true)
     const tokenInfo = getToken()
-    if (tokenInfo && tokenInfo.token) {
-      headers.Authorization = `Bearer ${tokenInfo.token}`
+    if (tokenInfo && tokenInfo.deschool?.token) {
+      headers.Authorization = `Bearer ${tokenInfo.deschool.token}`
     }
 
     return {

@@ -20,36 +20,22 @@ import UserBar from './userbar'
 const Layout = () => {
   const location = useLocation()
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [curLocation, setCurLocation] = useState(location.pathname + location.search)
   const [isSwitchingUser, setIsSwitchingUser] = useState(false)
   const [pageLayout, setPageLayout] = useState('w-full')
   const [footerLayout, setFooterLayout] = useState('')
+  const [connectTrigger, setConnectTrigger] = useState<number | null>(null)
 
   const user = useAccount()
   const userContext = getUserContext()
 
-  const userbarRef = useRef<ElementRef<typeof UserBar>>(null)
   const navigate = useNavigate()
   const { t } = useTranslation()
 
   const getPageLayout = () => {
-    let classes = 'w-full'
+    const classes = 'w-full pt-0px!'
     let footerClasses = ''
-    if (location.pathname.startsWith('/explore') || location.pathname.startsWith('/landing') || location.pathname.startsWith('/orglist')) {
-      classes = 'w-full pt-0px!'
-      if (location.pathname.startsWith('/explore') || location.pathname.startsWith('/orglist')) {
-        footerClasses = 'w-max mx-10px lg:min-w-875px xl:min-w-1135px'
-      }
-    } else if (
-      location.pathname.startsWith('/manage/') ||
-      location.pathname.startsWith('/org') ||
-      location.pathname.startsWith('/series/seriesintro') ||
-      location.pathname.startsWith('/courses/course/') ||
-      location.pathname.startsWith('/profile') ||
-      location.pathname.startsWith('/passmint')
-    ) {
-      classes = 'w-full lg:w-768px xl:w-1024px 2xl:w-1135px 3xl:w-1205px' // px-10 mx-0 md:px-0 md:mx-10 md:w-5/7  4xl:w-1680px
-      footerClasses = 'w-full lg:w-768px xl:w-1024px 2xl:w-1135px 3xl:w-1205px'
+    if (location.pathname.startsWith('/explore')) {
+      footerClasses = 'w-max mx-10px lg:min-w-875px xl:min-w-1135px'
     }
     setPageLayout(classes)
     setFooterLayout(footerClasses)
@@ -58,8 +44,6 @@ const Layout = () => {
   useEffect(() => {
     getPageLayout()
     scrollToTop()
-    setCurLocation(location.pathname + location.search)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location])
 
   // 同意切换账户
@@ -68,12 +52,10 @@ const Layout = () => {
     try {
       const addr = await getWallet().getAddress()
       if (user.address && addr !== user.address) {
-        // 如果当前在 courseLearning 页面则跳转到 home 页面
         const cachedToken = await userContext.fetchUserInfo(addr)
         if (cachedToken == null) {
-          await userbarRef.current.handleConnect()
+          setConnectTrigger(new Date().getTime())
         }
-        navigate('/explore')
         window.location.reload()
       }
     } finally {
@@ -102,34 +84,32 @@ const Layout = () => {
       navigate('/explore')
       window.location.reload()
     },
-    chainChanged: chainId => {
-      if (chainId === '0x89' && !isLogin()) {
-        userbarRef.current.handleConnect()
-        window.location.reload()
-      }
-    },
+    // chainChanged: chainId => {
+    //   if (chainId === '0x89' && !isLogin()) {
+    //     setConnectTrigger(new Date().getTime())
+    //     window.location.reload()
+    //   }
+    // },
   }
   const [walletconfig] = useState<WalletConfig>(config)
 
   return (
     <div className="relative w-full h-full bg-white">
-      <UserBar ref={userbarRef} walletConfig={walletconfig} />
-      {user.firstConnected && (
-        <div className="relative w-full h-fit min-h-full flex flex-col items-center" id="container">
-          <div
-            className={`flex-1 overflow-auto w-full fcc-center bg-#fafafa ${
-              location.pathname.startsWith('/explore') || location.pathname.startsWith('/orglist') ? '' : 'pt-64px'
-            }`}
-          >
-            <div className={`flex-1 overflow-auto flex flex-col ${pageLayout}`}>
-              <Outlet />
-            </div>
+      <UserBar walletConfig={walletconfig} />
+      <div className="relative w-full h-fit min-h-full flex flex-col items-center" id="container">
+        <div
+          className={`flex-1 overflow-auto w-full fcc-center bg-#fafafa ${
+            location.pathname.startsWith('/explore') || location.pathname.startsWith('/orglist') ? '' : 'pt-64px'
+          }`}
+        >
+          <div className={`flex-1 overflow-auto flex flex-col ${pageLayout}`}>
+            <Outlet />
           </div>
-          <Footer footerLayout={footerLayout} />
         </div>
-      )}
+        <Footer footerLayout={footerLayout} />
+      </div>
       {/* login board */}
-      <ConnectBoard wallectConfig={walletconfig} />
+      <ConnectBoard wallectConfig={walletconfig} connectTrigger={connectTrigger} />
       <Modal
         title={<h1>{t('system.notify_title')}</h1>}
         closable={false}

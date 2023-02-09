@@ -8,11 +8,11 @@ import Image from 'antd/es/image'
 import Skeleton from 'antd/es/skeleton'
 import { useEffect, useState } from 'react'
 
-import type { UserInfoStruct } from '~/context/account'
+import type { Profile } from '~/api/lens/graphql/generated'
 import { getUserContext, DEFAULT_AVATAR, useAccount } from '~/context/account'
 import { getWallet } from '~/wallet'
 
-const UserInfoComponent = (props: { otherUser?: UserInfoStruct; otherloading: boolean; userId: string | undefined }) => {
+const UserInfoComponent = (props: { otherUser?: Profile; otherloading: boolean; userId: string | undefined }) => {
   const { otherUser, otherloading, userId } = props
   const user = useAccount()
   const userContext = getUserContext()
@@ -22,13 +22,9 @@ const UserInfoComponent = (props: { otherUser?: UserInfoStruct; otherloading: bo
     setLoading(true)
     try {
       const addr = await getWallet().getAddress()
-      let userInfo: UserInfoStruct | null = null
       if (addr) {
-        userInfo = await userContext.fetchUserInfo(addr)
-        if (!userInfo) {
-          userInfo = user
-        }
-        userContext.changeUser({ ...userInfo, firstConnected: true })
+        const userInfo = await userContext.fetchUserInfo(addr)
+        if (userInfo) userContext.changeUser({ ...userInfo })
       }
     } finally {
       setLoading(false)
@@ -53,7 +49,7 @@ const UserInfoComponent = (props: { otherUser?: UserInfoStruct; otherloading: bo
         <div className="flex flex-row h-fit">
           <Image
             // eslint-disable-next-line no-nested-ternary
-            src={currentUser?.avatar || DEFAULT_AVATAR}
+            src={currentUser?.picture?.__typename === 'MediaSet' ? currentUser.picture.original.url : DEFAULT_AVATAR}
             alt="avatar"
             style={{ width: 100, height: 100 }}
             className="rounded-full"
@@ -61,7 +57,7 @@ const UserInfoComponent = (props: { otherUser?: UserInfoStruct; otherloading: bo
           <div className="frc-start flex-1 overflow-hidden ml-4">
             <div>
               <div className="flex flex-row items-center my-4 flex-1 overflow-hidden">
-                <span className="text-3xl font-TM one-line-wrap max-w-300px">{currentUser?.username}</span>
+                <span className="text-3xl font-TM one-line-wrap max-w-300px">{currentUser?.name}</span>
               </div>
               <span className="text-xl font-TM">{currentUser?.bio}</span>
             </div>

@@ -9,7 +9,7 @@ import Tabs from 'antd/es/tabs'
 import type { TabsProps } from 'antd'
 
 import { useParams } from 'react-router'
-import type { UserInfoStruct } from '~/context/account'
+import type { Profile } from '~/api/lens/graphql/generated'
 import { useAccount } from '~/context/account'
 import { useTranslation } from 'react-i18next'
 import { getUserProfile } from '~/api/account'
@@ -22,21 +22,21 @@ const UserProfile = () => {
   const { userId } = useParams()
   const user = useAccount()
   const { t } = useTranslation()
-  const [otherUser, setOtherUser] = useState({} as UserInfoStruct)
+  const [otherUser, setOtherUser] = useState({} as Profile)
   const [items, setItems] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
   const defaultTab = localStorage.getItem('pfTab')
   localStorage.removeItem('pfTab')
 
-  const getAllItems = (_otherUser: UserInfoStruct) => {
+  const getAllItems = (_otherUser: Profile) => {
     const allItems: TabsProps['items'] = [
       {
         key: '2',
         label: <h1 className="uppercase text-xl">{t('profile.posk')}</h1>,
         children: (
           <div className="min-h-300px mt-8">
-            <RecentSBT address={_otherUser.address} />
+            <RecentSBT address={_otherUser.handle} />
           </div>
         ),
       },
@@ -60,7 +60,7 @@ const UserProfile = () => {
         // setTimeout(() => {
         //   history.back()
         // }, 3000)
-        setOtherUser({} as UserInfoStruct)
+        setOtherUser({} as Profile)
       } else {
         setOtherUser(userInfo)
         setItems(getAllItems(userInfo).slice(0, 3))
@@ -73,8 +73,8 @@ const UserProfile = () => {
   useEffect(() => {
     // 未登录查看个人中心，只显示前三个tab
     if (!user) {
-      setOtherUser({} as UserInfoStruct)
-      setItems(getAllItems({} as UserInfoStruct).slice(0, 3))
+      setOtherUser({} as Profile)
+      setItems(getAllItems({} as Profile).slice(0, 3))
     }
     // 如果是别人的个人中心，只显示前三个tab
     else if (userId && user?.id !== userId) {
@@ -82,8 +82,8 @@ const UserProfile = () => {
     }
     // 如果是自己的个人中心，显示全部tab
     else {
-      setOtherUser({} as UserInfoStruct)
-      setItems(getAllItems(user as UserInfoStruct).slice())
+      setOtherUser({} as Profile)
+      setItems(getAllItems(user as Profile).slice())
     }
   }, [userId, getLanguage()])
 

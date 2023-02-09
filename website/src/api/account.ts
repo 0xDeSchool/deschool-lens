@@ -1,12 +1,12 @@
 import http from '~/api/http'
-import type { UserInfoStruct } from '~/context/account'
+import type { Profile } from './lens/graphql/generated'
 
 /**
  * @method getUserProfile
  * @description 从后台获取用户信息
  * @returns {Object} Promise
  */
-export async function getUserProfile(userId?: string): Promise<UserInfoStruct | null> {
+export async function getUserProfile(userId?: string): Promise<Profile | null> {
   try {
     const result: any = userId ? await http.get(`/account/my-profile?userId=${userId}`) : await http.get(`/account/my-profile`)
     return result

@@ -5,21 +5,24 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import message from 'antd/es/message'
 
-import { getUserContext, useAccount } from '~/context/account'
+import { getUserContext } from '~/context/account'
 import { useLayout } from '~/context/layout'
-import { getNonceByUserAddress, postNonceSigByUserAddress } from '~/api/user'
 import { CloseOutlined, LoadingOutlined } from '@ant-design/icons'
 import { initAccess } from '~/hooks/access'
 import type { WalletConfig } from '~/wallet'
 import { createProvider, getWallet, WalletType } from '~/wallet'
+import { getToken, setToken } from '~/auth/user'
+import { authenticate, generateChallenge } from '~/api/lens/authentication/login'
+import { getProfileRequest } from '~/api/lens/profile/get-profile'
 
 interface ConnectBoardProps {
   isInner?: boolean
   wallectConfig?: WalletConfig
+  connectTrigger?: number
 }
 
 const ConnectBoard: FC<ConnectBoardProps> = props => {
-  const { isInner } = props
+  const { isInner, connectTrigger } = props
   const userContext = getUserContext()
   const { connectBoardVisible, setConnectBoardVisible } = useLayout()
   const [loading, setLoading] = useState(false)
@@ -30,7 +33,6 @@ const ConnectBoard: FC<ConnectBoardProps> = props => {
   })
   // MetaMask or UniPass
   const { t } = useTranslation()
-  const user = useAccount()
 
   useEffect(() => {
     if (connectBoardVisible === false) {
@@ -57,35 +59,38 @@ const ConnectBoard: FC<ConnectBoardProps> = props => {
     setConnectBoardVisible(false)
   }
 
-  const signLoginMessage = async (nonce: string) => {
-    const FIX_FORMAT_MESSAGE = `DeSchool is kindly requesting to Sign in with ${
+  const signLoginMessage = async (address: string, challengeText: string) => {
+    const SIGN_MESSAGE = `DeSchool-Lens is kindly requesting to Sign in with ${
       getWallet().type
-    } securely, with nonce: ${nonce}. Sign and login now, begin your journey to DeSchool!`
-    const signMessageReturn = await getWallet().signMessage(FIX_FORMAT_MESSAGE)
+    } securely with address: ${address}. Sign and login now, begin your journey!
+
+    message:
+    ${challengeText}`
+    const signMessageReturn = await getWallet().signMessage(SIGN_MESSAGE)
     return signMessageReturn
   }
 
   const handleLoginByAddress = async (address: string) => {
+    if (getToken()) {
+      return
+    }
     try {
-      const nonceRes: any = await getNonceByUserAddress({ address })
-      if (!nonceRes.success) {
-        throw nonceRes.error
-      }
-      const { nonce } = nonceRes
-      const loginSig = await signLoginMessage(nonce)
+      // request a challenge from the server
+      const challengeResponse = await generateChallenge({ address })
 
-      const validationRes: any = await postNonceSigByUserAddress({
-        walletType: getWallet().type!,
-        address,
-        sig: loginSig,
-      })
-    
-      if (validationRes) {
-        let userInfo = await userContext.fetchUserInfo(validationRes.address, validationRes.jwtToken)
-        if (!userInfo) {
-          userInfo = user
-        }
-        userContext.changeUser({ ...userInfo, firstConnected: true })
+      // sign the challenge text with the wallet
+      const signature = await signLoginMessage(address, challengeResponse.text)
+
+      // check signature
+      const authenticatedResult = await authenticate({ address, signature })
+      // eslint-disable-next-line no-debugger
+      debugger
+      setToken(address, authenticatedResult.accessToken, authenticatedResult.refreshToken)
+
+      if (signature) {
+        const userInfo = await getProfileRequest({ handle: address })
+        userContext.changeUser(userInfo)
+        return
       }
       await initAccess()
     } catch (error) {
@@ -101,10 +106,10 @@ const ConnectBoard: FC<ConnectBoardProps> = props => {
    * 链接钱包
    * @returns
    */
-  const handleConect = async (type: WalletType) => {
+  const handleConnect = async (type: WalletType) => {
     if (tempAddressObj.address) {
-      handleLoginByAddress(tempAddressObj.address)
-      return
+      await handleLoginByAddress(tempAddressObj.address)
+      return // explain: 不支持连续调用，所以分两步
     }
     if (loadingUniPass || loading) return
     if (type === WalletType.MetaMask) {
@@ -134,6 +139,15 @@ const ConnectBoard: FC<ConnectBoardProps> = props => {
     }
   }
 
+  useEffect(() => {
+    const walletType = getWallet().type
+    if (walletType && connectTrigger) {
+      handleConnect(walletType)
+    } else {
+      setConnectBoardVisible(true)
+    }
+  }, [connectTrigger])
+
   const panel = (
     <div
       className="relative bg-white flex flex-col justify-center items-center w-full p-10 rounded-lg dark:bg-#1a253b shadow dark:shadow-slate-300"
@@ -161,7 +175,7 @@ const ConnectBoard: FC<ConnectBoardProps> = props => {
           <button
             onClick={e => {
               e.preventDefault()
-              handleConect(WalletType.MetaMask)
+              handleConnect(WalletType.MetaMask)
             }}
             type="button"
             className="flex flex-col items-center justify-between dark:bg-#1a253b cursor-pointer w-full p-3 mb-2 rounded-md border border-solid border-#6525FF bg-white hover:border-#6525FF66 hover:bg-#6525FF22"
@@ -190,7 +204,7 @@ const ConnectBoard: FC<ConnectBoardProps> = props => {
           <button
             onClick={e => {
               e.preventDefault()
-              handleConect(WalletType.UniPass)
+              handleConnect(WalletType.UniPass)
             }}
             type="button"
             className="flex flex-col items-center justify-between dark:bg-#1a253b cursor-pointer w-full p-3 mb-2 rounded-md border border-solid border-#6525FF bg-white hover:border-#6525FF66 hover:bg-#6525FF22"
