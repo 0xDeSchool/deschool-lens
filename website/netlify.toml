@@ -1,0 +1,66 @@
+[build.environment]
+  NODE_OPTIONS = "--max_old_space_size=4096"
+
+[dev]
+  targetPort = 3000
+
+[[edge_functions]]
+  path = "/org/*"
+  function = "botmeta"
+
+[[edge_functions]]
+  path = "/series/seriesintro/*"
+  function = "botmeta"
+
+[[edge_functions]]
+  path = "/courses/course/*"
+  function = "botmeta"
+
+[[redirects]]
+  from = "/apiDevelopment/*"
+  to = "http://dev.node-api.deschool.app:8001/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/apiStaging/*"
+  to = "http://stg.node-api.deschool.app:8000/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/apiProduction/*"
+  to = "http://node-api.deschool.app/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/goapiDevelopment/*"
+  to = "http://dev.api.deschool.app:8001/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/goapiStaging/*"
+  to = "http://stg.api.deschool.app:8000/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/goapiProduction/*"
+  to = "http://api.deschool.app/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/mypinata/*"
+  to = "https://deschool.mypinata.cloud/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+

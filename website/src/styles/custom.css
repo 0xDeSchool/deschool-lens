@@ -1,0 +1,246 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-bottom: unset;
+}
+
+.FreeScrollbar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ant-message-custom-content.ant-message-warning {
+  display: flex;
+  justify-content: center;
+}
+
+.ant-message .anticon {
+  top: 0px;
+}
+
+.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  border: 2px solid black;
+}
+
+.ant-input {
+  border: 2px solid #000000;
+}
+
+/* upload component */
+.ant-upload-list-item {
+  padding: 0 !important;
+}
+
+.ant-upload-list-item::before {
+  border: none !important;
+  width: calc(100%) !important;
+  height: calc(100%) !important;
+}
+
+.ant-upload-select {
+  width: 100% !important;
+  height: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.ant-upload-list-item-container {
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 120px !important;
+  height: 120px !important;
+}
+
+.video-react .video-react-big-play-button {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ant-form-item-control-input-content {
+  text-align: left;
+}
+
+.ant-form-item-label > label {
+  font-size: 24px;
+}
+/*********** button ***********/
+.ant-btn-primary {
+  background-color: #6525ff;
+}
+/*********** button ***********/
+
+/*********** select ***********/
+.ant-select-multiple .ant-select-selection-item {
+  color: #ffffff;
+  background: #6720fb !important;
+}
+
+.ant-select-multiple .ant-select-selection-item-remove {
+  color: #ffffff !important;
+}
+/*********** select ***********/
+
+/*********** modal ***********/
+.orgModal .ant-form-item-label > label {
+  font-size: 20px;
+}
+.orgModal .ant-select-selector {
+  height: 44px !important;
+}
+.orgModal .ant-select-selection-item {
+  line-height: 40px !important;
+}
+/*********** modal ***********/
+
+.series-form .ant-form-item-label > label {
+  font-size: 20px;
+}
+.series-form .ant-select-selection-item {
+  display: flex;
+  align-items: center;
+}
+.series-form .ant-select-multiple .ant-select-selection-item-remove:hover {
+  color: rgb(182, 126, 255) !important;
+}
+
+/*********** radio ***********/
+.radio_type {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background-color: transparent;
+  appearance: none;
+  position: relative;
+}
+.radio_type:before {
+  content: '';
+  width: 24px;
+  height: 24px;
+  border: 1px solid #6525ff;
+  display: inline-block;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+.radio_type:checked:before {
+  content: '';
+  width: 24px;
+  height: 24px;
+  border: 1px solid #6525ff;
+  background: #6525ff;
+  display: inline-block;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+.radio_type:checked:after {
+  content: '';
+  width: 12px;
+  height: 6px;
+  border: 2px solid white;
+  border-top: transparent;
+  border-right: transparent;
+  text-align: center;
+  display: block;
+  position: absolute;
+  top: 7px;
+  left: 6px;
+  transform: rotate(-45deg);
+}
+.radio_type:checked + label {
+  color: #6525ff;
+}
+
+label [type='checkbox']:focus,
+[type='radio']:focus {
+  box-shadow: none;
+}
+.ant-form input[type='file']:focus,
+.ant-form input[type='radio']:focus,
+.ant-form input[type='checkbox']:focus {
+  outline: none;
+}
+
+.ant-select {
+  font-size: 20px;
+}
+
+.ant-image-preview-img {
+  display: inline !important;
+}
+/*********** radio ***********/
+
+input[type='search']:focus,
+input[type='text']:focus {
+  box-shadow: none;
+}
+
+/*** 导航a ***/
+a {
+  color: #6525ff;
+}
+a:hover {
+  color: #a753f4;
+}
+
+.explore .ant-input-search .ant-input-search-button,
+.explore .ant-input,
+.contact-form .ant-input {
+  height: 44px;
+}
+
+.tag-form .ant-input {
+  height: 36px;
+}
+
+@media screen and (width>=1280px) {
+  .nthCard {
+    border-left-width: 0px;
+    border-right-width: 0px;
+  }
+  .nthCard:nth-child(3n + 1),
+  .nthCard:nth-child(3n + 2),
+  .nthCard:nth-child(3n + 3) {
+    border-right-width: 1px;
+  }
+}
+
+@media screen and (width>=1024px) {
+  .nthCard:nth-child(2n) {
+    border-left-width: 0px !important;
+  }
+}
+
+.ant-carousel,
+.slick-list,
+.slick-track,
+.slick-slide,
+.slick-slide div {
+  height: 100%;
+}
+
+/* limit rows of p */
+.one-line-wrap {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  word-break: break-all;
+}
+.two-line-wrap {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  word-break: break-all;
+}
+.five-line-wrap {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  overflow: hidden;
+  word-break: break-all;
+}

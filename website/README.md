@@ -160,7 +160,7 @@ pnpm run dev:prd
 
 ## 目前项目进度
 
-- [ ] Init Layout and tools
+- [-] Init Layout and tools
 - [ ] Connect By Lens API + connect from Deschool  
 - [ ] Resume Page
 - [ ] Profile Page of Follow Following 
