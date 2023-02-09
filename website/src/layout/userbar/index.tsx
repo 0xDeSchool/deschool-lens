@@ -92,16 +92,16 @@ const UserBar = forwardRef(
       //   path: '/roadmap',
       //   name: t('roadmap')
       // },
-      {
-        path: '/community',
-        name: t('community'),
-        eventName: 'menu_click_nav_community',
-      },
-      {
-        path: '/whitepaper',
-        name: t('whitepaper'),
-        eventName: 'menu_click_nav_whitepaper',
-      },
+      // {
+      //   path: '/community',
+      //   name: t('community'),
+      //   eventName: 'menu_click_nav_community',
+      // },
+      // {
+      //   path: '/whitepaper',
+      //   name: t('whitepaper'),
+      //   eventName: 'menu_click_nav_whitepaper',
+      // },
     ]
 
     const handleFinished = () => {
@@ -360,7 +360,7 @@ const UserBar = forwardRef(
                     </div>
                   </div>
                   <div
-                    className={`mt-8 flex-1 flex ${currentWidth <= 768 ? 'flex-col items-start justify-center' : 'flex-row'} text-black`}
+                    className={`mt-8 relative flex-1 flex ${currentWidth <= 768 ? 'flex-col items-start justify-center' : 'flex-row'} text-black`}
                   >
                     {navs.map((nav, index) =>
                       nav.name === t('community') || nav.name === t('whitepaper') ? (
@@ -383,12 +383,17 @@ const UserBar = forwardRef(
                         </span>
                       ),
                     )}
+                    {showExploreSearch && (
+                      <div className="absolute right-8">
+                        <ExploreSearchBoard />
+                      </div>
+                    )}
                   </div>
                 </div>
               </Drawer>
             </div>
           ) : (
-            <div className="flex-1 flex flex-row items-center justify-center col-span-6 space-x-5 h-8 leading-8 text-black">
+            <div className="flex-1 relative flex flex-row items-center justify-center col-span-6 space-x-5 h-8 leading-8 text-black">
               {navs.map((nav, index) =>
                 nav.name === t('community') || nav.name === t('whitepaper') ? (
                   <span
@@ -408,11 +413,11 @@ const UserBar = forwardRef(
                   </span>
                 ),
               )}
-            </div>
-          )}
-          {showExploreSearch && (
-            <div className="mr-8">
-              <ExploreSearchBoard />
+              {showExploreSearch && (
+                <div className="absolute right-8">
+                  <ExploreSearchBoard />
+                </div>
+              )}
             </div>
           )}
           {/* language && userInfo */}
@@ -479,11 +484,7 @@ const UserBar = forwardRef(
                     }`}
                   >
                     <li className="w-[150px] cursor-pointer text-2xl mb-6 uppercase hover:text-purple-400">
-                      <NavLink
-                        to="/profile"
-                        ref={refProfile}
-                        className={`${activeNav === '/profile' ? 'border-b-2 border-#6525FF' : ''}`}
-                      >
+                      <NavLink to="/profile" ref={refProfile} className={`${activeNav === '/profile' ? 'border-b-2 border-#6525FF' : ''}`}>
                         {t('profile.profile')}
                       </NavLink>
                     </li>

@@ -52,7 +52,6 @@ const zh_CN_Common = {
   submitsuccess: '提交成功',
   submiterror: '提交表单失败',
   norecordyet: '暂无记录',
-  buynow: '立即购买',
   cancel: '取消',
   delete: '删除',
   manage: '进入工作室',
