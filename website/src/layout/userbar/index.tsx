@@ -2,7 +2,7 @@
  * @description: 顶部路由导航与用户信息栏
  * @author: fc
  */
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 // import addToNetwork from '~/hooks/useAddToNetwork'
 import { useTranslation } from 'react-i18next'
 import { DownSquareOutlined, LoadingOutlined, MenuOutlined } from '@ant-design/icons'
@@ -15,7 +15,6 @@ import message from 'antd/es/message'
 
 import { DEFAULT_AVATAR, getUserContext, useAccount } from '~/context/account'
 import { useLayout } from '~/context/layout'
-import { deleteJwtByUserAddress } from '~/api/user'
 import { changeLanguage, getLanguage } from '~/utils/language'
 import './userbar.css'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
@@ -25,6 +24,7 @@ import type { WalletConfig } from '~/wallet'
 import { createProvider, getWallet, WalletType } from '~/wallet'
 import type { Profile } from '~/api/lens/graphql/generated'
 import { RoleType } from '~/lib/enum'
+import { getAddress, getCachedToken, setToken } from '~/auth/user'
 import ExploreSearchBoard from './exploreSearchBoard'
 
 // const EXPECT_CHAINID = import.meta.env.VITE_APP_CHAIN
@@ -65,22 +65,15 @@ const UserBar = (props: { walletConfig?: WalletConfig }) => {
   // 退出登录
   const disconnect = async () => {
     try {
-      // todo
-      const res: any = await deleteJwtByUserAddress()
-      if (res?.success) {
-        userContext.disconnect()
-        navigate('/landing')
-        window.location.reload()
-      } else {
-        message.error(res.message)
-      }
+      userContext.disconnect()
+      navigate('/landing')
+      window.location.reload()
     } catch (error: any) {
       message.error(error?.message ? error.message : '退出登录失败')
     }
   }
 
-  // 初始化激活导航
-  const init = useCallback(() => {
+  const updateNavStatus = () => {
     if (location.pathname.startsWith('/explore')) {
       setActiveNav('/explore')
       setShowExploreSearch(true)
@@ -89,19 +82,14 @@ const UserBar = (props: { walletConfig?: WalletConfig }) => {
       setShowExploreSearch(false)
     } else {
       const s = location.pathname.split('/')
-      setActiveNav(`/${s[1]}`)
+      setActiveNav(`/${s[3]}`)
       setShowExploreSearch(false)
     }
-  }, [setActiveNav])
-
-  // // 初始化主题色和导航栏
-  // useEffect(() => {
-  //   init()
-  // }, [])
+  }
 
   // 根据路由激活导航样式
   useEffect(() => {
-    init()
+    updateNavStatus()
   }, [location])
 
   const handleChange = (e: React.MouseEvent<HTMLElement>) => {
@@ -145,13 +133,20 @@ const UserBar = (props: { walletConfig?: WalletConfig }) => {
       const addr = await getWallet().getConnectedAddress()
       let userInfo: Profile | undefined
       if (addr) {
+        // if has token
+        const cacheTokenStr = getCachedToken(addr)
+        if (cacheTokenStr) {
+          const cacheToken = JSON.parse(cacheTokenStr)
+          setToken(addr, cacheToken.accessToken, cacheToken.refreshToken)
+        }
         userInfo = await userContext.fetchUserInfo(addr)
       }
       if (!userInfo) {
-        userInfo = user
+        await initAccess(RoleType.Visiter) // todo 如果登陆成功就更新用户角色，否则为游客角色
+      } else {
+        userContext.changeUser({ ...userInfo })
+        await initAccess(RoleType.User) // todo 如果登陆成功就更新用户角色，否则为游客角色
       }
-      userContext.changeUser({ ...userInfo })
-      await initAccess(RoleType.User) // todo 如果登陆成功就更新用户角色，否则为游客角色
       setUserMenu(false)
     } catch (error) {
       message.error('信息初始化失败')
@@ -161,7 +156,6 @@ const UserBar = (props: { walletConfig?: WalletConfig }) => {
     }
   }
 
-  // 打开面板，选择钱包类型
   const handleLogin = async () => {
     setConnectBoardVisible(true)
   }
@@ -217,27 +211,16 @@ const UserBar = (props: { walletConfig?: WalletConfig }) => {
                     currentWidth <= 768 ? 'flex-col items-start justify-center' : 'flex-row'
                   } text-black`}
                 >
-                  {navs.map((nav, index) =>
-                    nav.name === t('community') || nav.name === t('whitepaper') ? (
-                      <span
-                        key={index.toString() + nav.name}
-                        className={`cursor-not-allowed opacity-50 text-2xl text-black text-left font-ArchivoNarrow mr-10 ${
-                          currentWidth <= 768 ? 'mt-4' : ''
-                        }`}
-                      >
-                        {nav.name}
-                      </span>
-                    ) : (
-                      <span
-                        key={index.toString() + nav.name}
-                        className={`cursor-pointer text-2xl text-black font-ArchivoNarrow mr-10 ${currentWidth <= 768 ? 'mt-4' : ''} ${
-                          activeNav === nav.path ? 'border-b-2 border-#6525FF' : ''
-                        }`}
-                      >
-                        <NavLink to={nav.path}>{nav.name}</NavLink>
-                      </span>
-                    ),
-                  )}
+                  {navs.map((nav, index) => (
+                    <span
+                      key={index.toString() + nav.name}
+                      className={`cursor-pointer text-2xl text-black font-ArchivoNarrow mr-10 ${currentWidth <= 768 ? 'mt-4' : ''} ${
+                        activeNav === nav.path ? 'border-b-2 border-#6525FF' : ''
+                      }`}
+                    >
+                      <NavLink to={nav.path}>{nav.name}</NavLink>
+                    </span>
+                  ))}
                   {showExploreSearch && (
                     <div className="absolute right-8">
                       <ExploreSearchBoard />
@@ -249,25 +232,16 @@ const UserBar = (props: { walletConfig?: WalletConfig }) => {
           </div>
         ) : (
           <div className="flex-1 relative flex flex-row items-center justify-center col-span-6 space-x-5 h-8 leading-8 text-black">
-            {navs.map((nav, index) =>
-              nav.name === t('community') || nav.name === t('whitepaper') ? (
-                <span
-                  key={index.toString() + nav.name}
-                  className={`cursor-not-allowed opacity-50 text-2xl text-black font-ArchivoNarrow ${currentWidth <= 768 ? 'mt-4' : ''}`}
-                >
-                  {nav.name}
-                </span>
-              ) : (
-                <span
-                  key={index.toString() + nav.name}
-                  className={`cursor-pointer text-2xl font-ArchivoNarrow text-black ${
-                    activeNav === nav.path ? 'border-b-2 border-#6525FF' : ''
-                  }`}
-                >
-                  <NavLink to={nav.path}>{nav.name}</NavLink>
-                </span>
-              ),
-            )}
+            {navs.map((nav, index) => (
+              <span
+                key={index.toString() + nav.name}
+                className={`cursor-pointer text-2xl font-ArchivoNarrow text-black ${
+                  activeNav === nav.path ? 'border-b-2 border-#6525FF' : ''
+                }`}
+              >
+                <NavLink to={nav.path}>{nav.name}</NavLink>
+              </span>
+            ))}
             {showExploreSearch && (
               <div className="absolute right-8">
                 <ExploreSearchBoard />
@@ -305,11 +279,12 @@ const UserBar = (props: { walletConfig?: WalletConfig }) => {
             )}
             <div className="flex flex-col items-center ml-2">
               <span className="dark:text-primary-light font-ArchivoNarrow">
-                {user.handle && `${user.name === user.handle ? `${user.handle.slice(0, 5)}…${user.handle.slice(38, 42)}` : user.name}`}
-                {!user.handle && isLoading && (
+                {getAddress() && !user?.handle ? `${getAddress()?.slice(0, 5)}…${getAddress()?.slice(38, 42)}` : null}
+                {user?.handle && `${user?.name === user?.handle ? `${user.handle.slice(0, 5)}…${user.handle.slice(38, 42)}` : user.name}`}
+                {!user?.handle && isLoading && (
                   <LoadingOutlined style={{ width: 20, height: 20, fontSize: 20 }} color="#000" className="margin-right-10" />
                 )}
-                {!user.handle && !isLoading && (
+                {!user?.handle && !isLoading && !getAddress() && (
                   <button
                     type="button"
                     onClick={() => {
@@ -322,7 +297,7 @@ const UserBar = (props: { walletConfig?: WalletConfig }) => {
                 )}
               </span>
             </div>
-            {user.id ? (
+            {user?.id || getAddress() ? (
               <div className="flex flex-col items-center relative">
                 <DownSquareOutlined
                   className={`transition-transform ${isShowUserMenu ? 'transform rotate-180' : ''} cursor-pointer ml-2`}
@@ -334,7 +309,9 @@ const UserBar = (props: { walletConfig?: WalletConfig }) => {
                   onBlur={e => {
                     handleClickAway(e)
                   }}
-                  className={`usermenu rounded-md text-center mt-8 mr-40 font-ArchivoNarrow ${user.id ? 'p-6' : 'hidden'} ${
+                  className={`usermenu rounded-md text-center mt-8 mr-40 font-ArchivoNarrow ${
+                    user?.id || getAddress() ? 'p-6' : 'hidden'
+                  } ${
                     isShowUserMenu
                       ? 'fixed z-50 transition-height h-auto dark:bg-secondary-dark'
                       : 'fixed z-50 transition-height h-0 hidden'

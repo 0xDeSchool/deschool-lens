@@ -4,7 +4,7 @@ import React, { useState, useContext, createContext } from 'react'
 import { removeToken } from '~/auth'
 import { getWallet } from '~/wallet'
 import type { Profile } from '~/api/lens/graphql/generated'
-import { getProfileRequest } from '~/api/lens/profile/get-profile'
+import { getDefaultProfileRequest } from '~/api/lens/profile/get-default-profile'
 import type { Contact } from '~/lib/types/app'
 
 export const DEFAULT_AVATAR = 'https://s3.us-east-1.amazonaws.com/deschool/Avatars/avatar_def.png'
@@ -28,8 +28,9 @@ export class UserContext {
     this.setUser(info)
   }
 
-  async fetchUserInfo(addr: string): Promise<Profile | undefined> {
-    const info = await getProfileRequest({ handle: addr })
+  async fetchUserInfo(address: string): Promise<Profile | undefined> {
+    const info = await getDefaultProfileRequest({ ethereumAddress: address })
+    console.log('info', info)
     if (info) return info
   }
 

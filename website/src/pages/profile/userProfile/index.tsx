@@ -12,7 +12,7 @@ import { useParams } from 'react-router'
 import type { Profile } from '~/api/lens/graphql/generated'
 import { useAccount } from '~/context/account'
 import { useTranslation } from 'react-i18next'
-import { getUserProfile } from '~/api/account'
+import { getUserProfile } from '~/api/go/account'
 import { getLanguage } from '~/utils/language'
 import UserInfo from './userInfo'
 import RecentSBT from './recentSBT'
@@ -36,6 +36,7 @@ const UserProfile = () => {
         label: <h1 className="uppercase text-xl">{t('profile.posk')}</h1>,
         children: (
           <div className="min-h-300px mt-8">
+            {/*  */}
             <RecentSBT address={_otherUser.handle} />
           </div>
         ),

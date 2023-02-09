@@ -1,4 +1,4 @@
-import http from '~/api/http'
+import http from './http'
 
 /**
  * @method getExplore

@@ -84,3 +84,5 @@ export function removeToken() {
   setCachedToken(curToken.address, null)
   setCachedToken(`deschool_${curToken.address}`, null)
 }
+
+export const getAddress = () => (!curToken.address ? null : curToken.address)

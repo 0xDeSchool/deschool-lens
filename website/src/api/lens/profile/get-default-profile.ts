@@ -1,5 +1,5 @@
 import { apolloClient } from '../index'
-import type { DefaultProfileRequest } from '../graphql/generated'
+import type { DefaultProfileRequest, Profile } from '../graphql/generated'
 import { DefaultProfileDocument } from '../graphql/generated'
 
 export const getDefaultProfileRequest = async (request: DefaultProfileRequest) => {
@@ -10,5 +10,5 @@ export const getDefaultProfileRequest = async (request: DefaultProfileRequest) =
     },
   })
 
-  return result.data
+  return result.data.defaultProfile as Profile
 }

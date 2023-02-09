@@ -1,11 +1,6 @@
-import { apolloClient } from '../index';
-import type {
-  ChallengeRequest,
-  SignedAuthChallenge} from '../graphql/generated';
-import {
-  AuthenticateDocument,
-  ChallengeDocument,
-} from '../graphql/generated';
+import { apolloClient } from '../index'
+import type { ChallengeRequest, SignedAuthChallenge } from '../graphql/generated'
+import { AuthenticateDocument, ChallengeDocument } from '../graphql/generated'
 
 export const generateChallenge = async (request: ChallengeRequest) => {
   const result = await apolloClient.query({
@@ -13,10 +8,10 @@ export const generateChallenge = async (request: ChallengeRequest) => {
     variables: {
       request,
     },
-  });
+  })
 
-  return result.data.challenge;
-};
+  return result.data.challenge
+}
 
 export const authenticate = async (request: SignedAuthChallenge) => {
   const result = await apolloClient.mutate({
@@ -24,7 +19,7 @@ export const authenticate = async (request: SignedAuthChallenge) => {
     variables: {
       request,
     },
-  });
+  })
 
-  return result.data!.authenticate;
-};
+  return result.data!.authenticate
+}

@@ -1,15 +1,16 @@
 // @ts-nocheck 忽略文件校验
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import LoadingOutlined from '@ant-design/icons/LoadingOutlined'
 import Modal from 'antd/es/modal/Modal'
 import { isLogin } from '~/auth'
-import { getUserContext, useAccount } from '~/context/account'
+import { getUserContext } from '~/context/account'
 import type { WalletConfig } from '~/wallet'
 import { getWallet } from '~/wallet'
+import { getAddress } from '~/auth/user'
 import { scrollToTop } from '~/utils/common'
-import ConnectBoard from '../components/connectBoard'
+import ConnectBoard from './connectBoard'
 import Footer from './footer'
 import UserBar from './userbar'
 
@@ -25,7 +26,6 @@ const Layout = () => {
   const [footerLayout, setFooterLayout] = useState('')
   const [connectTrigger, setConnectTrigger] = useState<number | null>(null)
 
-  const user = useAccount()
   const userContext = getUserContext()
 
   const navigate = useNavigate()
@@ -33,12 +33,9 @@ const Layout = () => {
 
   const getPageLayout = () => {
     const classes = 'w-full pt-0px!'
-    let footerClasses = ''
-    if (location.pathname.startsWith('/explore')) {
-      footerClasses = 'w-max mx-10px lg:min-w-875px xl:min-w-1135px'
-    }
+    // footerClasses = 'w-max mx-10px lg:min-w-875px xl:min-w-1135px'
     setPageLayout(classes)
-    setFooterLayout(footerClasses)
+    setFooterLayout('')
   }
 
   useEffect(() => {
@@ -51,14 +48,15 @@ const Layout = () => {
     setIsSwitchingUser(true)
     try {
       const addr = await getWallet().getAddress()
-      if (user.address && addr !== user.address) {
+      if (getAddress() && addr !== getAddress()) {
         const cachedToken = await userContext.fetchUserInfo(addr)
         if (cachedToken == null) {
-          setConnectTrigger(new Date().getTime())
+          setIsModalOpen(false)
+          setConnectTrigger(addr)
         }
-        window.location.reload()
       }
     } finally {
+      setIsModalOpen(false)
       setIsSwitchingUser(false)
     }
   }

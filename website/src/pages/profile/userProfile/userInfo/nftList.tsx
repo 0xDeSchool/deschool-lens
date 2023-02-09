@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { getUserNfts } from '~/api/account'
+import { getUserNfts } from '~/api/go/account'
 import Skeleton from 'antd/es/skeleton'
 import message from 'antd/es/message'
 import List from 'antd/es/list'

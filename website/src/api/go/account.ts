@@ -1,5 +1,5 @@
-import http from '~/api/http'
-import type { Profile } from './lens/graphql/generated'
+import http from '~/api/go/http'
+import type { Profile } from '../lens/graphql/generated'
 
 /**
  * @method getUserProfile
