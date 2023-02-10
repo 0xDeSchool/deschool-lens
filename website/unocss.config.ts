@@ -48,6 +48,10 @@ export default defineConfig({
     ['frs-center', 'flex flex-row items-start justify-center'],
     ['purple-button', 'inline-flex items-center bg-#6525FF text-white hover:cursor-pointer hover:bg-purple-500'],
     ['purple-text-button', 'inline-flex items-center text-#6525FF hover:cursor-pointer hover:text-purple-500'],
+    [
+      'purple-border-button',
+      'inline-flex items-center border border-#6525FF rounded-xl text-#6525FF hover:cursor-pointer hover:text-purple-500',
+    ],
   ],
   presets: [presetUno(), presetAttributify(), presetIcons()],
   transformers: [transformerDirectives(), transformerVariantGroup()],

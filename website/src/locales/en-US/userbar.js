@@ -1,5 +1,4 @@
-/* eslint-disable camelcase */
-const en_US_Userbar = {
+const EN_US_USERBAR = {
   home: 'HOME',
   exploreNav: 'EXPLORE',
   courses: 'COURSE CENTER',
@@ -21,4 +20,4 @@ const en_US_Userbar = {
   },
 }
 
-export default en_US_Userbar
+export default EN_US_USERBAR

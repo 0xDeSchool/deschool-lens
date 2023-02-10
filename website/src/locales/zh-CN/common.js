@@ -1,5 +1,4 @@
-/* eslint-disable camelcase */
-const zh_CN_Common = {
+const ZH_CN_COMMON = {
   slogan1: '在Deschool',
   slogan2: '学习、赚钱和记录你的生活',
   slogan3: '在WEB3世界控制你的数据，感受不一样的体验！',
@@ -68,8 +67,8 @@ const zh_CN_Common = {
   connect_content_4: '承认已阅读并理解',
   connect_content_5: 'DeSchool协议免责声明。',
   includedIn: '学习本系列课程需先持有 NFT Pass：',
-  Total: "总数",
+  Total: '总数',
   SeeMore: '发现更多',
 }
 
-export default zh_CN_Common
+export default ZH_CN_COMMON

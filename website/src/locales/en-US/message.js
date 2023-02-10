@@ -1,5 +1,4 @@
-/* eslint-disable camelcase */
-const en_US_Message = {
+const EN_US_MESSAGE = {
   4001: 'MetaMask Feeback: User Rejected Request',
   4100: 'MetaMask Feeback: Unauthorized',
   4200: 'MetaMask Feeback: Unsupported',
@@ -41,4 +40,4 @@ const en_US_Message = {
   signMessageError: 'Sign message error',
 }
 
-export default en_US_Message
+export default EN_US_MESSAGE

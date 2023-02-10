@@ -1,6 +1,5 @@
-/* eslint-disable camelcase */
-const en_US_Posk = {
+const EN_US_POSK = {
   own: 'Own',
   Owners: 'Owners',
 }
-export default en_US_Posk
+export default EN_US_POSK
