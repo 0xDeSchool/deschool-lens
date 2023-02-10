@@ -36,7 +36,7 @@ const NFTItem: React.FC<NFTItemProps> = props => {
         </div>
       </div>
       <div
-        className={`my-2 text-sm w-80px one-line-wrap ${isChosen ? 'text-#6525FF' : 'text-black'} cursor-pointer`}
+        className={`my-2 text-sm w-80px line-wrap one-line-wrap ${isChosen ? 'text-#6525FF' : 'text-black'} cursor-pointer`}
         style={{ width: 80 }}
         title={nft.normalized_metadata.name || nft.name}
       >

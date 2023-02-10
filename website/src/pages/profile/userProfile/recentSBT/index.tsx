@@ -65,21 +65,21 @@ const RecentSBT = (props: { address: string | undefined }) => {
                 <div className="px-4 mt-6 h-max flex flex-col justify-start">
                   {sbt.name && sbt.name.length > 28 ? (
                     <Tooltip title={sbt.name} color="#774FF8">
-                      <Link to={`/sbtIntro/${sbt.id}`} className="h-64px color-#774FF8 text-20px mb-2 text-left two-line-wrap">
+                      <Link to={`/sbtIntro/${sbt.id}`} className="h-64px color-#774FF8 text-20px mb-2 text-left line-wrap two-line-wrap">
                         {sbt.name}
                       </Link>
                     </Tooltip>
                   ) : (
-                    <Link to={`/sbtIntro/${sbt.id}`} className="h-64px color-#774FF8 text-20px mb-2 text-left two-line-wrap">
+                    <Link to={`/sbtIntro/${sbt.id}`} className="h-64px color-#774FF8 text-20px mb-2 text-left line-wrap two-line-wrap">
                       {sbt.name}
                     </Link>
                   )}
                   {sbt.description && sbt.description.length > 59 ? (
                     <Tooltip title={sbt.description}>
-                      <div className="mt-2 three-line-wrap h-70px">{sbt.description}</div>
+                      <div className="mt-2 line-wrap three-line-wrap h-70px">{sbt.description}</div>
                     </Tooltip>
                   ) : (
-                    <div className="mt-2 three-line-wrap h-70px">{sbt.description}</div>
+                    <div className="mt-2 line-wrap three-line-wrap h-70px">{sbt.description}</div>
                   )}
                 </div>
               </div>

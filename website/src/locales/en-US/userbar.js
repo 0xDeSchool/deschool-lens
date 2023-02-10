@@ -18,6 +18,9 @@ const EN_US_USERBAR = {
     join: 'Join us',
     contactus: 'contact us',
   },
+  search:{
+    placeholder: "search by handle/address...",
+  },
 }
 
 export default EN_US_USERBAR

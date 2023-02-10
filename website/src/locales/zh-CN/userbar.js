@@ -17,6 +17,9 @@ const ZH_CN_USERBAR = {
     join: '了解我们',
     contactus: '联系我们',
   },
+  search:{
+    placeholder: "查询 handle/address...",
+  },
 }
 
 export default ZH_CN_USERBAR

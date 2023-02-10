@@ -53,11 +53,12 @@ const UserInfoComponent = (props: { otherUser?: Profile; otherloading: boolean; 
             alt="avatar"
             style={{ width: 100, height: 100 }}
             className="rounded-full"
+            crossOrigin="anonymous"
           />
           <div className="frc-start flex-1 overflow-hidden ml-4">
             <div>
               <div className="flex flex-row items-center my-4 flex-1 overflow-hidden">
-                <span className="text-3xl font-TM one-line-wrap max-w-300px">{currentUser?.name}</span>
+                <span className="text-3xl font-TM line-wrap one-line-wrap max-w-300px">{currentUser?.name}</span>
               </div>
               <span className="text-xl font-TM">{currentUser?.bio}</span>
             </div>
