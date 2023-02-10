@@ -9,6 +9,7 @@ import Explore from '~/pages/explore' // 探索页面
 import Profile from '~/pages/profile/userProfile' // 个人中心
 import Roadmap from '~/pages/roadmap' // 网站路线图
 import PoskIntro from '~/pages/poskIntro' // pass/sbt介绍页面
+import UserResume from '~/pages/resume'
 import Layout from '../layout'
 
 const RouterObj = () => (
@@ -18,6 +19,7 @@ const RouterObj = () => (
         <Route path="" element={<Navigate to="/landing" />} />
         <Route path="landing" element={<Landing />} />
         <Route path="profile" element={<Profile />} />
+        <Route path="resume" element={<UserResume />} />
         <Route path="profile/:userId" element={<Profile />} />
         <Route path="explore" element={<Explore />} />
         {/* uniqueKey既可以是orgId也可以是domain */}

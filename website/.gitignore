@@ -37,3 +37,6 @@ stats.html
 /test-results/
 /playwright-report/
 /playwright/.cache/
+
+# Only for CL's Desktop to use
+tailwind.config.js

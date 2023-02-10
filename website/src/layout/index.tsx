@@ -20,7 +20,7 @@ import UserBar from './userbar'
 const Layout = () => {
   const location = useLocation()
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [curLocation, setCurLocation] = useState(location.pathname + location.search)
+  // const [curLocation, setCurLocation] = useState(location.pathname + location.search)
   const [isSwitchingUser, setIsSwitchingUser] = useState(false)
   const [pageLayout, setPageLayout] = useState('w-full')
   const [footerLayout, setFooterLayout] = useState('')

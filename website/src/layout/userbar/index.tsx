@@ -479,11 +479,7 @@ const UserBar = forwardRef(
                     }`}
                   >
                     <li className="w-[150px] cursor-pointer text-2xl mb-6 uppercase hover:text-purple-400">
-                      <NavLink
-                        to="/profile"
-                        ref={refProfile}
-                        className={`${activeNav === '/profile' ? 'border-b-2 border-#6525FF' : ''}`}
-                      >
+                      <NavLink to="/profile" ref={refProfile} className={`${activeNav === '/profile' ? 'border-b-2 border-#6525FF' : ''}`}>
                         {t('profile.profile')}
                       </NavLink>
                     </li>

@@ -79,7 +79,7 @@ const ConnectBoard: FC<ConnectBoardProps> = props => {
         address,
         sig: loginSig,
       })
-    
+
       if (validationRes) {
         let userInfo = await userContext.fetchUserInfo(validationRes.address, validationRes.jwtToken)
         if (!userInfo) {
