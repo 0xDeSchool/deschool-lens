@@ -50,7 +50,6 @@ const en_US_Common = {
   submitsuccess: 'Submit successfully',
   submiterror: 'Submit failed',
   norecordyet: 'No record found yet',
-  buynow: 'BUY NOW',
   cancel: 'CANCEL',
   delete: 'delete',
   manage: 'STUDIO',

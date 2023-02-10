@@ -1,6 +1,12 @@
 interface TokenInfo {
-  addr: string
-  token: string | null
+  address: string
+  lens: {
+    accessToken: string | null
+    refreshToken: string | null
+  }
+  deschool: {
+    token: string | null
+  }
 }
 
 // type LoginResult = {
@@ -24,7 +30,16 @@ interface TokenInfo {
 //     }
 // }
 
-const curToken: TokenInfo = { addr: '', token: null }
+const curToken: TokenInfo = {
+  address: '',
+  lens: {
+    accessToken: null,
+    refreshToken: null,
+  },
+  deschool: {
+    token: null,
+  },
+}
 
 export function getToken(): TokenInfo | null {
   if (curToken == null) {
@@ -33,61 +48,41 @@ export function getToken(): TokenInfo | null {
   return { ...curToken }
 }
 
-function getKey(addr: string) {
-  return `token:${addr}`.toLowerCase()
+function getKey(address: string) {
+  return `token:${address}`.toLowerCase()
 }
 
 export function isLogin(): boolean {
-  return !!getToken()?.token
+  return !!getToken()?.lens.accessToken
 }
 
-export function getCachedToken(addr: string): string | null {
-  return localStorage.getItem(getKey(addr))
+export function getCachedToken(address: string): string | null {
+  return localStorage.getItem(getKey(address))
 }
 
-function setCachedToken(addr: string, token: string | null) {
+function setCachedToken(address: string, token: string | null) {
   if (token == null) {
-    localStorage.removeItem(getKey(addr))
+    localStorage.removeItem(getKey(address))
   } else {
-    localStorage.setItem(getKey(addr), token)
+    localStorage.setItem(getKey(address), token)
   }
 }
 
-export function setToken(addr: string, token: string | null) {
-  curToken.addr = addr
-  curToken.token = token
-  setCachedToken(addr, token)
+export function setToken(address: string, accessToken: string | null, refreshToken: string | null, deschoolToken?: string | null) {
+  curToken.address = address
+  curToken.lens.accessToken = accessToken
+  curToken.lens.refreshToken = refreshToken
+  // 不一定存在，单独存储
+  if (deschoolToken) {
+    curToken.deschool.token = deschoolToken
+    setCachedToken(`deschool_${address}`, JSON.stringify(curToken.deschool))
+  }
+  setCachedToken(address, JSON.stringify(curToken.lens))
 }
 
 export function removeToken() {
-  setCachedToken(curToken.addr, null)
+  setCachedToken(curToken.address, null)
+  setCachedToken(`deschool_${curToken.address}`, null)
 }
-// async function loginByAddr(addr: string): Promise<LoginResult> {
-//     const isMainChain = checkIsExpectChain()
-//     if (!isMainChain) {
-//         return loginError("current chain is not right")
-//     }
-//     const provider = checkProvider()
-//     if (!provider) {
-//         return loginError("has no provider")
-//     }
-//     // 走服务拿nonce
-//     const nonceRes: any = await getNonceByUserAddress({ address: addr })
-//     if (!nonceRes.success) {
-//         return loginError("request login nounce is error")
-//     }
-//     const { nonce } = nonceRes
-//     // 用nonce做签名
-//     const signer = provider.getSigner()
-//     const FIX_FORMAT_MESSAGE = `DeSchool is kindly requesting to Sign in with MetaMask securely, with nonce: ${nonce}. Sign and login now, begin your journey to DeSchool!`
-//     const loginSig = await signer.signMessage(FIX_FORMAT_MESSAGE)
-//     // 将签名存后台
-//     const loginResult: any = await postNonceSigByUserAddress({
-//         address: addr,
-//         sig: loginSig,
-//     })
-//     return {
-//         success: true,
-//         result: loginResult,
-//     }
-// }
+
+export const getAddress = () => (!curToken.address ? null : curToken.address)

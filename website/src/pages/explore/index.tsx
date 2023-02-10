@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next'
-import LeftoffRecord from './LeftoffRecord'
-import HotSeries from './HotSeries'
-import HotCourses from './HotCourses'
-import HotChannels from './HotChannels'
+// import LeftoffRecord from './LeftoffRecord'
+// import HotSeries from './HotSeries'
+// import HotCourses from './HotCourses'
+// import HotChannels from './HotChannels'
 
 const Explore = () => {
   const { t } = useTranslation()
@@ -19,12 +19,13 @@ const Explore = () => {
         </div>
       </div>
       <div className="w-full h-max flex flex-col justify-center explore">
-        <div className="w-full mx-auto mt-0 md:mt--120px p-10 z-2">
+        explore
+        {/* <div className="w-full mx-auto mt-0 md:mt--120px p-10 z-2">
           <LeftoffRecord />
         </div>
         <HotSeries />
         <HotCourses />
-        <HotChannels />
+        <HotChannels /> */}
       </div>
     </div>
   )
