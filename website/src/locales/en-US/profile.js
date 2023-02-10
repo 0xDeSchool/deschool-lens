@@ -1,5 +1,4 @@
-/* eslint-disable camelcase */
-const en_US_Profile = {
+const EN_US_PROFILE = {
   roleManage: 'Indentity Manager',
   passesTitle: 'My Passes',
   posksTitle: 'My PoSKs',
@@ -52,12 +51,12 @@ const en_US_Profile = {
     feedInfo: {
       des0: "Congrats! Your've received PoSK",
       des1: "Congrats! Your've claimed PoSK [",
-      des2: "",
-      des3: " ]",
-      des4: "Great! you got [ ",
-      des5: " ] learning Pass. Start learning now~",
+      des2: '',
+      des3: ' ]',
+      des4: 'Great! you got [ ',
+      des5: ' ] learning Pass. Start learning now~',
     },
   },
 }
 
-export default en_US_Profile
+export default EN_US_PROFILE

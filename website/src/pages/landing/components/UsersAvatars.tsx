@@ -1,6 +1,5 @@
 import Avatar from 'antd/es/avatar'
 import { useNavigate } from 'react-router'
-import type { Creator } from '~/lib/types/app'
 
 // import { useTranslation } from 'react-i18next'
 type UsersAvatarsProps = {
@@ -22,7 +21,7 @@ const UsersAvatars = (props: UsersAvatarsProps) => {
           <Avatar
             src={user.avatar}
             srcSet={user.avatar}
-            size={26}
+            size={32}
             style={{ transform: `translateX(-${10 * index}px)`, border: '2px solid white', cursor: 'pointer' }}
             onClick={() => {
               handleJumpProfile(user.id)

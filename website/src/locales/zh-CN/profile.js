@@ -1,5 +1,4 @@
-/* eslint-disable camelcase */
-const zh_CN_Profile = {
+const ZH_CN_PROFILE = {
   roleManage: '管理身份',
   passesTitle: '我的Pass',
   posksTitle: '我的结课凭证',
@@ -50,14 +49,14 @@ const zh_CN_Profile = {
     learningPass: '听课证',
     mate: '你的同学',
     feedInfo: {
-      des0: "恭喜你收到结课凭证 —— ",
-      des1: "恭喜你完成【",
-      des2: "】的学习，并获得【",
-      des3: "】的结课凭证",
-      des4: "听课证【",
-      des5: "】购买成功，快去开始你的学习吧~",
+      des0: '恭喜你收到结课凭证 —— ',
+      des1: '恭喜你完成【',
+      des2: '】的学习，并获得【',
+      des3: '】的结课凭证',
+      des4: '听课证【',
+      des5: '】购买成功，快去开始你的学习吧~',
     },
   },
 }
 
-export default zh_CN_Profile
+export default ZH_CN_PROFILE

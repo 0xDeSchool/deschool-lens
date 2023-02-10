@@ -1,6 +1,5 @@
-/* eslint-disable camelcase */
-const zh_CN_Posk = {
+const ZH_CN_POSK = {
   Owners: '拥有者',
   own: '拥有',
 }
-export default zh_CN_Posk
+export default ZH_CN_POSK

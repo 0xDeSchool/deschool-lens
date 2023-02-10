@@ -7,7 +7,6 @@ import fallbackImage from '~/assets/images/fallbackImage'
 import { UnionIcon } from '~/components/icon'
 import CrownIcon from '~/assets/icons/crown.png'
 // import RoleTag from './RoleTag'
-import { useNavigate } from 'react-router'
 import Students from './Students'
 import type { ExploreStudyInfo, SeriesExtend } from '~/lib/types/app'
 
@@ -57,16 +56,15 @@ const SeriesCardDetail = (props: { seriesDetail: ExploreStudyInfo }) => {
 const SeriesCard = (props: { series: SeriesExtend; loadingDetail: boolean; seriesDetail: ExploreStudyInfo | undefined }) => {
   const { series, loadingDetail, seriesDetail } = props
   const { t } = useTranslation()
-  const navigate = useNavigate()
 
   const handleJumpOrgIntro = (channelDomain: string) => {
-    if (channelDomain) navigate(`/org/${channelDomain}`)
+    if (channelDomain) window.open(`https://dev.deschool.app/org/${channelDomain}`, '_blank')
   }
   const handleJumpPassIntro = (passId: string) => {
-    if (passId) navigate(`/passIntro/${passId}`)
+    if (passId) window.open(`https://dev.deschool.app/passIntro/${passId}`, '_blank')
   }
   const handleJumpSeriesIntro = (seriesId: string) => {
-    if (seriesId) navigate(`/series/seriesintro/${seriesId}`)
+    if (seriesId) window.open(`https://dev.deschool.app/series/seriesintro/${seriesId}`, '_blank')
   }
 
   return (

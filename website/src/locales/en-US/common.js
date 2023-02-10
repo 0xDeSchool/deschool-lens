@@ -1,5 +1,4 @@
-/* eslint-disable camelcase */
-const en_US_Common = {
+const EN_US_COMMON = {
   slogan1: 'LEARN, EARN, RECORD.',
   slogan2: 'GENERATE YOUR METACORD IN DESCHOOL!',
   slogan3: 'CONTROL YOUR DATA AND START NEW LIVING STYLE IN WEB3!',
@@ -66,8 +65,8 @@ const en_US_Common = {
   connect_content_4: 'acknowledge that you have read and understand the ',
   connect_content_5: 'DeShcool protocol disclaimer.',
   includedIn: 'This series course is included in NFT Pass: ',
-  Total: "Total",
+  Total: 'Total',
   SeeMore: 'See More',
 }
 
-export default en_US_Common
+export default EN_US_COMMON
