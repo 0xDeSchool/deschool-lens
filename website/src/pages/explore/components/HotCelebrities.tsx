@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Star1 from '~/assets/images/star1.png'
 import Skeleton from 'antd/es/skeleton'
-import type { Profile } from '~/api/lens/graphql/generated'
+import type { ProfileExtend } from '~/lib/types/app.d.ts'
 import { ProfileSortCriteria } from '~/api/lens/graphql/generated'
 import { exploreProfilesRequest } from '~/api/lens/profile/get-profiles'
 import CelebrityCard from './CelebrityCard'
@@ -10,7 +10,7 @@ import CelebrityCard from './CelebrityCard'
 const HotCelebrities = () => {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(true)
-  const [celebrities, setCelebrities] = useState([] as Profile[])
+  const [celebrities, setCelebrities] = useState([] as ProfileExtend[])
 
   const initSeries = async () => {
     setLoading(true)
@@ -38,7 +38,7 @@ const HotCelebrities = () => {
           return profile
         }),
       )
-      setCelebrities(profilesData as Profile[])
+      setCelebrities(profilesData as ProfileExtend[])
     } finally {
       setLoading(false)
     }
