@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { getExploreSearch } from '~/api/explore'
+import { getExploreSearch } from '~/api/go/explore'
 import { useTranslation } from 'react-i18next'
 import type { SelectProps } from 'antd/es/select'
 import Select from 'antd/es/select'

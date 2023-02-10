@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.8.0",
+    "@apollo/client": "^3.7.7",
     "@aws-sdk/abort-controller": "^3.226.0",
     "@aws-sdk/client-cognito-identity": "^3.236.0",
     "@aws-sdk/client-s3": "^3.236.0",
@@ -35,6 +36,7 @@
     "@dnd-kit/core": "^6.0.6",
     "@dnd-kit/sortable": "^7.0.1",
     "@dnd-kit/utilities": "^3.2.1",
+    "@graphql-typed-document-node/core": "^3.1.1",
     "@lens-protocol/react": "^0.3.0",
     "@sentry/react": "^7.35.0",
     "@sentry/tracing": "^7.35.0",

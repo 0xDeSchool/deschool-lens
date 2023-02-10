@@ -1,15 +1,16 @@
 // @ts-nocheck 忽略文件校验
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import LoadingOutlined from '@ant-design/icons/LoadingOutlined'
 import Modal from 'antd/es/modal/Modal'
 import { isLogin } from '~/auth'
-import { getUserContext, useAccount } from '~/context/account'
+import { getUserContext } from '~/context/account'
 import type { WalletConfig } from '~/wallet'
 import { getWallet } from '~/wallet'
+import { getAddress } from '~/auth/user'
 import { scrollToTop } from '~/utils/common'
-import ConnectBoard from '../components/connectBoard'
+import ConnectBoard from './connectBoard'
 import Footer from './footer'
 import UserBar from './userbar'
 
@@ -20,46 +21,26 @@ import UserBar from './userbar'
 const Layout = () => {
   const location = useLocation()
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [curLocation, setCurLocation] = useState(location.pathname + location.search)
   const [isSwitchingUser, setIsSwitchingUser] = useState(false)
   const [pageLayout, setPageLayout] = useState('w-full')
   const [footerLayout, setFooterLayout] = useState('')
+  const [connectTrigger, setConnectTrigger] = useState<number | null>(null)
 
-  const user = useAccount()
   const userContext = getUserContext()
 
-  const userbarRef = useRef<ElementRef<typeof UserBar>>(null)
   const navigate = useNavigate()
   const { t } = useTranslation()
 
   const getPageLayout = () => {
-    let classes = 'w-full'
-    let footerClasses = ''
-    if (location.pathname.startsWith('/explore') || location.pathname.startsWith('/landing') || location.pathname.startsWith('/orglist')) {
-      classes = 'w-full pt-0px!'
-      if (location.pathname.startsWith('/explore') || location.pathname.startsWith('/orglist')) {
-        footerClasses = 'w-max mx-10px lg:min-w-875px xl:min-w-1135px'
-      }
-    } else if (
-      location.pathname.startsWith('/manage/') ||
-      location.pathname.startsWith('/org') ||
-      location.pathname.startsWith('/series/seriesintro') ||
-      location.pathname.startsWith('/courses/course/') ||
-      location.pathname.startsWith('/profile') ||
-      location.pathname.startsWith('/passmint')
-    ) {
-      classes = 'w-full lg:w-768px xl:w-1024px 2xl:w-1135px 3xl:w-1205px' // px-10 mx-0 md:px-0 md:mx-10 md:w-5/7  4xl:w-1680px
-      footerClasses = 'w-full lg:w-768px xl:w-1024px 2xl:w-1135px 3xl:w-1205px'
-    }
+    const classes = 'w-full pt-0px!'
+    // footerClasses = 'w-max mx-10px lg:min-w-875px xl:min-w-1135px'
     setPageLayout(classes)
-    setFooterLayout(footerClasses)
+    setFooterLayout('')
   }
 
   useEffect(() => {
     getPageLayout()
     scrollToTop()
-    setCurLocation(location.pathname + location.search)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location])
 
   // 同意切换账户
@@ -67,16 +48,15 @@ const Layout = () => {
     setIsSwitchingUser(true)
     try {
       const addr = await getWallet().getAddress()
-      if (user.address && addr !== user.address) {
-        // 如果当前在 courseLearning 页面则跳转到 home 页面
+      if (getAddress() && addr !== getAddress()) {
         const cachedToken = await userContext.fetchUserInfo(addr)
         if (cachedToken == null) {
-          await userbarRef.current.handleConnect()
+          setIsModalOpen(false)
+          setConnectTrigger(addr)
         }
-        navigate('/explore')
-        window.location.reload()
       }
     } finally {
+      setIsModalOpen(false)
       setIsSwitchingUser(false)
     }
   }
@@ -102,34 +82,32 @@ const Layout = () => {
       navigate('/explore')
       window.location.reload()
     },
-    chainChanged: chainId => {
-      if (chainId === '0x89' && !isLogin()) {
-        userbarRef.current.handleConnect()
-        window.location.reload()
-      }
-    },
+    // chainChanged: chainId => {
+    //   if (chainId === '0x89' && !isLogin()) {
+    //     setConnectTrigger(new Date().getTime())
+    //     window.location.reload()
+    //   }
+    // },
   }
   const [walletconfig] = useState<WalletConfig>(config)
 
   return (
     <div className="relative w-full h-full bg-white">
-      <UserBar ref={userbarRef} walletConfig={walletconfig} />
-      {user.firstConnected && (
-        <div className="relative w-full h-fit min-h-full flex flex-col items-center" id="container">
-          <div
-            className={`flex-1 overflow-auto w-full fcc-center bg-#fafafa ${
-              location.pathname.startsWith('/explore') || location.pathname.startsWith('/orglist') ? '' : 'pt-64px'
-            }`}
-          >
-            <div className={`flex-1 overflow-auto flex flex-col ${pageLayout}`}>
-              <Outlet />
-            </div>
+      <UserBar walletConfig={walletconfig} />
+      <div className="relative w-full h-fit min-h-full flex flex-col items-center" id="container">
+        <div
+          className={`flex-1 overflow-auto w-full fcc-center bg-#fafafa ${
+            location.pathname.startsWith('/explore') || location.pathname.startsWith('/orglist') ? '' : 'pt-64px'
+          }`}
+        >
+          <div className={`flex-1 overflow-auto flex flex-col ${pageLayout}`}>
+            <Outlet />
           </div>
-          <Footer footerLayout={footerLayout} />
         </div>
-      )}
+        <Footer footerLayout={footerLayout} />
+      </div>
       {/* login board */}
-      <ConnectBoard wallectConfig={walletconfig} />
+      <ConnectBoard wallectConfig={walletconfig} connectTrigger={connectTrigger} />
       <Modal
         title={<h1>{t('system.notify_title')}</h1>}
         closable={false}

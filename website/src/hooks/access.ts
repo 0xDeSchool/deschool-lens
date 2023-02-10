@@ -10,9 +10,8 @@ const uploadScopes = async (handle?: string) => {
   setAccess({ 'RoleType.User': !!handle })
 }
 
-const initAccess = async () => {
-  // TODO: 初始化角色
-  setAccess({ roles: RoleType.Visiter })
+const initAccess = async (role?: RoleType) => {
+  setAccess({ roles: [role || RoleType.Visiter] })
 }
 
 // 验证传进来的组件该用户是否有权限, 返回true或者false
