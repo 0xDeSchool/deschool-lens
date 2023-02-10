@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 const zh_CN_Userbar = {
   home: '主页',
-  exploreNav: '教学中心',
+  exploreNav: '名人堂',
   roadmap: '路线图',
   community: '社区',
   whitepaper: '白皮书',
@@ -15,8 +15,7 @@ const zh_CN_Userbar = {
     know: '了解！',
   },
   foot: {
-    join: '有疑问请进入',
-    contactme: '和我们交流',
+    join: '了解我们',
     contactus: '联系我们',
   },
 }

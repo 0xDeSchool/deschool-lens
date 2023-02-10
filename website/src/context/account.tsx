@@ -1,9 +1,10 @@
 /* eslint-disable class-methods-use-this */
 import type { ReactElement } from 'react'
 import React, { useState, useContext, createContext } from 'react'
-import { getUserProfile } from '~/api/account'
-import { getCachedToken, setToken, removeToken } from '~/auth'
+import { removeToken } from '~/auth'
 import { getWallet } from '~/wallet'
+import type { Profile } from '~/api/lens/graphql/generated'
+import { getDefaultProfileRequest } from '~/api/lens/profile/get-default-profile'
 import type { Contact } from '~/lib/types/app'
 
 export const DEFAULT_AVATAR = 'https://s3.us-east-1.amazonaws.com/deschool/Avatars/avatar_def.png'
@@ -14,68 +15,36 @@ export interface SocialLink extends Contact {
   icon?: string
   name?: string
 }
-
-export interface UserInfoStruct {
-  id?: string
-  address?: string
-  username?: string
-  avatar: string
-  token?: string
-  firstConnected?: boolean
-  bio?: string
-  contacts?: SocialLink[]
-}
-
-const tempUser: UserInfoStruct = {
-  avatar: DEFAULT_AVATAR,
-}
+const temp = {} as Profile
 
 export class UserContext {
-  setUser: React.Dispatch<React.SetStateAction<UserInfoStruct>>
+  setUser: React.Dispatch<React.SetStateAction<Profile>>
 
-  constructor(setAction: React.Dispatch<React.SetStateAction<UserInfoStruct>>) {
+  constructor(setAction: React.Dispatch<React.SetStateAction<Profile>>) {
     this.setUser = setAction
   }
 
-  changeUser(info: UserInfoStruct) {
+  changeUser(info: Profile) {
     this.setUser(info)
   }
 
-  async fetchUserInfo(addr: string, token?: string): Promise<UserInfoStruct | null> {
-    if (!token) {
-      const cachedToken = getCachedToken(addr)
-      if (!cachedToken) {
-        return null
-      }
-      token = cachedToken
-    }
-    setToken(addr, token)
-    const info = await getUserProfile()
-    if (!info) {
-      return null
-    }
-    return {
-      id: info.id,
-      address: info.address,
-      username: info.username,
-      avatar: info.avatar,
-      contacts: info.contacts,
-      bio: info.bio,
-      token,
-    }
+  async fetchUserInfo(address: string): Promise<Profile | undefined> {
+    const info = await getDefaultProfileRequest({ ethereumAddress: address })
+    console.log('info', info)
+    if (info) return info
   }
 
   disconnect(): void {
-    this.setUser({ ...tempUser })
+    this.setUser(temp)
     getWallet().disconnect()
     removeToken()
   }
 }
 
-export const AccountContext = createContext<UserInfoStruct>(tempUser)
+export const AccountContext = createContext<Profile>(temp)
 let userContext = new UserContext(() => {})
 export const AccountContextProvider = ({ children }: { children: ReactElement }) => {
-  const [userInfo, setUserInfo] = useState<UserInfoStruct>(tempUser)
+  const [userInfo, setUserInfo] = useState<Profile>(temp)
   userContext = new UserContext(setUserInfo)
   return <AccountContext.Provider value={userInfo}>{children}</AccountContext.Provider>
 }

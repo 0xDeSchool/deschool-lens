@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 const en_US_Userbar = {
   home: 'HOME',
+  exploreNav: 'EXPLORE',
   courses: 'COURSE CENTER',
   roadmap: 'ROADMAP',
   community: 'COMMUNITY',
@@ -15,8 +16,7 @@ const en_US_Userbar = {
     finished: 'FINISHED',
   },
   foot: {
-    join: 'Join',
-    contactme: 'contact us',
+    join: 'Join us',
     contactus: 'contact us',
   },
 }

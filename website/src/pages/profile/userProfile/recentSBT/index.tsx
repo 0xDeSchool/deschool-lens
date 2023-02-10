@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
-import { getUserSBTs } from '~/api/account'
+import { getUserSBTs } from '~/api/go/account'
 import Skeleton from 'antd/es/skeleton'
 import Empty from 'antd/es/empty'
 import Image from 'antd/es/image'
