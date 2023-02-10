@@ -1,0 +1,40 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Dependency directories (remove the comment below to include it)
+# vendor/
+
+*.db
+
+dist/
+config*.yaml
+
+.idea/
+
+.env
+
+internal/api/swagger/admin
+internal/api/swagger/lite
+internal/api/swagger/docs
+
+# VS-Code Settings, includes rest-client-plugin setting file. If you are a DeSchool dev, please contact backend admin to get them.
+.vscode
+
+# Mac file
+.DS_Store
+
+!tools/windows/*.exe
+
+temp/
+
+http-client*.env.json
