@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.1",
   "scripts": {
-    "dev": "vite --port 80 --mode development",
+    "dev": "vite --port 3000 --mode development",
     "stg": "vite --port 80 --mode staging",
     "prd": "vite --port 80 --mode production",
     "build:dev": "pnpm run tsc && vite build --mode development",
@@ -36,6 +36,7 @@
     "@dnd-kit/core": "^6.0.6",
     "@dnd-kit/sortable": "^7.0.1",
     "@dnd-kit/utilities": "^3.2.1",
+    "@mui/icons-material": "^5.11.0",
     "@graphql-typed-document-node/core": "^3.1.1",
     "@lens-protocol/react": "^0.3.0",
     "@sentry/react": "^7.35.0",
