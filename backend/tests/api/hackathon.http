@@ -1,0 +1,2 @@
+### Ping Api
+GET  {{host}}/api/ping
