@@ -1,4 +1,4 @@
-import { Profile } from '~/api/lens/graphql/generated'
+import type { Profile } from '~/api/lens/graphql/generated'
 
 export type ContractType = 'ERC20' | 'ERC721' | 'ERC1155'
 
@@ -275,4 +275,5 @@ export interface CoursePostParticipationInput {
 
 export interface ProfileExtend extends Profile {
   avatarUrl?: string
+  coverUrl?: string
 }

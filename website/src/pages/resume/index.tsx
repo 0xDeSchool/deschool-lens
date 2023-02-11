@@ -2,7 +2,8 @@
  *
  */
 import React, { useState } from 'react'
-import { Tabs, Divider } from 'antd'
+import Tabs from 'antd/es/tabs'
+import Divider from 'antd/es/divider'
 import ResumeBlock from './components/resumeBlock'
 import { BlockType } from './enum'
 

@@ -24,8 +24,8 @@ const LandingHeader = () => {
       </div>
       <h1 className="text-5xl font-Anton">{t('landing.title1')}</h1>
       <h2 className="mt-5 mb-10 text-xl text-white-5 font-Anton">{t('landing.title2')}</h2>
-      <div className="w-full frc-center font-ArchivoNarrow">
-        <button type="button" className="mr-4 p-2 border border-white rounded-xl text-white text-2xl uppercase" onClick={handleJumpExplore}>
+      <div className="w-full frc-center font-ArchivoNarrow z-1">
+        <button type="button" className="mr-4 p-2 border border-white rounded-xl text-white hover:text-purple hover:border-purple text-2xl uppercase" onClick={handleJumpExplore}>
           {t('landing.button1')}
         </button>
         <button type="button" className="p-2 rounded-xl purple-button text-2xl uppercase" onClick={handleJumpProfile}>
