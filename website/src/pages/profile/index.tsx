@@ -15,8 +15,8 @@ import { getAddress } from '~/auth/user'
 import { useLayout } from '~/context/layout'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import UserInfo from './userCard'
 import { getLanguage } from '~/utils/language'
+import UserInfo from './userCard'
 
 type Tab = {
   key: string

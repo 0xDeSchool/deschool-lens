@@ -14,8 +14,8 @@ import { getAddress } from '~/auth/user'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import fallbackImage from '~/assets/images/fallbackImage'
-import type { ProfileExtend } from '~/lib/types/app'
 import Empty from 'antd/es/empty'
+import type { ProfileExtend } from '~/lib/types/app'
 
 type UserCardProps = {
   otherUser?: ProfileExtend
