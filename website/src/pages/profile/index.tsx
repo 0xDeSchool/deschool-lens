@@ -6,7 +6,7 @@
  */
 import React, { useEffect, useState } from 'react'
 
-import { Outlet, useNavigate, useParams } from 'react-router'
+import { Outlet, useLocation, useNavigate, useParams } from 'react-router'
 import type { Profile } from '~/api/lens/graphql/generated'
 // import { useTranslation } from 'react-i18next'
 import { getDefaultProfileRequest } from '~/api/lens/profile/get-default-profile'
@@ -34,6 +34,7 @@ const UserProfile = () => {
   const [otherloading, setOtherLoading] = useState(true)
   const { setConnectBoardVisible } = useLayout()
   const [tabs, setTabs] = useState<Tab[]>([] as Tab[])
+  const location = useLocation()
 
   const initTabs = () => {
     const tempTabs = [
@@ -115,14 +116,16 @@ const UserProfile = () => {
         </div>
       </div>
       <div className="flex-1 relative">
-        <div className="sticky top-0 left-0 w-full h-80px frc-start space-x-10 bg-#fafafa" style={{ backdropFilter: 'blur(12px)' }}>
-          {tabs.map(tab => (
-            <Link key={tab.key} to={tab.path}>
-              {tab.name}
-            </Link>
-          ))}
-        </div>
-        <div className="mb-10 overflow-auto p-6 border shadow-md rounded-xl">
+        {!location.pathname.includes('/profile/match') && (
+          <div className="sticky top-0 left-0 w-full h-80px frc-start space-x-10 bg-#fafafa" style={{ backdropFilter: 'blur(12px)' }}>
+            {tabs.map(tab => (
+              <Link key={tab.key} to={tab.path}>
+                {tab.name}
+              </Link>
+            ))}
+          </div>
+        )}
+        <div className="mt-30px mb-10 overflow-auto p-6 border shadow-md rounded-xl">
           <Outlet />
         </div>
       </div>

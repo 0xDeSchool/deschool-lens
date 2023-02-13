@@ -13,6 +13,7 @@ import Activities from '~/pages/profile/activities'
 import Suggest from '~/pages/profile/suggested'
 import Verified from '~/pages/profile/verified'
 import Resume from '~/pages/profile/resume'
+import Match from '~/pages/profile/match' // 匹配推荐配置页面
 import Layout from '../layout'
 
 const RouterObj = () => (
@@ -26,6 +27,7 @@ const RouterObj = () => (
           <Route path="activities" element={<Activities />} />
           <Route path="resume" element={<Resume />} />
           <Route path="verified" element={<Verified />} />
+          <Route path="match" element={<Match />} />
         </Route>
         <Route path="profile/:address" element={<Profile />}>
           <Route path="suggested" element={<Suggest />} />

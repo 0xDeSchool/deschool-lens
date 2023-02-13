@@ -53,6 +53,7 @@ export default defineConfig({
       'purple-border-button',
       'inline-flex items-center border border-#6525FF rounded-xl text-#6525FF hover:cursor-pointer hover:text-purple-500',
     ],
+    ['shadow-module','border shadow-md rounded-xl w-full'],
   ],
   presets: [presetUno(), presetAttributify(), presetIcons()],
   transformers: [transformerDirectives(), transformerVariantGroup()],

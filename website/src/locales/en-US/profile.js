@@ -15,6 +15,14 @@ const EN_US_PROFILE = {
       contacts: 'Contacts',
     },
   },
+  matchpage: {
+    goals: 'Goals & Characters',
+    fields: 'Fields of Interests',
+    belief: 'Belief',
+    character: 'My MBTi Character',
+    explore: 'Get My Potential Friends / Partners! (BETA)',
+    save: 'Save',
+  },
 }
 
 export default EN_US_PROFILE
