@@ -118,31 +118,29 @@ const UserProfile = () => {
   }, [address, getLanguage()])
 
   return (
-    <div className="w-full frs-center h-full max-h- overflow-auto">
-      <div className="relative screen-fit grid grid-cols-12 space-x-10 scroll-hidden">
-        <div className="col-span-3 relative">
-          <div className="sticky top-6 left-6">
-            <UserInfo address={address} otherloading={otherloading} otherUser={otherUser} />
-          </div>
+    <div className="relative w-auto mx-10 space-x-10 frs-center h-full overflow-auto scroll-hidden">
+      <div className="w-400px relative mt-30px">
+        <div className="sticky top-6 left-6">
+          <UserInfo address={address} otherloading={otherloading} otherUser={otherUser} />
         </div>
-        <div className="col-span-9 relative">
-          <div className="sticky top-0 left-0 w-full h-80px frc-start space-x-10 bg-#fafafa" style={{ backdropFilter: 'blur(12px)' }}>
-            {tabs.map(tab => (
-              <Link key={tab.key} to={tab.path}>
-                {tab.name}
-              </Link>
-            ))}
-          </div>
-          <div className="mb-10 overflow-auto">
-            <Outlet />
-          </div>
-        </div>
-        {/* 这里有多种情况： */}
-        {/* 一、用户在看自己的 Following，此时可以显示 Unfollow 按钮。如果两人互关以文字形式写在名字旁边 */}
-        {/* 二、用户在看自己的Followers，此时有 Follow 按钮用以回关，如果双向关注则显示出来，hover上去变成 Unfollow */}
-        {/* 三、用户在看别人的 Following，啥事都不能做，没有按钮。如果别人和他的关注者双向关注则用文字显示出来 */}
-        {/* 四、用户在看别人的 Follower，啥事都不能做，没有按钮。如果别人和他的关注者双向关注则用文字显示出来 */}
       </div>
+      <div className="flex-1 relative">
+        <div className="sticky top-0 left-0 w-full h-80px frc-start space-x-10 bg-#fafafa" style={{ backdropFilter: 'blur(12px)' }}>
+          {tabs.map(tab => (
+            <Link key={tab.key} to={tab.path}>
+              {tab.name}
+            </Link>
+          ))}
+        </div>
+        <div className="mb-10 overflow-auto p-6 border shadow-md rounded-xl">
+          <Outlet />
+        </div>
+      </div>
+      {/* 这里有多种情况： */}
+      {/* 一、用户在看自己的 Following，此时可以显示 Unfollow 按钮。如果两人互关以文字形式写在名字旁边 */}
+      {/* 二、用户在看自己的Followers，此时有 Follow 按钮用以回关，如果双向关注则显示出来，hover上去变成 Unfollow */}
+      {/* 三、用户在看别人的 Following，啥事都不能做，没有按钮。如果别人和他的关注者双向关注则用文字显示出来 */}
+      {/* 四、用户在看别人的 Follower，啥事都不能做，没有按钮。如果别人和他的关注者双向关注则用文字显示出来 */}
     </div>
   )
 }
