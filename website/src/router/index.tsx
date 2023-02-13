@@ -9,8 +9,6 @@ import Explore from '~/pages/explore' // 探索页面
 import Profile from '~/pages/profile' // 个人中心
 import Roadmap from '~/pages/roadmap' // 网站路线图
 import PoskIntro from '~/pages/poskIntro' // pass/sbt介绍页面
-import Followers from '~/pages/profile/followers'
-import Following from '~/pages/profile/following'
 import Activities from '~/pages/profile/activities'
 import Suggest from '~/pages/profile/suggested'
 import Verified from '~/pages/profile/verified'
@@ -24,16 +22,12 @@ const RouterObj = () => (
         <Route path="" element={<Navigate to="/landing" />} />
         <Route path="landing" element={<Landing />} />
         <Route path="profile" element={<Profile />}>
-          <Route path="followers" element={<Followers />} />
-          <Route path="following" element={<Following />} />
           <Route path="suggested" element={<Suggest />} />
           <Route path="activities" element={<Activities />} />
           <Route path="resume" element={<Resume />} />
           <Route path="verified" element={<Verified />} />
         </Route>
         <Route path="profile/:address" element={<Profile />}>
-          <Route path="followers" element={<Followers />} />
-          <Route path="following" element={<Following />} />
           <Route path="suggested" element={<Suggest />} />
           <Route path="activities" element={<Activities />} />
           <Route path="resume" element={<Resume />} />

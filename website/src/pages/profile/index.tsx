@@ -57,16 +57,6 @@ const UserProfile = () => {
         path: `/profile/${address ? `${address}/` : ''}verified`,
         name: t('profile.verified'),
       },
-      {
-        key: '5',
-        path: `/profile/${address ? `${address}/` : ''}followers`,
-        name: t('profile.followers'),
-      },
-      {
-        key: '6',
-        path: `/profile/${address ? `${address}/` : ''}following`,
-        name: t('profile.following'),
-      },
     ]
     setTabs(tempTabs)
   }
