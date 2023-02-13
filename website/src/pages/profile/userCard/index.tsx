@@ -7,15 +7,16 @@
 import Image from 'antd/es/image'
 import Skeleton from 'antd/es/skeleton'
 import { useEffect, useState } from 'react'
-import { getUserContext, DEFAULT_AVATAR, useAccount } from '~/context/account'
+import { getUserContext, useAccount } from '~/context/account'
 import { getExtendProfile } from '~/hooks/profile'
 import { getAddress } from '~/auth/user'
 // import { getProfileRequest } from '~/api/lens/profile/get-profile'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router'
 import fallbackImage from '~/assets/images/fallbackImage'
 import Empty from 'antd/es/empty'
+import FollowersModal from './modal'
 import type { ProfileExtend } from '~/lib/types/app'
+import LensAvatar from './avatar'
 
 type UserCardProps = {
   otherUser?: ProfileExtend
@@ -28,8 +29,8 @@ const UserCard = (props: UserCardProps) => {
   const { t } = useTranslation()
   const user = useAccount()
   const userContext = getUserContext()
-  const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
+  const [modal, setModal] = useState<{ type: 'followers' | 'following'; visible: boolean }>({ type: 'followers', visible: false })
 
   const initUserInfo = async () => {
     setLoading(true)
@@ -61,11 +62,23 @@ const UserCard = (props: UserCardProps) => {
   }
 
   const handleJumpFollowers = () => {
-    // 拿路由参数other或者本地参数
-    navigate(`/profile/${address || getAddress()}/followers`)
+    setModal({
+      type: 'followers',
+      visible: true,
+    })
   }
   const handleJumpFollowing = () => {
-    navigate(`/profile/${address || getAddress()}/following`)
+    setModal({
+      type: 'following',
+      visible: true,
+    })
+  }
+
+  const closeModal = () => {
+    setModal({
+      type: modal.type,
+      visible: false,
+    })
   }
 
   return loading ? (
@@ -85,27 +98,7 @@ const UserCard = (props: UserCardProps) => {
         ) : (
           <div className="w-full h-140px bg-gray-3 rounded-t-xl"> </div>
         )}
-        {currentUser?.avatarUrl ? (
-          <Image
-            preview={false}
-            src={currentUser?.avatarUrl}
-            fallback={DEFAULT_AVATAR}
-            alt="avatar"
-            style={{ width: 80, height: 80 }}
-            className="rounded-full border border-4 border-white shadow-lg"
-            wrapperClassName="absolute bottom--40px fcc-center w-full"
-            crossOrigin="anonymous"
-          />
-        ) : (
-          <Image
-            preview={false}
-            src={DEFAULT_AVATAR}
-            alt="avatar"
-            style={{ width: 80, height: 80 }}
-            className="rounded-full border border-4 border-white shadow-lg"
-            wrapperClassName="absolute bottom--40px fcc-center w-full"
-          />
-        )}
+        <LensAvatar avatarUrl={currentUser?.avatarUrl} />
       </div>
       {/* 处理数据为空的情况 */}
       {currentUser?.handle ? (
@@ -144,8 +137,9 @@ const UserCard = (props: UserCardProps) => {
           )}
         </>
       ) : (
-        <Empty className='mt-70px w-full px-6 pb-6 fcc-center'/>
+        <Empty className="mt-70px w-full px-6 pb-6 fcc-center" />
       )}
+      <FollowersModal address={address} profileId={currentUser?.id} type={modal.type} visible={modal.visible} closeModal={closeModal} />
     </div>
   )
 }
