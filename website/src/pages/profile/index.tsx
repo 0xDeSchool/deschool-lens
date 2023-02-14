@@ -1,22 +1,20 @@
 /**
- * @description 用户个人中心
+ * @description 用户个人中心Page，包括个人空间和他人空间
  * @author victor
  * @exports {UserProfile}
- * @props
  */
-import React, { useEffect, useState } from 'react'
-
-import { Outlet, useLocation, useNavigate, useParams } from 'react-router'
-import type { Profile } from '~/api/lens/graphql/generated'
-// import { useTranslation } from 'react-i18next'
-import { getDefaultProfileRequest } from '~/api/lens/profile/get-default-profile'
-import { useAccount } from '~/context/account'
-import { getAddress } from '~/auth/user'
-import { useLayout } from '~/context/layout'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Outlet, useLocation, useNavigate, useParams } from 'react-router'
+
+import { useAccount } from '~/context/account'
+import { useLayout } from '~/context/layout'
+
+import { getAddress } from '~/auth/user'
 import { getLanguage } from '~/utils/language'
-import UserInfo from './userCard'
+
+import UserCard from './userCard'
 
 type Tab = {
   key: string
@@ -24,19 +22,43 @@ type Tab = {
   name: string
 }
 
-// 个人中心Page
 const UserProfile = () => {
   const { address } = useParams()
   const user = useAccount()
   const navigate = useNavigate()
   const { t } = useTranslation()
-  const [otherUser, setOtherUser] = useState({} as Profile)
-  const [otherloading, setOtherLoading] = useState(true)
-  const { setConnectBoardVisible } = useLayout()
-  const [tabs, setTabs] = useState<Tab[]>([] as Tab[])
   const location = useLocation()
 
-  const initTabs = () => {
+  const { setConnectBoardVisible } = useLayout()
+  const [tabs, setTabs] = useState<Tab[]>([] as Tab[])
+  const [visitCase, setVisitCase] = useState<0 | 1 | -1>(-1) // 0-自己访问自己 1-自己访问别人 -1-没登录访问自己
+
+  // 初始化登录场景
+  const initCase = () => {
+    let primaryCase = -1
+    const cacheAddress = getAddress()
+    
+    // 有路由参数并且不等于自己地址，即访问他人的空间（不管是否登录都可以看他人空间）
+    if (address && address !== cacheAddress) {
+      setVisitCase(1)
+      setConnectBoardVisible(false)
+    }
+    // 没有路由参数并且有缓存自己地址, 访问自己空间
+    else if (!address && cacheAddress) {
+      primaryCase = 0
+      setVisitCase(0)
+      setConnectBoardVisible(false)
+    }
+    // 地址栏和缓存都没有地址，既不是访问他人空间也不是访问自己，需要登录访问自己
+    else {
+      primaryCase = -1
+      setConnectBoardVisible(true)
+    }
+    return primaryCase
+  }
+
+  // 初始化tab页标签
+  const initTabs = (primaryCase: number) => {
     const tempTabs = [
       {
         key: '1',
@@ -45,21 +67,25 @@ const UserProfile = () => {
       },
       {
         key: '2',
-        path: `/profile/${address ? `${address}/` : ''}activities`,
-        name: t('profile.activities'),
-      },
-      {
-        key: '3',
         path: `/profile/${address ? `${address}/` : ''}resume`,
         name: t('profile.resume'),
       },
       {
-        key: '4',
+        key: '3',
         path: `/profile/${address ? `${address}/` : ''}verified`,
         name: t('profile.verified'),
       },
+      {
+        key: '4',
+        path: `/profile/${address ? `${address}/` : ''}activities`,
+        name: t('profile.activities'),
+      },
     ]
-    setTabs(tempTabs)
+    if (primaryCase === 1) {
+      setTabs(tempTabs.slice(0, 2))
+    } else {
+      setTabs(tempTabs)
+    }
   }
 
   // 初始化右侧的路由和内容
@@ -83,36 +109,20 @@ const UserProfile = () => {
     }
   }
 
-  // 初始化左侧的用户信息
-  const initLeftInfo = async () => {
-    setOtherLoading(true)
-    try {
-      const userInfo = await getDefaultProfileRequest({ ethereumAddress: address })
-      if (!userInfo) {
-        // message.error('用户不存在，即将返回上一页')
-        // setTimeout(() => {
-        //   history.back()
-        // }, 3000)
-        setOtherUser({} as Profile)
-      } else {
-        setOtherUser(userInfo)
-      }
-    } finally {
-      setOtherLoading(false)
+  useEffect(() => {
+    const primaryCase = initCase()
+    if (primaryCase > -1) {
+      initTabs(primaryCase)
       initRightTab()
     }
-  }
-
-  useEffect(() => {
-    initTabs()
-    initLeftInfo()
-  }, [address, getLanguage()])
+  }, [user, address, getLanguage()])
 
   return (
     <div className="relative w-auto mx-10 space-x-10 frs-center h-full overflow-auto scroll-hidden">
       <div className="w-400px relative mt-30px">
         <div className="sticky top-6 left-6">
-          <UserInfo address={address} otherloading={otherloading} otherUser={otherUser} />
+          {/* 用戶面板信息從路由來或者自己緩存來 */}
+          <UserCard visitCase={visitCase} address={address} />
         </div>
       </div>
       <div className="flex-1 relative">

@@ -3,36 +3,22 @@ import type { ReactElement } from 'react'
 import React, { useState, useContext, createContext } from 'react'
 import { removeToken } from '~/auth'
 import { getWallet } from '~/wallet'
-import type { Profile } from '~/api/lens/graphql/generated'
-import { getDefaultProfileRequest } from '~/api/lens/profile/get-default-profile'
-import { getExtendProfile } from '~/hooks/profile'
-import type { Contact, ProfileExtend } from '~/lib/types/app'
+import type { ProfileExtend } from '~/lib/types/app'
 
 export const DEFAULT_AVATAR = 'https://s3.us-east-1.amazonaws.com/deschool/Avatars/avatar_def.png'
 export const DEFAULT_AVATAR_NAME = 'avatar_def.png'
 
-export interface SocialLink extends Contact {
-  description?: string
-  icon?: string
-  name?: string
-}
-const temp = {} as Profile
+const temp = {} as ProfileExtend
 
 export class UserContext {
-  setUser: React.Dispatch<React.SetStateAction<Profile>>
+  setUser: React.Dispatch<React.SetStateAction<ProfileExtend>>
 
-  constructor(setAction: React.Dispatch<React.SetStateAction<Profile>>) {
+  constructor(setAction: React.Dispatch<React.SetStateAction<ProfileExtend>>) {
     this.setUser = setAction
   }
 
-  changeUser(info: Profile) {
+  changeUser(info: ProfileExtend) {
     this.setUser(info)
-  }
-
-  async fetchUserInfo(address: string): Promise<ProfileExtend | undefined> {
-    const info = await getDefaultProfileRequest({ ethereumAddress: '0xD28E808647D596F33Dcc3436E193A9566fc7aC07' || address }) // address
-    console.log('getExtendProfile', getExtendProfile(info))
-    if (info) return getExtendProfile(info)
   }
 
   disconnect(): void {
@@ -42,14 +28,14 @@ export class UserContext {
   }
 }
 
-export const AccountContext = createContext<Profile>(temp)
+export const AccountContext = createContext<ProfileExtend>(temp)
 let userContext = new UserContext(() => {})
 export const AccountContextProvider = ({ children }: { children: ReactElement }) => {
-  const [userInfo, setUserInfo] = useState<Profile>(temp)
+  const [userInfo, setUserInfo] = useState<ProfileExtend>(temp)
   userContext = new UserContext(setUserInfo)
   return <AccountContext.Provider value={userInfo}>{children}</AccountContext.Provider>
 }
-export const useAccount = () => useContext(AccountContext)
+export const useAccount = () => useContext(AccountContext) // 获取当前登录账号的profile信息
 export function getUserContext() {
   return userContext
 }

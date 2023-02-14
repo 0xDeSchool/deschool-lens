@@ -30,7 +30,7 @@ const Suggest = (props: SuggestProp) => {
       // }
       // result = await followingRequest(params)
       // setCursor(result.pageInfo.next)
-      // setSuggestedUsers([] as Array<ProfileExtend | undefined | null>)
+      setSuggestedUsers([] as Array<ProfileExtend | undefined | null>)
     } catch (error: any) {
       if (error && error.name && error.message) message.error(`${error.name}:${error.message}`)
     } finally {

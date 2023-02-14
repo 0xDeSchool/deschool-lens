@@ -2,10 +2,13 @@
 
 ```mermaid
 graph TD
-    A[Connect] -->|Login by Lens API| B[Get ProfileInfo and Handle]
-    B --> C[Connect from Deschool]
-    C -->|MetaMask| D[Deschool UserId]
-    C -->|UniPass| D
-    D -->|Deschool API| E[User SBT Records info]
-    E -->F[Genarate Resume Graph]
+    A[Connect] -->|No TokenCache| B[Login by Lens API,Cache Token]
+    B --> C[Get ProfileInfo and Handle by address]
+    A --> |TokenCache Exist| D[Get address from cache]
+    D --> C
+    E --> F[Connect from Deschool]
+    C --> |MetaMask| E[Deschool UserId]
+    C --> |UniPass| E
+    E --> |Deschool API| F[User SBT Records info]
+    F --> G[Genarate Resume Graph]
 ```
