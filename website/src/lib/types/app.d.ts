@@ -277,3 +277,9 @@ export interface ProfileExtend extends Profile {
   avatarUrl?: string
   coverUrl?: string
 }
+
+export interface SocialLink extends Contact {
+  description?: string
+  icon?: string
+  name?: string
+}

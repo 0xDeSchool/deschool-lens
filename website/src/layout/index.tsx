@@ -21,6 +21,7 @@ import UserBar from './userbar'
 const Layout = () => {
   const location = useLocation()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [isSwitchingUser, setIsSwitchingUser] = useState(false)
   const [pageLayout, setPageLayout] = useState('w-full')
   const [footerLayout, setFooterLayout] = useState('')
@@ -49,7 +50,7 @@ const Layout = () => {
     try {
       const addr = await getWallet().getAddress()
       if (getAddress() && addr !== getAddress()) {
-        const cachedToken = await userContext.fetchUserInfo(addr)
+        const cachedToken = await fetchUserDefaultProfile(addr)
         if (cachedToken == null) {
           setIsModalOpen(false)
           setConnectTrigger(addr)
@@ -93,7 +94,7 @@ const Layout = () => {
 
   return (
     <div className="relative w-full h-full bg-white">
-      <UserBar walletConfig={walletconfig} />
+      <UserBar walletConfig={walletconfig} isLoading={isLoading} setIsLoading={setIsLoading}/>
       <div
         className={`relative w-full  ${
           location.pathname.startsWith('/profile') ? 'h-full overflow-auto' : 'h-fit min-h-full'
@@ -105,9 +106,7 @@ const Layout = () => {
             location.pathname.startsWith('/explore') || location.pathname.startsWith('/landing') ? '' : 'pt-64px'
           }`}
         >
-          <div className={`flex-1 overflow-auto flex flex-col ${pageLayout}`}>
-            <Outlet />
-          </div>
+          <div className={`flex-1 overflow-auto flex flex-col ${pageLayout}`}>{isLoading ? null : <Outlet />}</div>
         </div>
         {location.pathname.startsWith('/profile') ? null : <Footer footerLayout={footerLayout} />}
       </div>

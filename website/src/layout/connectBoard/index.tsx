@@ -4,18 +4,18 @@ import type { FC } from 'react'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import message from 'antd/es/message'
+import CloseOutlined from '@ant-design/icons/CloseOutlined'
+import LoadingOutlined from '@ant-design/icons/LoadingOutlined'
+import { RoleType } from '~/lib/enum'
 
 import { getUserContext } from '~/context/account'
 import { useLayout } from '~/context/layout'
-import CloseOutlined from '@ant-design/icons/CloseOutlined'
-import LoadingOutlined from '@ant-design/icons/LoadingOutlined'
-import { initAccess } from '~/hooks/access'
 import type { WalletConfig } from '~/wallet'
 import { createProvider, getWallet, WalletType } from '~/wallet'
+import { initAccess } from '~/hooks/access'
+import { fetchUserDefaultProfile, getExtendProfile } from '~/hooks/profile'
 import { getToken, setToken, getAddress } from '~/auth/user'
 import { authenticate, generateChallenge } from '~/api/lens/authentication/login'
-import { getDefaultProfileRequest } from '~/api/lens/profile/get-default-profile'
-import { RoleType } from '~/lib/enum'
 
 interface ConnectBoardProps {
   isInner?: boolean
@@ -67,8 +67,11 @@ const ConnectBoard: FC<ConnectBoardProps> = props => {
     return signMessageReturn
   }
 
+  // 通过len签名登录
   const handleLoginByAddress = async (address: string, isReload?: boolean) => {
+    // 如果已经保存过登录记录则不需要重新签名登录
     if (getToken()?.lens.accessToken && getAddress() && address === getAddress()) {
+      setConnectBoardVisible(false)
       return
     }
     try {
@@ -84,12 +87,12 @@ const ConnectBoard: FC<ConnectBoardProps> = props => {
       setToken(address, authenticatedResult.accessToken, authenticatedResult.refreshToken)
 
       if (signature) {
-        const userInfo = await getDefaultProfileRequest({ ethereumAddress: address })
-        userContext.changeUser(userInfo)
-        if (userInfo) {
-          await initAccess(RoleType.User)
+        const userInfo = await fetchUserDefaultProfile(address)
+        if (!userInfo) {
+          await initAccess(RoleType.Visiter) // 如果登陆成功就更新用户角色，否则为游客角色
         } else {
-          await initAccess()
+          userContext.changeUser({ ...userInfo })
+          await initAccess(RoleType.User) // 如果登陆成功就更新用户角色，否则为游客角色
         }
       }
     } catch (error: any) {
@@ -110,7 +113,7 @@ const ConnectBoard: FC<ConnectBoardProps> = props => {
   }
 
   /**
-   * 链接钱包
+   * 链接第三方钱包，缓存钱包类型和地址。暂时不考虑unipass
    * @returns
    */
   const handleConnect = async (type: WalletType) => {
