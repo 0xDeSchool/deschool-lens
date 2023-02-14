@@ -3,19 +3,20 @@ import message from 'antd/es/message'
 import Form from 'antd/es/form'
 import Button from 'antd/es/button'
 import Col from 'antd/es/col'
-import Row from 'antd/es/row'
 import Checkbox from 'antd/es/checkbox'
 import Select from 'antd/es/select'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router'
 import { CheckLabelList } from './CheckLabelList'
 
 const MatchConfig = () => {
   const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const [label, setLabel] = useState('DAO TOOLS')
+
   const changeLabel = (tag: string, checked: boolean) => {
-    console.log('label: %s, checked: %s', tag, checked)
     if (checked) {
       setLabel(tag)
     }
@@ -25,7 +26,7 @@ const MatchConfig = () => {
     setLoading(false)
   }, [])
 
-  const submitProjects = async (values: any | undefined) => {
+  const submitMatchParams = async (values: any | undefined) => {
     if (!values) {
       values = form.getFieldsValue()
     }
@@ -56,13 +57,18 @@ const MatchConfig = () => {
     }
   }
 
+  const handleJumpSuggest = async () => {
+    await submitMatchParams(undefined)
+    navigate(`/profile/suggested`)
+  }
+
   return (
     <div>
       <Form
         form={form}
         name="basic"
         initialValues={{ remember: true }}
-        onFinish={values => submitProjects(values)}
+        onFinish={values => submitMatchParams(values)}
         onFinishFailed={errors => {
           console.log('onFinishFailed', errors.values)
           message.error('验证失败，请检查表单')
@@ -141,7 +147,7 @@ const MatchConfig = () => {
                 size="large"
                 className="rounded-lg font-bold"
                 onClick={() => {
-                  submitProjects(undefined)
+                  submitMatchParams(undefined)
                 }}
                 // disabled={!!error || Number(cost) === 0}
               >
@@ -153,7 +159,7 @@ const MatchConfig = () => {
                 size="large"
                 className="border-0 rounded-lg font-bold"
                 onClick={() => {
-                  submitProjects(undefined)
+                  handleJumpSuggest()
                 }}
               >
                 {t('matchpage.explore')}

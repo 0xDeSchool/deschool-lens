@@ -70,14 +70,18 @@ function setCachedToken(address: string, token: string | null) {
 
 export function setToken(address: string, accessToken: string | null, refreshToken: string | null, deschoolToken?: string | null) {
   curToken.address = address
-  curToken.lens.accessToken = accessToken
-  curToken.lens.refreshToken = refreshToken
+  if (accessToken && refreshToken) {
+    curToken.lens.accessToken = accessToken
+    curToken.lens.refreshToken = refreshToken
+    setCachedToken(address, JSON.stringify(curToken.lens))
+  }
   // 不一定存在，单独存储
   if (deschoolToken) {
     curToken.deschool.token = deschoolToken
     setCachedToken(`deschool_${address}`, JSON.stringify(curToken.deschool))
+  } else {
+    console.log('setToken 参数缺失')
   }
-  setCachedToken(address, JSON.stringify(curToken.lens))
 }
 
 export function removeToken() {

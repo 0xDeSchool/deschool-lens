@@ -23,10 +23,10 @@ import { createProvider, getWallet, WalletType } from '~/wallet'
 import { RoleType } from '~/lib/enum'
 import { getAddress, getCachedToken, setToken } from '~/auth/user'
 import { fetchUserDefaultProfile } from '~/hooks/profile'
+// import { refreshAuth } from '~/api/lens/authentication/refresh'
 import ExploreSearchBoard from './exploreSearchBoard'
 import Logo from '../logo'
 import type { ProfileExtend } from '~/lib/types/app'
-import { refreshAuth } from '~/api/lens/authentication/refresh'
 
 // const EXPECT_CHAINID = import.meta.env.VITE_APP_CHAIN
 
@@ -137,7 +137,6 @@ const UserBar = (props: { walletConfig?: WalletConfig; setIsLoading: Function; i
 
       let userInfo: ProfileExtend | undefined
       if (addr) {
-        // if has token，
         const cacheTokenStr = getCachedToken(addr)
         if (cacheTokenStr) {
           const cacheToken = JSON.parse(cacheTokenStr)

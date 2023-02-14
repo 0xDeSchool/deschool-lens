@@ -10,7 +10,7 @@ import type { WalletConfig } from '~/wallet'
 import { getWallet } from '~/wallet'
 import { getAddress } from '~/auth/user'
 import { scrollToTop } from '~/utils/common'
-import ConnectBoard from './connectBoard'
+import ConnectLensBoard from './connectLens'
 import Footer from './footer'
 import UserBar from './userbar'
 
@@ -111,7 +111,7 @@ const Layout = () => {
         {location.pathname.startsWith('/profile') ? null : <Footer footerLayout={footerLayout} />}
       </div>
       {/* login board */}
-      <ConnectBoard wallectConfig={walletconfig} connectTrigger={connectTrigger} />
+      <ConnectLensBoard wallectConfig={walletconfig} connectTrigger={connectTrigger} />
       <Modal
         title={<h1>{t('system.notify_title')}</h1>}
         closable={false}

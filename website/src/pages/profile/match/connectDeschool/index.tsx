@@ -1,51 +1,31 @@
 import MetaMaskImage from '~/assets/logos/mask.png'
-// import UnipassLogo from '~/assets/logos/unipass.svg'
-import type { FC } from 'react'
-import { useEffect, useState } from 'react'
+import UnipassLogo from '~/assets/logos/unipass.svg'
+import type { Dispatch, FC, SetStateAction } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import message from 'antd/es/message'
-import CloseOutlined from '@ant-design/icons/CloseOutlined'
-import LoadingOutlined from '@ant-design/icons/LoadingOutlined'
-import { RoleType } from '~/lib/enum'
 
-import { getUserContext } from '~/context/account'
-import { useLayout } from '~/context/layout'
+import { getNonceByUserAddress, postNonceSigByUserAddress } from '~/api/go/user'
+import { CloseOutlined, LoadingOutlined } from '@ant-design/icons'
 import type { WalletConfig } from '~/wallet'
 import { createProvider, getWallet, WalletType } from '~/wallet'
-import { initAccess } from '~/hooks/access'
-import { fetchUserDefaultProfile, getExtendProfile } from '~/hooks/profile'
-import { getToken, setToken, getAddress } from '~/auth/user'
-import { authenticate, generateChallenge } from '~/api/lens/authentication/login'
+import { getAddress, setToken } from '~/auth'
 
 interface ConnectBoardProps {
-  isInner?: boolean
-  wallectConfig?: WalletConfig
-  connectTrigger?: any
+  connectBoardVisible: boolean
+  setConnectBoardVisible: Dispatch<SetStateAction<boolean>>
 }
 
-const ConnectBoard: FC<ConnectBoardProps> = props => {
-  const { isInner, connectTrigger } = props
-  const userContext = getUserContext()
-  const { connectBoardVisible, setConnectBoardVisible } = useLayout()
+const ConnectDeschoolBoard: FC<ConnectBoardProps> = props => {
+  const { connectBoardVisible, setConnectBoardVisible } = props
   const [loading, setLoading] = useState(false)
   const [loadingUniPass, setLoadingUniPass] = useState(false)
-  const [tempAddressObj, setTempAddressObj] = useState<{ type: WalletType; address: string | undefined }>({
+  const [tempAddressObj, setTempAddressObj] = useState<{ type: WalletType; address: string | null }>({
     type: WalletType.None,
-    address: undefined,
+    address: getAddress(),
   })
   // MetaMask or UniPass
   const { t } = useTranslation()
-
-  useEffect(() => {
-    if (connectBoardVisible === false) {
-      setTempAddressObj({
-        type: WalletType.None,
-        address: undefined,
-      })
-      setLoading(false)
-      setLoadingUniPass(false)
-    }
-  }, [connectBoardVisible])
 
   /**
    * @description 连接失败的异常处理
@@ -61,64 +41,48 @@ const ConnectBoard: FC<ConnectBoardProps> = props => {
     setConnectBoardVisible(false)
   }
 
-  const signLoginMessage = async (challengeText: string) => {
-    const SIGN_MESSAGE = challengeText
-    const signMessageReturn = await getWallet().signMessage(SIGN_MESSAGE)
+  const signLoginMessage = async (nonce: string) => {
+    const FIX_FORMAT_MESSAGE = `DeSchool is kindly requesting to Sign in with ${
+      getWallet().type
+    } securely, with nonce: ${nonce}. Sign and login now, begin your journey to DeSchool!`
+    const signMessageReturn = await getWallet().signMessage(FIX_FORMAT_MESSAGE)
     return signMessageReturn
   }
 
-  // 通过len签名登录
-  const handleLoginByAddress = async (address: string, isReload?: boolean) => {
-    // 如果已经保存过登录记录则不需要重新签名登录
-    if (getToken()?.lens.accessToken && getAddress() && address === getAddress()) {
-      setConnectBoardVisible(false)
-      return
-    }
+  // 调用deschool接口签名并登录
+  const handleLoginByAddress = async (address: string) => {
     try {
-      // request a challenge from the server
-      const challengeResponse = await generateChallenge({ address })
-
-      // sign the challenge text with the wallet
-      const signature = await signLoginMessage(challengeResponse.text)
-
-      // check signature
-      const authenticatedResult = await authenticate({ address, signature })
-
-      setToken(address, authenticatedResult.accessToken, authenticatedResult.refreshToken)
-
-      if (signature) {
-        const userInfo = await fetchUserDefaultProfile(address)
-        if (!userInfo) {
-          await initAccess(RoleType.Visiter) // 如果登陆成功就更新用户角色，否则为游客角色
-        } else {
-          userContext.changeUser({ ...userInfo })
-          await initAccess(RoleType.User) // 如果登陆成功就更新用户角色，否则为游客角色
-        }
+      const nonceRes: any = await getNonceByUserAddress({ address })
+      if (!nonceRes.success) {
+        throw nonceRes.error
       }
-    } catch (error: any) {
-      if (error?.reason) {
-        message.error(error.reason)
-      } else if (error?.name && error?.message) {
-        message.error(`${error.name}: ${error.message}`)
-      } else if (error?.code && error?.message) {
-        message.error(`${error.name}: ${error.message}`)
-      } else {
-        message.error(String(error))
+      const { nonce } = nonceRes
+      const loginSig = await signLoginMessage(nonce)
+
+      const validationRes: any = await postNonceSigByUserAddress({
+        walletType: getWallet().type!,
+        address,
+        sig: loginSig,
+      })
+      if (validationRes && validationRes.address && validationRes.jwtToken) {
+        setToken(address, null, null, validationRes.jwtToken)
       }
+    } catch (error) {
+      message.error(t('signMessageError'))
+      throw error
     } finally {
-      setTempAddressObj({ type: WalletType.None, address: undefined })
+      setTempAddressObj({ type: WalletType.None, address: null })
       setConnectBoardVisible(false)
-      if (isReload) window.location.reload()
     }
   }
 
   /**
-   * 链接第三方钱包，缓存钱包类型和地址。暂时不考虑unipass
+   * 选择并连接一个第三方钱包，如果连接以后就签名登录deshcool
    * @returns
    */
-  const handleConnect = async (type: WalletType) => {
+  const handleConect = async (type: WalletType) => {
     if (tempAddressObj.address) {
-      await handleLoginByAddress(tempAddressObj.address)
+      handleLoginByAddress(tempAddressObj.address)
       return
     }
     if (loadingUniPass || loading) return
@@ -128,7 +92,7 @@ const ConnectBoard: FC<ConnectBoardProps> = props => {
       setLoadingUniPass(true)
     }
     try {
-      const config = { ...props.wallectConfig, type }
+      const config:WalletConfig = { type }
       const provider = createProvider(config)
       await getWallet().setProvider(type, provider)
       const address = await getWallet().getAddress()
@@ -148,13 +112,6 @@ const ConnectBoard: FC<ConnectBoardProps> = props => {
       }
     }
   }
-
-  useEffect(() => {
-    const walletType = getWallet().type
-    if (walletType && connectTrigger) {
-      handleLoginByAddress(connectTrigger, true)
-    }
-  }, [connectTrigger])
 
   const panel = (
     <div
@@ -183,7 +140,7 @@ const ConnectBoard: FC<ConnectBoardProps> = props => {
           <button
             onClick={e => {
               e.preventDefault()
-              handleConnect(WalletType.MetaMask)
+              handleConect(WalletType.MetaMask)
             }}
             type="button"
             className="flex flex-col items-center justify-between dark:bg-#1a253b cursor-pointer w-full p-3 mb-2 rounded-md border border-solid border-#6525FF bg-white hover:border-#6525FF66 hover:bg-#6525FF22"
@@ -207,12 +164,12 @@ const ConnectBoard: FC<ConnectBoardProps> = props => {
           ''
         )}
       </div>
-      {/* <div className="flex flex-row w-full items-center justify-center mt-4">
+      <div className="flex flex-row w-full items-center justify-center mt-4">
         {tempAddressObj.type === WalletType.UniPass || tempAddressObj.type === WalletType.None ? (
           <button
             onClick={e => {
               e.preventDefault()
-              handleConnect(WalletType.UniPass)
+              handleConect(WalletType.UniPass)
             }}
             type="button"
             className="flex flex-col items-center justify-between dark:bg-#1a253b cursor-pointer w-full p-3 mb-2 rounded-md border border-solid border-#6525FF bg-white hover:border-#6525FF66 hover:bg-#6525FF22"
@@ -235,15 +192,11 @@ const ConnectBoard: FC<ConnectBoardProps> = props => {
         ) : (
           ''
         )}
-      </div> */}
-      {/* hidden */}
-      {/* <span className="text-base hover:underline">I don&apos;t have a wallet</span> */}
+      </div>
     </div>
   )
 
-  return isInner ? (
-    panel
-  ) : (
+  return (
     <div
       className={`fixed top-0 bottom-0 left-0 right-0 w-full h-full z-[9999] ${
         connectBoardVisible ? 'flex flex-row' : 'hidden'
@@ -255,4 +208,4 @@ const ConnectBoard: FC<ConnectBoardProps> = props => {
   )
 }
 
-export default ConnectBoard
+export default ConnectDeschoolBoard
