@@ -1,6 +1,7 @@
 const EN_US_USERBAR = {
   home: 'HOME',
   exploreNav: 'EXPLORE',
+  matchNav: 'MATCH',
   courses: 'COURSE CENTER',
   roadmap: 'ROADMAP',
   community: 'COMMUNITY',

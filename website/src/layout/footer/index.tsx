@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import { TwitterOutlined } from '@ant-design/icons'
-import { MirrorIcon, DeschoolIcon, TelegramIcon } from '~/components/icon'
+import { MirrorIcon, TelegramIcon } from '~/components/icon'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router'
 import Tooltip from 'antd/es/tooltip'
+import Logo from '../logo'
 
 /*
  * @description: footer
@@ -31,7 +32,7 @@ const Footer = (props: { footerLayout: string }) => {
           <div>
             <div className="mt-10 w-full m-auto font-normal flex flex-row items-start justify-between">
               <div className="flex flex-col justify-between w-267px">
-                <DeschoolIcon />
+                <Logo />
                 <p className="mt-8">
                   <span className="mr-1 text-20px font-ArchivoNarrow">{t('foot.join')}</span>
                 </p>
@@ -64,7 +65,7 @@ const Footer = (props: { footerLayout: string }) => {
           <div className="flex flex-row items-center text-black">
             <span className="text-20px mr-2">Copyright</span>
             <span className="text-20px mr-2">©</span>
-            <span className="text-20px"> 2023 DESCHOOL-LENS</span>
+            <span className="text-20px"> 2023 BOOTH</span>
           </div>
           <div className="flex flex-row gap-4 max-w-xs">
             <TwitterOutlined

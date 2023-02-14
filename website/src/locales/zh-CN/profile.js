@@ -15,6 +15,14 @@ const ZH_CN_PROFILE = {
       contacts: '社交信息',
     },
   },
+  matchpage: {
+    goals: '倾向类型',
+    fields: '渴望探索领域',
+    belief: '个人需求',
+    character: '性格类型',
+    explore: '立即匹配',
+    save: '保存',
+  },
 }
 
 export default ZH_CN_PROFILE
