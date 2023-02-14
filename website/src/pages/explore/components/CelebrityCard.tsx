@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next'
-import type { Profile } from '~/api/lens/graphql/generated'
 import Avatar from 'antd/es/avatar'
 import { DEFAULT_AVATAR } from '~/context/account'
+import type { ProfileExtend } from '~/lib/types/app'
 
-const CelebrityCard = (props: { celebrity: Profile; index: number }) => {
+const CelebrityCard = (props: { celebrity: ProfileExtend; index: number }) => {
   const { celebrity } = props
   const { t } = useTranslation()
 
@@ -14,7 +14,7 @@ const CelebrityCard = (props: { celebrity: Profile; index: number }) => {
           size={86}
           alt="user avatar"
           className="w-86px h-86px mb-4px rounded-full"
-          src={celebrity.picture?.__typename === 'MediaSet' ? celebrity.picture.original.url : DEFAULT_AVATAR}
+          src={celebrity.avatarUrl ? celebrity.avatarUrl : DEFAULT_AVATAR}
           style={{ display: 'inline-block' }}
         />
         <svg className="absolute bottom-0" width="92" height="48" viewBox="0 0 92 48" fill="none" xmlns="http://www.w3.org/2000/svg">

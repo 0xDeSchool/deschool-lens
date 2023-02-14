@@ -54,7 +54,7 @@ const HotSeries = () => {
   }, [])
 
   return (
-    <div className="fcc-center">
+    <div className="w-full fcc-center">
       <div className="w-auto">
         {/* 标题 */}
         <div className="fcc-center">

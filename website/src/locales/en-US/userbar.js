@@ -1,6 +1,7 @@
 const EN_US_USERBAR = {
   home: 'HOME',
   exploreNav: 'EXPLORE',
+  matchNav: 'MATCH',
   courses: 'COURSE CENTER',
   roadmap: 'ROADMAP',
   community: 'COMMUNITY',
@@ -17,6 +18,9 @@ const EN_US_USERBAR = {
   foot: {
     join: 'Join us',
     contactus: 'contact us',
+  },
+  search:{
+    placeholder: "search by handle/address...",
   },
 }
 

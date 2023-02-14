@@ -5,7 +5,8 @@ import { removeToken } from '~/auth'
 import { getWallet } from '~/wallet'
 import type { Profile } from '~/api/lens/graphql/generated'
 import { getDefaultProfileRequest } from '~/api/lens/profile/get-default-profile'
-import type { Contact } from '~/lib/types/app'
+import { getExtendProfile } from '~/hooks/profile'
+import type { Contact, ProfileExtend } from '~/lib/types/app'
 
 export const DEFAULT_AVATAR = 'https://s3.us-east-1.amazonaws.com/deschool/Avatars/avatar_def.png'
 export const DEFAULT_AVATAR_NAME = 'avatar_def.png'
@@ -28,10 +29,10 @@ export class UserContext {
     this.setUser(info)
   }
 
-  async fetchUserInfo(address: string): Promise<Profile | undefined> {
-    const info = await getDefaultProfileRequest({ ethereumAddress: address })
-    console.log('info', info)
-    if (info) return info
+  async fetchUserInfo(address: string): Promise<ProfileExtend | undefined> {
+    const info = await getDefaultProfileRequest({ ethereumAddress: '0xD28E808647D596F33Dcc3436E193A9566fc7aC07' || address }) // address
+    console.log('getExtendProfile', getExtendProfile(info))
+    if (info) return getExtendProfile(info)
   }
 
   disconnect(): void {

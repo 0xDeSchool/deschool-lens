@@ -6,9 +6,7 @@ import React, { useState, useEffect } from 'react'
 // import addToNetwork from '~/hooks/useAddToNetwork'
 import { useTranslation } from 'react-i18next'
 import { DownSquareOutlined, LoadingOutlined, MenuOutlined } from '@ant-design/icons'
-import DeschoolLogoDark from '~/assets/logos/logo-main.png'
 import { UserlaneIcon, ArrowDownIcon } from '~/components/icon'
-import Image from 'antd/es/image'
 import Avatar from 'antd/es/avatar'
 import Drawer from 'antd/es/drawer'
 import message from 'antd/es/message'
@@ -26,6 +24,7 @@ import type { Profile } from '~/api/lens/graphql/generated'
 import { RoleType } from '~/lib/enum'
 import { getAddress, getCachedToken, setToken } from '~/auth/user'
 import ExploreSearchBoard from './exploreSearchBoard'
+import Logo from '../logo'
 
 // const EXPECT_CHAINID = import.meta.env.VITE_APP_CHAIN
 
@@ -37,7 +36,7 @@ import ExploreSearchBoard from './exploreSearchBoard'
 // }
 
 const UserBar = (props: { walletConfig?: WalletConfig }) => {
-  const { theme, currentWidth, setConnectBoardVisible } = useLayout()
+  const { currentWidth, setConnectBoardVisible } = useLayout()
   const { t, i18n } = useTranslation()
   const user = useAccount()
   const userContext = getUserContext()
@@ -53,12 +52,14 @@ const UserBar = (props: { walletConfig?: WalletConfig }) => {
     {
       path: '/landing',
       name: t('home'),
-      eventName: 'menu_click_nav_home',
     },
     {
       path: '/explore',
       name: t('exploreNav'),
-      eventName: 'menu_click_nav_courses',
+    },
+    {
+      path: '/profile/suggested',
+      name: t('matchNav'),
     },
   ]
 
@@ -174,7 +175,7 @@ const UserBar = (props: { walletConfig?: WalletConfig }) => {
         {/* logo */}
         <div style={{ width: '174px', height: '26px' }}>
           <NavLink to="/landing">
-            <Image src={theme === 'light' ? DeschoolLogoDark : DeschoolLogoDark} width="174px" height="26px" preview={false} alt="logo" />
+            <Logo />
           </NavLink>
         </div>
         {/* navs */}
@@ -192,7 +193,7 @@ const UserBar = (props: { walletConfig?: WalletConfig }) => {
               <div className="flex flex-col justify-start">
                 <div style={{ width: '260px', height: '26px' }} className="flex">
                   <NavLink to="/landing">
-                    <Image src={theme === 'light' ? DeschoolLogoDark : DeschoolLogoDark} width="174px" height="26px" preview={false} />
+                    <Logo />
                   </NavLink>
                   <div className="h-full flex flex-row items-center ml-8 cursor-pointer text-2xl text-black">
                     <span

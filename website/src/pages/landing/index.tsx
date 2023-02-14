@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLayout } from '~/context/layout'
 import { useNavigate } from 'react-router'
+import AnimateBg from '~/components/animateBg'
 import HotSeries from './components/HotSeriesCourses'
 
 const LandingHeader = () => {
@@ -17,11 +18,14 @@ const LandingHeader = () => {
   }
 
   return (
-    <div className="pt-40 pb-20 w-full fcc-center bg-#181818 text-white">
+    <div className="pt-40 pb-20 w-full fcc-center bg-#181818 text-white relative">
+      <div className='absolute w-full h-full left-0 top-0'>
+        <AnimateBg type="line" />
+      </div>
       <h1 className="text-5xl font-Anton">{t('landing.title1')}</h1>
       <h2 className="mt-5 mb-10 text-xl text-white-5 font-Anton">{t('landing.title2')}</h2>
-      <div className="w-full frc-center font-ArchivoNarrow">
-        <button type="button" className="mr-4 p-2 border border-white rounded-xl text-white text-2xl uppercase" onClick={handleJumpExplore}>
+      <div className="w-full frc-center font-ArchivoNarrow z-1">
+        <button type="button" className="mr-4 p-2 border border-white rounded-xl text-white hover:text-purple hover:border-purple text-2xl uppercase" onClick={handleJumpExplore}>
           {t('landing.button1')}
         </button>
         <button type="button" className="p-2 rounded-xl purple-button text-2xl uppercase" onClick={handleJumpProfile}>

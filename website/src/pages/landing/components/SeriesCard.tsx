@@ -119,10 +119,10 @@ const SeriesCard = (props: { series: SeriesExtend; loadingDetail: boolean; serie
           </div>
         </div>
         <div className="mt-4 z-1">
-          <h1 className="font-ArchivoNarrow text-black text-24px leading-32px mb-2 one-line-wrap" title={series.title}>
+          <h1 className="font-ArchivoNarrow text-black text-24px leading-32px mb-2 line-wrap one-line-wrap" title={series.title}>
             {series.title}
           </h1>
-          <p className="font-ArchivoNarrow text-#000000d8 text-16px leading-24px h-72px three-line-wrap" title={series.description}>
+          <p className="font-ArchivoNarrow text-#000000d8 text-16px leading-24px h-72px line-wrap three-line-wrap" title={series.description}>
             {series.description}
           </p>
           {loadingDetail || !seriesDetail ? <Skeleton /> : <SeriesCardDetail seriesDetail={seriesDetail} />}

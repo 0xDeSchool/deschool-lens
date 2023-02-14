@@ -1,5 +1,6 @@
 import Avatar from 'antd/es/avatar'
 import { useNavigate } from 'react-router'
+import type { Creator } from '~/lib/types/app'
 
 // import { useTranslation } from 'react-i18next'
 type UsersAvatarsProps = {

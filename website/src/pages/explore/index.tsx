@@ -18,7 +18,7 @@ const Explore = () => {
         </div>
         <div className="w-3/4 mt-40 mb-30 h-fit relative fcs-center">
           <h1 className="text-5xl font-Anton text-white">{t('explore.title1')}</h1>
-          <Input className="mt-10 mb-5" size="large" />
+          <Input className="mt-10 mb-5 w-2/3 min-w-300px" size="large" />
           <h3 className="text-2xl text-gray-5 font-ArchivoNarrow">{t('explore.searchTips')}</h3>
         </div>
       </div>
