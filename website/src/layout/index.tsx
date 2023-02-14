@@ -94,17 +94,22 @@ const Layout = () => {
   return (
     <div className="relative w-full h-full bg-white">
       <UserBar walletConfig={walletconfig} />
-      <div className="relative w-full h-fit min-h-full flex flex-col items-center" id="container">
+      <div
+        className={`relative w-full  ${
+          location.pathname.startsWith('/profile') ? 'h-full overflow-auto' : 'h-fit min-h-full'
+        } flex flex-col items-center`}
+        id="container"
+      >
         <div
           className={`flex-1 overflow-auto w-full fcc-center bg-#fafafa ${
-            location.pathname.startsWith('/explore') || location.pathname.startsWith('/orglist') ? '' : 'pt-64px'
+            location.pathname.startsWith('/explore') || location.pathname.startsWith('/landing') ? '' : 'pt-64px'
           }`}
         >
           <div className={`flex-1 overflow-auto flex flex-col ${pageLayout}`}>
             <Outlet />
           </div>
         </div>
-        <Footer footerLayout={footerLayout} />
+        {location.pathname.startsWith('/profile') ? null : <Footer footerLayout={footerLayout} />}
       </div>
       {/* login board */}
       <ConnectBoard wallectConfig={walletconfig} connectTrigger={connectTrigger} />

@@ -208,7 +208,7 @@ const PoskIntro = () => {
                     />
                     <div className="flex flex-col ml-6 flex-1 overflow-hidden">
                       <span
-                        className="mr-4 text-xl font-bold one-line-wrap cursor-pointer"
+                        className="mr-4 text-xl font-bold line-wrap one-line-wrap cursor-pointer"
                         onClick={e => {
                           e?.preventDefault()
                           handleVisitProfile(e, owner)
@@ -216,7 +216,7 @@ const PoskIntro = () => {
                       >
                         {owner.username}
                       </span>
-                      {/* <span className="mr-4 text-xl font-bold one-line-wrap">{getShortAddress(owner.address)}</span> */}
+                      {/* <span className="mr-4 text-xl font-bold line-wrap one-line-wrap">{getShortAddress(owner.address)}</span> */}
                       <span>{owner.bio}</span>
                     </div>
                   </div>

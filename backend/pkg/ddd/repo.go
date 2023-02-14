@@ -27,6 +27,7 @@ type RepositoryBase[TEntity any] interface {
 	Count(ctx context.Context) int64
 
 	FindByRegex(ctx context.Context, field, regex string, p *x.PageAndSort) []TEntity
+	UpsertByField(ctx context.Context, field string, fieldValue any, newObj TEntity) primitive.ObjectID
 }
 
 var (

@@ -1,5 +1,4 @@
-/* eslint-disable camelcase */
-const zh_CN_Message = {
+const ZH_CN_MESSAGE = {
   4001: '来自小狐狸钱包的信息：用户拒绝了请求。',
   4100: '来自小狐狸钱包的信息：尚未获得用户的授权.',
   4200: '来自小狐狸钱包的信息：不支持的方法',
@@ -41,4 +40,4 @@ const zh_CN_Message = {
   signMessageError: '签名失败',
 }
 
-export default zh_CN_Message
+export default ZH_CN_MESSAGE

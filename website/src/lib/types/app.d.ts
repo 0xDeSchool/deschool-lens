@@ -1,3 +1,5 @@
+import type { Profile } from '~/api/lens/graphql/generated'
+
 export type ContractType = 'ERC20' | 'ERC721' | 'ERC1155'
 
 export interface LayoutContextProps {
@@ -269,4 +271,9 @@ export interface CoursePostParticipationInput {
    * 用户 Participation 交互信息数组
    */
   updates: Array<CourseParticipationUpdateInput>
+}
+
+export interface ProfileExtend extends Profile {
+  avatarUrl?: string
+  coverUrl?: string
 }

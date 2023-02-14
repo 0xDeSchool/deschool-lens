@@ -1,6 +1,7 @@
 package http
 
 import (
+	"github.com/0xdeschool/deschool-lens/backend/internal/hackathon"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/app"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/errx"
@@ -28,5 +29,25 @@ func Init(builder *app.AppBuilder) {
 		s, err := sb.Build()
 		errx.CheckError(err)
 		return s.Run()
+	})
+}
+
+func HackathonModAndApi(sb *server.ServerBuiler) {
+	// 添加 Hackathon Module
+	di.TryAddTransient(hackathon.NewHackathonManager)
+
+	// 在 Server 中添加 Hackathon 模块的各个 Route
+	sb.Configure(func(s *server.Server) error {
+		baseRoute := s.G.Group("/api")
+		baseRoute.GET("/ping", pingHandler)
+		baseRoute.GET("/resume", resumeGetHandler)
+		baseRoute.PUT("/resume", resumePutHandler)
+		baseRoute.GET("/sbt", sbtDetailGetHandler)
+		baseRoute.PUT("/q11e", q11ePutHandler)
+		baseRoute.GET("/id/list", idListHandler)
+		baseRoute.POST("/id/validate", idValidateHandler)
+		baseRoute.POST("/id/recommendation", q11ePutHandler)
+		baseRoute.GET("/id/recommendation", recommendationGetHandler)
+		return nil
 	})
 }

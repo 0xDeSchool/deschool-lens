@@ -1,5 +1,4 @@
-/* eslint-disable camelcase */
-const zh_CN_Userbar = {
+const ZH_CN_USERBAR = {
   home: '主页',
   exploreNav: '名人堂',
   roadmap: '路线图',
@@ -18,6 +17,9 @@ const zh_CN_Userbar = {
     join: '了解我们',
     contactus: '联系我们',
   },
+  search:{
+    placeholder: "查询 handle/address...",
+  },
 }
 
-export default zh_CN_Userbar
+export default ZH_CN_USERBAR
