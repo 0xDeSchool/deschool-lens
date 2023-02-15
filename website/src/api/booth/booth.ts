@@ -29,7 +29,7 @@ export async function postVerifiedIdentity(params: VerifiedInfo): Promise<{ succ
 
 export interface Identity {
   address: string
-  platform: string
+  platform: PlatformType
 }
 
 /**

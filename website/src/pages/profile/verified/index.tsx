@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import message from 'antd/es/message'
-import { Identity, PlatformType } from '~/api/booth/booth'
-import { getVerifiedIdentities } from '~/api/booth/booth'
+import type { Identity} from '~/api/booth/booth';
+import { PlatformType , getVerifiedIdentities } from '~/api/booth/booth'
+
 import { getAddress } from '~/auth'
 import Skeleton from 'antd/es/skeleton'
 import Empty from 'antd/es/empty'
