@@ -14,7 +14,7 @@ import type { WalletConfig } from '~/wallet'
 import { createProvider, getWallet, WalletType } from '~/wallet'
 import { initAccess } from '~/hooks/access'
 import { fetchUserDefaultProfile } from '~/hooks/profile'
-import { getToken, setToken, getAddress } from '~/auth/user'
+import { getToken, setLensToken, getAddress } from '~/auth/user'
 import { authenticate, generateChallenge } from '~/api/lens/authentication/login'
 
 interface ConnectBoardProps {
@@ -72,7 +72,7 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
       // check signature
       const authenticatedResult = await authenticate({ address, signature })
 
-      setToken(address, authenticatedResult.accessToken, authenticatedResult.refreshToken)
+      setLensToken(address, authenticatedResult.accessToken, authenticatedResult.refreshToken)
 
       if (signature) {
         const userInfo = await fetchUserDefaultProfile(address)
@@ -166,7 +166,7 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
         >
           <div className="mb-0 text-#6525FF text-[16px] w-full frc-between">
             <div className="flex">
-              <span>{t('SIGN TO LOGIN')}</span>
+              <span>{t('SIGN TO LOGIN BY LENS')}</span>
               {loading && (
                 <div className="loading ml-2">
                   <LoadingOutlined color="#6525FF" style={{ width: 20, height: 20, fontSize: 20 }} />

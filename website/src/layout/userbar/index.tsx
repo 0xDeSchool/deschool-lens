@@ -21,7 +21,7 @@ import { initAccess } from '~/hooks/access'
 import type { WalletConfig } from '~/wallet'
 import { createProvider, getWallet, WalletType } from '~/wallet'
 import { RoleType } from '~/lib/enum'
-import { getAddress, getCachedToken, setToken } from '~/auth/user'
+import { getAddress, getCachedToken, setLensToken } from '~/auth/user'
 import { fetchUserDefaultProfile } from '~/hooks/profile'
 // import { refreshAuth } from '~/api/lens/authentication/refresh'
 import ExploreSearchBoard from './exploreSearchBoard'
@@ -143,7 +143,7 @@ const UserBar = (props: { walletConfig?: WalletConfig; setIsLoading: Function; i
           // TODO: refresh token?
           // const refreshResult = await refreshAuth({ refreshToken: cacheToken.refreshToken })
           // setToken(addr, refreshResult.accessToken, refreshResult.refreshToken)
-          setToken(addr, cacheToken.accessToken, cacheToken.refreshToken)
+          setLensToken(addr, cacheToken.accessToken, cacheToken.refreshToken)
         }
         userInfo = await fetchUserDefaultProfile(addr)
       }

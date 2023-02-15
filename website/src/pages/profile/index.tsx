@@ -75,11 +75,11 @@ const UserProfile = () => {
         path: `/profile/${address ? `${address}/` : ''}verified`,
         name: t('profile.verified'),
       },
-      {
-        key: '4',
-        path: `/profile/${address ? `${address}/` : ''}activities`,
-        name: t('profile.activities'),
-      },
+      // {
+      //   key: '4',
+      //   path: `/profile/${address ? `${address}/` : ''}activities`,
+      //   name: t('profile.activities'),
+      // },
     ]
     if (primaryCase === 1) {
       setTabs(tempTabs.slice(0, 2))

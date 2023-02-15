@@ -1,15 +1,15 @@
-import MetaMaskImage from '~/assets/logos/mask.png'
-import UnipassLogo from '~/assets/logos/unipass.svg'
 import type { Dispatch, FC, SetStateAction } from 'react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import message from 'antd/es/message'
 
-import { getNonceByUserAddress, postNonceSigByUserAddress } from '~/api/go/user'
 import { CloseOutlined, LoadingOutlined } from '@ant-design/icons'
+import { getNonceByUserAddress, postNonceSigByUserAddress } from '~/api/go/user'
+import UnipassLogo from '~/assets/logos/unipass.svg'
+import MetaMaskImage from '~/assets/logos/mask.png'
 import type { WalletConfig } from '~/wallet'
 import { createProvider, getWallet, WalletType } from '~/wallet'
-import { getAddress, setToken } from '~/auth'
+import { getAddress, setDeschoolToken } from '~/auth'
 
 interface ConnectBoardProps {
   connectBoardVisible: boolean
@@ -65,7 +65,7 @@ const ConnectDeschoolBoard: FC<ConnectBoardProps> = props => {
         sig: loginSig,
       })
       if (validationRes && validationRes.address && validationRes.jwtToken) {
-        setToken(address, null, null, validationRes.jwtToken)
+        setDeschoolToken(address, validationRes.jwtToken)
       }
     } catch (error) {
       message.error(t('signMessageError'))
