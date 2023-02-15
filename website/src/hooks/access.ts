@@ -22,8 +22,14 @@ const checkAuth = () => {
   return false
 }
 
+const getRole = () => {
+  if (accessMap?.roles?.includes(RoleType.User)) return RoleType.User
+  if (accessMap?.roles?.includes(RoleType.UserWithoutHandle)) return RoleType.UserWithoutHandle
+  return RoleType.Visiter
+}
+
 const resetAccess = () => {
   accessMap = {}
 }
 
-export { initAccess, checkAuth, uploadScopes, resetAccess }
+export { initAccess, checkAuth, uploadScopes, resetAccess, getRole }

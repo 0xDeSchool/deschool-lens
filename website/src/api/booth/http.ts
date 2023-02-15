@@ -1,7 +1,6 @@
 import type { AxiosInstance, AxiosRequestConfig, RawAxiosRequestHeaders } from 'axios'
 import message from 'antd/es/message'
 import axios from 'axios'
-import { t } from 'i18next'
 import { getLanguage } from '~/utils/language'
 import ZH_CN_COMMON from '~/locales/zh-CN/request'
 import EN_US_COMMON from '~/locales/en-US/request'

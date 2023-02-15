@@ -76,9 +76,10 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
       setLensToken(address, authenticatedResult.accessToken, authenticatedResult.refreshToken)
 
       if (signature) {
+        await initAccess(RoleType.Visiter) // 如果登陆成功就更新用户角色，否则为游客角色
         const userInfo = await fetchUserDefaultProfile(address)
         if (!userInfo) {
-          await initAccess(RoleType.Visiter) // 如果登陆成功就更新用户角色，否则为游客角色
+          await initAccess(RoleType.UserWithoutHandle) // 如果登陆成功就更新用户角色，否则为游客角色
         } else {
           userContext.changeUser({ ...userInfo })
           await initAccess(RoleType.User) // 如果登陆成功就更新用户角色，否则为游客角色

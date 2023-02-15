@@ -37,7 +37,7 @@ const UserProfile = () => {
   const initCase = () => {
     let primaryCase = -1
     const cacheAddress = getAddress()
-    
+
     // 有路由参数并且不等于自己地址，即访问他人的空间（不管是否登录都可以看他人空间）
     if (address && address !== cacheAddress) {
       setVisitCase(1)
@@ -139,11 +139,6 @@ const UserProfile = () => {
           <Outlet />
         </div>
       </div>
-      {/* 这里有多种情况： */}
-      {/* 一、用户在看自己的 Following，此时可以显示 Unfollow 按钮。如果两人互关以文字形式写在名字旁边 */}
-      {/* 二、用户在看自己的Followers，此时有 Follow 按钮用以回关，如果双向关注则显示出来，hover上去变成 Unfollow */}
-      {/* 三、用户在看别人的 Following，啥事都不能做，没有按钮。如果别人和他的关注者双向关注则用文字显示出来 */}
-      {/* 四、用户在看别人的 Follower，啥事都不能做，没有按钮。如果别人和他的关注者双向关注则用文字显示出来 */}
     </div>
   )
 }

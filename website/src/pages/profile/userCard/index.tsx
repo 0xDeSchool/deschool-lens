@@ -14,6 +14,8 @@ import { getAddress } from '~/auth/user'
 import { useTranslation } from 'react-i18next'
 import fallbackImage from '~/assets/images/fallbackImage'
 import Empty from 'antd/es/empty'
+import { getRole } from '~/hooks/access'
+import { RoleType } from '~/lib/enum'
 import FollowersModal from './modal'
 import type { ProfileExtend } from '~/lib/types/app'
 import LensAvatar from './avatar'
@@ -86,6 +88,8 @@ const UserCard = (props: UserCardProps) => {
     })
   }
 
+  const role = getRole()
+
   return loading ? (
     <Skeleton />
   ) : (
@@ -133,7 +137,7 @@ const UserCard = (props: UserCardProps) => {
             </a>
           </div>
           <p className="m-10 text-xl line-wrap three-line-wrap">{currentUser?.bio}</p>
-          {address && address !== getAddress() && (
+          {address && address !== getAddress() && role === RoleType.User && (
             <div className="m-10">
               <button type="button" className="purple-border-button px-2 py-1">
                 {currentUser?.isFollowedByMe ? t('UnFollow') : t('Follow')}

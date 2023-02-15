@@ -65,6 +65,7 @@
     "jsurl": "^0.1.5",
     "lodash": "^4.17.21",
     "mockjs": "^1.1.0",
+    "omit-deep": "^0.3.0",
     "planby": "^1.1.2",
     "rc-virtual-list": "^3.4.13",
     "react": "^18.2.0",

@@ -8,8 +8,11 @@ import message from 'antd/es/message'
 import Empty from 'antd/es/empty'
 import { getExtendProfile } from '~/hooks/profile'
 import ShowMoreLoading from '~/components/loading/showMore'
+import { followByProfileIdWithLens } from '~/api/lens/follow/follow'
 import type { ProfileExtend } from '~/lib/types/app'
 import LensAvatar from './avatar'
+import { getRole } from '~/hooks/access'
+import { RoleType } from '~/lib/enum'
 
 const FollowersModal = (props: {
   address: string | undefined
@@ -26,6 +29,7 @@ const FollowersModal = (props: {
   const [loadingMore, setLoadingMore] = useState(false)
   const [total, setTotal] = useState(0)
 
+  // 自己查自己
   const requestUserInfo = async () => {
     let result
     let tempFollows
@@ -83,6 +87,15 @@ const FollowersModal = (props: {
     }
   }
 
+  const handleFollow = async (followUser: ProfileExtend | undefined | null) => {
+    console.log('followUser', followUser)
+    const tx = await followByProfileIdWithLens(followUser?.id)
+    console.log('follow tx', tx)
+    message.success(`success following ${followUser?.handle},tx is ${tx}`)
+  }
+
+  const role = getRole()
+
   return (
     <Modal
       title={t(type)}
@@ -111,9 +124,22 @@ const FollowersModal = (props: {
                     <p>{follow?.bio}</p>
                   </div>
                   <div>
-                    <button type="button" className="purple-border-button px-2 py-1">
-                      {follow?.isFollowedByMe ? t('UnFollow') : t('Follow')}
-                    </button>
+                    {/* 这里有多种情况： */}
+                    {/* 一、用户在看自己的 Following，此时可以显示 Unfollow 按钮。如果两人互关以文字形式写在名字旁边 */}
+                    {/* 二、用户在看自己的Followers，此时有 Follow 按钮用以回关，如果双向关注则显示出来，hover上去变成 Unfollow */}
+                    {/* 三、用户在看别人的 Following，啥事都不能做，没有按钮。如果别人和他的关注者双向关注则用文字显示出来 */}
+                    {/* 四、用户在看别人的 Follower，啥事都不能做，没有按钮。如果别人和他的关注者双向关注则用文字显示出来 */}
+                    {role === RoleType.Visiter || RoleType.UserWithoutHandle ? null : (
+                      <button
+                        type="button"
+                        className="purple-border-button px-2 py-1"
+                        onClick={() => {
+                          handleFollow(follow)
+                        }}
+                      >
+                        {follow?.isFollowedByMe ? t('UnFollow') : t('Follow')}
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
