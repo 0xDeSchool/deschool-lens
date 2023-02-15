@@ -16,6 +16,8 @@ import { initAccess } from '~/hooks/access'
 import { fetchUserDefaultProfile } from '~/hooks/profile'
 import { getToken, setLensToken, getAddress } from '~/auth/user'
 import { authenticate, generateChallenge } from '~/api/lens/authentication/login'
+import { postVerifiedIdentity } from '~/api/booth/booth'
+import { PlatformType } from '~/api/booth/booth'
 
 interface ConnectBoardProps {
   wallectConfig?: WalletConfig
@@ -71,7 +73,6 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
 
       // check signature
       const authenticatedResult = await authenticate({ address, signature })
-
       setLensToken(address, authenticatedResult.accessToken, authenticatedResult.refreshToken)
 
       if (signature) {
@@ -81,6 +82,13 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
         } else {
           userContext.changeUser({ ...userInfo })
           await initAccess(RoleType.User) // 如果登陆成功就更新用户角色，否则为游客角色
+          // 登录后提交此地址的绑定信息给后台，后台判断是否是第一次来发 Deschool-Booth-Onboarding SBT
+          await postVerifiedIdentity({
+            address,
+            lensHandle: userInfo.handle,
+            baseAddress: address,
+            platform: PlatformType.BOOTH,
+          })
         }
       }
     } catch (error: any) {
@@ -168,7 +176,7 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
             <div className="flex">
               <span>{t('SIGN TO LOGIN BY LENS')}</span>
               {loading && (
-                <div className="loading ml-2">
+                <div className="loading ml-2 frc-center">
                   <LoadingOutlined color="#6525FF" style={{ width: 20, height: 20, fontSize: 20 }} />
                 </div>
               )}

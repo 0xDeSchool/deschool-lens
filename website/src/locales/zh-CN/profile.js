@@ -1,6 +1,6 @@
 const ZH_CN_PROFILE = {
   profile: {
-    profile: "个人中心",
+    profile: "个人空间",
     suggested: "推荐",
     activities: "活动",
     resume: "简历",

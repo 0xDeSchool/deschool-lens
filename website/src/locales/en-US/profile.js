@@ -1,6 +1,6 @@
 const EN_US_PROFILE = {
   profile: {
-    profile: "Profile",
+    profile: "My Space",
     suggested: "Suggested People",
     activities: "Activities",
     resume: "Resume",

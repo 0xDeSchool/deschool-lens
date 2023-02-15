@@ -10,6 +10,7 @@ import MetaMaskImage from '~/assets/logos/mask.png'
 import type { WalletConfig } from '~/wallet'
 import { createProvider, getWallet, WalletType } from '~/wallet'
 import { getAddress, setDeschoolToken } from '~/auth'
+import { PlatformType, postVerifiedIdentity } from '~/api/booth/booth'
 
 interface ConnectBoardProps {
   connectBoardVisible: boolean
@@ -66,6 +67,16 @@ const ConnectDeschoolBoard: FC<ConnectBoardProps> = props => {
       })
       if (validationRes && validationRes.address && validationRes.jwtToken) {
         setDeschoolToken(address, validationRes.jwtToken)
+        const lensAccountAddress = getAddress()
+        if (lensAccountAddress) {
+          await postVerifiedIdentity({
+            address,
+            baseAddress: lensAccountAddress,
+            platform: PlatformType.DESCHOOL,
+          })
+        } else {
+          message.error('please login by lens first')
+        }
       }
     } catch (error) {
       message.error(t('signMessageError'))
@@ -92,7 +103,7 @@ const ConnectDeschoolBoard: FC<ConnectBoardProps> = props => {
       setLoadingUniPass(true)
     }
     try {
-      const config:WalletConfig = { type }
+      const config: WalletConfig = { type }
       const provider = createProvider(config)
       await getWallet().setProvider(type, provider)
       const address = await getWallet().getAddress()
@@ -151,7 +162,7 @@ const ConnectDeschoolBoard: FC<ConnectBoardProps> = props => {
               <div className="flex">
                 <span>{tempAddressObj.type === WalletType.MetaMask ? `${t('SIGN TO LOGIN')}` : 'MetaMask'}</span>
                 {loading && (
-                  <div className="loading ml-2">
+                  <div className="loading ml-2 frc-center">
                     <LoadingOutlined color="#6525FF" style={{ width: 20, height: 20, fontSize: 20 }} />
                   </div>
                 )}
@@ -180,7 +191,7 @@ const ConnectDeschoolBoard: FC<ConnectBoardProps> = props => {
               <div className="flex">
                 <span>{tempAddressObj.type === WalletType.UniPass ? `${t('SIGN TO LOGIN')}` : 'UniPass'}</span>
                 {loadingUniPass && (
-                  <div className="loading ml-2">
+                  <div className="loading ml-2 frc-center">
                     <LoadingOutlined color="#6525FF" style={{ width: 20, height: 20, fontSize: 20 }} />
                   </div>
                 )}
