@@ -20,12 +20,7 @@ export const initAccess = async (_role?: RoleType) => {
 }
 
 // 验证传进来的组件该用户是否有权限, 返回true或者false
-// const checkAuth = () => {
-//   if (accessMap?.roles?.includes(RoleType.User)) {
-//     return true
-//   }
-//   return false
-// }
+export const checkAuth = () => currentRole === RoleType.User
 
 export const getRole = () => currentRole
 
