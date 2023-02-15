@@ -22,6 +22,7 @@ const RouterObj = () => (
       <Route path="/" element={<Layout />}>
         <Route path="" element={<Navigate to="/landing" />} />
         <Route path="landing" element={<Landing />} />
+        <Route path="explore" element={<Explore />} />
         <Route path="profile" element={<Profile />}>
           <Route path="suggested" element={<Suggest />} />
           <Route path="activities" element={<Activities />} />
@@ -35,13 +36,8 @@ const RouterObj = () => (
           <Route path="resume" element={<Resume />} />
           <Route path="verified" element={<Verified />} />
         </Route>
-        <Route path="explore" element={<Explore />} />
-        {/* uniqueKey既可以是orgId也可以是domain */}
         <Route path="sbtIntro/:sbtId" element={<PoskIntro />} />
         <Route path="passIntro/:passId" element={<PoskIntro />} />
-        <Route path="series">
-          <Route path="" element={<Navigate to="/series/list" />} />
-        </Route>
         <Route path="roadmap" element={<Roadmap />} />
         <Route path="noauth" element={<NoAuth />} />
         <Route path="404" element={<NotFound />} />

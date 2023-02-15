@@ -324,7 +324,7 @@ const UserBar = (props: { walletConfig?: WalletConfig; setIsLoading: Function; i
                       {t('profile.profile')}
                     </NavLink>
                   </li>
-                  <WrapAuth>
+                  {/* <WrapAuth>
                     <li className="block w-[150px] cursor-pointer text-2xl mb-6 uppercase hover:text-purple-400">
                       <NavLink
                         to="/manage"
@@ -334,7 +334,7 @@ const UserBar = (props: { walletConfig?: WalletConfig; setIsLoading: Function; i
                         {t('manage')}
                       </NavLink>
                     </li>
-                  </WrapAuth>
+                  </WrapAuth> */}
                   <div className="h-[1px] w-full my-6 bg-black"> </div>
                   <li
                     className="w-[150px] cursor-pointer text-2xl uppercase text-#6525FF hover:text-[#e9d5ff]"
