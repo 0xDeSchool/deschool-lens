@@ -129,7 +129,7 @@ const FollowersModal = (props: {
                     {/* 二、用户在看自己的Followers，此时有 Follow 按钮用以回关，如果双向关注则显示出来，hover上去变成 Unfollow */}
                     {/* 三、用户在看别人的 Following，啥事都不能做，没有按钮。如果别人和他的关注者双向关注则用文字显示出来 */}
                     {/* 四、用户在看别人的 Follower，啥事都不能做，没有按钮。如果别人和他的关注者双向关注则用文字显示出来 */}
-                    {role === RoleType.Visiter || RoleType.UserWithoutHandle ? null : (
+                    {role !== RoleType.User ? null : (
                       <button
                         type="button"
                         className="purple-border-button px-2 py-1"
