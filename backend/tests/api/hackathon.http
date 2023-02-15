@@ -1,2 +1,16 @@
 ### Ping Api
 GET  {{host}}/api/ping
+
+### 测试 ID 插入
+POST {{host}}/api/id/validate 
+content-type: application/json
+
+{
+    "address": "0x9A9737e821bb216EF74Cd0E6b2Dd3E4FfF98C681",
+    "baseAddress": "0x9A9737e821bb216EF74Cd0E6b2Dd3E4FfF98C681",
+    "lensHandle": "",
+    "platform": 1
+}
+
+### 测试 ID 插入
+GET {{host}}/api/id/list?address={{cl_addr}}

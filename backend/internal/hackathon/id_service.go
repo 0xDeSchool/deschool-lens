@@ -3,6 +3,7 @@ package hackathon
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	"github.com/0xdeschool/deschool-lens/backend/pkg/errx"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/eth"
@@ -12,18 +13,28 @@ import (
 )
 
 // 链接验证 DeSchool ID
-func (hm *HackathonManager) ValidateDeSchoolId(ctx context.Context, sig string, address string, platform PlatformType) bool {
-	if platform != DeSchoolPlatform && platform != BoothPlatform && platform != LensPlatform {
-		errx.Panic("unknown platform type to validate: " + string(platform))
+func (hm *HackathonManager) ValidateDeSchoolId(ctx context.Context, address string, baseAddress string, lensHandle string, platform int) bool {
+	if platform != DeSchoolPlatform && platform != BoothPlatform {
+		str := strconv.Itoa(int(platform))
+		errx.Panic("unknown platform type to validate: " + str)
 	}
 	address = eth.NormalizeAddress(address)
-	result := verifySig(address, sig)
+	// Lens 已经完成了身份认证，黑客松版本先存储就好
+	// result := verifySig(address, sig)
+	result := true
 	if result {
-		verifiedId := Id{
-			Platform: platform,
-			Address:  address,
+		// 通过 Address，BaseAddress 和 Platform 查重，不存在就插入
+		exists := hm.idRepo.CheckExistsByAddrBaseAddrAndPltfm(ctx, address, baseAddress, PlatformType(platform))
+		if !exists {
+			verifiedId := Id{
+				Platform:    PlatformType(platform),
+				Address:     address,
+				BaseAddress: baseAddress,
+				LensHandle:  lensHandle,
+			}
+
+			hm.idRepo.Insert(ctx, &verifiedId)
 		}
-		hm.idRepo.Insert(ctx, &verifiedId)
 	}
 	return result
 }

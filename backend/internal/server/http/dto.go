@@ -3,9 +3,10 @@ package http
 import "github.com/0xdeschool/deschool-lens/backend/internal/hackathon"
 
 type IdValidateInput struct {
-	Sig      string `json:"sig"`
-	Address  string `json:"address"`
-	Platform string `json:"platform"`
+	Address     string `json:"address"`
+	BaseAddress string `json:"baseAddress"`
+	LensHandle  string `json:"lensHandle"`
+	Platform    int    `json:"platform"`
 }
 
 type IdValidateOutput struct {

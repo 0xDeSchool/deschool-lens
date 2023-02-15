@@ -27,7 +27,7 @@ func idValidateHandler(ctx *gin.Context) {
 	hm := *di.Get[hackathon.HackathonManager]()
 	var input IdValidateInput
 	errx.CheckError(ctx.BindJSON(&input))
-	result := hm.ValidateDeSchoolId(ctx, input.Sig, input.Address, hackathon.PlatformType(input.Platform))
+	result := hm.ValidateDeSchoolId(ctx, input.Address, input.BaseAddress, input.LensHandle, input.Platform)
 	ctx.JSON(http.StatusOK, IdValidateOutput{Success: result})
 }
 

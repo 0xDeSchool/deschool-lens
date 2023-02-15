@@ -21,6 +21,12 @@ func Init(builder *app.AppBuilder) {
 		return nil
 	})
 
+	// 添加 Hackathon Module
+	builder.Run(func() error {
+		di.TryAddTransient(hackathon.NewHackathonManager)
+		return nil
+	})
+
 	// Add all module and api here
 	HackathonModAndApi(sb)
 
@@ -33,8 +39,6 @@ func Init(builder *app.AppBuilder) {
 }
 
 func HackathonModAndApi(sb *server.ServerBuiler) {
-	// 添加 Hackathon Module
-	di.TryAddTransient(hackathon.NewHackathonManager)
 
 	// 在 Server 中添加 Hackathon 模块的各个 Route
 	sb.Configure(func(s *server.Server) error {

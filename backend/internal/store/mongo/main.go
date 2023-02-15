@@ -39,7 +39,9 @@ func AddMongoClient(builder *app.AppBuilder) {
 
 func AddRepositories(builder *app.AppBuilder) {
 	builder.ConfigureServices(func() error {
-		// TODO: Add all repos
+		di.AddTransient(NewMongoIdRepository)
+		di.AddTransient(NewMongoQ11eRepository)
+		di.AddTransient(NewMongoResumeRepository)
 		return nil
 	})
 }
