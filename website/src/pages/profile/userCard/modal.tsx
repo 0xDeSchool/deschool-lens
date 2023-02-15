@@ -9,10 +9,10 @@ import Empty from 'antd/es/empty'
 import { getExtendProfile } from '~/hooks/profile'
 import ShowMoreLoading from '~/components/loading/showMore'
 import { followByProfileIdWithLens } from '~/api/lens/follow/follow'
-import type { ProfileExtend } from '~/lib/types/app'
-import LensAvatar from './avatar'
 import { getRole } from '~/hooks/access'
 import { RoleType } from '~/lib/enum'
+import type { ProfileExtend } from '~/lib/types/app'
+import LensAvatar from './avatar'
 
 const FollowersModal = (props: {
   address: string | undefined
