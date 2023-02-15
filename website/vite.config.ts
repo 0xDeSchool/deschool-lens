@@ -86,7 +86,7 @@ export default defineConfig(({ mode }) => {
           rewrite: pathGoapi => pathGoapi.replace(/^\/goapiProduction/, '/api'),
         },
         '/goapiBoothStg': {
-          target: 'localhost:9000',
+          target: 'http://localhost:9000',
           secure: false,
           ws: true,
           changeOrigin: true,
