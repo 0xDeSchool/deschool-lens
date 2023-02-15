@@ -32,8 +32,10 @@ func NewServer(g *gin.Engine, options *ServerOptions) *Server {
 func (s Server) Run() error {
 	addr := ":" + strconv.Itoa(s.Options.Port)
 	if s.Options.Port == 0 {
-		addr = ":5000"
+		addr = ":8000"
 	}
-	log.Info("********** Listening: " + addr + " ***********\n")
+	log.Info("********** Lens Hackathon Micro-service Starting ***********\n")
+	log.Info("Listening port: " + addr)
+
 	return s.G.Run(addr)
 }

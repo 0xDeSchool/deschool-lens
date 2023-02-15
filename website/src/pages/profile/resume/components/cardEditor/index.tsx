@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Modal from 'antd/es/modal'
 import Form from 'antd/es/form'
 import Input from 'antd/es/input'
+import dayjs from 'dayjs'
 import DatePicker from 'antd/es/date-picker'
 import Image from 'antd/es/image'
 import VerifiedIcon from '@mui/icons-material/Verified'
-import type { CardEditorInput, EditorDataType } from '../../types'
+import type { CardEditorInput, ResumeCardData } from '../../types'
 
 const { TextArea } = Input
 
@@ -67,33 +68,52 @@ const SbtSelectList = () => {
 }
 
 const CardEditor = (input: CardEditorInput) => {
-  const [data, setData] = useState<EditorDataType>({
-    title: '',
-    startTime: '',
-    endTime: '',
-  })
+  const { isEditCard, handleOk, handleCancel, originalData, isCreateCard } = input
   const [form] = Form.useForm()
 
-  const onStartTimeChange = (dayJsValue: any, newDateStr: string) => {
-    const newData = data
-    newData.startTime = newDateStr
-    setData(newData)
+  const onSubmit = () => {
+    const newCard: ResumeCardData | undefined = {
+      title: form.getFieldValue('title'),
+      description: form.getFieldValue('description'),
+      startTime: dayjs(form.getFieldValue('stime')),
+      endTime: dayjs(form.getFieldValue('etime')),
+      // TODO:
+      proofs: undefined,
+      blockType: originalData?.blockType,
+      order: originalData?.order,
+    }
+    handleOk(newCard)
   }
 
+  useEffect(() => {
+    form.setFieldsValue({
+      title: originalData?.title,
+      description: originalData?.description,
+    })
+  }, [originalData])
+
   return (
-    <Modal title="Edit experience" open={input.isEditCard} onOk={input.handleOk} onCancel={input.handleCancel}>
-      <Form form={form} layout="vertical">
-        <Form.Item label='Experience Title (eg "ECO Partner", "Product Lead", etc.)'>
-          <Input />
+    <Modal title={isCreateCard ? 'Create new experience' : 'Edit experience'} open={isEditCard} onOk={onSubmit} onCancel={handleCancel}>
+      <Form
+        form={form}
+        initialValues={{
+          title: originalData?.title,
+          stime: originalData?.startTime,
+          etime: originalData?.endTime,
+          description: originalData?.description,
+        }}
+        layout="vertical"
+      >
+        <Form.Item label='Experience Title (eg "ECO Partner", "Product Lead", etc.)' name="title">
+          <Input placeholder="Please input your experience title" />
         </Form.Item>
-        <Form.Item label="Starting Time">
-          <DatePicker onChange={onStartTimeChange} picker="month" />
+        <Form.Item label="Start Time" name="stime">
+          <DatePicker picker="month" />
         </Form.Item>
-        <Form.Item label="End Time">
-          {/* TODO: Change into endTimeChange */}
-          <DatePicker onChange={onStartTimeChange} picker="month" />
+        <Form.Item label="End Time" name="etime">
+          <DatePicker picker="month" />
         </Form.Item>
-        <Form.Item label="Description">
+        <Form.Item label="Description" name="description">
           <TextArea rows={4} />
         </Form.Item>
         <Form.Item label="Available On-chain Proofs">

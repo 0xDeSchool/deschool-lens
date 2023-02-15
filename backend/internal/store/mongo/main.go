@@ -39,7 +39,7 @@ func AddMongoClient(builder *app.AppBuilder) {
 
 func AddRepositories(builder *app.AppBuilder) {
 	builder.ConfigureServices(func() error {
-
+		// TODO: Add all repos
 		return nil
 	})
 }
