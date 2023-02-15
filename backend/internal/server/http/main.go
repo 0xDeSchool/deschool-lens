@@ -52,6 +52,7 @@ func HackathonModAndApi(sb *server.ServerBuiler) {
 		baseRoute.POST("/id/validate", idValidateHandler)
 		baseRoute.POST("/id/recommendation", q11ePutHandler)
 		baseRoute.GET("/id/recommendation", recommendationGetHandler)
+		baseRoute.GET("/id/sbt", idSbtDetailGetHandler)
 		return nil
 	})
 }

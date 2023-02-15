@@ -58,6 +58,13 @@ func sbtDetailGetHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, result)
 }
 
+func idSbtDetailGetHandler(ctx *gin.Context) {
+	hm := *di.Get[hackathon.HackathonManager]()
+	address := ctx.Query("address")
+	result := hm.GetIdSbtDetail(ctx, address)
+	ctx.JSON(http.StatusOK, result)
+}
+
 func q11ePutHandler(ctx *gin.Context) {
 	hm := *di.Get[hackathon.HackathonManager]()
 	var input PutQ11eInput

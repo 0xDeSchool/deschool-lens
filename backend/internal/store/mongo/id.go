@@ -54,3 +54,12 @@ func (r *MongoIdRepository) CheckExistsByAddrBaseAddrAndPltfm(ctx context.Contex
 
 	return true
 }
+
+func (r *MongoIdRepository) GetListByBaseAddr(ctx context.Context, baseAddr string) []hackathon.Id {
+	// 查询条件
+	filter := bson.D{{
+		Key:   "baseAddress",
+		Value: baseAddr,
+	}}
+	return r.Find(ctx, filter)
+}

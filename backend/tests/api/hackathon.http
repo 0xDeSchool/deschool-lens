@@ -14,3 +14,6 @@ content-type: application/json
 
 ### 测试 ID 插入
 GET {{host}}/api/id/list?address={{cl_addr}}
+
+### 测试 SBT 技能
+GET {{host}}/api/id/sbt?address={{cl_addr}}
