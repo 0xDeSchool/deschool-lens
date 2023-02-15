@@ -7,8 +7,8 @@ import (
 )
 
 type Resume struct {
-	Data    string `bson:"data"`
-	Address string `bson:"address"`
+	Data    string `bson:"data" json:"data"`
+	Address string `bson:"address" json:"address"`
 }
 
 type ResumeRepository interface {

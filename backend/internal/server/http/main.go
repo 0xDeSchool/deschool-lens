@@ -43,16 +43,22 @@ func HackathonModAndApi(sb *server.ServerBuiler) {
 	// 在 Server 中添加 Hackathon 模块的各个 Route
 	sb.Configure(func(s *server.Server) error {
 		baseRoute := s.G.Group("/api")
+
+		// Stage 1 - 基础框架 + 身份
 		baseRoute.GET("/ping", pingHandler)
+		baseRoute.POST("/id/validate", idValidateHandler)
+		baseRoute.GET("/id/list", idListHandler)
+
+		// Stage 2 - 简历 + 技能
 		baseRoute.GET("/resume", resumeGetHandler)
 		baseRoute.PUT("/resume", resumePutHandler)
+		baseRoute.GET("/id/sbt", idSbtDetailGetHandler)
+
+		// Stage 3 - 推荐 + 互联
 		baseRoute.GET("/sbt", sbtDetailGetHandler)
 		baseRoute.PUT("/q11e", q11ePutHandler)
-		baseRoute.GET("/id/list", idListHandler)
-		baseRoute.POST("/id/validate", idValidateHandler)
 		baseRoute.POST("/id/recommendation", q11ePutHandler)
 		baseRoute.GET("/id/recommendation", recommendationGetHandler)
-		baseRoute.GET("/id/sbt", idSbtDetailGetHandler)
 		return nil
 	})
 }

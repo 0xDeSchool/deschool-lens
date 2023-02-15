@@ -6,6 +6,6 @@ type SbtDetail struct {
 }
 
 type IdSbtDetail struct {
-	Abilities [6]int
-	Sbts      []SbtInWallet
+	Abilities [6]int        `json:"ability"`
+	Sbts      []SbtInWallet `json:"sbts"`
 }

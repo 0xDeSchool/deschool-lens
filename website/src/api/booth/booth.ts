@@ -46,3 +46,61 @@ export async function getVerifiedIdentities(address: string): Promise<Identity[]
     return []
   }
 }
+
+export interface Resume {
+  address: string
+  data: string
+}
+/**
+ * @method getResume
+ * @description 获取当前 address 用户的简历信息
+ * @returns {Object} Promise
+ */
+export async function getResume(address: string): Promise<Resume | undefined> {
+  try {
+    const result: Resume = await http.get(`/resume?address=${address}`)
+    return result
+  } catch (err) {
+    console.log(err)
+    return undefined
+  }
+}
+
+export interface ResumeParam {
+  address: string
+  data: string
+}
+
+export async function putResume(param: ResumeParam): Promise<Resume | undefined> {
+  try {
+    const result: Resume = await http.put(`/resume`, param)
+    return result
+  } catch (err) {
+    console.log(err)
+    return undefined
+  }
+}
+
+export interface SbtDetail {
+  token_address: string
+  token_id: string
+  token_uri: string
+  normalized_metadata: {
+    name: string
+    description: string
+    image: string
+  }
+}
+export interface AbilitySbt {
+  ability: number[]
+  sbts: SbtDetail[]
+}
+export async function getIdSbt(address: string): Promise<AbilitySbt | undefined> {
+  try {
+    const result: AbilitySbt = await http.get(`/id/sbt?address=${address}`)
+    return result
+  } catch (err) {
+    console.log(err)
+    return undefined
+  }
+}

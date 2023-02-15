@@ -6,6 +6,7 @@ import (
 	"github.com/0xdeschool/deschool-lens/backend/internal/hackathon"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/errx"
+	"github.com/0xdeschool/deschool-lens/backend/pkg/eth"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/ginx"
 	"github.com/gin-gonic/gin"
 )
@@ -61,6 +62,7 @@ func sbtDetailGetHandler(ctx *gin.Context) {
 func idSbtDetailGetHandler(ctx *gin.Context) {
 	hm := *di.Get[hackathon.HackathonManager]()
 	address := ctx.Query("address")
+	address = eth.NormalizeAddress(address)
 	result := hm.GetIdSbtDetail(ctx, address)
 	ctx.JSON(http.StatusOK, result)
 }
@@ -75,6 +77,7 @@ func q11ePutHandler(ctx *gin.Context) {
 func recommendationGetHandler(ctx *gin.Context) {
 	hm := *di.Get[hackathon.HackathonManager]()
 	address := ctx.Query("address")
+	address = eth.NormalizeAddress(address)
 	result := hm.RunRecommendations(ctx, address)
 	ctx.JSON(http.StatusOK, result)
 }

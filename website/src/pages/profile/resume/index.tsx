@@ -2,10 +2,13 @@ import Divider from 'antd/es/divider'
 import { useEffect, useState } from 'react'
 import Button from 'antd/es/button'
 import dayjs from 'dayjs'
+import ReactLoading from 'react-loading'
+import { getIdSbt, getResume, putResume } from '~/api/booth/booth'
+import { getAddress } from '~/auth'
 import CardEditor from './components/cardEditor'
 import ResumeBlock from './components/resumeBlock'
 import { BlockType } from './enum'
-import type { ResumeCardData, ResumeData } from './types'
+import type { ResumeCardData, ResumeData, SbtInfo } from './types'
 
 type ResumeProp = {
   handle?: string
@@ -46,13 +49,60 @@ const Resume = (props: ResumeProp) => {
   const [isEditCard, setIsEditCard] = useState(false)
   const [resumeData, setResumeData] = useState<ResumeData | undefined>()
   const [cardData, setCardData] = useState<ResumeCardData | undefined>()
+  const [loading, setLoading] = useState(false)
+  const [notLogin, setNotLogin] = useState(false)
+  const [putting, setPutting] = useState(false)
+  const [prevData, setPrev] = useState<ResumeData | undefined>()
+  const [sbtList, setSbtList] = useState<SbtInfo[]>([])
 
-  const onClickEditResume = () => {
+  // 把一条变成 Dayjs Obj
+  const convertStrToDayJsObj = (input: ResumeCardData) => {
+    input.startTime = dayjs(input.startTime)
+    input.endTime = dayjs(input.endTime)
+    return input
+  }
+
+  // 重新把数据变成Obj
+  const covertCareerAndEdu = (input: string) => {
+    const obj = JSON.parse(input)
+    // 转换格式
+    if (obj.career !== undefined) {
+      obj.career = [...obj.career.map((item: ResumeCardData) => convertStrToDayJsObj(item))]
+    }
+    if (obj.edu !== undefined) {
+      obj.edu = [...obj.edu.map((item: ResumeCardData) => convertStrToDayJsObj(item))]
+    }
+    return obj
+  }
+
+  // 提交用户简历
+  const putUserResume = async (data: string, address: string) => {
+    await putResume({ address, data })
+  }
+
+  // 进入简历编辑 or 保存查看状态
+  const onClickEditResume = async () => {
+    if (isEditResume) {
+      const address = getAddress()
+      if (address !== null) {
+        await setPutting(true)
+        await putUserResume(JSON.stringify(resumeData), address)
+        await setPutting(false)
+      }
+    } else {
+      await setPrev(resumeData)
+    }
+    setIsEditResume(!isEditResume)
+  }
+
+  // 取消编辑整个简历
+  const handleCancelEditing = () => {
+    setResumeData(prevData)
     setIsEditResume(!isEditResume)
   }
 
   // 创造 or 编辑经历 - 保存
-  const handleEditOrCreateCardSave = (newData: ResumeCardData) => {
+  const handleEditOrCreateCardSave = async (newData: ResumeCardData) => {
     let dataIndex: number | undefined
     const bt = newData.blockType
     const { order } = newData
@@ -186,55 +236,121 @@ const Resume = (props: ResumeProp) => {
     setIsEditCard(true)
   }
 
-  // TODO: 在接入接口后，把下面的 TEST DATA 移除掉
+  // 获取当前用户的简历
+  const fetchUserResume = async () => {
+    const address = getAddress()
+    if (address === null) {
+      setNotLogin(true)
+      return
+    }
+    const result = await getResume(address)
+
+    if (!result) {
+      // TODO: 写一份标准简历，更改变量名字
+      setResumeData(TEST_RESUME_DATA)
+      await putUserResume(JSON.stringify(TEST_RESUME_DATA), address)
+      return
+    }
+    const resumeObj = covertCareerAndEdu(result.data)
+    setResumeData(resumeObj)
+    setLoading(false)
+  }
+
+  // 获取当前用户的 SBT 列表
+  const fetchUserSbtList = async () => {
+    const address = getAddress()
+    if (address === null) {
+      return
+    }
+    const result = await getIdSbt(address)
+    if (result === undefined || !result.sbts) {
+      return
+    }
+    const sbtArr: SbtInfo[] = []
+    for (let i = 0; i < result.sbts.length; i++) {
+      const sbt = result.sbts[i]
+      const url = sbt.normalized_metadata.image
+      const re = 'ipfs://'
+      const newUrl = url.replace(re, 'http://ipfs.io/ipfs/')
+      sbtArr.push({
+        address: sbt.token_address,
+        tokenId: sbt.token_id,
+        img: newUrl,
+      })
+    }
+    setSbtList(sbtArr)
+  }
+
+  // 初始时，加载用户简历，并调用查询用户可选 SBT 列表
   useEffect(() => {
-    setResumeData(TEST_RESUME_DATA)
+    fetchUserResume()
+    fetchUserSbtList()
   }, [])
 
   return (
     <div className="bg-white p-8">
       {/* 简历标题 + 编辑按钮 */}
       <div className="flex justify-between">
-        <div className="text-2xl font-bold">RESUME OF {handle}</div>
+        <div className="text-2xl font-bold">RESUME {handle && `OF ${handle}`}</div>
         <div className="flex">
-          <Button onClick={onClickEditResume}> {isEditResume ? 'Save' : 'Edit'} </Button>
+          {!isEditResume && (
+            <Button type="primary" disabled>
+              {' '}
+              Publish On Lens{' '}
+            </Button>
+          )}
           <div className="w-2"> </div>
-          <Button type="primary" disabled>
+          <Button onClick={onClickEditResume} loading={putting} type={isEditResume ? 'primary' : 'default'}>
             {' '}
-            Publish To Lens{' '}
+            {isEditResume ? 'Save' : 'Edit'}{' '}
           </Button>
+          <div className="w-2"> </div>
+
+          {isEditResume && (
+            <Button danger onClick={handleCancelEditing}>
+              {' '}
+              Cancel{' '}
+            </Button>
+          )}
         </div>
       </div>
       <Divider />
 
-      {/* 职业板块数据 */}
-      <ResumeBlock
-        blockType={BlockType.CareerBlockType}
-        dataArr={resumeData?.career}
-        handleEditCard={handleEditCard}
-        handleDeleteCard={handleDeleteCard}
-        handleCreateCard={handleCreateCard}
-        isEditResume={isEditResume}
-      />
+      {!notLogin && loading && <ReactLoading type="bars" />}
+      {!notLogin && !loading && (
+        <>
+          {/* 职业板块数据 */}
+          <ResumeBlock
+            blockType={BlockType.CareerBlockType}
+            dataArr={resumeData?.career}
+            handleEditCard={handleEditCard}
+            handleDeleteCard={handleDeleteCard}
+            handleCreateCard={handleCreateCard}
+            isEditResume={isEditResume}
+          />
 
-      {/* 教育板块数据 */}
-      <ResumeBlock
-        blockType={BlockType.EduBlockType}
-        dataArr={resumeData?.edu}
-        handleEditCard={handleEditCard}
-        handleDeleteCard={handleDeleteCard}
-        isEditResume={isEditResume}
-        handleCreateCard={handleCreateCard}
-      />
+          {/* 教育板块数据 */}
+          <ResumeBlock
+            blockType={BlockType.EduBlockType}
+            dataArr={resumeData?.edu}
+            handleEditCard={handleEditCard}
+            handleDeleteCard={handleDeleteCard}
+            isEditResume={isEditResume}
+            handleCreateCard={handleCreateCard}
+          />
 
-      {/* 一段经历编辑器 */}
-      <CardEditor
-        isEditCard={isEditCard}
-        handleOk={handleEditOrCreateCardSave}
-        handleCancel={handleEditCardCancel}
-        originalData={cardData}
-        isCreateCard={isCreateCard}
-      />
+          {/* 一段经历编辑器 */}
+          <CardEditor
+            isEditCard={isEditCard}
+            handleOk={handleEditOrCreateCardSave}
+            handleCancel={handleEditCardCancel}
+            originalData={cardData}
+            isCreateCard={isCreateCard}
+            sbtList={sbtList}
+          />
+        </>
+      )}
+      {notLogin && <div>You haven't log in yet. Please log in first</div>}
     </div>
   )
 }

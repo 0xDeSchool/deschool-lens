@@ -6,23 +6,13 @@ import dayjs from 'dayjs'
 import DatePicker from 'antd/es/date-picker'
 import Image from 'antd/es/image'
 import VerifiedIcon from '@mui/icons-material/Verified'
-import type { CardEditorInput, ResumeCardData } from '../../types'
+import type { CardEditorInput, ResumeCardData, SbtInfo } from '../../types'
 
 const { TextArea } = Input
 
-// TODO: Clean up this
-const TEST_SBT_IMG_LIST = [
-  'https://i.seadn.io/gcs/files/f109bda89f825153017f7ebd60ae3491.png?auto=format&w=1000',
-  'https://i.seadn.io/gcs/files/c113f73ea333dd0e89456aa5b6da115e.png?auto=format&w=1000',
-  'https://i.seadn.io/gcs/files/c88244faa5fc9564a1a8fb53f8e72976.jpg?auto=format&w=1000',
-  'https://i.seadn.io/gcs/files/388ded25ee73b3ab0dc06cb5d7b8419f.png?auto=format&w=1000',
-  'https://i.seadn.io/gcs/files/2355e5f59968783224d3880925406ef0.png?auto=format&w=1000',
-  'https://i.seadn.io/gae/i4o36ySrEAMpG_JnooCP7rtJEfd8nGUgvwWZuc5XsctyUZ3eJr0kv9BCGORQor5xkJsMFkYJNBVGBrBRjWXm0DmrwoHeQMcTN6te?auto=format&w=1000',
-]
-
-const SbtItem = (props: { list: string[]; toggleList: (key: string) => void; item: string }) => {
+const SbtItem = (props: { list: string[]; toggleList: (key: string) => void; item: SbtInfo }) => {
   const { list, toggleList, item } = props
-  const key = `sbt-${item}`
+  const key = `sbt-${item.address}-${item.tokenId}`
   const isInList = (str: string) => list.includes(str)
 
   return (
@@ -32,7 +22,7 @@ const SbtItem = (props: { list: string[]; toggleList: (key: string) => void; ite
       cursor-pointer ${isInList(key) ? 'border-#6525FF bg-gray-100' : 'border-black'}`}
       onClick={() => toggleList(key)}
     >
-      <Image src={item} preview={false} />
+      <Image src={item.img} preview={false} />
       <div className="flex justify-end" style={{ position: 'relative' }}>
         {list.includes(key) && (
           <div style={{ position: 'absolute', bottom: '5px', right: '5px' }}>
@@ -44,8 +34,9 @@ const SbtItem = (props: { list: string[]; toggleList: (key: string) => void; ite
   )
 }
 
-const SbtSelectList = () => {
+const SbtSelectList = (props: { sbtList: SbtInfo[]; originalList: SbtInfo[] | undefined; setProofs: (list: SbtInfo[]) => void }) => {
   const [list, setList] = useState<string[]>([])
+  const { sbtList, originalList, setProofs } = props
 
   const toggleList = (key: string) => {
     const newList = list.slice()
@@ -58,17 +49,53 @@ const SbtSelectList = () => {
     setList(newList)
   }
 
+  // 预加载时，load 已经选择了的 img
+  useEffect(() => {
+    if (!originalList) {
+      return
+    }
+    const loadedList: string[] = []
+    sbtList.forEach(listItem => {
+      const index = originalList.findIndex(
+        originalItem => originalItem.address === listItem.address && originalItem.tokenId === listItem.tokenId,
+      )
+      if (index !== -1) {
+        loadedList.push(`sbt-${listItem.address}-${listItem.tokenId}`)
+      }
+    })
+    setList(loadedList)
+  }, [])
+
+  //
+  useEffect(() => {
+    const newProofs: SbtInfo[] = []
+    for (let i = 0; i < list.length; i++) {
+      const key = list[i]
+      const pieces = key.split('-')
+      if (pieces.length < 3) {
+        continue
+      }
+      const sbt = sbtList.find(item => item.address === pieces[1] && item.tokenId === pieces[2])
+      if (!sbt) {
+        continue
+      }
+      newProofs.push(sbt)
+    }
+    setProofs(newProofs)
+  }, [list])
+
   return (
     <div className="grid grid-cols-4 gap-2">
-      {TEST_SBT_IMG_LIST.map(item => (
-        <SbtItem key={`sbt-${item}`} list={list} toggleList={toggleList} item={item} />
+      {sbtList.map(item => (
+        <SbtItem key={`sbt-${item.address}-${item.tokenId}`} list={list} toggleList={toggleList} item={item} />
       ))}
     </div>
   )
 }
 
 const CardEditor = (input: CardEditorInput) => {
-  const { isEditCard, handleOk, handleCancel, originalData, isCreateCard } = input
+  const { isEditCard, handleOk, handleCancel, originalData, isCreateCard, sbtList } = input
+  const [proofs, setProofs] = useState<SbtInfo[]>([])
   const [form] = Form.useForm()
 
   const onSubmit = () => {
@@ -77,8 +104,7 @@ const CardEditor = (input: CardEditorInput) => {
       description: form.getFieldValue('description'),
       startTime: dayjs(form.getFieldValue('stime')),
       endTime: dayjs(form.getFieldValue('etime')),
-      // TODO:
-      proofs: undefined,
+      proofs,
       blockType: originalData?.blockType,
       order: originalData?.order,
     }
@@ -117,7 +143,7 @@ const CardEditor = (input: CardEditorInput) => {
           <TextArea rows={4} />
         </Form.Item>
         <Form.Item label="Available On-chain Proofs">
-          <SbtSelectList />
+          <SbtSelectList sbtList={sbtList} originalList={originalData?.proofs} setProofs={setProofs} />
         </Form.Item>
       </Form>
     </Modal>

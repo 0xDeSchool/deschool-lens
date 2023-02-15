@@ -120,7 +120,7 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
       const config = { ...props.wallectConfig, type }
       const provider = createProvider(config)
       await getWallet().setProvider(type, provider)
-      const address = await getWallet().getAddress()
+      const address = await getWallet().getConnectedAddress()
       if (address) {
         await handleLoginByAddress(address)
       } else {

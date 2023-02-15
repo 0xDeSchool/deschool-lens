@@ -24,6 +24,7 @@ export interface CardEditorInput {
   handleCancel: () => void
   originalData: ResumeCardData | undefined
   isCreateCard: boolean
+  sbtList: SbtInfo[]
 }
 
 export interface ResumeData {
@@ -43,6 +44,6 @@ export interface ResumeCardData {
 
 export interface SbtInfo {
   address: string
-  tokenId: number
+  tokenId: string
   img: string
 }

@@ -76,14 +76,16 @@ const ResumeCard = (input: ResumeCardInput) => {
 
       {/* Proofs of Work */}
       <div className="flex justify-between">
-        <div className="">
-          <div className="w-[52px]" style={{ position: 'relative' }}>
-            {/* TODO: */}
-            <Image width={50} src={TEST_SBT_IMG_LIST[1]} />
-            <div style={{ position: 'absolute', bottom: '0px', right: '0px' }}>
-              <VerifiedIcon style={{ color: blockType === BlockType.CareerBlockType ? '#009411' : '#266DE0', fontSize: 22 }} />
-            </div>
-          </div>
+        <div className="flex ">
+          {data.proofs &&
+            data.proofs.map(item => (
+              <div key={`sbt-${item.address}-${item.tokenId}`} className="w-[102px] mr-2" style={{ position: 'relative' }}>
+                <Image width={100} src={item.img} />
+                <div style={{ position: 'absolute', bottom: '0px', right: '0px' }}>
+                  <VerifiedIcon style={{ color: blockType === BlockType.CareerBlockType ? '#009411' : '#266DE0', fontSize: 22 }} />
+                </div>
+              </div>
+            ))}
         </div>
         {/* 删除本 Card Icon */}
         <div className="flex flex-col justify-end">
