@@ -18,10 +18,17 @@ type NftOwnerOutput struct {
 	Result []NftOwnerResult `json:"result"`
 }
 
+type NMetadata struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Image       string `json:"image"`
+}
+
 type SbtInWallet struct {
-	Address string `json:"token_address"`
-	TokenId string `json:"token_id"`
-	Uri     string `json:"token_uri"`
+	Address  string    `json:"token_address"`
+	TokenId  string    `json:"token_id"`
+	Uri      string    `json:"token_uri"`
+	Metadata NMetadata `json:"normalized_metadata"`
 }
 
 type NftByWalletOutput struct {
