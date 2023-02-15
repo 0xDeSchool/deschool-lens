@@ -125,7 +125,7 @@ const UserProfile = () => {
           <UserCard visitCase={visitCase} address={address} />
         </div>
       </div>
-      <div className="flex-1 relative">
+      <div className="flex-1 relative font-ArchivoNarrow">
         {!location.pathname.includes('/profile/match') && (
           <div className="sticky top-0 left-0 w-full h-80px frc-start space-x-10 bg-#fafafa" style={{ backdropFilter: 'blur(12px)' }}>
             {tabs.map(tab => (
