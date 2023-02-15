@@ -53,6 +53,12 @@
   force = true
 
 [[redirects]]
+  from = "/goapiBoothStg/*"
+  to = "http://ec2-52-91-140-246.compute-1.amazonaws.com:80/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/mypinata/*"
   to = "https://deschool.mypinata.cloud/:splat"
   status = 200
