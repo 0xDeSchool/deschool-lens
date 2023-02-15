@@ -87,4 +87,4 @@ func GetOwners(address string, tokenId int) []string {
 }
 
 // TODO:
-func GetNftByWallet()
+// func GetNftByWallet()
