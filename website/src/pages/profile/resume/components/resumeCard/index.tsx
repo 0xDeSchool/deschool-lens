@@ -41,7 +41,7 @@ const ResumeCard = (input: ResumeCardInput) => {
 
   const showDeleteConfirm = () => {
     confirm({
-      title: 'Are you sure delete this experience?',
+      title: 'Sure to delete?',
       icon: <ExclamationCircleFilled />,
       content: 'Once click "Delete", this experience card will be fully deleted.',
       okText: 'Delete',
