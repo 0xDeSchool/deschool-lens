@@ -1,75 +1,75 @@
-# lens_hackathon env set up
+# booth_stg env set up
 
-### lens_hackathon vpc
+### booth_stg vpc
 
-resource "aws_vpc" "vpc_lens_hackathon" {
+resource "aws_vpc" "vpc_booth_stg" {
   cidr_block           = "172.28.0.0/16"
   instance_tenancy     = "default"
   enable_dns_hostnames = true
 
   tags = {
-    Name = "[terraform] vpc lens_hackathon"
+    Name = "[terraform] vpc booth_stg"
   }
 }
 
-### lens_hackathon subnet A
-resource "aws_subnet" "subnet_lens_hackathon_a" {
-  vpc_id            = aws_vpc.vpc_lens_hackathon.id
+### booth_stg subnet A
+resource "aws_subnet" "subnet_booth_stg_a" {
+  vpc_id            = aws_vpc.vpc_booth_stg.id
   cidr_block        = "172.28.16.0/20"
   availability_zone = "us-east-1a"
   tags = {
-    Name = "[terraform] subnet lens_hackathon A"
+    Name = "[terraform] subnet booth_stg A"
   }
 }
 
-### lens_hackathon subnet B
-resource "aws_subnet" "subnet_lens_hackathon_b" {
-  vpc_id            = aws_vpc.vpc_lens_hackathon.id
+### booth_stg subnet B
+resource "aws_subnet" "subnet_booth_stg_b" {
+  vpc_id            = aws_vpc.vpc_booth_stg.id
   cidr_block        = "172.28.32.0/20"
   availability_zone = "us-east-1b"
   tags = {
-    Name = "[terraform] subnet lens_hackathon B"
+    Name = "[terraform] subnet booth_stg B"
   }
 }
 
-### lens_hackathon gateway
-resource "aws_internet_gateway" "ig_lens_hackathon" {
-  vpc_id = aws_vpc.vpc_lens_hackathon.id
+### booth_stg gateway
+resource "aws_internet_gateway" "ig_booth_stg" {
+  vpc_id = aws_vpc.vpc_booth_stg.id
   tags = {
-    Name = "[terraform] VPC internet gateway lens_hackathon"
+    Name = "[terraform] VPC internet gateway booth_stg"
   }
 }
 
-### lens_hackathon route table
-resource "aws_route_table" "public_rt_lens_hackathon" {
-  vpc_id = aws_vpc.vpc_lens_hackathon.id
+### booth_stg route table
+resource "aws_route_table" "public_rt_booth_stg" {
+  vpc_id = aws_vpc.vpc_booth_stg.id
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.ig_lens_hackathon.id
+    gateway_id = aws_internet_gateway.ig_booth_stg.id
   }
 
   route {
     ipv6_cidr_block = "::/0"
-    gateway_id      = aws_internet_gateway.ig_lens_hackathon.id
+    gateway_id      = aws_internet_gateway.ig_booth_stg.id
   }
 
   tags = {
-    Name = "[terraform] public route table lens_hackathon"
+    Name = "[terraform] public route table booth_stg"
   }
 }
 
-### lens_hackathon route table association
-resource "aws_route_table_association" "public_rt_lens_hackathon" {
-  subnet_id      = aws_subnet.subnet_lens_hackathon_a.id
-  route_table_id = aws_route_table.public_rt_lens_hackathon.id
+### booth_stg route table association
+resource "aws_route_table_association" "public_rt_booth_stg" {
+  subnet_id      = aws_subnet.subnet_booth_stg_a.id
+  route_table_id = aws_route_table.public_rt_booth_stg.id
 }
 
-### lens_hackathon security group
-resource "aws_security_group" "sg_lens_hackathon" {
-  name        = "security-group-lens_hackathon"
-  description = "security group for lens_hackathon"
-  vpc_id      = aws_vpc.vpc_lens_hackathon.id
+### booth_stg security group
+resource "aws_security_group" "sg_booth_stg" {
+  name        = "security-group-booth_stg"
+  description = "security group for booth_stg"
+  vpc_id      = aws_vpc.vpc_booth_stg.id
 
   ingress {
     description = "TLS from VPC"
@@ -109,23 +109,23 @@ resource "aws_security_group" "sg_lens_hackathon" {
   }
 
   tags = {
-    Name = "[terraform] security group lens_hackathon"
+    Name = "[terraform] security group booth_stg"
   }
 }
 
-### lens_hackathon vm
-resource "aws_instance" "bankder_lens_hackathon" {
+### booth_stg vm
+resource "aws_instance" "bankder_booth_stg" {
   ami           = local.u20lts_ami
-  instance_type = local.vm_type_lens_hackathon
+  instance_type = local.vm_type_booth_stg
 
-  subnet_id                   = aws_subnet.subnet_lens_hackathon_a.id
-  vpc_security_group_ids      = [aws_security_group.sg_lens_hackathon.id]
+  subnet_id                   = aws_subnet.subnet_booth_stg_a.id
+  vpc_security_group_ids      = [aws_security_group.sg_booth_stg.id]
   associate_public_ip_address = true
   key_name                    = "Cleopatra_AWS"
 
 
   tags = {
-    Name = "[terraform] banker lens_hackathon"
+    Name = "[terraform] banker booth_stg"
   }
 
   user_data = file("./init.sh")

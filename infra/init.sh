@@ -27,5 +27,5 @@ sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 
 # Prepare folder and file
-mkdir lens
-touch lens/docker-compose.yaml
+mkdir booth/stg
+touch booth/stg/docker-compose.yaml
