@@ -7,8 +7,8 @@
 import Image from 'antd/es/image'
 import Skeleton from 'antd/es/skeleton'
 import { useEffect, useState } from 'react'
-import { getUserContext, useAccount } from '~/context/account'
-import { getExtendProfile } from '~/hooks/profile'
+import { useAccount } from '~/context/account'
+import { fetchUserDefaultProfile, getExtendProfile } from '~/hooks/profile'
 import { getAddress } from '~/auth/user'
 // import { getProfileRequest } from '~/api/lens/profile/get-profile'
 import { useTranslation } from 'react-i18next'
@@ -19,27 +19,43 @@ import type { ProfileExtend } from '~/lib/types/app'
 import LensAvatar from './avatar'
 
 type UserCardProps = {
-  otherUser?: ProfileExtend
-  otherloading: boolean
-  address: string | undefined
+  visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
+  address: string | undefined // 父组件希望展示的地址，如果为空则展示登录者自己信息
 }
 
 const UserCard = (props: UserCardProps) => {
-  const { otherUser, otherloading, address } = props
+  const { visitCase, address } = props
   const { t } = useTranslation()
   const user = useAccount()
-  const userContext = getUserContext()
   const [loading, setLoading] = useState(true)
   const [modal, setModal] = useState<{ type: 'followers' | 'following'; visible: boolean }>({ type: 'followers', visible: false })
+  const [currentUser, setCurrentUser] = useState<ProfileExtend | undefined>()
 
+  // 根据不同情况初始化用户信息
   const initUserInfo = async () => {
     setLoading(true)
     try {
-      const addr = getAddress()
-      if (addr) {
-        const userInfo = await userContext.fetchUserInfo(addr)
-        // const userInfo = await getProfileRequest({ handle: 'kcchen.lens' })
-        if (userInfo) userContext.changeUser({ ...userInfo })
+      switch (visitCase) {
+        // 访问自己的空间
+        case 0:
+          setCurrentUser(user)
+          break
+        // 访问他人的空间
+        case 1: {
+          const userInfo = await fetchUserDefaultProfile(address!) // 此case下必不为空
+          // 此人没有handle，lens没数据
+          if (!userInfo) {
+            setCurrentUser({} as ProfileExtend)
+          }
+          // 此人有数据
+          else {
+            const extendUserInfo = getExtendProfile(userInfo)
+            setCurrentUser(extendUserInfo)
+          }
+          break
+        }
+        default:
+          break
       }
     } finally {
       setLoading(false)
@@ -47,19 +63,8 @@ const UserCard = (props: UserCardProps) => {
   }
 
   useEffect(() => {
-    if (!address) {
-      initUserInfo()
-    } else {
-      setLoading(false)
-    }
-  }, [address])
-
-  let currentUser: ProfileExtend | undefined
-  if (!address) {
-    currentUser = getExtendProfile(user)
-  } else {
-    currentUser = otherUser
-  }
+    initUserInfo()
+  }, [visitCase])
 
   const handleJumpFollowers = () => {
     setModal({
@@ -84,7 +89,7 @@ const UserCard = (props: UserCardProps) => {
   return loading ? (
     <Skeleton />
   ) : (
-    <div className={`w-full border shadow-md rounded-xl ${otherloading ? 'hidden' : ''}`}>
+    <div className={`w-full border shadow-md rounded-xl ${loading ? 'hidden' : ''}`}>
       <div className="relative w-full frc-center">
         {currentUser?.coverUrl ? (
           <Image

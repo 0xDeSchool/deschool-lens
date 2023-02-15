@@ -9,27 +9,6 @@ interface TokenInfo {
   }
 }
 
-// type LoginResult = {
-//     success: boolean
-//     error?: string
-//     result?: LoginUserInfo
-// }
-
-// type LoginUserInfo = {
-//     jwtToken: string
-//     userId: string,
-//     username: string,
-//     avatar: string,
-//     address: string
-// }
-
-// function loginError(msg: string): LoginResult {
-//     return {
-//         success: false,
-//         error: msg,
-//     }
-// }
-
 const curToken: TokenInfo = {
   address: '',
   lens: {
@@ -56,8 +35,9 @@ export function isLogin(): boolean {
   return !!getToken()?.lens.accessToken
 }
 
-export function getCachedToken(address: string): string | null {
-  return localStorage.getItem(getKey(address))
+// key: address | deschool_address
+export function getCachedToken(key: string): string | null {
+  return localStorage.getItem(getKey(key))
 }
 
 function setCachedToken(address: string, token: string | null) {
@@ -68,16 +48,25 @@ function setCachedToken(address: string, token: string | null) {
   }
 }
 
-export function setToken(address: string, accessToken: string | null, refreshToken: string | null, deschoolToken?: string | null) {
+export function setLensToken(address: string, accessToken: string | null, refreshToken: string | null) {
   curToken.address = address
-  curToken.lens.accessToken = accessToken
-  curToken.lens.refreshToken = refreshToken
-  // 不一定存在，单独存储
-  if (deschoolToken) {
-    curToken.deschool.token = deschoolToken
-    setCachedToken(`deschool_${address}`, JSON.stringify(curToken.deschool))
+  if (accessToken && refreshToken) {
+    curToken.lens.accessToken = accessToken
+    curToken.lens.refreshToken = refreshToken
+    setCachedToken(address, JSON.stringify(curToken.lens))
+  } else {
+    console.log('setLensToken 参数缺失')
   }
-  setCachedToken(address, JSON.stringify(curToken.lens))
+}
+
+export function setDeschoolToken(address: string, token?: string | null) {
+  curToken.address = address
+  if (token) {
+    curToken.deschool.token = token
+    setCachedToken(`deschool_${address}`, JSON.stringify(curToken.deschool))
+  } else {
+    console.log('setDeschoolToken 参数缺失')
+  }
 }
 
 export function removeToken() {

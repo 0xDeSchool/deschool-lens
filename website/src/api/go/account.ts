@@ -1,20 +1,17 @@
 import http from '~/api/go/http'
-import type { Profile } from '../lens/graphql/generated'
+import type { UserInfoStruct } from '~/hooks/deschool'
 
 /**
  * @method getUserProfile
  * @description 从后台获取用户信息
  * @returns {Object} Promise
  */
-export async function getUserProfile(userId?: string): Promise<Profile | null> {
+export async function getUserProfile(userId?: string): Promise<UserInfoStruct | null> {
   try {
     const result: any = userId ? await http.get(`/account/my-profile?userId=${userId}`) : await http.get(`/account/my-profile`)
     return result
   } catch (err) {
-    // token 过期
-    // if (result.code === 100243) {
     return null
-    // }
   }
 }
 /**

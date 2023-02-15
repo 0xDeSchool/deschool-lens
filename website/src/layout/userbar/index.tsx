@@ -20,11 +20,13 @@ import WrapAuth from '~/components/wrapAuth'
 import { initAccess } from '~/hooks/access'
 import type { WalletConfig } from '~/wallet'
 import { createProvider, getWallet, WalletType } from '~/wallet'
-import type { Profile } from '~/api/lens/graphql/generated'
 import { RoleType } from '~/lib/enum'
-import { getAddress, getCachedToken, setToken } from '~/auth/user'
+import { getAddress, getCachedToken, setLensToken } from '~/auth/user'
+import { fetchUserDefaultProfile } from '~/hooks/profile'
+// import { refreshAuth } from '~/api/lens/authentication/refresh'
 import ExploreSearchBoard from './exploreSearchBoard'
 import Logo from '../logo'
+import type { ProfileExtend } from '~/lib/types/app'
 
 // const EXPECT_CHAINID = import.meta.env.VITE_APP_CHAIN
 
@@ -35,14 +37,14 @@ import Logo from '../logo'
 //   }
 // }
 
-const UserBar = (props: { walletConfig?: WalletConfig }) => {
+const UserBar = (props: { walletConfig?: WalletConfig; setIsLoading: Function; isLoading: boolean }) => {
+  const { walletConfig, setIsLoading, isLoading } = props
   const { currentWidth, setConnectBoardVisible } = useLayout()
   const { t, i18n } = useTranslation()
   const user = useAccount()
   const userContext = getUserContext()
   const [visible, setVisible] = useState(false) // 控制抽屉是否显示
   const [activeNav, setActiveNav] = useState('/landing') // 当前激活的路由
-  const [isLoading, setIsLoading] = useState(false)
   const [isShowUserMenu, setUserMenu] = useState(false)
   const [showExploreSearch, setShowExploreSearch] = useState(false)
   const location = useLocation()
@@ -127,20 +129,23 @@ const UserBar = (props: { walletConfig?: WalletConfig }) => {
       setIsLoading(true)
       const type: WalletType = (localStorage.getItem('WallatType') as WalletType) || WalletType.None
       if (type !== WalletType.None) {
-        const provider = createProvider({ ...props.walletConfig, type })
+        const provider = createProvider({ walletConfig, type })
         await getWallet().setProvider(type, provider)
       }
 
       const addr = await getWallet().getConnectedAddress()
-      let userInfo: Profile | undefined
+
+      let userInfo: ProfileExtend | undefined
       if (addr) {
-        // if has token
         const cacheTokenStr = getCachedToken(addr)
         if (cacheTokenStr) {
           const cacheToken = JSON.parse(cacheTokenStr)
-          setToken(addr, cacheToken.accessToken, cacheToken.refreshToken)
+          // TODO: refresh token?
+          // const refreshResult = await refreshAuth({ refreshToken: cacheToken.refreshToken })
+          // setToken(addr, refreshResult.accessToken, refreshResult.refreshToken)
+          setLensToken(addr, cacheToken.accessToken, cacheToken.refreshToken)
         }
-        userInfo = await userContext.fetchUserInfo(addr)
+        userInfo = await fetchUserDefaultProfile(addr)
       }
       if (!userInfo) {
         await initAccess(RoleType.Visiter) // todo 如果登陆成功就更新用户角色，否则为游客角色
@@ -169,6 +174,7 @@ const UserBar = (props: { walletConfig?: WalletConfig }) => {
     e.preventDefault()
     setUserMenu(false)
   }
+
   return (
     <div className="select-none fixed z-4 w-full bg-#ffffff80" style={{ backdropFilter: 'blur(12px)' }}>
       <div className="flex flex-row items-center justify-between w-auto leading-8 py-4 px-6 xl:px-8 text-xl">
@@ -269,12 +275,7 @@ const UserBar = (props: { walletConfig?: WalletConfig }) => {
           )}
           <div className="relative flex flex-row items-center">
             {user ? (
-              <Avatar
-                size={26}
-                alt="user avatar"
-                src={user.picture?.__typename === 'MediaSet' ? user.picture.original.url : DEFAULT_AVATAR}
-                style={{ display: 'inline-block' }}
-              />
+              <Avatar size={26} alt="user avatar" src={user.avatarUrl || DEFAULT_AVATAR} style={{ display: 'inline-block' }} />
             ) : (
               <UserlaneIcon style={{ width: '22px', height: '22px', color: '#000000' }} />
             )}
