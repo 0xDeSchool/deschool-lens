@@ -15,8 +15,9 @@ const (
 )
 
 type Id struct {
-	Platform PlatformType `bson:"platform"`
-	Address  string       `bson:"address"`
+	Platform    PlatformType `bson:"platform"`
+	Address     string       `bson:"address"`
+	BaseAddress string       `bson:"address"`
 }
 
 type IdRepository interface {
