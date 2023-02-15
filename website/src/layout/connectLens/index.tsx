@@ -16,8 +16,7 @@ import { initAccess } from '~/hooks/access'
 import { fetchUserDefaultProfile } from '~/hooks/profile'
 import { getToken, setLensToken, getAddress } from '~/auth/user'
 import { authenticate, generateChallenge } from '~/api/lens/authentication/login'
-import { postVerifiedIdentity } from '~/api/booth/booth'
-import { PlatformType } from '~/api/booth/booth'
+import { postVerifiedIdentity, PlatformType } from '~/api/booth/booth'
 
 interface ConnectBoardProps {
   wallectConfig?: WalletConfig
@@ -121,7 +120,7 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
       const config = { ...props.wallectConfig, type }
       const provider = createProvider(config)
       await getWallet().setProvider(type, provider)
-      const address = await getWallet().getConnectedAddress()
+      const address = await getWallet().getAddress()
       if (address) {
         await handleLoginByAddress(address)
       } else {
