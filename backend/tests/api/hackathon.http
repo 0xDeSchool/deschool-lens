@@ -17,3 +17,6 @@ GET {{host}}/api/id/list?address={{cl_addr}}
 
 ### 测试 SBT 技能
 GET {{host}}/api/id/sbt?address={{cl_addr}}
+
+### 测试 SBT 详情
+GET {{host}}/api/sbt?address={{sbt_addr}}&tokenId={{sbt_id}}

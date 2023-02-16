@@ -17,7 +17,7 @@ func GetNftMetadata(address string, tokenId int) *NftMetaData {
 	const POLYGON_CHAIN_STR = "polygon"
 	// TODO: Move this to config.yaml
 	const API_KEY = "JoHVGRL3Rxu3MPjBYdQGlQkEHnjnsKYBF5Ij3RWsaP7Kmz0ZlXZ1Ay7wfrO8tRfd"
-	url := fmt.Sprintf("https://deep-index.moralis.io/api/v2/nft/%s/%s/owners?chain=%s&format=decimal&normalizeMetadata=false", address, tokenIdStr, POLYGON_CHAIN_STR)
+	url := fmt.Sprintf("https://deep-index.moralis.io/api/v2/nft/%s/%s?chain=%s&format=decimal&normalizeMetadata=true", address, tokenIdStr, POLYGON_CHAIN_STR)
 
 	// prepare http request
 	req, _ := http.NewRequest("GET", url, nil)
@@ -32,6 +32,7 @@ func GetNftMetadata(address string, tokenId int) *NftMetaData {
 
 	// unmarshal data structure
 	content, err := ioutil.ReadAll(res.Body)
+	fmt.Println(string(content))
 	errx.CheckError(err)
 	errx.CheckError(json.Unmarshal(content, &output))
 
