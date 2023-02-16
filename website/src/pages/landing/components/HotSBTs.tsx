@@ -70,7 +70,7 @@ const HotSBTs = () => {
           <div className="relative text-left w-3/4">
             <img src={Star1} alt="star1" className="w-80px h-80px" />
           </div>
-          <h1 className="text-56px leading-84px text-center font-Anton w-400px md:w-680px">{t('landing.hotSbts')}</h1>
+          <h1 className="text-56px leading-84px text-center font-ArchivoNarrow w-400px md:w-680px">{t('landing.hotSbts')}</h1>
           <p className="text-24px leading-32px font-ArchivoNarrow w-400px md:w-max">{t('landing.hotSbtDes')}</p>
         </div>
 

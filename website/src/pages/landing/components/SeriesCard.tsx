@@ -5,18 +5,20 @@ import CrownIcon from '~/assets/icons/crown.png'
 // import RoleTag from './RoleTag'
 import type { SeriesExtend } from '~/lib/types/app'
 
+const DESCHOOL_PATH = import.meta.env.VITE_APP_DESCHOOL_PATH
+
 const SeriesCard = (props: { series: SeriesExtend }) => {
   const { series } = props
   const { t } = useTranslation()
 
   const handleJumpOrgIntro = (channelDomain: string) => {
-    if (channelDomain) window.open(`https://dev.deschool.app/org/${channelDomain}`, '_blank')
+    if (channelDomain) window.open(`${DESCHOOL_PATH}/org/${channelDomain}`, '_blank')
   }
   const handleJumpPassIntro = (passId: string) => {
-    if (passId) window.open(`https://dev.deschool.app/passIntro/${passId}`, '_blank')
+    if (passId) window.open(`${DESCHOOL_PATH}/passIntro/${passId}`, '_blank')
   }
   const handleJumpSeriesIntro = (seriesId: string) => {
-    if (seriesId) window.open(`https://dev.deschool.app/series/seriesintro/${seriesId}`, '_blank')
+    if (seriesId) window.open(`${DESCHOOL_PATH}/series/seriesintro/${seriesId}`, '_blank')
   }
 
   return (
@@ -88,7 +90,7 @@ const SeriesCard = (props: { series: SeriesExtend }) => {
                 handleJumpSeriesIntro(series.id)
               }}
             >
-              {t('startLearn')}
+              {t('explore.startLearn')}
             </button>
           </div>
         </div>

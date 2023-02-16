@@ -104,7 +104,7 @@ const PoskIntro = () => {
     }
   }
 
-  const handleVisitProfile = (e: React.MouseEvent<HTMLElement, MouseEvent> | undefined, owner: OwnerRecord, initTab?: boolean) => {
+  const handleVisitProfile = (e: React.MouseEvent<HTMLElement, MouseEvent> | undefined, owner: OwnerRecord) => {
     e?.stopPropagation()
     if (!owner.address) {
       return
