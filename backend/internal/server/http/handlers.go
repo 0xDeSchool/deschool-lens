@@ -1,7 +1,6 @@
 package http
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -92,7 +91,14 @@ func recommendationGetHandler(ctx *gin.Context) {
 	hm := *di.Get[hackathon.HackathonManager]()
 	address := ctx.Query("address")
 	address = eth.NormalizeAddress(address)
-	fmt.Println(address)
 	result := hm.RunRecommendations(ctx, address)
+	ctx.JSON(http.StatusOK, result)
+}
+
+func q11eGetHandler(ctx *gin.Context) {
+	hm := *di.Get[hackathon.HackathonManager]()
+	address := ctx.Query("address")
+	address = eth.NormalizeAddress(address)
+	result := hm.GetQ11e(ctx, address)
 	ctx.JSON(http.StatusOK, result)
 }

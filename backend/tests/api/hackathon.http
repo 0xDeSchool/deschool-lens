@@ -23,3 +23,6 @@ GET {{host}}/api/sbt?address={{sbt_addr}}&tokenId={{sbt_id}}
 
 ### 测试 推荐
 GET {{host}}/api/id/recommendation?address={{cl_addr}}
+
+### 获得 Q11e
+GET {{host}}/api/q11e?address={{cl_addr}}

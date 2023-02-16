@@ -278,3 +278,10 @@ export interface ProfileExtend extends Profile {
   avatarUrl?: string
   coverUrl?: string
 }
+
+export interface RecommendAddr {
+  FromAddr: string
+  ToAddr: string
+  Reasons: string[]
+  Score: number
+}

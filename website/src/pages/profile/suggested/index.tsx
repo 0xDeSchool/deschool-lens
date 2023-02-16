@@ -4,9 +4,12 @@ import message from 'antd/es/message'
 import Empty from 'antd/es/empty'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
+import Jazzicon from 'react-jazzicon'
 import LensAvatar from '../userCard/avatar'
-import type { ProfileExtend } from '~/lib/types/app'
-import { m } from 'vitest/dist/types-0373403c'
+import type { ProfileExtend, RecommendAddr } from '~/lib/types/app'
+import { getRecommendation } from '~/api/booth/booth'
+import { getAddress } from '~/auth'
+import Button from 'antd/es/button'
 
 type SuggestProp = {
   handle?: string
@@ -18,33 +21,20 @@ const Suggest = (props: SuggestProp) => {
   const navigate = useNavigate()
   const { handle } = props
   const [loading, setLoading] = useState(false)
-  const [suggestedUsers, setSuggestedUsers] = useState([] as Array<ProfileExtend | undefined | null>)
-  console.log('handle', handle)
+  const [suggestedUser, setSuggestedUser] = useState({} as RecommendAddr)
 
   const initSuggestedUsers = async () => {
     setLoading(true)
     try {
-      // let result
-      // const params = { address, limit: 10 }
-      // if (cursor) {
-      //   Object.assign(params, { cursor })
-      // }
-      // result = await followingRequest(params)
-      // setCursor(result.pageInfo.next)
-      let arr = [] as Array<ProfileExtend | undefined | null>
-      arr = [
-        {
-          avatarUrl: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
-          coverUrl: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
-          handle: '@WSF',
-          id: '123',
-          isDefault: false,
-          isFollowedByMe: false,
-          isFollowing: true,
-        },
-      ]
-
-      setSuggestedUsers(arr)
+      const address = getAddress()
+      if (!address) {
+        return
+      }
+      const result = await getRecommendation(address)
+      if (!result) {
+        return
+      }
+      setSuggestedUser(result)
     } catch (error: any) {
       if (error && error.name && error.message) message.error(`${error.name}:${error.message}`)
     } finally {
@@ -67,39 +57,44 @@ const Suggest = (props: SuggestProp) => {
           Edit preferences
         </button>
       </div>
-      {loading ? (
-        <Skeleton />
-      ) : (
-        <div className="shadow-module fcc-start max-h-600px p-4 space-y-2 overflow-auto scroll-hidden">
-          {suggestedUsers && suggestedUsers.length > 0 ? (
-            suggestedUsers?.map(suggestedUser => (
-              <div key={suggestedUser?.id} className="relative border rounded-xl p-2 w-full frs-center">
-                <div className="relative w-60px h-60px">
-                  <LensAvatar avatarUrl={suggestedUser?.avatarUrl} size={60} wrapperClassName="fcc-center w-full" />
-                </div>
-                <div className="flex-1 fcs-center ml-2">
-                  <h1>{suggestedUser?.name}</h1>
-                  <p>{suggestedUser?.bio}</p>
-                </div>
-                <div>
-                  <h2>He / She is suggested because</h2>
-                  <ul>
-                    <li>* You both have interests in finding a hachathon partner</li>
-                    <li>* You both are interested in DAO topic.</li>
-                    <li>* Your skills exclusively match each other and share the same ideology in terms of industry commitments.</li>
-                  </ul>
-                </div>
-                <div>
-                  <button type="button" className="purple-border-button px-2 py-1">
-                    {suggestedUser?.isFollowedByMe ? t('UnFollow') : t('Follow')}
-                  </button>
-                </div>
+      {loading && <Skeleton />}
+      {!loading && suggestedUser ? (
+        <div className="border rounded-xl w-full  p-4 min-h-240px">
+          <div className="frs-start">
+            <div className="px-4 mr-2">
+              {/* <LensAvatar avatarUrl={suggestedUser?.avatarUrl} size={60} wrapperClassName="fcc-center w-full" /> */}
+              <Jazzicon diameter={70} seed={Number(suggestedUser?.ToAddr)} />
+            </div>
+            <div className="flex-1 fcs-center ml-">
+              <h1 className="mb-2 font-bold text-lg">{suggestedUser?.ToAddr}</h1>
+              <h2 className="mb-1">He/She is recommended because</h2>
+              <ul>
+                {suggestedUser.Reasons &&
+                  suggestedUser.Reasons.map(item => (
+                    <li key={item} className="ml-2 my-1">
+                      * {item}
+                    </li>
+                  ))}
+              </ul>
+            </div>
+            <div className="flex flex-col justify-between items-center h-full">
+              {/* TODO: */}
+              <div className="flex flex-col items-center">
+                <div>RECOMMENDED SCORE</div>
+                <div className="text-4xl my-2">{suggestedUser.Score}</div>
               </div>
-            ))
-          ) : (
-            <Empty />
-          )}
+            </div>
+          </div>
+          <div className="flex flex-row justify-end">
+            <Button type="primary">Visit Space</Button>
+            <Button className="ml-2">Follow</Button>
+            <Button disabled className="ml-2">
+              Chat
+            </Button>
+          </div>
         </div>
+      ) : (
+        <Empty />
       )}
     </div>
   )
