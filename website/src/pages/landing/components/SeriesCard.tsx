@@ -1,70 +1,24 @@
-import ClockCircleOutlined from '@ant-design/icons/ClockCircleOutlined'
-import Skeleton from 'antd/es/skeleton'
 import Image from 'antd/es/image'
-import Progress from 'antd/es/progress'
 import { useTranslation } from 'react-i18next'
 import fallbackImage from '~/assets/images/fallbackImage'
-import { UnionIcon } from '~/components/icon'
 import CrownIcon from '~/assets/icons/crown.png'
 // import RoleTag from './RoleTag'
-import Students from './Students'
-import type { ExploreStudyInfo, SeriesExtend } from '~/lib/types/app'
+import type { SeriesExtend } from '~/lib/types/app'
 
-const SeriesCardDetail = (props: { seriesDetail: ExploreStudyInfo }) => {
-  const { seriesDetail } = props
-  const { t } = useTranslation()
+const DESCHOOL_PATH = import.meta.env.VITE_APP_DESCHOOL_PATH
 
-  const getCustomTime = (seconds: number) => {
-    const day = parseInt((seconds / 60 / 60 / 24).toString(), 10) // 计算天数
-    const hour = parseInt(((seconds / 60 / 60) % 24).toString(), 10) // 计算小时
-    const minute = parseInt(((seconds / 60) % 60).toString(), 10) // 计算分钟
-    let str = ''
-    if (day && day > 0) {
-      str = `${day}${t('explore.time.day')}`
-    }
-    if (hour && hour > 0) {
-      str = `${str}${hour}${t('explore.time.hour')}`
-    }
-    if (minute && minute > 0) {
-      str = `${str}${minute}${t('explore.time.minute')}`
-    }
-    return str
-  }
-
-  return (
-    <>
-      <div className="frc-start">
-        <ClockCircleOutlined color="#000000d8" size={12} />
-        <span className="text-#000000d8 font-ArchivoNarrow text-12px leading-20px ml-2">
-          {seriesDetail.length ? getCustomTime(seriesDetail.length) : '-'}
-        </span>
-        {seriesDetail.courseCount && seriesDetail.courseCount > 0 && (
-          <>
-            <UnionIcon style={{ color: '#000000d8', width: '12x', height: '12px' }} className="ml-2" />
-            <span className="text-#000000d8 font-ArchivoNarrow text-12px leading-20px ml-2">
-              {seriesDetail.courseCount} {t('lessons')}
-            </span>
-          </>
-        )}
-      </div>
-      <Students users={seriesDetail.startedUsers} count={seriesDetail.startedCount} textColor="text-#000000d8" />
-      <Progress percent={seriesDetail.studyProgress} />
-    </>
-  )
-}
-
-const SeriesCard = (props: { series: SeriesExtend; loadingDetail: boolean; seriesDetail: ExploreStudyInfo | undefined }) => {
-  const { series, loadingDetail, seriesDetail } = props
+const SeriesCard = (props: { series: SeriesExtend }) => {
+  const { series } = props
   const { t } = useTranslation()
 
   const handleJumpOrgIntro = (channelDomain: string) => {
-    if (channelDomain) window.open(`https://dev.deschool.app/org/${channelDomain}`, '_blank')
+    if (channelDomain) window.open(`${DESCHOOL_PATH}/org/${channelDomain}`, '_blank')
   }
   const handleJumpPassIntro = (passId: string) => {
-    if (passId) window.open(`https://dev.deschool.app/passIntro/${passId}`, '_blank')
+    if (passId) window.open(`${DESCHOOL_PATH}/passIntro/${passId}`, '_blank')
   }
   const handleJumpSeriesIntro = (seriesId: string) => {
-    if (seriesId) window.open(`https://dev.deschool.app/series/seriesintro/${seriesId}`, '_blank')
+    if (seriesId) window.open(`${DESCHOOL_PATH}/series/seriesintro/${seriesId}`, '_blank')
   }
 
   return (
@@ -122,10 +76,12 @@ const SeriesCard = (props: { series: SeriesExtend; loadingDetail: boolean; serie
           <h1 className="font-ArchivoNarrow text-black text-24px leading-32px mb-2 line-wrap one-line-wrap" title={series.title}>
             {series.title}
           </h1>
-          <p className="font-ArchivoNarrow text-#000000d8 text-16px leading-24px h-72px line-wrap three-line-wrap" title={series.description}>
+          <p
+            className="font-ArchivoNarrow text-#000000d8 text-16px leading-24px h-72px line-wrap three-line-wrap"
+            title={series.description}
+          >
             {series.description}
           </p>
-          {loadingDetail || !seriesDetail ? <Skeleton /> : <SeriesCardDetail seriesDetail={seriesDetail} />}
           <div className="frc-start">
             <button
               type="button"
@@ -134,11 +90,8 @@ const SeriesCard = (props: { series: SeriesExtend; loadingDetail: boolean; serie
                 handleJumpSeriesIntro(series.id)
               }}
             >
-              {t('startLearn')}
+              {t('explore.startLearn')}
             </button>
-            {/* <button type="button" className="border border-#00000026 text-14px text-black rounded p-2">
-              {t('startForReward')}
-            </button> */}
           </div>
         </div>
       </div>

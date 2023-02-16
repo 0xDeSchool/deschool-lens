@@ -184,9 +184,6 @@ input[type='text']:focus {
 }
 
 /*** 导航a ***/
-a {
-  color: #6525ff;
-}
 a:hover {
   color: #a753f4;
 }

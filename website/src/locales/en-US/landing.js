@@ -7,6 +7,8 @@ const EN_US_LANDING = {
     hotCourses: 'HOT Courses in Trends',
     hotCoursesDes: 'Stay hungry, stay foolish and keep life-long learning!',
     seeallcourse: 'explore more in Deschool',
+    hotSbts: 'HOT SBT in Trends',
+    hotSbtDes: 'Every unique experience will be remembered and asigned value!',
   },
 }
 

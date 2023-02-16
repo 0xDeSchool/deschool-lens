@@ -9,10 +9,12 @@ import { getExtendProfile } from '~/hooks/profile'
 import CelebrityCard from './CelebrityCard'
 import type { ProfileExtend } from '~/lib/types/app'
 
-const HotCelebrities = () => {
+const HotCelebrities = (props: { searchWord: string }) => {
+  const { searchWord } = props
   const { t } = useTranslation()
   const [loading, setLoading] = useState(true)
   const [celebrities, setCelebrities] = useState([] as ProfileExtend[])
+  const [cacheCelebrities, setCacheCelebrities] = useState([] as ProfileExtend[])
 
   const initSeries = async () => {
     setLoading(true)
@@ -27,6 +29,7 @@ const HotCelebrities = () => {
       /* loop over profiles, create properly formatted ipfs image links */
       const profilesData = await Promise.all(response.items.map(async (profileInfo: any) => getExtendProfile(profileInfo)))
       setCelebrities(profilesData as ProfileExtend[])
+      setCacheCelebrities(profilesData as ProfileExtend[])
     } finally {
       setLoading(false)
     }
@@ -35,6 +38,10 @@ const HotCelebrities = () => {
   useEffect(() => {
     initSeries()
   }, [])
+
+  useEffect(() => {
+    setCelebrities(cacheCelebrities.filter(c => c.handle.includes(searchWord) || c.name?.includes(searchWord) || c.id.includes(searchWord)))
+  }, [searchWord])
 
   return (
     <div className="fcc-center mb-20">

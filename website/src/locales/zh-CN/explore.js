@@ -13,6 +13,7 @@ const ZH_CN_EXPLORE = {
     lesson: '课程',
     lessons: '节课',
     startLearn: '开始学习',
+    viewMore: '查看详情',
     startForReward: '赚取收益',
   },
 }

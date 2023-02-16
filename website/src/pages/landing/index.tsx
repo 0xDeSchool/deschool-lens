@@ -4,6 +4,7 @@ import { useLayout } from '~/context/layout'
 import { useNavigate } from 'react-router'
 import AnimateBg from '~/components/animateBg'
 import HotSeries from './components/HotSeriesCourses'
+import HotSBTs from './components/HotSBTs'
 
 const LandingHeader = () => {
   const { t } = useTranslation()
@@ -46,6 +47,7 @@ const LandingBody = () => {
   return (
     <div className="w-max mx-10 md:mx-0 md:w-3/4 mt-10 mb-10 fcs-center">
       <HotSeries />
+      <HotSBTs />
     </div>
   )
 }

@@ -1,34 +1,16 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Star1 from '~/assets/images/star1.png'
-import { getExploreSeries, getExploreSeriesDetail } from '~/api/go/explore'
+import { getExploreSeries } from '~/api/go/explore'
 import Skeleton from 'antd/es/skeleton'
 import SeriesCard from './SeriesCard'
-import type { ExploreStudyInfo, Series, SeriesExtend } from '~/lib/types/app'
-
-type ExploreStudyInfoList = {
-  [key: string]: ExploreStudyInfo
-}
+import type { SeriesExtend } from '~/lib/types/app'
 
 const HotSeries = () => {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(true)
-  const [seriesesDetails, setSeriesesDetails] = useState({} as ExploreStudyInfoList)
   const [serieses, setSerieses] = useState([] as SeriesExtend[])
-  const [cacheSerieses, setCacheSerieses] = useState<string[]>([])
   const [total, setTotal] = useState(0)
-
-  const fetchSeriesDetails = async (ids: string[]) => {
-    try {
-      setCacheSerieses(ids)
-      const res: any = await getExploreSeriesDetail({ ids })
-      if (res) {
-        setSeriesesDetails({ ...seriesesDetails, ...res })
-      }
-    } finally {
-      setCacheSerieses([])
-    }
-  }
 
   const initSeries = async () => {
     setLoading(true)
@@ -37,7 +19,6 @@ const HotSeries = () => {
       const res: any = await getExploreSeries(1, 6, sortStr)
       if (res && res.items) {
         setSerieses(res.items)
-        fetchSeriesDetails(res.items.slice().map((s: Series) => s.id))
         setTotal(res.totalCount)
       }
     } finally {
@@ -61,7 +42,7 @@ const HotSeries = () => {
           <div className="relative text-left w-3/4">
             <img src={Star1} alt="star1" className="w-80px h-80px" />
           </div>
-          <h1 className="text-56px leading-84px text-center font-Anton w-400px md:w-680px">{t('landing.hotCourses')}</h1>
+          <h1 className="text-56px leading-84px text-center font-ArchivoNarrow w-400px md:w-680px">{t('landing.hotCourses')}</h1>
           <p className="text-24px leading-32px font-ArchivoNarrow w-400px md:w-max">{t('landing.hotCoursesDes')}</p>
         </div>
 
@@ -84,12 +65,7 @@ const HotSeries = () => {
         ) : (
           <div className="grid gap-4 grid-cols-3 m-auto">
             {serieses.map(series => (
-              <SeriesCard
-                key={series.id}
-                series={series}
-                loadingDetail={cacheSerieses.includes(series.id)}
-                seriesDetail={seriesesDetails[series.id]}
-              />
+              <SeriesCard key={series.id} series={series} />
             ))}
           </div>
         )}

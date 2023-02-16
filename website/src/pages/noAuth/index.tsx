@@ -15,7 +15,7 @@ const NoAuth = () => {
       <NavLink to="/landing" replace>
         <button
           type="button"
-          className="flex items-center text-white bg-#6525FF hover:cursor-pointer hover:bg-purple-500"
+          className="flex items-center text-white bg-#6525FF hover:cursor-pointer hover:bg-purple-500 p-2"
           onClick={() => {}}
         >
           {t('backhome')}

@@ -7,7 +7,6 @@ import fallbackImage from '~/assets/images/fallbackImage'
 import message from 'antd/es/message'
 import Skeleton from 'antd/es/skeleton'
 import Image from 'antd/es/image'
-import Avatar from 'antd/es/avatar'
 import Tag from 'antd/es/tag'
 import List from 'antd/es/list'
 import Empty from 'antd/es/empty'
@@ -16,8 +15,9 @@ import ShowMoreLoading from '~/components/loading/showMore'
 import { useNavigate, useParams } from 'react-router'
 import { useAccount } from '~/context/account'
 import { useTranslation } from 'react-i18next'
-import { getSbtInfoById } from '~/api/go/sbt'
-import type { OwnerRecord, Pass } from '~/lib/types/app'
+import type { SBTDetailResult, SBTMeta } from '~/api/booth/booth'
+import { getSbtDetail } from '~/api/booth/booth'
+import Jazzicon from 'react-jazzicon'
 import OwnersOnLens from './owners'
 
 // 骨架屏
@@ -49,19 +49,17 @@ const PoskIntroSkeleton = () => (
 )
 
 const PoskIntro = () => {
-  const { sbtId } = useParams()
+  const { contractAddress, tokenId } = useParams()
   const user = useAccount()
   const navigate = useNavigate()
   const { t } = useTranslation()
 
-  const [poskInfo, setPoskInfo] = useState<Pass>({} as Pass)
-  const [owners, setOwners] = useState<OwnerRecord[]>([] as OwnerRecord[])
+  const [poskInfo, setPoskInfo] = useState<SBTMeta>({} as SBTMeta)
+  const [owners, setOwners] = useState<string[]>([] as string[])
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
   const [page, setPage] = useState<number>(1)
-
-  const isFromSbt = window.location.pathname.includes('sbtIntro')
 
   const initPoskInfo = async () => {
     if (owners.length > 0) {
@@ -70,18 +68,19 @@ const PoskIntro = () => {
       setLoading(true)
     }
     try {
-      let res: any
-      if (isFromSbt) {
-        res = await getSbtInfoById(sbtId!, 6, page)
-      }
-      if (res && res.totalCount) {
-        setTotal(res.totalCount)
-        if (isFromSbt) {
-          setPage(page + 1)
-          setPoskInfo({ ...res, title: res.name, passShow: res.url })
+      if (contractAddress && tokenId) {
+        const res: SBTDetailResult | undefined = await getSbtDetail(contractAddress!, tokenId)
+        if (res && res.Metadata) {
+          setPoskInfo(res.Metadata)
         }
-        const temp = owners.concat(res.owners)
-        setOwners(temp)
+        if (res && res.Owners && res.Owners.length > 0) {
+          setTotal(res.Owners.length)
+          setPage(page + 1)
+          const temp = owners.concat(res.Owners)
+          setOwners(temp)
+        }
+      } else {
+        message.error('地址栏SBT参数不全,合约地址和TokenId不可为空')
       }
     } catch (error: any) {
       message.error(error)
@@ -96,20 +95,21 @@ const PoskIntro = () => {
   }, [user])
 
   const handleJump = () => {
-    const { contractAddr, tokenId } = poskInfo
+    const { contractAddr } = poskInfo
+    const id = poskInfo.tokenId
     if (contractAddr && tokenId) {
-      window.open(`https://opensea.io/assets/matic/${contractAddr}/${tokenId}`, '_blank')
+      window.open(`https://opensea.io/assets/matic/${contractAddr}/${id}`, '_blank')
     } else {
       message.error('metadata is error')
     }
   }
 
-  const handleVisitProfile = (e: React.MouseEvent<HTMLElement, MouseEvent> | undefined, owner: OwnerRecord, initTab?: boolean) => {
+  const handleVisitProfile = (e: React.MouseEvent<HTMLElement, MouseEvent> | undefined, owner: string) => {
     e?.stopPropagation()
-    if (!owner.address) {
+    if (!owner) {
       return
     }
-    navigate(`/profile/${owner.address}`)
+    navigate(`/profile/${owner}`)
   }
 
   const handleAddMore = async () => {
@@ -134,11 +134,11 @@ const PoskIntro = () => {
         {/* posk信息 */}
         <div className="relative w-full h-auto flex flex-col justify-around scroll-hidden font-ArchivoNarrow">
           <div className="flex flex-col items-start md:flex-row md:items-center mt-24px bg-#1818180f rounded p-32px">
-            {poskInfo?.passShow ? (
+            {poskInfo?.image ? (
               <>
                 <div className="fcc-center">
                   <Image
-                    src={poskInfo.passShow}
+                    src={poskInfo.image}
                     fallback={fallbackImage}
                     style={{ width: '100%', height: '100%' }}
                     className="object-contain object-center"
@@ -151,14 +151,12 @@ const PoskIntro = () => {
                         {poskInfo.contractType}
                       </Tag>
                     )}
-                    {poskInfo.type !== 'extrapass' && (
-                      <div>
-                        <Tag className="frc-center rounded-2 cursor-pointer py-1 px-2 hover:bg-purple-100" onClick={handleJump}>
-                          <span className="mr-2 ">OpenSea</span>
-                          <img alt="jump icon" src={JumpIcon} />
-                        </Tag>
-                      </div>
-                    )}
+                    <div>
+                      <Tag className="frc-center rounded-2 cursor-pointer py-1 px-2 hover:bg-purple-100" onClick={handleJump}>
+                        <span className="mr-2 ">OpenSea</span>
+                        <img alt="jump icon" src={JumpIcon} />
+                      </Tag>
+                    </div>
                   </div>
                 </div>
 
@@ -184,18 +182,16 @@ const PoskIntro = () => {
         {owners && owners.length > 0 && (
           <List className="mt-4 rounded  bg-#1818180f">
             {owners.map(owner => (
-              <List.Item key={`${owner?.id}${owner?.avatar}`} className="!justify-start hover:bg-#1818180f">
+              <List.Item key={`${owner}`} className="!justify-start hover:bg-#1818180f">
                 <div className="w-full flex flex-row justify-between items-center font-ArchivoNarrow">
                   <div className="frc-start">
-                    <Avatar
-                      shape="circle"
-                      src={owner?.avatar ? owner.avatar : fallbackImage}
-                      className="mr-2 w-64px h-64px cursor-pointer"
-                      size={64}
-                      onClick={e => {
+                    <div
+                      onClick={(e: any) => {
                         handleVisitProfile(e, owner)
                       }}
-                    />
+                    >
+                      <Jazzicon diameter={64} seed={Math.floor(Math.random()*10000)} />
+                    </div>
                     <div className="flex flex-col ml-6 flex-1 overflow-hidden">
                       <span
                         className="mr-4 text-xl font-bold line-wrap one-line-wrap cursor-pointer"
@@ -204,18 +200,9 @@ const PoskIntro = () => {
                           handleVisitProfile(e, owner)
                         }}
                       >
-                        {owner?.username}
+                        {owner}
                       </span>
-                      {/* <span className="mr-4 text-xl font-bold line-wrap one-line-wrap">{getShortAddress(owner.address)}</span> */}
-                      <span>{owner?.bio}</span>
                     </div>
-                  </div>
-                  <div
-                    className={`${owner?.sbtCount !== 0 ? 'cursor-pointer block' : 'hidden'}`}
-                    onClick={e => handleVisitProfile(e, owner, true)}
-                  >
-                    {t('own')}
-                    <span className="mx-2">{owner?.sbtCount}</span>Posks
                   </div>
                 </div>
               </List.Item>

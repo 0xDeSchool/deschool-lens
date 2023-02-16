@@ -13,6 +13,7 @@ const EN_US_EXPLORE = {
     lesson: 'Lesson',
     lessons: 'lessons',
     startLearn: 'Start Learn',
+    viewMore: 'View More',
     startForReward: 'Start For Reward',
   },
 }

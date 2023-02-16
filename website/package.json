@@ -81,6 +81,8 @@
     "react-router": "^6.6.0",
     "react-router-dom": "^6.6.0",
     "react-vertical-timeline-component": "^3.6.0",
+    "react-virtuoso": "^4.1.0",
+    "rxjs": "^7.8.0",
     "unocss": "^0.47.6",
     "uuid": "^9.0.0",
     "video-react": "^0.16.0",

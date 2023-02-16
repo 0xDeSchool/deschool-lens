@@ -103,7 +103,9 @@ specifiers:
   react-router-dom: ^6.6.0
   react-test-renderer: 18.2.0
   react-vertical-timeline-component: ^3.6.0
+  react-virtuoso: ^4.1.0
   rollup-plugin-visualizer: ^5.8.3
+  rxjs: ^7.8.0
   semver: ^7.3.8
   simple-git-hooks: ^2.8.1
   stream-browserify: ^3.0.0
@@ -179,6 +181,8 @@ dependencies:
   react-router: 6.6.2_react@18.2.0
   react-router-dom: 6.6.2_biqbaboplfbrettd7655fr4n2y
   react-vertical-timeline-component: 3.6.0_react@18.2.0
+  react-virtuoso: 4.1.0_biqbaboplfbrettd7655fr4n2y
+  rxjs: 7.8.0
   unocss: 0.47.6_vite@4.0.4
   uuid: 9.0.0
   video-react: 0.16.0_biqbaboplfbrettd7655fr4n2y
@@ -15880,6 +15884,17 @@ packages:
       react-intersection-observer: 8.34.0_react@18.2.0
     transitivePeerDependencies:
       - react
+    dev: false
+
+  /react-virtuoso/4.1.0_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-Vcq5WXn18PvPT55kdeGQ8BN3K95XyPe7hum8zG6Tx7g1CtUYVsQKN7fouMxBSy+XymEDB5ynGy8JWhuqyLLtPw==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>=16 || >=17 || >= 18'
+      react-dom: '>=16 || >=17 || >= 18'
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
   /react/18.2.0:

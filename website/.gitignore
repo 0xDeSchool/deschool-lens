@@ -10,9 +10,6 @@ out
 uml
 package-lock.json
 
-*.env
-*.env.development
-*.env.production
 .next
 .vite
 node_modules

@@ -36,8 +36,7 @@ const RouterObj = () => (
           <Route path="resume" element={<Resume />} />
           <Route path="verified" element={<Verified />} />
         </Route>
-        <Route path="sbtIntro/:sbtId" element={<PoskIntro />} />
-        <Route path="passIntro/:passId" element={<PoskIntro />} />
+        <Route path="sbtIntro/:contractAddress/:tokenId" element={<PoskIntro />} />
         <Route path="roadmap" element={<Roadmap />} />
         <Route path="noauth" element={<NoAuth />} />
         <Route path="404" element={<NotFound />} />

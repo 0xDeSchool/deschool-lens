@@ -29,7 +29,7 @@ export interface Creator {
 }
 
 export interface NFT {
-  amount: string
+  amount: number
   metadata: string
   name: string
   normalized_metadata: {
@@ -38,6 +38,12 @@ export interface NFT {
     name: string
   }
   token_address: string
+}
+
+export interface NFTExtend extends NFT {
+  id: string
+  tokenId: string
+  address: string
 }
 
 export interface Series {

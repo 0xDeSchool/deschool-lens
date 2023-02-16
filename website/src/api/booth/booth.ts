@@ -92,10 +92,16 @@ export interface SbtDetail {
     image: string
   }
 }
+
 export interface AbilitySbt {
   ability: number[]
   sbts: SbtDetail[]
 }
+/**
+ * @description 根据用户地址获取他链接过的所有sbt的详情
+ * @param address
+ * @returns {AbilitySbt}
+ */
 export async function getIdSbt(address: string): Promise<AbilitySbt | undefined> {
   try {
     const result: AbilitySbt = await http.get(`/id/sbt?address=${address}`)
@@ -149,6 +155,34 @@ export interface q11eModel {
 export async function getQ11e(address: string) {
   try {
     const result: q11eModel = await http.get(`/q11e?address=${address}`)
+    return result
+  } catch (err) {
+    console.log(err)
+    return undefined
+  }
+}
+
+export interface SBTMeta {
+  description: string
+  image: string
+  name: string
+  contractType: string
+  contractAddr: string
+  tokenId: string
+}
+export interface SBTDetailResult {
+  Metadata: SBTMeta | null | undefined
+  Owners: string[] | null | undefined
+}
+/**
+ * @description 获取一个指定合约地址和tokenId的SBT的详情
+ * @param address string
+ * @param tokenId string
+ * @returns
+ */
+export async function getSbtDetail(address: string, tokenId: string): Promise<SBTDetailResult | undefined> {
+  try {
+    const result: SBTDetailResult | undefined = await http.get(`/sbt?address=${address}&tokenId=${tokenId}`)
     return result
   } catch (err) {
     console.log(err)
