@@ -111,7 +111,8 @@ export interface OwnerRecord {
   avatar: string
   introduction?: string
   bio?: string
-  count?: number
+  ownerAt?: string
+  sbtCount?: number
 }
 
 export interface ExploreStudyInfo {
