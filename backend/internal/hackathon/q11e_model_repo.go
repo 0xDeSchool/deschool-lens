@@ -31,13 +31,13 @@ const (
 )
 
 type Q11e struct {
-	Address   string
-	Goals     []string
-	Interests []string
-	Pref1     string
-	Pref2     string
-	Pref3     string
-	Mbti      int
+	Address   string   `json:"address"`
+	Goals     []string `json:"goals"`
+	Interests []string `json:"interests"`
+	Pref1     string   `json:"pref1"`
+	Pref2     string   `json:"pref2"`
+	Pref3     string   `json:"pref3"`
+	Mbti      int      `json:"mbti"`
 }
 
 type Q11eRepository interface {

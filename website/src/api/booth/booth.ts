@@ -1,4 +1,5 @@
 import http from '~/api/booth/http'
+import { RecommendAddr } from '~/lib/types/app'
 
 export enum PlatformType {
   BOOTH = 0,
@@ -124,6 +125,36 @@ export interface q11eParam {
 export async function putQ11e(param: q11eParam): Promise<string | undefined> {
   try {
     const result: string = await http.put(`/q11e`, param)
+    return result
+  } catch (err) {
+    console.log(err)
+    return undefined
+  }
+}
+
+export async function getRecommendation(address: string): Promise<RecommendAddr | undefined> {
+  try {
+    const result: RecommendAddr = await http.get(`/id/recommendation?address=${address}`)
+    return result
+  } catch (err) {
+    console.log(err)
+    return undefined
+  }
+}
+
+export interface q11eModel {
+  address: string
+  goals: string[]
+  interests: string[]
+  pref1: string
+  pref2: string
+  pref3: string
+  mbti: number
+}
+
+export async function getQ11e(address: string) {
+  try {
+    const result: q11eModel = await http.get(`/q11e?address=${address}`)
     return result
   } catch (err) {
     console.log(err)

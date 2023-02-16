@@ -8,7 +8,7 @@ import Space from 'antd/es/space'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import Tooltip from 'antd/es/tooltip'
-import type { q11eParam } from '~/api/booth/booth'
+import { getQ11e, q11eParam } from '~/api/booth/booth'
 import { putQ11e } from '~/api/booth/booth'
 import { getAddress } from '~/auth'
 
@@ -73,8 +73,25 @@ const MatchConfig = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
 
+  const loadInitialValues = async () => {
+    const address = getAddress()
+    if (!address) {
+      return
+    }
+    try {
+      const result = await getQ11e(address)
+      if (!result) {
+        return
+      }
+      form.setFieldsValue(result)
+    } catch (err) {
+      /* empty */
+    }
+  }
+
   useEffect(() => {
     setLoading(false)
+    loadInitialValues()
   }, [])
 
   const submitMatchParams = async () => {

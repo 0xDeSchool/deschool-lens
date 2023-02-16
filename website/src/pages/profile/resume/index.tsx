@@ -37,7 +37,7 @@ const TEST_RESUME_DATA: ResumeData = {
       endTime: dayjs('2023-11-04T16:00:00.000Z'),
       proofs: undefined,
       blockType: BlockType.EduBlockType,
-      order: 2,
+      order: 1,
     },
   ],
 }

@@ -34,7 +34,7 @@ export default defineConfig({
     },
   },
   shortcuts: [
-    ['screen-fit','w-full lg:max-w-768px xl:max-w-1024px 2xl:max-w-1280px 3xl:max-w-1440px 4xl:max-w-1680px'],
+    ['screen-fit', 'w-full lg:max-w-768px xl:max-w-1024px 2xl:max-w-1280px 3xl:max-w-1440px 4xl:max-w-1680px'],
     ['frc-start', 'flex flex-row items-center justify-start'],
     ['frc-end', 'flex flex-row items-center justify-end'],
     ['frc-around', 'flex flex-row items-center justify-around'],
@@ -47,13 +47,17 @@ export default defineConfig({
     ['fcc-center', 'flex flex-col items-center justify-center'],
     ['fcs-center', 'flex flex-col items-start justify-center'],
     ['frs-center', 'flex flex-row items-start justify-center'],
+    ['frs-start', 'flex flex-row items-start justify-start'],
+    ['fce-start', 'flex flex-col items-end justify-end'],
+    ['fce-between', 'flex flex-col items-end justify-between'],
+
     ['purple-button', 'inline-flex items-center bg-#6525FF text-white hover:cursor-pointer hover:bg-purple-500'],
     ['purple-text-button', 'inline-flex items-center text-#6525FF hover:cursor-pointer hover:text-purple-500'],
     [
       'purple-border-button',
       'inline-flex items-center border border-#6525FF rounded-xl text-#6525FF hover:cursor-pointer hover:text-purple-500',
     ],
-    ['shadow-module','border shadow-md rounded-xl w-full'],
+    ['shadow-module', 'border shadow-md rounded-xl w-full'],
   ],
   presets: [presetUno(), presetAttributify(), presetIcons()],
   transformers: [transformerDirectives(), transformerVariantGroup()],
