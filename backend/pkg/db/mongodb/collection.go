@@ -37,7 +37,7 @@ func (c *Collection[TEntity]) FindOne(ctx context.Context, filter bson.D, opts .
 	filter = c.setSoftDeleteFilter(filter)
 	result := c.Col().FindOne(ctx, filter, opts...)
 	if errors.Is(result.Err(), mongo.ErrNoDocuments) {
-		ginx.PanicNotFound("data not found")
+		return nil
 	} else {
 		errx.CheckError(result.Err())
 	}

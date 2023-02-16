@@ -37,3 +37,5 @@ stats.html
 
 # Only for CL's Desktop to use
 tailwind.config.js
+
+.env*

@@ -14,28 +14,39 @@ type ResumeProp = {
   handle?: string
 }
 
-// TODO: Replace this with real data
-const TEST_RESUME_DATA: ResumeData = {
+const STANDARD_RESUME_DATA: ResumeData = {
   career: [
     {
-      title: 'Fullstack Engineer @DeSchool',
+      title: 'Product Experiencer & Co-builder - BOOTH',
       description:
-        'Likable cashier with over 5 years of professional experience. Seeks to utilize top-class organizational and attention to detail skills to boost efficiency at ABC Inc. At DEF Inc., awarded Employee of the Month four times in a row for accuracy and efficiency. At GHI Inc., worked a streak of 450 days with no sick leave and a 30% higher accuracy score than peers.',
-      startTime: dayjs('2022-04-04T16:00:00.000Z'),
-      endTime: dayjs('2022-08-04T16:00:00.000Z'),
-      proofs: undefined,
+        "I experienced Booth's novel product, which is the LinkedIn of the Web3 world, which can provide people with authentic and credible work and education experience SBT as resume proof. Through Booth, we link to better and more real Web3 workers. I have fully experienced this product and made valuable suggestions",
+      startTime: dayjs('2023-02-04T16:00:00.000Z'),
+      endTime: dayjs('2023-02-04T16:00:00.000Z'),
+      proofs: [
+        {
+          address: '0xEd1e617b9485168EEB25c6d56e1219747cE62D0e',
+          tokenId: '0',
+          img: 'https://www.ensoul.io/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fensoul-labs-image%2FgdzbhdBooth-logos.jpeg&w=256&q=75',
+        },
+      ],
       blockType: BlockType.CareerBlockType,
       order: 1,
     },
   ],
   edu: [
     {
-      title: 'Web3U Series 100, 110, 200, 400, 600 from DeSchool',
+      title: 'Education Cert from Booth/DeSchool',
       description:
-        'Likable cashier with over 5 years of professional experience. Seeks to utilize top-class organizational and attention to detail skills to boost efficiency at ABC Inc. At DEF Inc., awarded Employee of the Month four times in a row for accuracy and efficiency. At GHI Inc., worked a streak of 450 days with no sick leave and a 30% higher accuracy score than peers.',
+        'I learned the knowledge of Web3 products, and successfully logged into the Booth product by linking Metamask and lens. This is an important educational experience for me. I learned the basic usage of Web3 products, so I have a credible skill certification when I look for a Web3 job or communicate with people in DAO in the future.',
       startTime: dayjs('2022-02-04T16:00:00.000Z'),
-      endTime: dayjs('2023-11-04T16:00:00.000Z'),
-      proofs: undefined,
+      endTime: dayjs('2023-02-04T16:00:00.000Z'),
+      proofs: [
+        {
+          address: '0xEd1e617b9485168EEB25c6d56e1219747cE62D0e',
+          tokenId: '0',
+          img: 'https://www.ensoul.io/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fensoul-labs-image%2FgdzbhdBooth-logos.jpeg&w=256&q=75',
+        },
+      ],
       blockType: BlockType.EduBlockType,
       order: 1,
     },
@@ -246,9 +257,8 @@ const Resume = (props: ResumeProp) => {
     const result = await getResume(address)
 
     if (!result) {
-      // TODO: 写一份标准简历，更改变量名字
-      setResumeData(TEST_RESUME_DATA)
-      await putUserResume(JSON.stringify(TEST_RESUME_DATA), address)
+      setResumeData(STANDARD_RESUME_DATA)
+      await putUserResume(JSON.stringify(STANDARD_RESUME_DATA), address)
       return
     }
     const resumeObj = covertCareerAndEdu(result.data)
