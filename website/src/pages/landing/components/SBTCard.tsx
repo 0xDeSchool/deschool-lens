@@ -1,13 +1,14 @@
 import Image from 'antd/es/image'
+import { useNavigate } from 'react-router'
 import fallbackImage from '~/assets/images/fallbackImage'
 import type { NFTExtend } from '~/lib/types/app'
 
 const SBTCard: React.FC<{ sbt: NFTExtend }> = props => {
   const { sbt } = props
+  const navigate = useNavigate()
 
-  const handleJumpSbtIntro = (id: string) => {
-    const location = window.location.origin
-    if (id) window.open(`${location}/sbtIntro/${id}`, '_blank')
+  const handleJumpSbtIntro = (contractAddress: string, id: string) => {
+    if (contractAddress && id) navigate(`/sbtIntro/${contractAddress}/${id}`)
   }
 
   return (
@@ -22,7 +23,10 @@ const SBTCard: React.FC<{ sbt: NFTExtend }> = props => {
         style={{ borderRadius: '6px 6px 0px 0px', background: '#1818180f', objectFit: 'contain' }}
       />
       <div className="w-full flex flex-col items-start justify-start p-24px">
-        <a className="font-ArchivoNarrow text-22px leading-30px line-wrap two-line-wrap h-60px cursor-pointer"  onClick={() => handleJumpSbtIntro(sbt?.id)}>
+        <a
+          className="font-ArchivoNarrow text-22px leading-30px line-wrap two-line-wrap h-60px cursor-pointer"
+          onClick={() => handleJumpSbtIntro(sbt?.address, sbt?.tokenId)}
+        >
           {sbt?.name}
         </a>
       </div>

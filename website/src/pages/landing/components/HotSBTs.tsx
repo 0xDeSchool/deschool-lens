@@ -28,6 +28,8 @@ const HotSBTs = () => {
               image: 'https://deschool.s3.amazonaws.com/PoskImg/78a60abcfdf10.png',
               name: 'PoSK-SeedaoOnboarding',
             },
+            tokenId: '157',
+            address: '0x0D9ea891B4C30e17437D00151399990ED7965F00',
             token_address: '0x0D9ea891B4C30e17437D00151399990ED7965F00',
           },
           {
@@ -40,6 +42,8 @@ const HotSBTs = () => {
               image: 'https://i.seadn.io/gcs/files/74730ab0028180da4149bf1249b6b5c3.jpg?auto=format&w=1000',
               name: 'PSPC 小课堂 #1 学习凭证',
             },
+            tokenId: '254',
+            address: '0x0D9ea891B4C30e17437D00151399990ED7965F00',
             token_address: '0x0D9ea891B4C30e17437D00151399990ED7965F00',
           },
         ],

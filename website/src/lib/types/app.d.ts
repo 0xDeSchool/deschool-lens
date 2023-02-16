@@ -42,6 +42,8 @@ export interface NFT {
 
 export interface NFTExtend extends NFT {
   id: string
+  tokenId: string
+  address: string
 }
 
 export interface Series {
