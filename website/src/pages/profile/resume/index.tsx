@@ -43,8 +43,8 @@ const STANDARD_RESUME_DATA: ResumeData = {
       proofs: [
         {
           address: '0xEd1e617b9485168EEB25c6d56e1219747cE62D0e',
-          tokenId: '0',
-          img: 'https://www.ensoul.io/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fensoul-labs-image%2FgdzbhdBooth-logos.jpeg&w=256&q=75',
+          tokenId: '1',
+          img: 'https://www.ensoul.io/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fensoul-labs-image%2FfjvfqfBooth-logos.jpeg&w=256&q=75',
         },
       ],
       blockType: BlockType.EduBlockType,
