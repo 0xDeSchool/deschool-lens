@@ -1,6 +1,7 @@
 package http
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -21,6 +22,7 @@ func pingHandler(ctx *gin.Context) {
 func idListHandler(ctx *gin.Context) {
 	hm := *di.Get[hackathon.HackathonManager]()
 	address := ctx.Query("address")
+	address = eth.NormalizeAddress(address)
 	data := hm.GetIdListByAddr(ctx, address)
 	ctx.JSON(http.StatusOK, data)
 }
@@ -36,6 +38,7 @@ func idValidateHandler(ctx *gin.Context) {
 func resumeGetHandler(ctx *gin.Context) {
 	hm := *di.Get[hackathon.HackathonManager]()
 	address := ctx.Query("address")
+	address = eth.NormalizeAddress(address)
 	resume := hm.GetResumeByAddr(ctx, address)
 	ctx.JSON(http.StatusOK, resume)
 }
@@ -44,6 +47,7 @@ func resumePutHandler(ctx *gin.Context) {
 	hm := *di.Get[hackathon.HackathonManager]()
 	var input ResumePutInput
 	errx.CheckError(ctx.BindJSON(&input))
+	input.Address = eth.NormalizeAddress(input.Address)
 	id := hm.InsertResumeByAddr(ctx, input.Address, input.Data)
 	ginx.EntityCreated(ctx, id.Hex())
 }
@@ -52,6 +56,7 @@ func sbtDetailGetHandler(ctx *gin.Context) {
 	hm := *di.Get[hackathon.HackathonManager]()
 
 	address := ctx.Query("address")
+	address = eth.NormalizeAddress(address)
 	tokenIdStr := ctx.Query("tokenId")
 	tokenId, err := strconv.Atoi(tokenIdStr)
 	errx.CheckError(err)
@@ -78,7 +83,8 @@ func idSbtDetailGetHandler(ctx *gin.Context) {
 func q11ePutHandler(ctx *gin.Context) {
 	hm := *di.Get[hackathon.HackathonManager]()
 	var input PutQ11eInput
-	id := hm.PutQ11e(ctx, input.Address, input.Goals, input.Fields, input.Belief, input.Mbti)
+	errx.CheckError(ctx.BindJSON(&input))
+	id := hm.PutQ11e(ctx, *NewQ11e(&input))
 	ginx.EntityCreated(ctx, id.Hex())
 }
 
@@ -86,6 +92,7 @@ func recommendationGetHandler(ctx *gin.Context) {
 	hm := *di.Get[hackathon.HackathonManager]()
 	address := ctx.Query("address")
 	address = eth.NormalizeAddress(address)
+	fmt.Println(address)
 	result := hm.RunRecommendations(ctx, address)
 	ctx.JSON(http.StatusOK, result)
 }

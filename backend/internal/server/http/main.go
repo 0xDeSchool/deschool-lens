@@ -57,7 +57,6 @@ func HackathonModAndApi(sb *server.ServerBuiler) {
 		// Stage 3 - 推荐 + 互联
 		baseRoute.GET("/sbt", sbtDetailGetHandler)
 		baseRoute.PUT("/q11e", q11ePutHandler)
-		baseRoute.POST("/id/recommendation", q11ePutHandler)
 		baseRoute.GET("/id/recommendation", recommendationGetHandler)
 		return nil
 	})

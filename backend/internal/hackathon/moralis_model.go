@@ -7,6 +7,9 @@ type NftMetaData struct {
 }
 
 type NftMetaDataOutput struct {
+	Address            string      `json:"token_address"`
+	TokenId            string      `json:"token_id"`
+	ContractType       string      `json:"contract_type"`
 	NormalizedMetadata NftMetaData `json:"normalized_metadata"`
 }
 

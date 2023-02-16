@@ -24,14 +24,29 @@ type GetSbtDetailInput struct {
 }
 
 type GetSbtDetailOutput struct {
-	Metadata *hackathon.NftMetaData
+	Metadata *hackathon.NftMetaDataOutput
 	Owners   []string
 }
 
 type PutQ11eInput struct {
-	Address string   `json:"address"`
-	Goals   []string `json:"goals"`
-	Fields  []string `json:"fields"`
-	Belief  []string `json:"belief"`
-	Mbti    int      `json:"mbti"`
+	Address   string   `json:"address"`
+	Goals     []string `json:"goals"`
+	Interests []string `json:"interests"`
+	Pref1     string   `json:"pref1"`
+	Pref2     string   `json:"pref2"`
+	Pref3     string   `json:"pref3"`
+	Mbti      int      `json:"mbti"`
+}
+
+func NewQ11e(input *PutQ11eInput) *hackathon.Q11e {
+	q := &hackathon.Q11e{
+		Address:   input.Address,
+		Goals:     input.Goals,
+		Interests: input.Interests,
+		Pref1:     input.Pref1,
+		Pref2:     input.Pref2,
+		Pref3:     input.Pref3,
+		Mbti:      input.Mbti,
+	}
+	return q
 }

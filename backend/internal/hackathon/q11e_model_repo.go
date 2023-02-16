@@ -31,11 +31,13 @@ const (
 )
 
 type Q11e struct {
-	Address string   `bson:"address"`
-	Goals   []string `bson:"goals"`
-	Fields  []string `bson:"fileds"`
-	Belief  []string `bson:"belief"`
-	Mbti    MbtiType `bson:"mbti"`
+	Address   string
+	Goals     []string
+	Interests []string
+	Pref1     string
+	Pref2     string
+	Pref3     string
+	Mbti      int
 }
 
 type Q11eRepository interface {

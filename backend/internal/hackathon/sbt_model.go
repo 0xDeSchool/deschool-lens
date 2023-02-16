@@ -1,7 +1,7 @@
 package hackathon
 
 type SbtDetail struct {
-	Metadata *NftMetaData
+	Metadata *NftMetaDataOutput
 	Owners   []string
 }
 
