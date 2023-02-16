@@ -97,6 +97,7 @@ specifiers:
   react-i18next: ^12.1.1
   react-image: ^4.0.3
   react-images-uploading: ^3.1.7
+  react-jazzicon: ^1.0.4
   react-loading: ^2.0.3
   react-router: ^6.6.0
   react-router-dom: ^6.6.0
@@ -175,6 +176,7 @@ dependencies:
   react-i18next: 12.1.4_iakk3dtjhjpukdoa4oua5khgci
   react-image: 4.0.3_vtdhxrnyqle7acc5t4jmj3h4hm
   react-images-uploading: 3.1.7_biqbaboplfbrettd7655fr4n2y
+  react-jazzicon: 1.0.4_biqbaboplfbrettd7655fr4n2y
   react-loading: 2.0.3_sh5qlbywuemxd2y3xkrw2y2kr4
   react-router: 6.6.2_react@18.2.0
   react-router-dom: 6.6.2_biqbaboplfbrettd7655fr4n2y
@@ -13382,6 +13384,10 @@ packages:
       semaphore: 1.1.0
     dev: false
 
+  /mersenne-twister/1.1.0:
+    resolution: {integrity: sha512-mUYWsMKNrm4lfygPkL3OfGzOPTR2DBlTkBNHM//F6hGp8cLThY897crAlk3/Jo17LEOOjQUrNAx6DvgO77QJkA==}
+    dev: false
+
   /methods/1.1.2:
     resolution: {integrity: sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w==}
     engines: {node: '>= 0.6'}
@@ -15757,6 +15763,17 @@ packages:
 
   /react-is/18.2.0:
     resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}
+
+  /react-jazzicon/1.0.4_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-/3kWv5vtAhI18GBFoqjpxRTtL+EImuB73PAC02r/zJQ6E+PAUmoBx8edYvTCIYHwS01uFf6N3elTDqSrVPwg4w==}
+    peerDependencies:
+      react: '>=17.0.0'
+      react-dom: '>=17.0.0'
+    dependencies:
+      mersenne-twister: 1.1.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
 
   /react-loading/2.0.3_sh5qlbywuemxd2y3xkrw2y2kr4:
     resolution: {integrity: sha512-Vdqy79zq+bpeWJqC+xjltUjuGApyoItPgL0vgVfcJHhqwU7bAMKzysfGW/ADu6i0z0JiOCRJjo+IkFNkRNbA3A==}
