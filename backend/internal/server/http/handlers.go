@@ -2,6 +2,7 @@ package http
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/0xdeschool/deschool-lens/backend/internal/hackathon"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
@@ -49,8 +50,15 @@ func resumePutHandler(ctx *gin.Context) {
 
 func sbtDetailGetHandler(ctx *gin.Context) {
 	hm := *di.Get[hackathon.HackathonManager]()
-	var input GetSbtDetailInput
-	errx.CheckError(ctx.BindJSON(&input))
+
+	address := ctx.Query("address")
+	tokenIdStr := ctx.Query("tokenId")
+	tokenId, err := strconv.Atoi(tokenIdStr)
+	errx.CheckError(err)
+	input := &GetSbtDetailInput{
+		Address: address,
+		TokenId: tokenId,
+	}
 	data := hm.GetSbtDetail(ctx, input.Address, input.TokenId)
 	result := &GetSbtDetailOutput{
 		Metadata: data.Metadata,
