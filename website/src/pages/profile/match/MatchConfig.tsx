@@ -1,36 +1,83 @@
 import { useEffect, useState } from 'react'
-import message from 'antd/es/message'
 import Form from 'antd/es/form'
 import Button from 'antd/es/button'
-import Col from 'antd/es/col'
+import Radio from 'antd/es/radio'
 import Checkbox from 'antd/es/checkbox'
 import Select from 'antd/es/select'
+import Space from 'antd/es/space'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
-import { CheckLabelList } from './CheckLabelList'
+import Tooltip from 'antd/es/tooltip'
+import type { q11eParam } from '~/api/booth/booth'
+import { putQ11e } from '~/api/booth/booth'
+import { getAddress } from '~/auth'
+
+const InterestTag = [
+  {
+    value: 'defi',
+    label: 'DeFi',
+  },
+  {
+    value: 'dao',
+    label: 'DAO',
+  },
+  {
+    value: 'nft',
+    label: 'NFT',
+  },
+  {
+    value: 'infra',
+    label: 'Infra',
+  },
+  {
+    value: 'gamefi',
+    label: 'GameFi',
+  },
+  {
+    value: 'socialfi',
+    label: 'SocialFi',
+  },
+  {
+    value: 'protocol',
+    label: 'Protocol',
+  },
+  {
+    value: 'dex',
+    label: 'DEX',
+  },
+  {
+    value: 'cex',
+    label: 'CEX',
+  },
+  {
+    value: 'tokenomics',
+    label: 'Tokenomics',
+  },
+  {
+    value: 'research',
+    label: 'Research',
+  },
+  {
+    value: 'talent acquisition',
+    label: 'Talent Acquisition',
+  },
+  {
+    value: 'development',
+    label: 'Development',
+  },
+]
 
 const MatchConfig = () => {
   const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const [label, setLabel] = useState('DAO TOOLS')
-
-  const changeLabel = (tag: string, checked: boolean) => {
-    if (checked) {
-      setLabel(tag)
-    }
-  }
 
   useEffect(() => {
     setLoading(false)
   }, [])
 
-  const submitMatchParams = async (values: any | undefined) => {
-    if (!values) {
-      values = form.getFieldsValue()
-    }
-
+  const submitMatchParams = async () => {
     try {
       setLoading(true)
       // 判断表单是否通过验证
@@ -38,28 +85,40 @@ const MatchConfig = () => {
       if (validResult?.errors) {
         return false
       }
-      // 最后请求
-      const params = {
-        title: values?.project_name,
-        founders: values?.founders,
-        email: values?.email,
-        desc: values?.project_des,
-        wechatId: values?.project_wechatId,
-      }
-      console.log('params', params)
 
-      // await creatProject(params)
+      // 检查地址
+      const address = getAddress()
+      if (address == null) {
+        return false
+      }
+
+      // 最后请求
+      const values = await form.getFieldsValue()
+      const params: q11eParam = {
+        address,
+        goals: values.goals,
+        interests: values.interests,
+        pref1: values.pref1,
+        pref2: values.pref2,
+        pref3: values.pref3,
+        mbti: values.mbti,
+      }
+
+      await putQ11e(params)
       setLoading(false)
+      return true
     } catch (error) {
       console.log(error)
-    } finally {
       setLoading(false)
+      return false
     }
   }
 
-  const handleJumpSuggest = async () => {
-    await submitMatchParams(undefined)
-    navigate(`/profile/suggested`)
+  const handleSubmmit = async () => {
+    const result = await submitMatchParams()
+    if (result) {
+      await navigate(`/profile/suggested`)
+    }
   }
 
   return (
@@ -68,105 +127,162 @@ const MatchConfig = () => {
         form={form}
         name="basic"
         initialValues={{ remember: true }}
-        onFinish={values => submitMatchParams(values)}
-        onFinishFailed={errors => {
-          console.log('onFinishFailed', errors.values)
-          message.error('验证失败，请检查表单')
-        }}
+        layout="vertical"
         autoComplete="off"
-        className="flex gap-20 <md:flex-col"
+        onFinish={handleSubmmit}
+        className="fcs-center space-y-10"
       >
-        <div className="flex-1 flex flex-col">
-          <div className="py-5 mt-5 text-xl font-bold">{t('matchpage.goals')}</div>
-          <Form.Item name="goals" label=" " colon={false}>
-            <Checkbox.Group>
-              <div className="w-full grid grid-cols-24">
-                {[
-                  'I want to have my partners for a web3 start-up idea.',
-                  'I want to find someone that can form a DAO together.',
-                  'I want to find Hackathon teammates.',
-                  'I want to make some friends in this industry.',
-                  'I just want to browse what other people are doing.',
-                ].map(value => (
-                  <Col className="col-span-24" key={value}>
-                    <Checkbox value={value} style={{ lineHeight: '32px' }}>
-                      {value}
-                    </Checkbox>
-                  </Col>
-                ))}
-              </div>
-            </Checkbox.Group>
-          </Form.Item>
-          <div className="py-5 text-xl font-bold">{t('matchpage.fields')}</div>
-          <div className="mt-2">
-            <CheckLabelList
-              labels={['DeFi', 'NFT', 'Blockchain Infra', 'GameFi', 'SocialFi', 'Protocol', 'DEX', 'CEX', 'Research']}
-              changeLabel={changeLabel}
-              label={label}
-            />
-          </div>
-          <div className="py-5 mt-5 text-xl font-bold">{t('matchpage.belief')}</div>
-          <Form.Item name="belief" label=" " colon={false}>
-            <Checkbox.Group>
-              <div className="w-full grid grid-cols-24">
-                {[
-                  'I believe in long-term value',
-                  'I want to make money in Web3 industry ASAP',
-                  'I want to have 10+ people team',
-                  'I want to have an elite, agile squad, like 3~5 people',
-                ].map(value => (
-                  <Col className="col-span-24" key={value}>
-                    <Checkbox value="I believe in long-term value" style={{ lineHeight: '32px' }}>
-                      {value}
-                    </Checkbox>
-                  </Col>
-                ))}
-              </div>
-            </Checkbox.Group>
-          </Form.Item>
+        {/* 目标板块 */}
+        <Form.Item
+          name="goals"
+          label={<div className="py-3 text-xl font-bold">{t('matchpage.goals')}</div>}
+          colon={false}
+          rules={[{ required: true, message: 'Please select your goals!' }]}
+        >
+          <Checkbox.Group>
+            <Space direction="vertical">
+              {[
+                {
+                  short: 'to find partners',
+                  desc: 'I want to have my partners for web3 start-up, DAO, hackathon, etc',
+                  tip: 'This will make the algorithm tend to recommend you people with the same personality and complementary abilities as you',
+                },
+                {
+                  short: 'to find similar friends',
+                  desc: 'I want to find similar friends',
+                  tip: 'This will make the algorithm tend to recommend people with the same personality or ability as you',
+                },
+                {
+                  short: 'to look around',
+                  desc: 'I just want to look around',
+                  tip: 'This will make the algorithm tend to recommend interesting people to you at random',
+                },
+              ].map(item => (
+                <Tooltip key={item.short} title={item.tip}>
+                  <Checkbox value={item.short} style={{ lineHeight: '32px' }}>
+                    {item.desc}
+                  </Checkbox>
+                </Tooltip>
+              ))}
+            </Space>
+          </Checkbox.Group>
+        </Form.Item>
 
-          <div className="py-5 mt-5 text-xl font-bold">{t('matchpage.character')}</div>
+        {/* 感兴趣的领域板块 */}
+        <Form.Item
+          name="interests"
+          label={<div className="py-3 text-xl font-bold">{t('matchpage.fields')}</div>}
+          colon={false}
+          className="w-full"
+          rules={[{ required: true, message: 'Please tell us at least one your fields of interests!' }]}
+          style={{ marginTop: 0 }}
+        >
+          <Select mode="tags" options={InterestTag} />
+        </Form.Item>
+
+        {/* 偏好板块 */}
+        <Form.Item
+          name="pref1"
+          label={
+            <div>
+              <div className="py-3  text-xl font-bold">{t('matchpage.belief')}</div>
+              <b>Speed vs Stability</b>
+            </div>
+          }
+          colon={false}
+          rules={[{ required: true, message: 'Please select your preference!' }]}
+        >
+          <Radio.Group>
+            <Space direction="vertical">
+              <Radio value="speed">I prefer to be able to make progress and achieve success at a rapid speed</Radio>
+              <Radio value="stability">
+                I hope that I can work in this industry for a long time, accumulate continuously, and wait for a successful day
+              </Radio>
+              <Radio value="balanced-speed">I take both and lean toward a balance</Radio>
+            </Space>
+          </Radio.Group>
+        </Form.Item>
+
+        <Form.Item
+          name="pref2"
+          label={<b>Scale vs Flexibility</b>}
+          colon={false}
+          rules={[{ required: true, message: 'Please select your preference!' }]}
+        >
+          <Radio.Group>
+            <Space direction="vertical">
+              <Radio value="scale">
+                I like to do things in a large team, for example, more than 20 people, each with their own division of labor, can focus on
+                their own area to do things
+              </Radio>
+              <Radio value="flexibility">
+                I like to work in an elite team, maybe only 3 to 5 people, which is more flexible, and one person can also take on multiple
+                job responsibilities
+              </Radio>
+              <Radio value="balanced-scale">I take both and lean toward a balance</Radio>
+            </Space>
+          </Radio.Group>
+        </Form.Item>
+
+        <Form.Item
+          name="pref3"
+          label={<b>Efficiency vs Consensus</b>}
+          colon={false}
+          rules={[{ required: true, message: 'Please select your preference!' }]}
+        >
+          <Radio.Group>
+            <Space direction="vertical">
+              <Radio value="efficiency">I prefer more efficient teams, more output, more visible progress</Radio>
+              <Radio value="consensus">
+                I prefer a high-consensus team. Although the output is not the fastest, everyone is friendly and trusts each other
+              </Radio>
+              <Radio value="balanced-efficiency">I take both and lean toward a balance</Radio>
+            </Space>
+          </Radio.Group>
+        </Form.Item>
+
+        {/* MBTi 性格板块 */}
+        <div>
           <Form.Item
-            name="character"
-            label=" "
+            name="mbti"
+            label={<div className="py-3 text-xl font-bold">{t('matchpage.character')}</div>}
             hasFeedback
-            tooltip="解释一下"
-            rules={[{ required: true, message: 'Please select your character!' }]}
+            tooltip={t('matchpage.mbti')}
+            rules={[{ required: true, message: 'Please select your mbti type!' }]}
+            style={{ marginBottom: 0 }}
           >
             <Select placeholder="Please select a character">
-              <Select.Option value="ENTG">ENTG</Select.Option>
-              <Select.Option value="???">???</Select.Option>
+              <Select.Option value={0}>INFP</Select.Option>
+              <Select.Option value={1}>ENFP</Select.Option>
+              <Select.Option value={2}>INFJ</Select.Option>
+              <Select.Option value={3}>ENFJ</Select.Option>
+              <Select.Option value={4}>INTJ</Select.Option>
+              <Select.Option value={5}>ENTJ</Select.Option>
+              <Select.Option value={6}>INTP</Select.Option>
+              <Select.Option value={7}>ENTP</Select.Option>
+              <Select.Option value={8}>ISFP</Select.Option>
+              <Select.Option value={9}>ESFP</Select.Option>
+              <Select.Option value={10}>ISTP</Select.Option>
+              <Select.Option value={11}>ESTP</Select.Option>
+              <Select.Option value={12}>ISFJ</Select.Option>
+              <Select.Option value={13}>ESFJ</Select.Option>
+              <Select.Option value={14}>ISTJ</Select.Option>
+              <Select.Option value={15}>ESTJ</Select.Option>
             </Select>
           </Form.Item>
-
-          <Form.Item>
-            <div className="frc-end mt-20 space-x-2">
-              <Button
-                loading={loading}
-                type="primary"
-                size="large"
-                className="rounded-lg font-bold"
-                onClick={() => {
-                  submitMatchParams(undefined)
-                }}
-                // disabled={!!error || Number(cost) === 0}
-              >
-                {/* {error || t('project_submitdirect_btn')} */}
-                {t('matchpage.save')}
-              </Button>
-              <Button
-                loading={loading}
-                size="large"
-                className="border-0 rounded-lg font-bold"
-                onClick={() => {
-                  handleJumpSuggest()
-                }}
-              >
-                {t('matchpage.explore')}
-              </Button>
-            </div>
-          </Form.Item>
+          <div className="mt-2">
+            <a href="https://www.16personalities.com/free-personality-test">{'Not sure your MBTi type? Take a quiz first >>'}</a>
+          </div>
         </div>
+
+        {/* 提交按钮 */}
+        <Form.Item>
+          <div className="frc-end mt-20 space-x-2">
+            <Button loading={loading} type="primary" size="large" className="border-0 rounded-lg font-bold" htmlType="submit">
+              {t('matchpage.explore')}
+            </Button>
+          </div>
+        </Form.Item>
       </Form>
     </div>
   )

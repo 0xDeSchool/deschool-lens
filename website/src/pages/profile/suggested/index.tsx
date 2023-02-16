@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import LensAvatar from '../userCard/avatar'
 import type { ProfileExtend } from '~/lib/types/app'
+import { m } from 'vitest/dist/types-0373403c'
 
 type SuggestProp = {
   handle?: string
@@ -30,7 +31,20 @@ const Suggest = (props: SuggestProp) => {
       // }
       // result = await followingRequest(params)
       // setCursor(result.pageInfo.next)
-      setSuggestedUsers([] as Array<ProfileExtend | undefined | null>)
+      let arr = [] as Array<ProfileExtend | undefined | null>
+      arr = [
+        {
+          avatarUrl: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
+          coverUrl: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
+          handle: '@WSF',
+          id: '123',
+          isDefault: false,
+          isFollowedByMe: false,
+          isFollowing: true,
+        },
+      ]
+
+      setSuggestedUsers(arr)
     } catch (error: any) {
       if (error && error.name && error.message) message.error(`${error.name}:${error.message}`)
     } finally {
@@ -50,7 +64,7 @@ const Suggest = (props: SuggestProp) => {
     <div className="w-full fcs-center">
       <div className="w-full mb-6 text-right">
         <button type="button" className="purple-border-button p-2" onClick={handleJumpMatch}>
-          Re-fill Config Form
+          Edit preferences
         </button>
       </div>
       {loading ? (

@@ -11,7 +11,7 @@ import (
 	"github.com/0xdeschool/deschool-lens/backend/pkg/utils/linq"
 )
 
-func GetNftMetadata(address string, tokenId int) *NftMetaData {
+func GetNftMetadata(address string, tokenId int) *NftMetaDataOutput {
 	// set up param
 	tokenIdStr := strconv.Itoa(tokenId)
 	const POLYGON_CHAIN_STR = "polygon"
@@ -35,8 +35,7 @@ func GetNftMetadata(address string, tokenId int) *NftMetaData {
 	fmt.Println(string(content))
 	errx.CheckError(err)
 	errx.CheckError(json.Unmarshal(content, &output))
-
-	return &output.NormalizedMetadata
+	return &output
 }
 
 func GetOwners(address string, tokenId int) []string {

@@ -6,14 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func (hm *HackathonManager) PutQ11e(ctx context.Context, address string, goals []string, fields []string, belief []string, mbti int) primitive.ObjectID {
-	q11eObj := &Q11e{
-		Address: address,
-		Goals:   goals,
-		Fields:  fields,
-		Belief:  belief,
-		Mbti:    MbtiType(mbti),
-	}
-	id := hm.q11eRepo.UpsertByField(ctx, "address", address, *q11eObj)
+func (hm *HackathonManager) PutQ11e(ctx context.Context, input Q11e) primitive.ObjectID {
+	id := hm.q11eRepo.UpsertByField(ctx, "address", input.Address, input)
 	return id
 }

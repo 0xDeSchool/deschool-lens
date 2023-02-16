@@ -104,3 +104,23 @@ export async function getIdSbt(address: string): Promise<AbilitySbt | undefined>
     return undefined
   }
 }
+
+export interface q11eParam {
+  address: string
+  goals: string[]
+  interests: string[]
+  pref1: string
+  pref2: string
+  pref3: string
+  mbti: number
+}
+
+export async function putQ11e(param: q11eParam): Promise<string | undefined> {
+  try {
+    const result: string = await http.put(`/q11e`, param)
+    return result
+  } catch (err) {
+    console.log(err)
+    return undefined
+  }
+}

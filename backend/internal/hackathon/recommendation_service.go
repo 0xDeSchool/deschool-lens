@@ -78,10 +78,12 @@ func (hm *HackathonManager) compareTwoId(ctx context.Context, fromQ11e Q11e, toQ
 	score += getSameAndScore(fromQ11e.Goals, toQ11e.Goals, "goal", ur)
 
 	// Fields match
-	score += getSameAndScore(fromQ11e.Fields, toQ11e.Fields, "field", ur)
+	score += getSameAndScore(fromQ11e.Interests, toQ11e.Interests, "interest", ur)
 
-	// Belief match
-	score += getSameAndScore(fromQ11e.Belief, toQ11e.Belief, "belief", ur)
+	// Preferences match
+	fromPrefs := []string{fromQ11e.Pref1, fromQ11e.Pref2, fromQ11e.Pref3}
+	toPrefs := []string{toQ11e.Pref1, toQ11e.Pref2, toQ11e.Pref3}
+	score += getSameAndScore(fromPrefs, toPrefs, "preference", ur)
 
 	// Mbti match
 	delta := MBTI_MATCHING_MAP[fromQ11e.Mbti][toQ11e.Mbti]
@@ -101,6 +103,7 @@ func (hm *HackathonManager) compareTwoId(ctx context.Context, fromQ11e Q11e, toQ
 func getSameAndScore(fromItems []string, toItems []string, fieldName string, ur *UserRecommendation) int {
 	sameItemCnt := 0
 	delta := 0
+	const PERFECT_MATCH_THRESHOLD = 2
 	var sameItemArr []string
 	for _, item := range fromItems {
 		if linq.Contains(toItems, &item) {
@@ -110,11 +113,13 @@ func getSameAndScore(fromItems []string, toItems []string, fieldName string, ur 
 	}
 
 	if sameItemCnt > 0 {
-		if sameItemCnt > 2 {
+		// 加分
+		if sameItemCnt > PERFECT_MATCH_THRESHOLD {
 			delta += 30
 		} else {
 			delta += 20
 		}
+		// 组装原因句子
 		reasonStr := ""
 		for _, sameItem := range sameItemArr {
 			reasonStr = reasonStr + sameItem + ", "
@@ -126,6 +131,7 @@ func getSameAndScore(fromItems []string, toItems []string, fieldName string, ur 
 		if sameItemCnt > 1 {
 			containS = "s"
 		}
+		// 添加
 		ur.Reasons = append(ur.Reasons, "You both have the same "+fieldName+containS+": "+reasonStr+".")
 	}
 	return delta
