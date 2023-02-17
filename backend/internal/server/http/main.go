@@ -23,12 +23,16 @@ func Init(builder *app.AppBuilder) {
 
 	// 添加 Hackathon Module
 	builder.Run(func() error {
+		options := &hackathon.HackathonOptions{}
+		utils.ViperBind("Hackathon", options)
+		di.AddValue(options)
+
 		di.TryAddTransient(hackathon.NewHackathonManager)
 		return nil
 	})
 
 	// Add all module and api here
-	HackathonModAndApi(sb)
+	HackathonApi(sb)
 
 	// Run http server up
 	builder.OrderRun(LAST_RUN_ORDER, func() error {
@@ -38,7 +42,7 @@ func Init(builder *app.AppBuilder) {
 	})
 }
 
-func HackathonModAndApi(sb *server.ServerBuiler) {
+func HackathonApi(sb *server.ServerBuiler) {
 
 	// 在 Server 中添加 Hackathon 模块的各个 Route
 	sb.Configure(func(s *server.Server) error {
@@ -59,6 +63,9 @@ func HackathonModAndApi(sb *server.ServerBuiler) {
 		baseRoute.PUT("/q11e", q11ePutHandler)
 		baseRoute.GET("/q11e", q11eGetHandler)
 		baseRoute.GET("/id/recommendation", recommendationGetHandler)
+
+		// Stage 4 - 测试
+		// baseRoute.POST("/test/sbt", testSbtPostHandler)
 		return nil
 	})
 }

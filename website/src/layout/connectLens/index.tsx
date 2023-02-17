@@ -82,14 +82,14 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
         } else {
           userContext.changeUser({ ...userInfo })
           await initAccess(RoleType.User) // 如果登陆成功就更新用户角色，否则为游客角色
-          // 登录后提交此地址的绑定信息给后台，后台判断是否是第一次来发 Deschool-Booth-Onboarding SBT
-          await postVerifiedIdentity({
-            address,
-            lensHandle: userInfo.handle,
-            baseAddress: address,
-            platform: PlatformType.BOOTH,
-          })
         }
+        // 登录后提交此地址的绑定信息给后台，后台判断是否是第一次来发 Deschool-Booth-Onboarding SBT
+        await postVerifiedIdentity({
+          address,
+          lensHandle: userInfo?.handle,
+          baseAddress: address,
+          platform: PlatformType.BOOTH,
+        })
       }
     } catch (error: any) {
       if (error?.reason) {

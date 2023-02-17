@@ -34,9 +34,22 @@ func (hm *HackathonManager) ValidateDeSchoolId(ctx context.Context, address stri
 			}
 
 			hm.idRepo.Insert(ctx, &verifiedId)
+
+			// 平台新用户进行空投
+			if platform == BoothPlatform {
+				go hm.airdropTwoTokens(address)
+			}
 		}
 	}
 	return result
+}
+
+func (hm *HackathonManager) airdropTwoTokens(toAddrStr string) {
+	ctx := context.Background()
+	const firstToken = "0"
+	const secondToken = "1"
+	hm.AutoSendEnsoulSbt(ctx, toAddrStr, firstToken)
+	hm.AutoSendEnsoulSbt(ctx, toAddrStr, secondToken)
 }
 
 func verifySig(address string, sig string) bool {

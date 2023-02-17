@@ -26,3 +26,12 @@ GET {{host}}/api/id/recommendation?address={{cl_addr}}
 
 ### 获得 Q11e
 GET {{host}}/api/q11e?address={{cl_addr}}
+
+### 开发测试发放 Ensoul SBT
+POST {{host}}/api/test/sbt
+content-type: application/json
+
+{
+    "toAddr": "0x27aa5a880B512bEaF40D1B2E0F256b09f5711444",
+    "tokenId": "0"
+}

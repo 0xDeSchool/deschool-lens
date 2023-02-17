@@ -102,3 +102,18 @@ func q11eGetHandler(ctx *gin.Context) {
 	result := hm.GetQ11e(ctx, address)
 	ctx.JSON(http.StatusOK, result)
 }
+
+func testSbtPostHandler(ctx *gin.Context) {
+	type input struct {
+		ToAddr  string `json:"toAddr"`
+		TokenId string `json:"tokenId"`
+	}
+	var i input
+	errx.CheckError(ctx.BindJSON(&i))
+	hm := *di.Get[hackathon.HackathonManager]()
+	result := hm.AutoSendEnsoulSbt(ctx, i.ToAddr, i.TokenId)
+	type Result struct {
+		Success bool
+	}
+	ctx.JSON(http.StatusOK, &Result{Success: result})
+}
