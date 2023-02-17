@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import Avatar from 'antd/es/avatar'
 import { DEFAULT_AVATAR } from '~/context/account'
 import type { ProfileExtend } from '~/lib/types/app'
+import { Link } from 'react-router-dom'
 
 const CelebrityCard = (props: { celebrity: ProfileExtend; index: number }) => {
   const { celebrity } = props
@@ -27,9 +28,12 @@ const CelebrityCard = (props: { celebrity: ProfileExtend; index: number }) => {
           <h1 className="font-Anton text-black text-24px leading-32px mb-24px">{celebrity.name}</h1>
           <p className="font-ArchivoNarrow text-#000000d8 text-16px leading-24px h-120px overflow-auto">{celebrity.bio}</p>
           <div className="frc-start">
+            {/* <Link to={`/profile/${celebrity.handle}/resume`}> */}
             <button type="button" className="rounded text-14px text-white bg-#774FF8 mr-4 p-2">
               {t('LearnMore')}
             </button>
+            {/* </Link> */}
+
             {/* <button type="button" className="border border-#00000026 text-14px text-black rounded p-2">
               {t('startForReward')}
             </button> */}

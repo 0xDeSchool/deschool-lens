@@ -63,18 +63,18 @@ const UserProfile = () => {
     const tempTabs = [
       {
         key: '1',
-        path: `/profile/${address ? `${address}/` : ''}suggested`,
-        name: t('profile.suggested'),
-      },
-      {
-        key: '2',
         path: `/profile/${address ? `${address}/` : ''}resume`,
         name: t('profile.resume'),
       },
       {
-        key: '3',
+        key: '2',
         path: `/profile/${address ? `${address}/` : ''}verified`,
         name: t('profile.verified'),
+      },
+      {
+        key: '3',
+        path: `/profile/${address ? `${address}/` : ''}suggested`,
+        name: t('profile.suggested'),
       },
       // {
       //   key: '4',
@@ -95,11 +95,11 @@ const UserProfile = () => {
     if (address) {
       // 自己看自己
       if (address === getAddress()) {
-        navigate('/profile/suggested')
+        navigate('/profile/resume')
       }
       // 自己看别人
       else {
-        navigate(`/profile/${address}/suggested`)
+        navigate(`/profile/${address}/resume`)
       }
     }
     // 路由不存在参数，由router判断导向

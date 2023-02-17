@@ -5,6 +5,8 @@ import message from 'antd/es/message'
 import dayjs from 'dayjs'
 import ReactLoading from 'react-loading'
 import Modal from 'antd/es/modal'
+import { useParams } from 'react-router'
+import { useLocation } from 'react-router-dom'
 import { getIdSbt, getResume, putResume } from '~/api/booth/booth'
 import { getAddress } from '~/auth'
 import { useAccount } from '~/context/account'
@@ -61,6 +63,8 @@ export const STANDARD_RESUME_DATA: ResumeData = {
 
 const Resume = (props: ResumeProp) => {
   const { handle } = props
+  const { routeAddress } = useParams()
+  const location = useLocation()
   const user = useAccount()
 
   const [isEditResume, setIsEditResume] = useState(false)
@@ -77,6 +81,7 @@ const Resume = (props: ResumeProp) => {
   const [step, setStep] = useState<number>(1)
   const [txHash, setTxHash] = useState<string>('')
   const [userAddr, setUserAddr] = useState<string>('')
+  const [isSelf, setIsSelf] = useState(false)
 
   // 把一条变成 Dayjs Obj
   const convertStrToDayJsObj = (input: ResumeCardData) => {
@@ -232,8 +237,9 @@ const Resume = (props: ResumeProp) => {
     }
     for (let i = theIndex; i < prevArr.length - 1; i++) {
       newArr[i] = prevArr[i + 1]
-      if (newArr[i] && newArr[i].order !== undefined) {
-        newArr[i].order -= 1
+      const temp = newArr[i].order
+      if (newArr[i] && temp !== undefined) {
+        newArr[i].order = temp - 1
       }
     }
     if (bt === BlockType.CareerBlockType) {
@@ -336,6 +342,9 @@ const Resume = (props: ResumeProp) => {
     const addr = getAddress()
     if (addr) {
       setUserAddr(addr)
+      if (location.pathname === '/profile/resume') {
+        setIsSelf(true)
+      }
     }
   }, [])
 
@@ -384,16 +393,20 @@ const Resume = (props: ResumeProp) => {
           )}
         </div>
         <div className="flex">
-          {!isEditResume && (
+          {isSelf && !isEditResume && (
             <Button type="primary" onClick={() => handlePublish()}>
               Publish On Lens
             </Button>
           )}
+
           <div className="w-2"> </div>
-          <Button onClick={onClickEditResume} loading={putting} type={isEditResume ? 'primary' : 'default'}>
-            {' '}
-            {isEditResume ? 'Save' : 'Edit'}{' '}
-          </Button>
+          {isSelf && (
+            <Button onClick={onClickEditResume} loading={putting} type={isEditResume ? 'primary' : 'default'}>
+              {' '}
+              {isEditResume ? 'Save' : 'Edit'}{' '}
+            </Button>
+          )}
+
           <div className="w-2"> </div>
 
           {isEditResume && (
