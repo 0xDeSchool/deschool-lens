@@ -72,8 +72,8 @@ export const pollAndIndexPost = async (txHash: string, profileId: string) => {
   }
 }
 
-// TODO：暂时先写死一个模板，后面通过IPFS上传
-export const createPost = async (profileId: string, address: string, content: string) => {
+// TODO：暂时先写死一个模板，下个版本再通过IPFS上传用户编辑过的内容
+export const createPost = async (profileId: string, address: string, content: string): Promise<string | undefined> => {
   if (!profileId) {
     throw new Error('Must define PROFILE_ID in the .env to run this')
   }
@@ -134,6 +134,6 @@ export const createPost = async (profileId: string, address: string, content: st
       },
     })
     console.log(`create post: tx hash`, tx.hash)
-    await pollAndIndexPost(tx.hash, profileId)
+    return tx.hash
   }
 }
