@@ -45,7 +45,7 @@ func (r *MongoIdRepository) CheckExistsByAddrBaseAddrAndPltfm(ctx context.Contex
 	var result hackathon.Id
 	err := r.Collection(ctx).Col().FindOne(ctx, filter).Decode(&result)
 
-	// 不存在邀请
+	// 不存在
 	if err == mongo.ErrNoDocuments {
 		return false
 	} else {

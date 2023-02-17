@@ -43,4 +43,5 @@ type Q11e struct {
 type Q11eRepository interface {
 	ddd.RepositoryBase[Q11e]
 	GetByAddress(ctx context.Context, address string) *Q11e
+	CheckAndGetExistsByAddr(ctx context.Context, address string) (bool, *Q11e)
 }

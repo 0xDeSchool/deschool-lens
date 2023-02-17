@@ -11,7 +11,10 @@ func (hm *HackathonManager) PutQ11e(ctx context.Context, input Q11e) primitive.O
 	return id
 }
 
-func (hm *HackathonManager) GetQ11e(ctx context.Context, address string) Q11e {
-	result := hm.q11eRepo.GetByAddress(ctx, address)
-	return *result
+func (hm *HackathonManager) GetQ11e(ctx context.Context, address string) *Q11e {
+	exists, result := hm.q11eRepo.CheckAndGetExistsByAddr(ctx, address)
+	if !exists {
+		return &Q11e{}
+	}
+	return result
 }

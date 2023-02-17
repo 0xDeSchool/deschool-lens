@@ -21,8 +21,8 @@ func (hm *HackathonManager) RunRecommendations(ctx context.Context, address stri
 		}
 	}
 	if fromQ11e == nil {
-		errx.Panic("address hasn't filled a questionnaire yet, please fill the form first!")
 		return nil
+		// errx.Panic("address hasn't filled a questionnaire yet, please fill the form first!")
 	}
 
 	// Find the pair
