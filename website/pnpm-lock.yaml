@@ -52,7 +52,6 @@ specifiers:
   array-move: ^4.0.0
   autoprefixer: ^10.4.13
   axios: ^1.2.1
-  buffer: ^6.0.3
   canvas-confetti: ^1.6.0
   conventional-changelog-cli: ^2.2.2
   copy-to-clipboard: ^3.3.3
@@ -154,7 +153,6 @@ dependencies:
   antd: 5.1.4_biqbaboplfbrettd7655fr4n2y
   antd-img-crop: 4.5.2_3eprgtpjc4b52y4s5m2payzg5q
   axios: 1.2.2
-  buffer: 6.0.3
   canvas-confetti: 1.6.0
   copy-to-clipboard: 3.3.3
   dayjs: 1.11.7
@@ -11743,7 +11741,7 @@ packages:
     dependencies:
       css.escape: 1.5.1
       he: 1.2.0
-      node-fetch: 2.6.7
+      node-fetch: 2.6.9
       webidl-conversions: 7.0.0
       whatwg-encoding: 2.0.0
       whatwg-mimetype: 3.0.0
@@ -14405,6 +14403,7 @@ packages:
         optional: true
     dependencies:
       whatwg-url: 5.0.0
+    dev: false
 
   /node-fetch/2.6.9:
     resolution: {integrity: sha512-DJm/CJkZkRjKKj4Zi4BsKVZh3ValV5IR5s7LVZnW+6YMh0W1BfNA8XSs6DLMGYlId5F3KnA70uu2qepcR08Qqg==}
@@ -14416,7 +14415,6 @@ packages:
         optional: true
     dependencies:
       whatwg-url: 5.0.0
-    dev: false
 
   /node-gyp-build/4.6.0:
     resolution: {integrity: sha512-NTZVKn9IylLwUzaKjkas1e4u2DLNcV4rdYagA4PWdPwW87Bi7z+BznyKSRwS/761tV/lzCGXplWsiaMjLqP2zQ==}

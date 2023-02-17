@@ -35,18 +35,18 @@ const UserProfile = () => {
 
   // 初始化登录场景
   const initCase = () => {
-    let primaryCase = -1
+    let primaryCase: 0 | 1 | -1 = -1
     const cacheAddress = getAddress()
 
     // 有路由参数并且不等于自己地址，即访问他人的空间（不管是否登录都可以看他人空间）
     if (address && address !== cacheAddress) {
-      setVisitCase(1)
+      primaryCase = 1
+
       setConnectBoardVisible(false)
     }
     // 没有路由参数并且有缓存自己地址, 访问自己空间
     else if (!address && cacheAddress) {
       primaryCase = 0
-      setVisitCase(0)
       setConnectBoardVisible(false)
     }
     // 地址栏和缓存都没有地址，既不是访问他人空间也不是访问自己，需要登录访问自己
@@ -54,6 +54,7 @@ const UserProfile = () => {
       primaryCase = -1
       setConnectBoardVisible(true)
     }
+    setVisitCase(primaryCase)
     return primaryCase
   }
 
@@ -89,8 +90,8 @@ const UserProfile = () => {
   }
 
   // 初始化右侧的路由和内容
-  const initRightTab = () => {
-    // 路由存在这个参数
+  const initRoute = () => {
+    // 路由存在这个参数，需要判断导向
     if (address) {
       // 自己看自己
       if (address === getAddress()) {
@@ -101,33 +102,30 @@ const UserProfile = () => {
         navigate(`/profile/${address}/suggested`)
       }
     }
-    // 判断是否登录,没登录就先登录
-    else if (!getAddress() || user?.handle) {
-      navigate('/profile/suggested')
-    } else {
-      setConnectBoardVisible(true)
-    }
+    // 路由不存在参数，由router判断导向
   }
 
   useEffect(() => {
+    initRoute()
+  }, [address])
+
+  useEffect(() => {
     const primaryCase = initCase()
-    if (primaryCase > -1) {
-      initTabs(primaryCase)
-      initRightTab()
-    }
-  }, [user, address, getLanguage()])
+    initTabs(primaryCase)
+  }, [getLanguage()])
 
   return (
-    <div className="relative w-auto mx-10 space-x-10 frs-center h-full overflow-auto scroll-hidden">
-      <div className="w-400px relative mt-30px">
-        <div className="sticky top-6 left-6">
-          {/* 用戶面板信息從路由來或者自己緩存來 */}
-          <UserCard visitCase={visitCase} address={address} />
-        </div>
+    <div className="relative w-auto mx-10 3xl:w-full 3xl:mx-auto 3xl:max-w-1440px 4xl:max-w-1680px fcc-center xl:frs-center h-full overflow-auto scroll-hidden">
+      <div className="w-full mt-70 xl:sticky xl:w-400px xl:mt-0 xl:top-8">
+        {/* 用戶面板信息從路由來或者自己緩存來 */}
+        <UserCard visitCase={visitCase} address={address} />
       </div>
-      <div className="flex-1 relative font-ArchivoNarrow">
+      <div className="w-full xl:w-auto xl:ml-3 flex-1 relative font-ArchivoNarrow">
         {!location.pathname.includes('/profile/match') && (
-          <div className="sticky top-0 left-0 w-full h-80px frc-start space-x-10 bg-#fafafa" style={{ backdropFilter: 'blur(12px)' }}>
+          <div
+            className="xl:sticky top-0 left-0 xl:pl-6 w-auto h-80px frc-start space-x-10 bg-#fafafaaa"
+            style={{ backdropFilter: 'blur(12px)' }}
+          >
             {tabs.map(tab => (
               <Link key={tab.key} to={tab.path}>
                 {tab.name}

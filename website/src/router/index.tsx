@@ -24,6 +24,7 @@ const RouterObj = () => (
         <Route path="landing" element={<Landing />} />
         <Route path="explore" element={<Explore />} />
         <Route path="profile" element={<Profile />}>
+          <Route path="" element={<Navigate to="suggested" />} />
           <Route path="suggested" element={<Suggest />} />
           <Route path="activities" element={<Activities />} />
           <Route path="resume" element={<Resume />} />
