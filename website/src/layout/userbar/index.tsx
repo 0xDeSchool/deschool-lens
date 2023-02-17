@@ -320,7 +320,13 @@ const UserBar = (props: { walletConfig?: WalletConfig; setIsLoading: Function; i
                   }`}
                 >
                   <li className="w-[150px] cursor-pointer text-2xl mb-6 uppercase hover:text-purple-400">
-                    <NavLink to="/profile" className={`${activeNav === '/profile' ? 'border-b-2 border-#6525FF' : ''}`}>
+                    <NavLink
+                      onClick={() => {
+                        setUserMenu(false)
+                      }}
+                      to="/profile"
+                      className={`${activeNav === '/profile' ? 'border-b-2 border-#6525FF' : ''}`}
+                    >
                       {t('profile.profile')}
                     </NavLink>
                   </li>
@@ -339,6 +345,7 @@ const UserBar = (props: { walletConfig?: WalletConfig; setIsLoading: Function; i
                   <li
                     className="w-[150px] cursor-pointer text-2xl uppercase text-#6525FF hover:text-[#e9d5ff]"
                     onClick={() => {
+                      setUserMenu(false)
                       disconnect()
                     }}
                   >
