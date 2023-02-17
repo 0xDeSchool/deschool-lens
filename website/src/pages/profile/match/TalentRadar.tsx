@@ -2,61 +2,82 @@ import { useEffect, useState } from 'react'
 import { Charts } from '~/components/Charts.tsx'
 import * as echarts from 'echarts'
 import type { EChartsOption } from 'echarts/types/dist/shared'
-
-const RadarOption: EChartsOption = {
-  color: ['#67F9D8', '#FFE434', '#56A3F1', '#FF917C'],
-  radar: [
-    {
-      indicator: [
-        { text: 'Developer', max: 150 },
-        { text: 'Research', max: 150 },
-        { text: 'Product', max: 150 },
-        { text: 'Design', max: 120 },
-        { text: 'Operation', max: 108 },
-        { text: 'Governance', max: 72 },
-      ],
-      center: ['50%', '50%'],
-      radius: 120,
-      axisName: {
-        fontSize: 16,
-        color: '#6525ff',
-        borderRadius: 3,
-        padding: [3, 5],
-        formatter: '【{value}】',
-      },
-    },
-  ],
-  series: [
-    {
-      type: 'radar',
-      radarIndex: 0,
-      data: [
-        {
-          value: [100, 93, 50, 90, 70, 60],
-          name: 'Talent Rader',
-          areaStyle: {
-            color: new echarts.graphic.RadialGradient(0.1, 0.6, 1, [
-              {
-                color: 'rgba(171, 253, 44, 0.1)',
-                offset: 0,
-              },
-              {
-                color: 'rgba(171, 253, 44, 0.9)',
-                offset: 1,
-              },
-            ]),
-          },
-        },
-      ],
-    },
-  ],
-}
+import { getIdSbt } from '~/api/booth/booth'
+import { getAddress } from '~/auth'
 
 const TalentRadar = () => {
   const [options, setOptions] = useState<EChartsOption>({})
 
-  useEffect(() => {
+  const loadData = async () => {
+    const address = getAddress()
+    let abArr = [1, 1, 1, 1, 1, 1]
+
+    // 如果有地址，如果有结果，则设置一下
+    if (address) {
+      const result = await getIdSbt(address)
+      if (result?.ability) {
+        abArr = result?.ability
+      }
+    }
+
+    // 设置雷达图属性
+    const RadarOption: EChartsOption = {
+      color: ['#67F9D8', '#FFE434', '#56A3F1', '#FF917C'],
+      radar: [
+        {
+          indicator: [
+            { text: 'DEVELOPMENT', max: 4 },
+            { text: 'RESEARCH', max: 4 },
+            { text: 'PRODUCT', max: 4 },
+            { text: 'DESIGN', max: 4 },
+            { text: 'OPERATION', max: 4 },
+            { text: 'DAO GOVERNANCE', max: 4 },
+          ],
+          center: ['50%', '50%'],
+          radius: 120,
+          axisName: {
+            fontSize: 16,
+            color: '#6525ff',
+            borderRadius: 3,
+            padding: [3, 5],
+            formatter: '{value}',
+          },
+          // splitLine: {}
+        },
+      ],
+      series: [
+        {
+          type: 'radar',
+          radarIndex: 0,
+          data: [
+            {
+              value: [...abArr].map(item => item + 1),
+              name: 'Perk Rader',
+              itemStyle: {
+                color: '#FFCF21',
+              },
+              areaStyle: {
+                color: new echarts.graphic.RadialGradient(0.1, 0.6, 1, [
+                  {
+                    color: '#6525ff22',
+                    offset: 0,
+                  },
+                  {
+                    color: '#6525ffdd',
+                    offset: 1,
+                  },
+                ]),
+              },
+            },
+          ],
+        },
+      ],
+    }
     setOptions(RadarOption)
+  }
+
+  useEffect(() => {
+    loadData()
   }, [])
 
   return (

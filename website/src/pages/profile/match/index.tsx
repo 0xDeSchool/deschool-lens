@@ -24,21 +24,35 @@ const Match = () => {
         <div className="text-left my-2">
           <Alert
             message={<b>Booth Perk Graph (BPG) still in BETA</b>}
-            description="The radar chart is generated based on the current address and the credible on-chain education and work proof of the associated address on the Booth platform, and the data is obtained, classified and dynamically calculated by the intelligent backend. If you have any questions about the radar chart, please provide feedback through the form below."
+            description="The radar chart is generated based on the current address and the credible on-chain education and working proofs of all your connected addresses on the Booth platform. If you have any questions about the radar chart, please provide feedback through the form below."
             type="info"
             showIcon
           />
         </div>
-        <h1>You can gain perks by connecting trusted education and career credential providers:</h1>
+        <h1>You can gain perks by connecting existed addresses or learning courses from trusted providers:</h1>
         <div className="frc-center my-4">
           <button type="button" className="purple-border-button p-2 mr-4" onClick={handleConnectDeschool}>
             <span>Connect Deschool</span>
           </button>
-          <button type="button" className="purple-border-button p-2">
+          <button type="button" className="purple-border-button p-2 mr-4">
             <span>Connect Professional</span>
           </button>
+          <a href="https://deschool.app" target="_blank" rel="noreferrer">
+            <button type="button" className="purple-border-button p-2">
+              <span>Learn Courses</span>
+            </button>
+          </a>
         </div>
-        <p className="w-full text-center text-gray-5 text-14px">Not found your source? Fill a form and let us know!</p>
+        <div className="mb-4">
+          <a
+            href="https://forms.gle/ZwXysgm3ne3TRocA8"
+            target="_blank"
+            rel="noreferrer"
+            className="w-full text-center text-gray-5 text-14px "
+          >
+            {'Not found your source? Fill a form and let us know! >>'}
+          </a>
+        </div>
       </div>
       {/* 填表环节 */}
       <div className="w-full h-1px bg-gray-3"> </div>
