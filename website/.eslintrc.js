@@ -11,6 +11,9 @@ module.exports = {
         map: [['~', './src/']],
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
       },
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"],
+      },
     },
     polyfills: ['Promise', 'URL'],
   },

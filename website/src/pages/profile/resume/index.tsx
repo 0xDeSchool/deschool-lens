@@ -9,6 +9,7 @@ import CardEditor from './components/cardEditor'
 import ResumeBlock from './components/resumeBlock'
 import { BlockType } from './enum'
 import type { ResumeCardData, ResumeData, SbtInfo } from './types'
+import { randomConfetti } from './utils/confetti'
 
 type ResumeProp = {
   handle?: string
@@ -297,6 +298,10 @@ const Resume = (props: ResumeProp) => {
     fetchUserSbtList()
   }, [])
 
+  const handlePublish = () => {
+    randomConfetti()
+  }
+
   return (
     <div className="bg-white p-8">
       {/* 简历标题 + 编辑按钮 */}
@@ -304,9 +309,8 @@ const Resume = (props: ResumeProp) => {
         <div className="text-2xl font-bold">RESUME {handle && `OF ${handle}`}</div>
         <div className="flex">
           {!isEditResume && (
-            <Button type="primary" disabled>
-              {' '}
-              Publish On Lens{' '}
+            <Button type="primary" onClick={() => handlePublish()}>
+              Publish On Lens
             </Button>
           )}
           <div className="w-2"> </div>
