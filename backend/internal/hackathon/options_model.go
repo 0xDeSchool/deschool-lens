@@ -5,4 +5,5 @@ type HackathonOptions struct {
 	ContractAddr   string
 	PolygonNetwork string
 	InfuraApiKey   string
+	MoralisKey     string
 }
