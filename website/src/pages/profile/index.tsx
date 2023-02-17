@@ -35,19 +35,18 @@ const UserProfile = () => {
 
   // 初始化登录场景
   const initCase = () => {
-    let primaryCase = -1
+    let primaryCase: 0 | 1 | -1 = -1
     const cacheAddress = getAddress()
 
     // 有路由参数并且不等于自己地址，即访问他人的空间（不管是否登录都可以看他人空间）
     if (address && address !== cacheAddress) {
       primaryCase = 1
-      setVisitCase(1)
+
       setConnectBoardVisible(false)
     }
     // 没有路由参数并且有缓存自己地址, 访问自己空间
     else if (!address && cacheAddress) {
       primaryCase = 0
-      setVisitCase(0)
       setConnectBoardVisible(false)
     }
     // 地址栏和缓存都没有地址，既不是访问他人空间也不是访问自己，需要登录访问自己
@@ -55,6 +54,7 @@ const UserProfile = () => {
       primaryCase = -1
       setConnectBoardVisible(true)
     }
+    setVisitCase(primaryCase)
     return primaryCase
   }
 
@@ -90,8 +90,8 @@ const UserProfile = () => {
   }
 
   // 初始化右侧的路由和内容
-  const initRightTab = () => {
-    // 路由存在这个参数
+  const initRoute = () => {
+    // 路由存在这个参数，需要判断导向
     if (address) {
       // 自己看自己
       if (address === getAddress()) {
@@ -102,22 +102,17 @@ const UserProfile = () => {
         navigate(`/profile/${address}/suggested`)
       }
     }
-    // 判断是否登录,没登录就先登录
-    else if (!getAddress() || user?.handle) {
-      navigate('/profile/suggested')
-    } else {
-      setConnectBoardVisible(true)
-    }
+    // 路由不存在参数，由router判断导向
   }
 
   useEffect(() => {
-    const primaryCase = initCase()
+    initRoute()
+  }, [address])
 
-    if (primaryCase > -1) {
-      initTabs(primaryCase)
-      initRightTab()
-    }
-  }, [user, address, getLanguage()])
+  useEffect(() => {
+    const primaryCase = initCase()
+    initTabs(primaryCase)
+  }, [getLanguage()])
 
   return (
     <div className="relative screen-fit mx-10 space-x-10 frs-center h-full overflow-auto scroll-hidden">

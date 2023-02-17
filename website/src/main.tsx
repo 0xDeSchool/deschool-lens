@@ -1,6 +1,5 @@
 import { createRoot } from 'react-dom/client'
 import ConfigProvider from 'antd/es/config-provider'
-import * as buffer from "buffer";
 import RouterObj from './router'
 import AllContextProvider from './context'
 import './styles/fonts.css'
@@ -18,11 +17,6 @@ const rootDom = document.getElementById('root')
 // if (process.env.VITE_APP_ENV === 'development') {
 //   mockXHR()
 // }
-
-
-if (typeof (window as any).Buffer === "undefined") {
-  (window as any).Buffer = buffer.Buffer;
-}
 
 
 const root = createRoot(rootDom!) // createRoot(container!) if you use TypeScript

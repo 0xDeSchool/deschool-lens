@@ -32,7 +32,6 @@ const RouterObj = () => (
           <Route path="match" element={<Match />} />
         </Route>
         <Route path="profile/:address" element={<Profile />}>
-          <Route path="" element={<Navigate to="suggested" />} />
           <Route path="suggested" element={<Suggest />} />
           <Route path="activities" element={<Activities />} />
           <Route path="resume" element={<Resume />} />

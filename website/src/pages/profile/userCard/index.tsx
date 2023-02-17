@@ -123,20 +123,22 @@ const UserCard = (props: UserCardProps) => {
             fallback={fallbackImage}
             alt="cover"
             className="h-60! object-cover! object-center! rounded-t-xl"
-            wrapperClassName='w-full'
+            wrapperClassName="w-full"
             crossOrigin="anonymous"
           />
         )}
         <LensAvatar avatarUrl={currentUser?.avatarUrl} />
       </div>
       {/* 处理数据为空的情况 */}
-      <div className="mt-70px w-full px-6 pb-6 fcc-center">
+      <div className="mt-70px w-full px-6 pb-6 fcc-center font-ArchivoNarrow">
         <span className="text-xl">{currentUser?.name || address ? getShortAddress(address) : getShortAddress(getAddress())}</span>
-        <span className="text-xl text-gray-5 font-ArchivoNarrow">{`@${currentUser?.handle}` || 'Lens Handle Not Found'}</span>
+        <span className="text-xl text-gray-5">{currentUser?.handle ? `@${currentUser?.handle}` : 'Lens Handle Not Found'}</span>
       </div>
       <div className="mx-10 frc-center flex-wrap">
         <a
-          className="text-xl mr-4 hover:underline hover:cursor-pointer"
+          className={`${
+            currentUser?.stats?.totalFollowers && currentUser?.stats?.totalFollowers > 0 ? 'hover:underline hover:cursor-pointer' : ''
+          } text-xl mr-4 `}
           onClick={() => {
             handleJumpFollowers(currentUser?.stats?.totalFollowers)
           }}
@@ -145,7 +147,9 @@ const UserCard = (props: UserCardProps) => {
           <span className="text-gray-5 font-ArchivoNarrow">{t('profile.followers')}</span>
         </a>
         <a
-          className="text-xl hover:underline hover:cursor-pointer"
+          className={`${
+            currentUser?.stats?.totalFollowing && currentUser?.stats?.totalFollowing > 0 ? 'hover:underline hover:cursor-pointer' : ''
+          } text-xl`}
           onClick={() => {
             handleJumpFollowing(currentUser?.stats?.totalFollowing)
           }}
@@ -154,8 +158,8 @@ const UserCard = (props: UserCardProps) => {
           <span className="text-gray-5 font-ArchivoNarrow">{t('profile.following')}</span>
         </a>
       </div>
-      {currentUser?.bio ? (
-        <p className="m-10 text-xl line-wrap three-line-wrap">currentUser.bio </p>
+      {user?.handle ? (
+        <p className="m-10 text-xl line-wrap three-line-wrap">{currentUser?.bio || "The user hasn't given a bio on Lens for self yet :)"}</p>
       ) : (
         <p className="m-10 text-xl three-line-wrap">
           Please get a Lens handle to enable all Booth profile functions. You can grab one at:
