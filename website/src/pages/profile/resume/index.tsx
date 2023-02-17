@@ -72,7 +72,7 @@ const Resume = (props: ResumeProp) => {
   const [isEditCard, setIsEditCard] = useState(false)
   const [resumeData, setResumeData] = useState<ResumeData | undefined>()
   const [cardData, setCardData] = useState<ResumeCardData | undefined>()
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [notLogin, setNotLogin] = useState(false)
   const [putting, setPutting] = useState(false)
   const [prevData, setPrev] = useState<ResumeData | undefined>()
