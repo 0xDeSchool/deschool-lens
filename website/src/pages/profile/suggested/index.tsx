@@ -79,7 +79,7 @@ const Suggest = () => {
             </div>
           </div>
           <div className="flex flex-row justify-end">
-            <Button type="primary">Visit Space</Button>
+            <Button type="primary">Visit Booth</Button>
             <Button className="ml-2">Follow</Button>
             <Button disabled className="ml-2">
               Chat

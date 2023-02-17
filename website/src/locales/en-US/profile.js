@@ -1,6 +1,6 @@
 const EN_US_PROFILE = {
   profile: {
-    profile: 'My Space',
+    profile: 'My Booth',
     suggested: 'Suggested People',
     activities: 'Activities',
     resume: 'Resume',
