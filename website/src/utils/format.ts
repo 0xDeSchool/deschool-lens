@@ -55,6 +55,6 @@ export function getBase64(file: File) {
  * @param {string}
  * @returns {string}
  */
-export function getShortAddress(address: string | undefined) {
+export function getShortAddress(address: string | undefined | null) {
   return address ? `${address.slice(0, 6)}...${address.slice(address.length - 4, address.length)}` : ''
 }

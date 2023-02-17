@@ -5,17 +5,17 @@
  * @props
  */
 import Image from 'antd/es/image'
+import message from 'antd/es/message'
 import Skeleton from 'antd/es/skeleton'
 import { useEffect, useState } from 'react'
 import { useAccount } from '~/context/account'
 import { fetchUserDefaultProfile, getExtendProfile } from '~/hooks/profile'
 import { getAddress } from '~/auth/user'
-// import { getProfileRequest } from '~/api/lens/profile/get-profile'
 import { useTranslation } from 'react-i18next'
 import fallbackImage from '~/assets/images/fallbackImage'
-import Empty from 'antd/es/empty'
-import { getRole } from '~/hooks/access'
-import { RoleType } from '~/lib/enum'
+import { getShortAddress } from '~/utils/format'
+import { followByProfileIdWithLens } from '~/api/lens/follow/follow'
+import { unfollowByProfileIdWithLens } from '~/api/lens/follow/unfollow'
 import FollowersModal from './modal'
 import type { ProfileExtend } from '~/lib/types/app'
 import LensAvatar from './avatar'
@@ -68,17 +68,21 @@ const UserCard = (props: UserCardProps) => {
     initUserInfo()
   }, [visitCase])
 
-  const handleJumpFollowers = () => {
-    setModal({
-      type: 'followers',
-      visible: true,
-    })
+  const handleJumpFollowers = (num: number | undefined) => {
+    if (num && num > 0) {
+      setModal({
+        type: 'followers',
+        visible: true,
+      })
+    }
   }
-  const handleJumpFollowing = () => {
-    setModal({
-      type: 'following',
-      visible: true,
-    })
+  const handleJumpFollowing = (num: number | undefined) => {
+    if (num && num > 0) {
+      setModal({
+        type: 'following',
+        visible: true,
+      })
+    }
   }
 
   const closeModal = () => {
@@ -88,7 +92,15 @@ const UserCard = (props: UserCardProps) => {
     })
   }
 
-  const role = getRole()
+  const handleFollow = async (followUser: ProfileExtend | undefined | null) => {
+    const tx = await followByProfileIdWithLens(followUser?.id)
+    message.success(`success following ${followUser?.handle},tx is ${tx}`)
+  }
+
+  const handleUnFollow = async (followUser: ProfileExtend | undefined | null) => {
+    const tx = await unfollowByProfileIdWithLens(followUser?.id)
+    message.success(`success following ${followUser?.handle},tx is ${tx}`)
+  }
 
   return loading ? (
     <Skeleton />
@@ -98,7 +110,7 @@ const UserCard = (props: UserCardProps) => {
         {currentUser?.coverUrl ? (
           <Image
             preview={false}
-            src={currentUser.coverUrl}
+            src={currentUser.coverUrl || 'https://gateway.ipfscdn.io/ipfs/bafkreiasr6zoq5uqqggadem2vlfgzormsx4luozkirsbpumamenc6m6h2u'}
             fallback={fallbackImage}
             alt="cover"
             className="w-full h-full rounded-t-xl object-contain object-center"
@@ -110,43 +122,62 @@ const UserCard = (props: UserCardProps) => {
         <LensAvatar avatarUrl={currentUser?.avatarUrl} />
       </div>
       {/* 处理数据为空的情况 */}
-      {currentUser?.handle ? (
-        <>
-          <div className="mt-70px w-full px-6 pb-6 fcc-center">
-            <span className="text-xl">{currentUser?.name}</span>
-            <span className="text-xl text-gray-5 font-ArchivoNarrow">@{currentUser?.handle}</span>
-          </div>
-          <div className="mx-10 frc-center flex-wrap">
-            <a
-              className="text-xl mr-4 hover:underline hover:cursor-pointer"
-              onClick={() => {
-                handleJumpFollowers()
-              }}
-            >
-              <span className="text-black">{currentUser?.stats?.totalFollowers} </span>
-              <span className="text-gray-5 font-ArchivoNarrow">{t('profile.followers')}</span>
-            </a>
-            <a
-              className="text-xl hover:underline hover:cursor-pointer"
-              onClick={() => {
-                handleJumpFollowing()
-              }}
-            >
-              <span className="text-black">{currentUser?.stats?.totalFollowing} </span>
-              <span className="text-gray-5 font-ArchivoNarrow">{t('profile.following')}</span>
-            </a>
-          </div>
-          <p className="m-10 text-xl line-wrap three-line-wrap">{currentUser?.bio}</p>
-          {address && address !== getAddress() && role === RoleType.User && (
-            <div className="m-10">
-              <button type="button" className="purple-border-button px-2 py-1">
-                {currentUser?.isFollowedByMe ? t('UnFollow') : t('Follow')}
-              </button>
-            </div>
-          )}
-        </>
+      <div className="mt-70px w-full px-6 pb-6 fcc-center">
+        <span className="text-xl">{currentUser?.name || address ? getShortAddress(address) : getShortAddress(getAddress())}</span>
+        <span className="text-xl text-gray-5 font-ArchivoNarrow">{`@${currentUser?.handle}` || 'Lens Handle Not Found'}</span>
+      </div>
+      <div className="mx-10 frc-center flex-wrap">
+        <a
+          className="text-xl mr-4 hover:underline hover:cursor-pointer"
+          onClick={() => {
+            handleJumpFollowers(currentUser?.stats?.totalFollowers)
+          }}
+        >
+          <span className="text-black">{currentUser?.stats?.totalFollowers || '-'} </span>
+          <span className="text-gray-5 font-ArchivoNarrow">{t('profile.followers')}</span>
+        </a>
+        <a
+          className="text-xl hover:underline hover:cursor-pointer"
+          onClick={() => {
+            handleJumpFollowing(currentUser?.stats?.totalFollowing)
+          }}
+        >
+          <span className="text-black">{currentUser?.stats?.totalFollowing || '-'} </span>
+          <span className="text-gray-5 font-ArchivoNarrow">{t('profile.following')}</span>
+        </a>
+      </div>
+      {currentUser?.bio ? (
+        <p className="m-10 text-xl line-wrap three-line-wrap">currentUser.bio </p>
       ) : (
-        <Empty className="mt-70px w-full px-6 pb-6 fcc-center" />
+        <p className="m-10 text-xl three-line-wrap">
+          Please get a Lens handle to enable all Booth profile functions. You can grab one at:
+          <a href="https://opensea.io/collection/lens-protocol-profiles" className="block underline">
+            https://opensea.io/collection/lens-protocol-profiles
+          </a>
+        </p>
+      )}
+
+      {address && address !== getAddress() && (
+        <div className="m-10">
+          <button
+            type="button"
+            className={`${
+              currentUser?.handle
+                ? 'purple-border-button'
+                : 'inline-flex items-center border border-gray rounded-xl bg-gray-3 text-gray-6 hover:cursor-not-allowed'
+            } px-2 py-1`}
+            disabled={!currentUser?.handle}
+            onClick={() => {
+              if (currentUser?.isFollowedByMe) {
+                handleUnFollow(currentUser)
+              } else {
+                handleFollow(currentUser)
+              }
+            }}
+          >
+            {currentUser?.isFollowedByMe ? t('UnFollow') : t('Follow')}
+          </button>
+        </div>
       )}
       <FollowersModal address={address} profileId={currentUser?.id} type={modal.type} visible={modal.visible} closeModal={closeModal} />
     </div>

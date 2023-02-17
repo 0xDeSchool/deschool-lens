@@ -87,10 +87,13 @@ const FollowersModal = (props: {
     }
   }
 
-  const handleFollow = async (followUser: ProfileExtend | undefined | null) => {
-    console.log('followUser', followUser)
+  const handleUnFollow = async (followUser: ProfileExtend | undefined | null) => {
     const tx = await followByProfileIdWithLens(followUser?.id)
-    console.log('follow tx', tx)
+    message.success(`success following ${followUser?.handle},tx is ${tx}`)
+  }
+
+  const handleFollow = async (followUser: ProfileExtend | undefined | null) => {
+    const tx = await followByProfileIdWithLens(followUser?.id)
     message.success(`success following ${followUser?.handle},tx is ${tx}`)
   }
 
@@ -134,7 +137,11 @@ const FollowersModal = (props: {
                         type="button"
                         className="purple-border-button px-2 py-1"
                         onClick={() => {
-                          handleFollow(follow)
+                          if (follow?.isFollowedByMe) {
+                            handleUnFollow(follow)
+                          } else {
+                            handleFollow(follow)
+                          }
                         }}
                       >
                         {follow?.isFollowedByMe ? t('UnFollow') : t('Follow')}
