@@ -72,7 +72,6 @@ const Suggest = () => {
               </ul>
             </div>
             <div className="flex flex-col justify-between items-center h-full">
-              {/* TODO: */}
               <div className="flex flex-col items-center">
                 <div>RECOMMENDED SCORE</div>
                 <div className="text-4xl my-2">{suggestedUser.Score}</div>

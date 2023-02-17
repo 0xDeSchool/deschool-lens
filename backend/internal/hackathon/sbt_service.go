@@ -4,8 +4,8 @@ import (
 	"context"
 	"crypto/ecdsa"
 	"fmt"
+	"hash/fnv"
 	"math/big"
-	"math/rand"
 
 	"github.com/0xdeschool/deschool-lens/backend/build"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
@@ -49,9 +49,10 @@ func (hm *HackathonManager) GetIdSbtDetail(ctx context.Context, address string) 
 		if !sameAddr {
 			info := GetNftByWallet(id.Address)
 			result.Sbts = append(result.Sbts, info.Result...)
-			// TODO: 这里需要确认不同技能 SBT 的相加关系
-			for j := 0; j < info.Total; j++ {
-				skills[rand.Intn(MAX_SKILL_NUM)] += 1
+
+			// TODO: 这里需要不同 SBT 的技能映射表
+			for j := 0; j < len(result.Sbts); j++ {
+				skills[hash(fmt.Sprintf(result.Sbts[j].Address, result.Sbts[j].TokenId))%MAX_SKILL_NUM] += 1
 			}
 		}
 	}
@@ -65,6 +66,13 @@ func (hm *HackathonManager) GetIdSbtDetail(ctx context.Context, address string) 
 		}
 	}
 	return &result
+}
+
+// 哈希函数
+func hash(s string) uint32 {
+	h := fnv.New32a()
+	h.Write([]byte(s))
+	return h.Sum32()
 }
 
 // 自动发放一枚 Ensoul SBT
