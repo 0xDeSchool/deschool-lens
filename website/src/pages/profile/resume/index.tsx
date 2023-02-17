@@ -1,10 +1,14 @@
 import Divider from 'antd/es/divider'
 import { useEffect, useState } from 'react'
 import Button from 'antd/es/button'
+import message from 'antd/es/message'
 import dayjs from 'dayjs'
 import ReactLoading from 'react-loading'
 import { getIdSbt, getResume, putResume } from '~/api/booth/booth'
 import { getAddress } from '~/auth'
+import { useAccount } from '~/context/account'
+import { createPost, pollAndIndexPost } from '~/api/lens/publication/post'
+import Modal from 'antd/es/modal'
 import CardEditor from './components/cardEditor'
 import ResumeBlock from './components/resumeBlock'
 import { BlockType } from './enum'
@@ -15,7 +19,7 @@ type ResumeProp = {
   handle?: string
 }
 
-const STANDARD_RESUME_DATA: ResumeData = {
+export const STANDARD_RESUME_DATA: ResumeData = {
   career: [
     {
       title: 'Product Experiencer & Co-builder - BOOTH',
@@ -56,6 +60,8 @@ const STANDARD_RESUME_DATA: ResumeData = {
 
 const Resume = (props: ResumeProp) => {
   const { handle } = props
+  const user = useAccount()
+
   const [isEditResume, setIsEditResume] = useState(false)
   const [isCreateCard, setIsCreateCard] = useState(false)
   const [isEditCard, setIsEditCard] = useState(false)
@@ -66,6 +72,9 @@ const Resume = (props: ResumeProp) => {
   const [putting, setPutting] = useState(false)
   const [prevData, setPrev] = useState<ResumeData | undefined>()
   const [sbtList, setSbtList] = useState<SbtInfo[]>([])
+  const [congratulateVisible, setCongratulateVisible] = useState<boolean>(false)
+  const [step, setStep] = useState<number>(1)
+  const [txHash, setTxHash] = useState<string>('')
 
   // 把一条变成 Dayjs Obj
   const convertStrToDayJsObj = (input: ResumeCardData) => {
@@ -298,8 +307,31 @@ const Resume = (props: ResumeProp) => {
     fetchUserSbtList()
   }, [])
 
-  const handlePublish = () => {
-    randomConfetti()
+  // 发布个人简历
+  const handlePublish = async () => {
+    try {
+      const address = getAddress()
+      // const resumeDataStr = JSON.stringify(resumeData)
+      const resumeDataStr = JSON.stringify(STANDARD_RESUME_DATA)
+      if (user?.id && address && resumeDataStr) {
+        const txhash = await createPost(user.id, address, resumeDataStr)
+        if (txhash) {
+          setStep(1)
+          setTxHash(txhash)
+          setCongratulateVisible(true)
+          await pollAndIndexPost(txhash, user.id)
+          setStep(2)
+          randomConfetti()
+        }
+      }
+    } catch (error) {
+      message.error('PUBLICATION ERROR: Publish Failed')
+      console.log('error', error)
+    } finally {
+      setCongratulateVisible(false)
+      setStep(1)
+      setTxHash('')
+    }
   }
 
   return (
@@ -365,6 +397,43 @@ const Resume = (props: ResumeProp) => {
         </>
       )}
       {notLogin && <div>You haven't log in yet. Please log in first</div>}
+      <Modal
+        open={congratulateVisible}
+        footer={false}
+        closable
+        onCancel={() => {
+          setCongratulateVisible(false)
+        }}
+      >
+        {step === 1 ? (
+          <div className="w-full">
+            <h1 className="text-2xl font-Anton">Wait transaction to be minted ...</h1>
+            <p className="mt-6">
+              Your tx carries your resume has been sent to polygon network! It should be minted in a short while, you can also check tx
+              status in link:
+              <a href="https://stg-deschool-booth.netlify.com?inviter=0x31829814179283719" className="block underline">
+                https://polygonscan.com/tx/{txHash}
+              </a>
+            </p>
+          </div>
+        ) : (
+          <div className="w-full">
+            <h1 className="text-2xl font-Anton">Congradulations! 🎉</h1>
+            <p className="font-ArchivoNarrow mt-6">Your first web3 Resume is minted! Hooray!!! </p>
+            <p className="font-ArchivoNarrow">Now you can: </p>
+            <ol>
+              <li>1. Visit OpenSea to check your resume [BUTTON]</li>
+              <li>2. Send your Resume NFT to someone (for work or just show off!)</li>
+              <li>
+                3. Invite more friends to this SO COOOOOOOOL website with your unique link:
+                <a href="https://stg-deschool-booth.netlify.com?inviter=0x31829814179283719" className="inline break-all ml-2 underline">
+                  https://stg-deschool-booth.netlify.com?inviter=0x31829814179283719
+                </a>
+              </li>
+            </ol>
+          </div>
+        )}
+      </Modal>
     </div>
   )
 }

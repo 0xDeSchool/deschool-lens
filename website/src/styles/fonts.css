@@ -53,16 +53,7 @@ body {
 }
 /* 正文 */
 .font-ArchivoNarrow {
-  font-family: 'ArchivoNarrow';
-}
-.font-ArchivoNarrow-Medium {
-  font-family: 'ArchivoNarrowMedium';
-}
-.font-ArchivoNarrow-Semibold {
-  font-family: 'ArchivoNarrowSemibold';
-}
-.font-ArchivoNarrow-Bold {
-  font-family: 'ArchivoNarrowBold';
+  font-family: 'ArchivoNarrow,ArchivoNarrowMedium,ArchivoNarrowSemibold,ArchivoNarrowBold';
 }
 /* 中文 */
 .font-Yahei {
