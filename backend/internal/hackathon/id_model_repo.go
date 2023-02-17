@@ -14,10 +14,10 @@ const (
 )
 
 type Id struct {
-	Platform    PlatformType `bson:"platform"`
-	Address     string       `bson:"address"`
-	BaseAddress string       `bson:"baseAddress"`
-	LensHandle  string       `bson:"lensHandle"`
+	Platform    PlatformType `bson:"platform" json:"platform"`
+	Address     string       `bson:"address" json:"address"`
+	BaseAddress string       `bson:"baseAddress" json:"baseAddress"`
+	LensHandle  string       `bson:"lensHandle" json:"lensHandle"`
 }
 
 type IdRepository interface {
