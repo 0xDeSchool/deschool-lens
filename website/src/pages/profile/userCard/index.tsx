@@ -113,7 +113,7 @@ const UserCard = (props: UserCardProps) => {
             src={currentUser.coverUrl}
             fallback={fallbackImage}
             alt="cover"
-            className="w-full h-full rounded-t-xl object-cover! object-center"
+            className="h-60! object-cover! object-center! rounded-t-xl"
             crossOrigin="anonymous"
           />
         ) : (
@@ -159,7 +159,9 @@ const UserCard = (props: UserCardProps) => {
         </a>
       </div>
       {user?.handle ? (
-        <p className="m-10 text-xl line-wrap three-line-wrap">{currentUser?.bio || "The user hasn't given a bio on Lens for self yet :)"}</p>
+        <p className="m-10 text-xl line-wrap three-line-wrap">
+          {currentUser?.bio || "The user hasn't given a bio on Lens for self yet :)"}
+        </p>
       ) : (
         <p className="m-10 text-xl three-line-wrap">
           Please get a Lens handle to enable all Booth profile functions. You can grab one at:

@@ -115,15 +115,15 @@ const UserProfile = () => {
   }, [getLanguage()])
 
   return (
-    <div className="relative screen-fit mx-10 space-x-10 frs-center h-full overflow-auto scroll-hidden">
-      <div className="sticky w-400px top-30px left-6">
+    <div className="relative w-auto mx-10 3xl:w-full 3xl:mx-auto 3xl:max-w-1440px 4xl:max-w-1680px fcc-center xl:frs-center h-full overflow-auto scroll-hidden">
+      <div className="w-full mt-70 xl:sticky xl:w-400px xl:mt-0 xl:top-8">
         {/* 用戶面板信息從路由來或者自己緩存來 */}
         <UserCard visitCase={visitCase} address={address} />
       </div>
-      <div className="flex-1 relative font-ArchivoNarrow">
+      <div className="w-full xl:w-auto xl:ml-3 flex-1 relative font-ArchivoNarrow">
         {!location.pathname.includes('/profile/match') && (
           <div
-            className="sticky top-0 left-0 pl-6 w-auto h-80px frc-start space-x-10 bg-#fafafaaa"
+            className="xl:sticky top-0 left-0 xl:pl-6 w-auto h-80px frc-start space-x-10 bg-#fafafaaa"
             style={{ backdropFilter: 'blur(12px)' }}
           >
             {tabs.map(tab => (
