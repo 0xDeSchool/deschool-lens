@@ -52,6 +52,7 @@ const SbtSelectList = (props: { sbtList: SbtInfo[]; originalList: SbtInfo[] | un
   // 预加载时，load 已经选择了的 img
   useEffect(() => {
     if (!originalList) {
+      setList([])
       return
     }
     const loadedList: string[] = []
@@ -64,7 +65,7 @@ const SbtSelectList = (props: { sbtList: SbtInfo[]; originalList: SbtInfo[] | un
       }
     })
     setList(loadedList)
-  }, [])
+  }, [originalList])
 
   //
   useEffect(() => {
@@ -111,10 +112,13 @@ const CardEditor = (input: CardEditorInput) => {
     handleOk(newCard)
   }
 
+  // 时刻监听父组件传来的
   useEffect(() => {
     form.setFieldsValue({
       title: originalData?.title,
       description: originalData?.description,
+      stime: originalData?.startTime,
+      etime: originalData?.endTime,
     })
   }, [originalData])
 

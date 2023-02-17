@@ -4,16 +4,17 @@ import Button from 'antd/es/button'
 import message from 'antd/es/message'
 import dayjs from 'dayjs'
 import ReactLoading from 'react-loading'
+import Modal from 'antd/es/modal'
 import { getIdSbt, getResume, putResume } from '~/api/booth/booth'
 import { getAddress } from '~/auth'
 import { useAccount } from '~/context/account'
 import { createPost, pollAndIndexPost } from '~/api/lens/publication/post'
-import Modal from 'antd/es/modal'
 import CardEditor from './components/cardEditor'
 import ResumeBlock from './components/resumeBlock'
 import { BlockType } from './enum'
 import type { ResumeCardData, ResumeData, SbtInfo } from './types'
 import { randomConfetti } from './utils/confetti'
+import { getShortAddress } from '~/utils/format'
 
 type ResumeProp = {
   handle?: string
@@ -22,7 +23,7 @@ type ResumeProp = {
 export const STANDARD_RESUME_DATA: ResumeData = {
   career: [
     {
-      title: 'Product Experiencer & Co-builder - BOOTH',
+      title: 'Product Experiencer & Co-builder - Booth',
       description:
         "I experienced Booth's novel product, which is the LinkedIn of the Web3 world, which can provide people with authentic and credible work and education experience SBT as resume proof. Through Booth, we link to better and more real Web3 workers. I have fully experienced this product and made valuable suggestions",
       startTime: dayjs('2023-02-04T16:00:00.000Z'),
@@ -40,7 +41,7 @@ export const STANDARD_RESUME_DATA: ResumeData = {
   ],
   edu: [
     {
-      title: 'Education Cert from Booth/DeSchool',
+      title: 'Education Cert from Booth & DeSchool',
       description:
         'I learned the knowledge of Web3 products, and successfully logged into the Booth product by linking Metamask and lens. This is an important educational experience for me. I learned the basic usage of Web3 products, so I have a credible skill certification when I look for a Web3 job or communicate with people in DAO in the future.',
       startTime: dayjs('2022-02-04T16:00:00.000Z'),
@@ -75,6 +76,7 @@ const Resume = (props: ResumeProp) => {
   const [congratulateVisible, setCongratulateVisible] = useState<boolean>(false)
   const [step, setStep] = useState<number>(1)
   const [txHash, setTxHash] = useState<string>('')
+  const [userAddr, setUserAddr] = useState<string>('')
 
   // 把一条变成 Dayjs Obj
   const convertStrToDayJsObj = (input: ResumeCardData) => {
@@ -111,7 +113,10 @@ const Resume = (props: ResumeProp) => {
         await setPutting(false)
       }
     } else {
-      await setPrev(resumeData)
+      // 深拷贝
+      const prevStr = JSON.stringify(resumeData)
+      const prevObj = covertCareerAndEdu(prevStr)
+      setPrev(prevObj)
     }
     setIsEditResume(!isEditResume)
   }
@@ -176,6 +181,24 @@ const Resume = (props: ResumeProp) => {
       }
     }
     setResumeData(newResumeData)
+
+    // CL同学学会了：
+    // loading && <div> 这样是真实销毁
+    // 如果真实销毁了，传 props 自组建不会显现，所以此处必须先清空 list
+    // 再 close 掉 Model 弹窗
+
+    // 清空卡片信息
+    const emptyCardData: ResumeCardData = {
+      title: '',
+      description: '',
+      startTime: undefined,
+      endTime: undefined,
+      proofs: [],
+      blockType: bt,
+      order,
+    }
+    await setCardData(emptyCardData)
+
     setIsCreateCard(false)
     setIsEditCard(false)
   }
@@ -202,11 +225,16 @@ const Resume = (props: ResumeProp) => {
       return
     }
 
-    for (let i = 0; i < order - 1; i++) {
+    // 写麻了，用 index 来算吧
+    const theIndex = order - 1
+    for (let i = 0; i <= theIndex - 1; i++) {
       newArr[i] = prevArr[i]
     }
-    for (let i = order - 1; i < prevArr.length - 2; i++) {
+    for (let i = theIndex; i < prevArr.length - 1; i++) {
       newArr[i] = prevArr[i + 1]
+      if (newArr[i] && newArr[i].order !== undefined) {
+        newArr[i].order -= 1
+      }
     }
     if (bt === BlockType.CareerBlockType) {
       newResumeData.edu = resumeData?.edu
@@ -305,6 +333,10 @@ const Resume = (props: ResumeProp) => {
   useEffect(() => {
     fetchUserResume()
     fetchUserSbtList()
+    const addr = getAddress()
+    if (addr) {
+      setUserAddr(addr)
+    }
   }, [])
 
   // 发布个人简历
@@ -338,7 +370,19 @@ const Resume = (props: ResumeProp) => {
     <div className="bg-white p-8">
       {/* 简历标题 + 编辑按钮 */}
       <div className="flex justify-between">
-        <div className="text-2xl font-bold">RESUME {handle && `OF ${handle}`}</div>
+        <div className="text-2xl font-bold">
+          RESUME{' '}
+          {handle && (
+            <span>
+              OF<span className="text-gray-5">{handle}</span>
+            </span>
+          )}
+          {!handle && userAddr && (
+            <span>
+              OF ADDRESS <span className="text-gray-5">{getShortAddress(userAddr).toUpperCase()}</span>
+            </span>
+          )}
+        </div>
         <div className="flex">
           {!isEditResume && (
             <Button type="primary" onClick={() => handlePublish()}>
@@ -396,7 +440,10 @@ const Resume = (props: ResumeProp) => {
           />
         </>
       )}
+
       {notLogin && <div>You haven't log in yet. Please log in first</div>}
+
+      {/* Mint Lens NFT 后的 Model */}
       <Modal
         open={congratulateVisible}
         footer={false}

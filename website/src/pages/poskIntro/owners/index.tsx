@@ -18,8 +18,6 @@ const OwnersOnLens = (props: { owners: string[] }) => {
       const requests = owners.map(address => getDefaultProfileRequest({ ethereumAddress: address }))
       const results = await Promise.all(requests)
       const tempOwners = []
-      // eslint-disable-next-line no-debugger
-      debugger
       for (let index = 0; index < results.length; index++) {
         if (!results[index]) {
           tempOwners.push(owners[index])

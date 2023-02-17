@@ -4,8 +4,8 @@ import type { ResumeBlockInput, ResumeCardData } from '../../types'
 import { BlockType } from '../../enum'
 import ResumeCard from '../resumeCard'
 
-const CAREER_TITLE = 'Career Experience'
-const EDU_TITLE = 'Education Experience'
+const CAREER_TITLE = 'Career Experiences'
+const EDU_TITLE = 'Education Experiences'
 
 const ResumeBlock = (input: ResumeBlockInput) => {
   const { handleEditCard, handleDeleteCard, isEditResume, dataArr, blockType, handleCreateCard } = input

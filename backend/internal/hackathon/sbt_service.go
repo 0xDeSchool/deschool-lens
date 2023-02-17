@@ -10,6 +10,7 @@ import (
 	"github.com/0xdeschool/deschool-lens/backend/build"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/errx"
+	"github.com/0xdeschool/deschool-lens/backend/pkg/eth"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/log"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -52,6 +53,7 @@ func (hm *HackathonManager) GetIdSbtDetail(ctx context.Context, address string) 
 
 			// TODO: 这里需要不同 SBT 的技能映射表
 			for j := 0; j < len(result.Sbts); j++ {
+				result.Sbts[j].Address = eth.NormalizeAddress(result.Sbts[j].Address)
 				skills[hash(fmt.Sprintf(result.Sbts[j].Address, result.Sbts[j].TokenId))%MAX_SKILL_NUM] += 1
 			}
 		}
