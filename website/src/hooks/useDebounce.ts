@@ -5,7 +5,7 @@ import { debounceTime, Subject } from 'rxjs'
 export function useDebounce<T>(
   fn: (t: T) => void,
   delay = 300,
-  deps: DependencyList = []
+  deps: DependencyList = [],
 ) {
   const subject = useMemo(() => new Subject<T>(), [])
   useEffect(() => {

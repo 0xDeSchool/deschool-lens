@@ -1,5 +1,5 @@
 import http from '~/api/booth/http'
-import { RecommendAddr } from '~/lib/types/app'
+import type { RecommendAddr } from '~/lib/types/app'
 
 export enum PlatformType {
   BOOTH = 0,

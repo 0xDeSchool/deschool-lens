@@ -8,8 +8,9 @@ import Space from 'antd/es/space'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import Tooltip from 'antd/es/tooltip'
-import { getQ11e, q11eParam } from '~/api/booth/booth'
-import { putQ11e } from '~/api/booth/booth'
+import type { q11eParam } from '~/api/booth/booth';
+import { getQ11e , putQ11e } from '~/api/booth/booth'
+
 import { getAddress } from '~/auth'
 
 const InterestTag = [

@@ -2,24 +2,18 @@ import { useEffect, useState } from 'react'
 import Skeleton from 'antd/es/skeleton'
 import message from 'antd/es/message'
 import Empty from 'antd/es/empty'
-import { useTranslation } from 'react-i18next'
+// import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import Jazzicon from 'react-jazzicon'
-import LensAvatar from '../userCard/avatar'
-import type { ProfileExtend, RecommendAddr } from '~/lib/types/app'
 import { getRecommendation } from '~/api/booth/booth'
 import { getAddress } from '~/auth'
 import Button from 'antd/es/button'
-
-type SuggestProp = {
-  handle?: string
-}
+import type { RecommendAddr } from '~/lib/types/app'
 
 // 根据match config配置的参数推荐用户想找的人
-const Suggest = (props: SuggestProp) => {
-  const { t } = useTranslation()
+const Suggest = () => {
+  // const { t } = useTranslation()
   const navigate = useNavigate()
-  const { handle } = props
   const [loading, setLoading] = useState(false)
   const [suggestedUser, setSuggestedUser] = useState({} as RecommendAddr)
 

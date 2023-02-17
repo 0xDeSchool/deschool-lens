@@ -5,6 +5,8 @@ import dayjs from 'dayjs'
 import ReactLoading from 'react-loading'
 import { getIdSbt, getResume, putResume } from '~/api/booth/booth'
 import { getAddress } from '~/auth'
+import { useAccount } from '~/context/account'
+import { createPost } from '~/api/lens/publication/post'
 import CardEditor from './components/cardEditor'
 import ResumeBlock from './components/resumeBlock'
 import { BlockType } from './enum'
@@ -15,7 +17,7 @@ type ResumeProp = {
   handle?: string
 }
 
-const STANDARD_RESUME_DATA: ResumeData = {
+export const STANDARD_RESUME_DATA: ResumeData = {
   career: [
     {
       title: 'Product Experiencer & Co-builder - BOOTH',
@@ -56,6 +58,8 @@ const STANDARD_RESUME_DATA: ResumeData = {
 
 const Resume = (props: ResumeProp) => {
   const { handle } = props
+  const user = useAccount()
+
   const [isEditResume, setIsEditResume] = useState(false)
   const [isCreateCard, setIsCreateCard] = useState(false)
   const [isEditCard, setIsEditCard] = useState(false)
@@ -298,8 +302,15 @@ const Resume = (props: ResumeProp) => {
     fetchUserSbtList()
   }, [])
 
-  const handlePublish = () => {
-    randomConfetti()
+  // 发布个人简历
+  const handlePublish = async () => {
+    const address = getAddress()
+    // const resumeDataStr = JSON.stringify(resumeData)
+    const resumeDataStr = JSON.stringify(STANDARD_RESUME_DATA)
+    if (user?.id && address && resumeDataStr) {
+      await createPost(user.id, address, resumeDataStr)
+      randomConfetti()
+    }
   }
 
   return (
