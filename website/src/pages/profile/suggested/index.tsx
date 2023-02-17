@@ -5,9 +5,9 @@ import Empty from 'antd/es/empty'
 // import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import Jazzicon from 'react-jazzicon'
+import Button from 'antd/es/button'
 import { getRecommendation } from '~/api/booth/booth'
 import { getAddress } from '~/auth'
-import Button from 'antd/es/button'
 import type { RecommendAddr } from '~/lib/types/app'
 
 // 根据match config配置的参数推荐用户想找的人
@@ -48,11 +48,11 @@ const Suggest = () => {
     <div className="w-full fcs-center">
       <div className="w-full mb-6 text-right">
         <button type="button" className="purple-border-button p-2" onClick={handleJumpMatch}>
-          Edit preferences
+          FIND PAIR
         </button>
       </div>
       {loading && <Skeleton />}
-      {!loading && suggestedUser ? (
+      {!loading && suggestedUser && suggestedUser.ToAddr ? (
         <div className="border rounded-xl w-full  p-4 min-h-240px">
           <div className="frs-start">
             <div className="px-4 mr-2">
@@ -87,7 +87,10 @@ const Suggest = () => {
           </div>
         </div>
       ) : (
-        <Empty />
+        <div className="w-full h-500px flex flex-col justify-center items-center">
+          <div className="text-2xl font-bold">Recommendation Requires a Form Filled by You</div>
+          <div className="mt-4">You haven't fill the preference form yet. Try the top right button "FIND PAIR" first!</div>
+        </div>
       )}
     </div>
   )
