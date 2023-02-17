@@ -4,8 +4,8 @@ const AnimateBg = (props: { type?: 'line' }) => {
   const { type } = props
   if (type && type === 'line') {
     return (
-      <div className='relative w-full h-full overflow-hidden'>
-        <div className={`${style.light} ${style.x1}`}/>
+      <div className="relative w-full h-full overflow-hidden">
+        <div className={`${style.light} ${style.x1}`} />
         <div className={`${style.light} ${style.x2}`} />
         <div className={`${style.light} ${style.x3}`} />
         <div className={`${style.light} ${style.x4}`} />

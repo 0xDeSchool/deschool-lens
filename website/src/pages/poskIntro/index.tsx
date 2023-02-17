@@ -190,7 +190,7 @@ const PoskIntro = () => {
                         handleVisitProfile(e, owner)
                       }}
                     >
-                      <Jazzicon diameter={64} seed={Math.floor(Math.random()*10000)} />
+                      <Jazzicon diameter={64} seed={Math.floor(Math.random() * 10000)} />
                     </div>
                     <div className="flex flex-col ml-6 flex-1 overflow-hidden">
                       <span

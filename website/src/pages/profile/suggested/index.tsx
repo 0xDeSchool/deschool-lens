@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import Skeleton from 'antd/es/skeleton'
 import message from 'antd/es/message'
-import Empty from 'antd/es/empty'
 // import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import Jazzicon from 'react-jazzicon'

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import Form from 'antd/es/form'
 import Button from 'antd/es/button'
-import Radio from 'antd/es/radio'
+// import Radio from 'antd/es/radio'
 import Checkbox from 'antd/es/checkbox'
 import Select from 'antd/es/select'
 import Space from 'antd/es/space'
@@ -116,9 +116,9 @@ const MatchConfig = () => {
         address,
         goals: values.goals,
         interests: values.interests,
-        pref1: values.pref1,
-        pref2: values.pref2,
-        pref3: values.pref3,
+        pref1: '[]', // values.pref1,
+        pref2: '[]', // values.pref2,
+        pref3: '[]', // values.pref3,
         mbti: values.mbti,
       }
 
@@ -143,7 +143,7 @@ const MatchConfig = () => {
     <div>
       <Form
         form={form}
-        name="basic"
+        name="match"
         initialValues={{ remember: true }}
         layout="vertical"
         autoComplete="off"
@@ -176,7 +176,7 @@ const MatchConfig = () => {
                   tip: 'This will make the algorithm tend to recommend interesting people to you at random',
                 },
               ].map(item => (
-                <Tooltip key={item.short} title={item.tip}>
+                <Tooltip key={item.tip} title={item.tip}>
                   <Checkbox value={item.short} style={{ lineHeight: '32px' }}>
                     {item.desc}
                   </Checkbox>
@@ -199,7 +199,7 @@ const MatchConfig = () => {
         </Form.Item>
 
         {/* 偏好板块 */}
-        <Form.Item
+        {/* <Form.Item
           name="pref1"
           label={
             <div>
@@ -219,9 +219,9 @@ const MatchConfig = () => {
               <Radio value="balanced-speed">I take both and lean toward a balance</Radio>
             </Space>
           </Radio.Group>
-        </Form.Item>
+        </Form.Item> */}
 
-        <Form.Item
+        {/* <Form.Item
           name="pref2"
           label={<b>Scale vs Flexibility</b>}
           colon={false}
@@ -257,7 +257,7 @@ const MatchConfig = () => {
               <Radio value="balanced-efficiency">I take both and lean toward a balance</Radio>
             </Space>
           </Radio.Group>
-        </Form.Item>
+        </Form.Item> */}
 
         {/* MBTi 性格板块 */}
         <div>

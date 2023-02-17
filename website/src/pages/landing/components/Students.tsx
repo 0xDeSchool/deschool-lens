@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import UsersAvatars from './UsersAvatars'
-import type { Creator } from '~/lib/types/app';
+import type { Creator } from '~/lib/types/app'
 
 const Students = (props: { users: Creator[]; count: number; textColor?: string; sameColor?: boolean }) => {
   const { users, count, textColor, sameColor } = props

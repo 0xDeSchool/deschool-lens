@@ -48,7 +48,7 @@ instance.interceptors.response.use(
     } else {
       message.error(EN_US_COMMON[err.response.status as keyof typeof ZH_CN_COMMON])
     }
-    console.log("url",err.config.url);
+    console.log('url', err.config.url)
   },
 )
 

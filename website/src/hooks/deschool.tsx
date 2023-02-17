@@ -1,7 +1,6 @@
 import { getUserProfile } from '~/api/go/account'
 import type { Contact } from '~/lib/types/app'
 
-
 export interface UserInfoStruct {
   id?: string
   address?: string

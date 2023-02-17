@@ -9,7 +9,7 @@ import Empty from 'antd/es/empty'
 import { DEFAULT_AVATAR } from '~/context/account'
 import Avatar from 'antd/es/avatar'
 import Tooltip from 'antd/es/tooltip'
-import { InfoCircleFilled, InfoCircleOutlined } from '@ant-design/icons'
+import { InfoCircleOutlined } from '@ant-design/icons'
 
 type VerifiedProp = {
   handle?: string

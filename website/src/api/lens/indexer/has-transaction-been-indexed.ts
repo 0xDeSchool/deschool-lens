@@ -1,4 +1,4 @@
-import { apolloClient } from '../index' 
+import { apolloClient } from '../index'
 import type { HasTxHashBeenIndexedRequest } from '../graphql/generated'
 import { HasTxHashBeenIndexedDocument } from '../graphql/generated'
 

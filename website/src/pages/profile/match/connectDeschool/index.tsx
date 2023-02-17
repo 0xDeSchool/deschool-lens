@@ -15,10 +15,11 @@ import { PlatformType, postVerifiedIdentity } from '~/api/booth/booth'
 interface ConnectBoardProps {
   connectBoardVisible: boolean
   setConnectBoardVisible: Dispatch<SetStateAction<boolean>>
+  setLoginByDeschool?: Dispatch<SetStateAction<boolean>>
 }
 
 const ConnectDeschoolBoard: FC<ConnectBoardProps> = props => {
-  const { connectBoardVisible, setConnectBoardVisible } = props
+  const { connectBoardVisible, setConnectBoardVisible, setLoginByDeschool } = props
   const [loading, setLoading] = useState(false)
   const [loadingUniPass, setLoadingUniPass] = useState(false)
   const [tempAddressObj, setTempAddressObj] = useState<{ type: WalletType; address: string | null }>({
@@ -67,6 +68,7 @@ const ConnectDeschoolBoard: FC<ConnectBoardProps> = props => {
       })
       if (validationRes && validationRes.address && validationRes.jwtToken) {
         setDeschoolToken(address, validationRes.jwtToken)
+        if (setLoginByDeschool) setLoginByDeschool(true)
         const lensAccountAddress = getAddress()
         if (lensAccountAddress) {
           await postVerifiedIdentity({

@@ -6,7 +6,9 @@ const RandomAvatar = (props: any) => {
 
   return (
     <div {...props}>
-      <div className={style.emoji} style={{ backgroundPosition: `-${randomX * 84}px -${randomY * 84}px` }} > </div>
+      <div className={style.emoji} style={{ backgroundPosition: `-${randomX * 84}px -${randomY * 84}px` }}>
+        {' '}
+      </div>
     </div>
   )
 }

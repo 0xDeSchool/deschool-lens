@@ -5,22 +5,22 @@ import message from 'antd/es/message'
 import dayjs from 'dayjs'
 import ReactLoading from 'react-loading'
 import Modal from 'antd/es/modal'
-import { useParams } from 'react-router'
+// import { useParams } from 'react-router'
 import { useLocation } from 'react-router-dom'
 import { getIdSbt, getResume, putResume } from '~/api/booth/booth'
 import { getAddress } from '~/auth'
 import { useAccount } from '~/context/account'
 import { createPost, pollAndIndexPost } from '~/api/lens/publication/post'
+import { getShortAddress } from '~/utils/format'
 import CardEditor from './components/cardEditor'
 import ResumeBlock from './components/resumeBlock'
 import { BlockType } from './enum'
 import type { ResumeCardData, ResumeData, SbtInfo } from './types'
 import { randomConfetti } from './utils/confetti'
-import { getShortAddress } from '~/utils/format'
 
-type ResumeProp = {
-  handle?: string
-}
+// type ResumeProp = {
+//   handle?: string
+// }
 
 export const STANDARD_RESUME_DATA: ResumeData = {
   career: [
@@ -61,9 +61,9 @@ export const STANDARD_RESUME_DATA: ResumeData = {
   ],
 }
 
-const Resume = (props: ResumeProp) => {
-  const { handle } = props
-  const { routeAddress } = useParams()
+const Resume = () => {
+  // const { handle } = props
+  // const { routeAddress } = useParams()
   const location = useLocation()
   const user = useAccount()
 
@@ -364,6 +364,8 @@ const Resume = (props: ResumeProp) => {
           setStep(2)
           randomConfetti()
         }
+      } else {
+        message.error('PUBLICATION ERROR: Please get a lens handle first')
       }
     } catch (error) {
       message.error('PUBLICATION ERROR: Publish Failed')
@@ -380,30 +382,29 @@ const Resume = (props: ResumeProp) => {
       {/* 简历标题 + 编辑按钮 */}
       <div className="flex justify-between">
         <div className="text-2xl font-bold">
-          RESUME{' '}
-          {handle && (
-            <span>
-              OF<span className="text-gray-5">{handle}</span>
+          RESUME
+          {user?.handle && (
+            <span className="ml-1">
+              OF<span className="ml-1 text-gray-5">{user?.handle}</span>
             </span>
           )}
-          {!handle && userAddr && (
-            <span>
-              OF <span className="text-gray-5">{getShortAddress(userAddr).toUpperCase()}</span>
+          {!user?.handle && userAddr && (
+            <span className="ml-1">
+              OF <span className="ml-1 text-gray-5">{getShortAddress(userAddr).toUpperCase()}</span>
             </span>
           )}
         </div>
         <div className="flex">
           {isSelf && !isEditResume && (
             <Button type="primary" onClick={() => handlePublish()}>
-              Publish On Lens
+              {resumeData && step === 2 ? 'Update Resume' : 'Publish On Lens'}
             </Button>
           )}
 
           <div className="w-2"> </div>
           {isSelf && (
             <Button onClick={onClickEditResume} loading={putting} type={isEditResume ? 'primary' : 'default'}>
-              {' '}
-              {isEditResume ? 'Save' : 'Edit'}{' '}
+              {isEditResume ? 'Save' : 'Edit'}
             </Button>
           )}
 
@@ -411,8 +412,7 @@ const Resume = (props: ResumeProp) => {
 
           {isEditResume && (
             <Button danger onClick={handleCancelEditing}>
-              {' '}
-              Cancel{' '}
+              Cancel
             </Button>
           )}
         </div>

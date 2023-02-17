@@ -160,7 +160,7 @@ const UserCard = (props: UserCardProps) => {
       </div>
       {user?.handle ? (
         <p className="m-10 text-xl line-wrap three-line-wrap">
-          {currentUser?.bio || "The user hasn't given a bio on Lens for self yet :)"}
+          {currentUser?.bio || visitCase === 0 ? '' : "The user hasn't given a bio on Lens for self yet :)"}
         </p>
       ) : (
         <p className="m-10 text-xl three-line-wrap">

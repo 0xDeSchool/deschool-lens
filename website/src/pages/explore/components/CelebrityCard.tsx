@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next'
 import Avatar from 'antd/es/avatar'
 import { DEFAULT_AVATAR } from '~/context/account'
 import type { ProfileExtend } from '~/lib/types/app'
-import { Link } from 'react-router-dom'
 
 const CelebrityCard = (props: { celebrity: ProfileExtend; index: number }) => {
   const { celebrity } = props

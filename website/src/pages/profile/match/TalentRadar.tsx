@@ -26,12 +26,12 @@ const TalentRadar = () => {
       radar: [
         {
           indicator: [
-            { text: 'DEVELOPMENT', max: 4 },
-            { text: 'RESEARCH', max: 4 },
-            { text: 'PRODUCT', max: 4 },
-            { text: 'DESIGN', max: 4 },
-            { text: 'OPERATION', max: 4 },
-            { text: 'DAO GOVERNANCE', max: 4 },
+            { name: 'DEVELOPMENT', max: 4 },
+            { name: 'RESEARCH', max: 4 },
+            { name: 'PRODUCT', max: 4 },
+            { name: 'DESIGN', max: 4 },
+            { name: 'OPERATION', max: 4 },
+            { name: 'DAO GOVERNANCE', max: 4 },
           ],
           center: ['50%', '50%'],
           radius: 120,
@@ -51,7 +51,7 @@ const TalentRadar = () => {
           radarIndex: 0,
           data: [
             {
-              value: [...abArr].map(item => item + 1),
+              value: abArr ? [...abArr].map(item => item + 1) : [],
               name: 'Perk Rader',
               itemStyle: {
                 color: '#FFCF21',

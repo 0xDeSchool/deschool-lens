@@ -18,7 +18,6 @@ const rootDom = document.getElementById('root')
 //   mockXHR()
 // }
 
-
 const root = createRoot(rootDom!) // createRoot(container!) if you use TypeScript
 root.render(
   <AllContextProvider>

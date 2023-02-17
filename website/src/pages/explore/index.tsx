@@ -1,7 +1,7 @@
 import Input from 'antd/es/input/Input'
 import { useTranslation } from 'react-i18next'
 import AnimateBg from '~/components/animateBg'
-import type { ChangeEvent} from 'react';
+import type { ChangeEvent } from 'react'
 import { useState } from 'react'
 import HotCelebrities from './components/HotCelebrities'
 // import LeftoffRecord from './LeftoffRecord'

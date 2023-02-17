@@ -8,7 +8,6 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Outlet, useLocation, useNavigate, useParams } from 'react-router'
 
-import { useAccount } from '~/context/account'
 import { useLayout } from '~/context/layout'
 
 import { getAddress } from '~/auth/user'
@@ -24,7 +23,6 @@ type Tab = {
 
 const UserProfile = () => {
   const { address } = useParams()
-  const user = useAccount()
   const navigate = useNavigate()
   const { t } = useTranslation()
   const location = useLocation()

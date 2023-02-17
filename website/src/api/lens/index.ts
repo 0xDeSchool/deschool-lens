@@ -1,4 +1,4 @@
-import type { DefaultOptions } from '@apollo/client';
+import type { DefaultOptions } from '@apollo/client'
 import { ApolloClient, ApolloLink, HttpLink, from, InMemoryCache } from '@apollo/client'
 import { getToken } from '~/auth/user'
 import { onError } from '@apollo/client/link/error'

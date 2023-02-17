@@ -126,6 +126,7 @@ const CardEditor = (input: CardEditorInput) => {
     <Modal title={isCreateCard ? 'Create new experience' : 'Edit experience'} open={isEditCard} onOk={onSubmit} onCancel={handleCancel}>
       <Form
         form={form}
+        name="match"
         initialValues={{
           title: originalData?.title,
           stime: originalData?.startTime,

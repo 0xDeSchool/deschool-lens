@@ -94,7 +94,7 @@ const Layout = () => {
 
   return (
     <div className="relative w-full h-full bg-white">
-      <UserBar walletConfig={walletconfig} isLoading={isLoading} setIsLoading={setIsLoading}/>
+      <UserBar walletConfig={walletconfig} isLoading={isLoading} setIsLoading={setIsLoading} />
       <div
         className={`relative w-full  ${
           location.pathname.startsWith('/profile') ? 'h-full overflow-auto' : 'h-fit min-h-full'

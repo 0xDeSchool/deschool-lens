@@ -4,9 +4,9 @@ import Modal from 'antd/es/modal'
 import { DeleteOutlined, EditOutlined, ExclamationCircleFilled } from '@ant-design/icons'
 import VerifiedIcon from '@mui/icons-material/Verified'
 import Divider from 'antd/es/divider'
+import { useNavigate } from 'react-router'
 import type { ResumeCardInput } from '../../types'
 import { BlockType } from '../../enum'
-import { useNavigate } from 'react-router'
 
 const { confirm } = Modal
 
