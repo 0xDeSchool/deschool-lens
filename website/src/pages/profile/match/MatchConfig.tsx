@@ -8,8 +8,8 @@ import Space from 'antd/es/space'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import Tooltip from 'antd/es/tooltip'
-import type { q11eParam } from '~/api/booth/booth';
-import { getQ11e , putQ11e } from '~/api/booth/booth'
+import type { q11eParam } from '~/api/booth/booth'
+import { getQ11e, putQ11e } from '~/api/booth/booth'
 
 import { getAddress } from '~/auth'
 
@@ -289,7 +289,9 @@ const MatchConfig = () => {
             </Select>
           </Form.Item>
           <div className="mt-2">
-            <a href="https://www.16personalities.com/free-personality-test">{'Not sure your MBTi type? Take a quiz first >>'}</a>
+            <a href="https://www.16personalities.com/free-personality-test" target="_blank" rel="noreferrer">
+              {'Not sure your MBTi type? Take a quiz first >>'}
+            </a>
           </div>
         </div>
 
