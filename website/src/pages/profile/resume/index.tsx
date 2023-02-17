@@ -379,7 +379,7 @@ const Resume = (props: ResumeProp) => {
           )}
           {!handle && userAddr && (
             <span>
-              OF ADDRESS <span className="text-gray-5">{getShortAddress(userAddr).toUpperCase()}</span>
+              OF <span className="text-gray-5">{getShortAddress(userAddr).toUpperCase()}</span>
             </span>
           )}
         </div>
