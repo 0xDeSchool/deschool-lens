@@ -40,6 +40,7 @@ const UserProfile = () => {
 
     // 有路由参数并且不等于自己地址，即访问他人的空间（不管是否登录都可以看他人空间）
     if (address && address !== cacheAddress) {
+      primaryCase = 1
       setVisitCase(1)
       setConnectBoardVisible(false)
     }
@@ -111,6 +112,7 @@ const UserProfile = () => {
 
   useEffect(() => {
     const primaryCase = initCase()
+
     if (primaryCase > -1) {
       initTabs(primaryCase)
       initRightTab()
@@ -118,16 +120,17 @@ const UserProfile = () => {
   }, [user, address, getLanguage()])
 
   return (
-    <div className="relative w-auto mx-10 space-x-10 frs-center h-full overflow-auto scroll-hidden">
-      <div className="w-400px relative mt-30px">
-        <div className="sticky top-6 left-6">
-          {/* 用戶面板信息從路由來或者自己緩存來 */}
-          <UserCard visitCase={visitCase} address={address} />
-        </div>
+    <div className="relative screen-fit mx-10 space-x-10 frs-center h-full overflow-auto scroll-hidden">
+      <div className="sticky w-400px top-30px left-6">
+        {/* 用戶面板信息從路由來或者自己緩存來 */}
+        <UserCard visitCase={visitCase} address={address} />
       </div>
       <div className="flex-1 relative font-ArchivoNarrow">
         {!location.pathname.includes('/profile/match') && (
-          <div className="sticky top-0 left-0 w-full h-80px frc-start space-x-10 bg-#fafafa" style={{ backdropFilter: 'blur(12px)' }}>
+          <div
+            className="sticky top-0 left-0 pl-6 w-auto h-80px frc-start space-x-10 bg-#fafafaaa"
+            style={{ backdropFilter: 'blur(12px)' }}
+          >
             {tabs.map(tab => (
               <Link key={tab.key} to={tab.path}>
                 {tab.name}

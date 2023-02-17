@@ -110,14 +110,22 @@ const UserCard = (props: UserCardProps) => {
         {currentUser?.coverUrl ? (
           <Image
             preview={false}
-            src={currentUser.coverUrl || 'https://gateway.ipfscdn.io/ipfs/bafkreiasr6zoq5uqqggadem2vlfgzormsx4luozkirsbpumamenc6m6h2u'}
+            src={currentUser.coverUrl}
             fallback={fallbackImage}
             alt="cover"
-            className="w-full h-full rounded-t-xl object-contain object-center"
+            className="w-full h-full rounded-t-xl object-cover! object-center"
             crossOrigin="anonymous"
           />
         ) : (
-          <div className="w-full h-140px bg-gray-3 rounded-t-xl"> </div>
+          <Image
+            preview={false}
+            src="https://deschool.s3.amazonaws.com/booth/Booth-logos.jpeg"
+            fallback={fallbackImage}
+            alt="cover"
+            className="h-60! object-cover! object-center! rounded-t-xl"
+            wrapperClassName='w-full'
+            crossOrigin="anonymous"
+          />
         )}
         <LensAvatar avatarUrl={currentUser?.avatarUrl} />
       </div>
