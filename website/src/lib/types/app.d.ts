@@ -6,9 +6,11 @@ export interface LayoutContextProps {
   theme: string
   currentWidth: number
   currentHeight: number
-  connectBoardVisible: boolean
   layoutPosition: Position
-  setConnectBoardVisible: Dispatch<SetStateAction<boolean>>
+  connectLensBoardVisible: boolean
+  connectDeschoolBoardVisible: boolean
+  setConnectLensBoardVisible: Dispatch<SetStateAction<boolean>>
+  setConnectDeschoolBoardVisible: Dispatch<SetStateAction<boolean>>
   setCurrentWidth: Dispatch<SetStateAction<number>>
   setCurrentHeight: Dispatch<SetStateAction<number>>
   setTheme: Dispatch<SetStateAction<string>>

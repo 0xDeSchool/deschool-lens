@@ -21,6 +21,8 @@ const ZH_CN_USERBAR = {
   search:{
     placeholder: "查询 handle/address...",
   },
+  "Connect Lens": "连接Lens",
+  "Connect Deschool": "连接Deschool",
 }
 
 export default ZH_CN_USERBAR

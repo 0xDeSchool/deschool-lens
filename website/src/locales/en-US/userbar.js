@@ -1,5 +1,5 @@
 const EN_US_USERBAR = {
-  home: 'HOME',
+  home: 'HOME', 
   exploreNav: 'EXPLORE',
   matchNav: 'MATCH',
   courses: 'COURSE CENTER',
@@ -22,6 +22,8 @@ const EN_US_USERBAR = {
   search:{
     placeholder: "search by handle/address...",
   },
+  "Connect Lens": "Connect Lens",
+  "Connect Deschool": "Connect Deschool",
 }
 
 export default EN_US_USERBAR
