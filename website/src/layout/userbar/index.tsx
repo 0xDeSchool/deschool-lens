@@ -16,15 +16,12 @@ import { useLayout } from '~/context/layout'
 import { changeLanguage, getLanguage } from '~/utils/language'
 import './userbar.css'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
-// import WrapAuth from '~/components/wrapAuth'
 import { initAccess } from '~/hooks/access'
 import type { WalletConfig } from '~/wallet'
 import { createProvider, getWallet, WalletType } from '~/wallet'
 import { RoleType } from '~/lib/enum'
 import { getAddress, getCachedToken, setLensToken } from '~/auth/user'
 import { fetchUserDefaultProfile } from '~/hooks/profile'
-// import { refreshAuth } from '~/api/lens/authentication/refresh'
-import ExploreSearchBoard from './exploreSearchBoard'
 import Logo from '../logo'
 import type { ProfileExtend } from '~/lib/types/app'
 
@@ -46,7 +43,6 @@ const UserBar = (props: { walletConfig?: WalletConfig; setIsLoading: Function; i
   const [visible, setVisible] = useState(false) // 控制抽屉是否显示
   const [activeNav, setActiveNav] = useState('/landing') // 当前激活的路由
   const [isShowUserMenu, setUserMenu] = useState(false)
-  const [showExploreSearch, setShowExploreSearch] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -60,7 +56,7 @@ const UserBar = (props: { walletConfig?: WalletConfig; setIsLoading: Function; i
       name: t('exploreNav'),
     },
     {
-      path: '/profile/suggested',
+      path: '/profile/match',
       name: t('matchNav'),
     },
   ]
@@ -79,14 +75,11 @@ const UserBar = (props: { walletConfig?: WalletConfig; setIsLoading: Function; i
   const updateNavStatus = () => {
     if (location.pathname.startsWith('/explore')) {
       setActiveNav('/explore')
-      setShowExploreSearch(true)
     } else if (location.pathname.includes('/landing')) {
       setActiveNav('/landing')
-      setShowExploreSearch(false)
     } else {
       const s = location.pathname.split('/')
       setActiveNav(`/${s[3]}`)
-      setShowExploreSearch(false)
     }
   }
 
@@ -228,11 +221,6 @@ const UserBar = (props: { walletConfig?: WalletConfig; setIsLoading: Function; i
                       <NavLink to={nav.path}>{nav.name}</NavLink>
                     </span>
                   ))}
-                  {showExploreSearch && (
-                    <div className="absolute right-8">
-                      <ExploreSearchBoard />
-                    </div>
-                  )}
                 </div>
               </div>
             </Drawer>
@@ -249,11 +237,6 @@ const UserBar = (props: { walletConfig?: WalletConfig; setIsLoading: Function; i
                 <NavLink to={nav.path}>{nav.name}</NavLink>
               </span>
             ))}
-            {showExploreSearch && (
-              <div className="absolute right-8">
-                <ExploreSearchBoard />
-              </div>
-            )}
           </div>
         )}
         {/* language && userInfo */}
