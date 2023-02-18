@@ -1,6 +1,6 @@
 const EN_US_LANDING = {
   landing: {
-    title1: 'EduLens - Best Web3 Education Social App!',
+    title1: 'Booth - Best Web3 Education Social App!',
     title2: 'Built on Lens Protocol and DeSchool app. Trusted by 10k+ users',
     button1: 'explore',
     button2: 'check my profile',
