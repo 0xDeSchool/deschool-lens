@@ -5,12 +5,12 @@
 import React, { useState, useEffect } from 'react'
 // import addToNetwork from '~/hooks/useAddToNetwork'
 import { useTranslation } from 'react-i18next'
-import { DownSquareOutlined, LoadingOutlined, MenuOutlined } from '@ant-design/icons'
-import { UserlaneIcon, ArrowDownIcon } from '~/components/icon'
-import Avatar from 'antd/es/avatar'
+import { MenuOutlined } from '@ant-design/icons'
+import { ArrowDownIcon } from '~/components/icon'
 import Drawer from 'antd/es/drawer'
 import message from 'antd/es/message'
-
+import Lens from '~/assets/icons/lens.svg'
+import Deschool from '~/assets/icons/deschool.svg'
 import { DEFAULT_AVATAR, getUserContext, useAccount } from '~/context/account'
 import { useLayout } from '~/context/layout'
 import { changeLanguage, getLanguage } from '~/utils/language'
@@ -20,7 +20,7 @@ import { initAccess } from '~/hooks/access'
 import type { WalletConfig } from '~/wallet'
 import { createProvider, getWallet, WalletType } from '~/wallet'
 import { RoleType } from '~/lib/enum'
-import { getAddress, getCachedToken, setLensToken } from '~/auth/user'
+import { getCachedToken, setLensToken } from '~/auth/user'
 import { fetchUserDefaultProfile } from '~/hooks/profile'
 import Logo from '../logo'
 import type { ProfileExtend } from '~/lib/types/app'
@@ -36,7 +36,7 @@ import type { ProfileExtend } from '~/lib/types/app'
 
 const UserBar = (props: { walletConfig?: WalletConfig; setIsLoading: Function; isLoading: boolean }) => {
   const { walletConfig, setIsLoading, isLoading } = props
-  const { currentWidth, setConnectBoardVisible } = useLayout()
+  const { currentWidth, setConnectLensBoardVisible, setConnectDeschoolBoardVisible } = useLayout()
   const { t, i18n } = useTranslation()
   const user = useAccount()
   const userContext = getUserContext()
@@ -155,8 +155,12 @@ const UserBar = (props: { walletConfig?: WalletConfig; setIsLoading: Function; i
     }
   }
 
-  const handleLogin = async () => {
-    setConnectBoardVisible(true)
+  const handleLoginLens = async () => {
+    setConnectLensBoardVisible(true)
+  }
+
+  const handleLoginDeschool = async () => {
+    setConnectDeschoolBoardVisible(true)
   }
 
   useEffect(() => {
@@ -172,7 +176,7 @@ const UserBar = (props: { walletConfig?: WalletConfig; setIsLoading: Function; i
     <div className="select-none fixed z-4 w-full bg-#ffffff80" style={{ backdropFilter: 'blur(12px)' }}>
       <div className="flex flex-row items-center justify-between w-auto leading-8 py-4 px-6 xl:px-8 text-xl">
         {/* logo */}
-        <div style={{ width: '174px', height: '26px' }}>
+        <div style={{ width: '174px', height: '26px', lineHeight: '32px' }}>
           <NavLink to="/landing">
             <Logo />
           </NavLink>
@@ -194,7 +198,7 @@ const UserBar = (props: { walletConfig?: WalletConfig; setIsLoading: Function; i
                   <NavLink to="/landing">
                     <Logo />
                   </NavLink>
-                  <div className="h-full flex flex-row items-center ml-8 cursor-pointer text-2xl text-black">
+                  <div className="h-full flex flex-row items-center ml-4 cursor-pointer text-2xl text-black">
                     <span
                       className="mr-1 font-ArchivoNarrow min-w-[60px]"
                       onClick={e => {
@@ -215,7 +219,7 @@ const UserBar = (props: { walletConfig?: WalletConfig; setIsLoading: Function; i
                     <span
                       key={index.toString() + nav.name}
                       className={`cursor-pointer text-2xl text-black font-ArchivoNarrow mr-10 ${currentWidth <= 768 ? 'mt-4' : ''} ${
-                        activeNav === nav.path ? 'border-b-2 border-#6525FF' : ''
+                        activeNav === nav.path ? 'border-b-2 border-#000000 hover:border-#00000088' : ''
                       }`}
                     >
                       <NavLink to={nav.path}>{nav.name}</NavLink>
@@ -226,120 +230,64 @@ const UserBar = (props: { walletConfig?: WalletConfig; setIsLoading: Function; i
             </Drawer>
           </div>
         ) : (
-          <div className="flex-1 relative flex flex-row items-center justify-center col-span-6 space-x-5 h-8 leading-8 text-black">
-            {navs.map((nav, index) => (
-              <span
-                key={index.toString() + nav.name}
-                className={`cursor-pointer text-2xl font-ArchivoNarrow text-black ${
-                  activeNav === nav.path ? 'border-b-2 border-#6525FF' : ''
-                }`}
-              >
-                <NavLink to={nav.path}>{nav.name}</NavLink>
-              </span>
-            ))}
-          </div>
-        )}
-        {/* language && userInfo */}
-        <div className="flex flex-row items-center justify-end">
-          {currentWidth <= 1200 ? (
-            ''
-          ) : (
-            <div className="h-full flex flex-row items-center mr-8 cursor-pointer text-black">
-              <span
-                className="mr-1 font-ArchivoNarrow"
-                onClick={e => {
-                  handleChange(e)
-                }}
-              >
-                {getLanguage() === 'zh_CN' ? '中文' : 'EN'}
-              </span>
-              <ArrowDownIcon style={{ width: '16px', height: '16px', color: '#000000' }} className="mr-1" />
-            </div>
-          )}
-          <div className="relative flex flex-row items-center">
-            {user ? (
-              <Avatar size={26} alt="user avatar" src={user.avatarUrl || DEFAULT_AVATAR} style={{ display: 'inline-block' }} />
-            ) : (
-              <UserlaneIcon style={{ width: '22px', height: '22px', color: '#000000' }} />
-            )}
-            <div className="flex flex-col items-center ml-2">
-              <span className="dark:text-primary-light font-ArchivoNarrow">
-                {getAddress() && !user?.handle ? `${getAddress()?.slice(0, 5)}…${getAddress()?.slice(38, 42)}` : null}
-                {user?.handle && `${user?.name === user?.handle ? `${user.handle.slice(0, 5)}…${user.handle.slice(38, 42)}` : user.name}`}
-                {!user?.handle && isLoading && (
-                  <LoadingOutlined style={{ width: 20, height: 20, fontSize: 20 }} color="#000" className="margin-right-10" />
-                )}
-                {!user?.handle && !isLoading && !getAddress() && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      handleLogin()
-                    }}
-                    className="text-black font-ArchivoNarrow"
-                  >
-                    {t('Connect Wallet')}
-                  </button>
-                )}
-              </span>
-            </div>
-            {user?.id || getAddress() ? (
-              <div className="flex flex-col items-center relative">
-                <DownSquareOutlined
-                  className={`transition-transform ${isShowUserMenu ? 'transform rotate-180' : ''} cursor-pointer ml-2`}
-                  onClick={() => {
-                    handleToggleMenu()
-                  }}
-                />
-                <ul
-                  onBlur={e => {
-                    handleClickAway(e)
-                  }}
-                  className={`usermenu rounded-md text-center mt-8 mr-40 font-ArchivoNarrow ${
-                    user?.id || getAddress() ? 'p-6' : 'hidden'
-                  } ${
-                    isShowUserMenu
-                      ? 'fixed z-50 transition-height h-auto dark:bg-secondary-dark'
-                      : 'fixed z-50 transition-height h-0 hidden'
+          <div className="flex-1 relative frc-between mr-8 col-span-6 h-8 leading-8 text-black">
+            <div className="frc-center space-x-5">
+              {navs.map((nav, index) => (
+                <span
+                  key={index.toString() + nav.name}
+                  className={`cursor-pointer text-2xl font-ArchivoNarrow text-black ${
+                    activeNav === nav.path ? 'border-b-2 border-#000000 hover:border-#00000088' : ''
                   }`}
                 >
-                  <li className="w-[150px] cursor-pointer text-2xl mb-6 uppercase hover:text-purple-400">
-                    <NavLink
-                      onClick={() => {
-                        setUserMenu(false)
-                      }}
-                      to="/profile"
-                      className={`${activeNav === '/profile' ? 'border-b-2 border-#6525FF' : ''}`}
-                    >
-                      {t('profile.profile')}
-                    </NavLink>
-                  </li>
-                  {/* <WrapAuth>
-                    <li className="block w-[150px] cursor-pointer text-2xl mb-6 uppercase hover:text-purple-400">
-                      <NavLink
-                        to="/manage"
-                        onClick={() => setUserMenu(false)}
-                        className={`${activeNav === '/manage' ? 'border-b-2 border-#6525FF' : ''}`}
-                      >
-                        {t('manage')}
-                      </NavLink>
-                    </li>
-                  </WrapAuth> */}
-                  <div className="h-[1px] w-full my-6 bg-black"> </div>
-                  <li
-                    className="w-[150px] cursor-pointer text-2xl uppercase text-#6525FF hover:text-[#e9d5ff]"
-                    onClick={() => {
-                      setUserMenu(false)
-                      disconnect()
-                    }}
-                  >
-                    {t('disconnect')}
-                  </li>
-                </ul>
-              </div>
-            ) : (
-              ''
-            )}
+                  <NavLink to={nav.path}>{nav.name}</NavLink>
+                </span>
+              ))}
+            </div>
+            <span
+              className={`cursor-pointer uppercase text-2xl font-ArchivoNarrow text-black ${
+                activeNav === '/profile/resume' ? 'border-b-2 border-#000000 hover:border-#00000088' : ''
+              }`}
+            >
+              <NavLink to="/profile/resume">{t('profile.resume')}</NavLink>
+            </span>
           </div>
+        )}
+        {/* lens & deschool connect */}
+        <div className="flex flex-row items-center justify-end">
+          <span
+            className="frc-center bg-#abfe2c rounded-xl px-4 mr-4"
+            onClick={() => {
+              handleLoginLens()
+            }}
+          >
+            <img src={Lens} alt="lens" width={24} height={24} />
+            <button type="button" className="text-black text-14px ml-2 font-ArchivoNarrow">
+              {t('Connect Lens')}
+            </button>
+          </span>
+          <span
+            className="frc-center bg-#774ff8 rounded-xl px-4"
+            onClick={() => {
+              handleLoginDeschool()
+            }}
+          >
+            <img src={Deschool} alt="lens" width={20} height={24} />
+            <button type="button" className="text-white text-14px ml-2 font-ArchivoNarrow">
+              {t('Connect Deschool')}
+            </button>
+          </span>
+        </div>
+        {/* language switch */}
+        <div className="frc-center ml-4">
+          <span
+            className="font-ArchivoNarrow text-black cursor-pointer"
+            onClick={e => {
+              handleChange(e)
+            }}
+          >
+            {getLanguage() === 'zh_CN' ? '中文' : 'EN'}
+          </span>
+          <ArrowDownIcon style={{ width: '16px', height: '16px', color: '#000000' }} />
         </div>
       </div>
     </div>

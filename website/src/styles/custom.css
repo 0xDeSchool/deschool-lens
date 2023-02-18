@@ -184,8 +184,12 @@ input[type='text']:focus {
 }
 
 /*** 导航a ***/
+a {
+  color: black;
+}
+
 a:hover {
-  color: #a753f4;
+  color: #000000aa;
 }
 
 .explore .ant-input-search .ant-input-search-button,

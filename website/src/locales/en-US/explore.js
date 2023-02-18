@@ -4,7 +4,7 @@ const EN_US_EXPLORE = {
     noresult: 'No Result',
     title1: 'Search Anything you are interested in...',
     searchTips: 'Address, course, edu certs, lens handle or anything in web3!',
-    title2: 'Well-known People in Web3 Career',
+    title2: 'New users on Booth',
     time: {
       day: 'd',
       hour: 'h',

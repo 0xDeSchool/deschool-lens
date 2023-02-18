@@ -4,7 +4,7 @@ const ZH_CN_EXPLORE = {
     noresult: '暂无结果',
     title1: '探索你想知道的...',
     searchTips: '地址、课程名、lens handle 或者其他任何 web3相关内容!',
-    title2: 'Web3知名讲师',
+    title2: 'Booth新加入的小伙伴',
     time: {
       day: '天',
       hour: '时',

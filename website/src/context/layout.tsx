@@ -6,9 +6,11 @@ export const LayoutContext = createContext<LayoutContextProps>({
   theme: 'light',
   currentWidth: 1920,
   currentHeight: 1080,
-  connectBoardVisible: false,
   layoutPosition: {},
-  setConnectBoardVisible: () => {},
+  connectLensBoardVisible: false,
+  setConnectLensBoardVisible: () => {},
+  connectDeschoolBoardVisible: false,
+  setConnectDeschoolBoardVisible: () => {},
   setCurrentWidth: () => {},
   setCurrentHeight: () => {},
   setTheme: () => {},
@@ -19,7 +21,8 @@ export const LayoutContextProvider = ({ children }: { children: ReactElement }) 
   const [theme, setTheme] = useState('light')
   const [currentWidth, setCurrentWidth] = useState(1920)
   const [currentHeight, setCurrentHeight] = useState(1080)
-  const [connectBoardVisible, setConnectBoardVisible] = useState(false)
+  const [connectLensBoardVisible, setConnectLensBoardVisible] = useState(false)
+  const [connectDeschoolBoardVisible, setConnectDeschoolBoardVisible] = useState(false)
   const [layoutPosition, setLayoutPosition] = useState({})
 
   const onWidthChange = () => {
@@ -50,8 +53,10 @@ export const LayoutContextProvider = ({ children }: { children: ReactElement }) 
       setCurrentWidth,
       currentHeight,
       setCurrentHeight,
-      connectBoardVisible,
-      setConnectBoardVisible,
+      connectLensBoardVisible,
+      setConnectLensBoardVisible,
+      connectDeschoolBoardVisible,
+      setConnectDeschoolBoardVisible,
       layoutPosition,
       setLayoutPosition,
     }),
@@ -62,8 +67,10 @@ export const LayoutContextProvider = ({ children }: { children: ReactElement }) 
       setCurrentWidth,
       currentHeight,
       setCurrentHeight,
-      connectBoardVisible,
-      setConnectBoardVisible,
+      connectLensBoardVisible,
+      setConnectLensBoardVisible,
+      connectDeschoolBoardVisible,
+      setConnectDeschoolBoardVisible,
       layoutPosition,
       setLayoutPosition,
     ],
