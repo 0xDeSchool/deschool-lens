@@ -66,6 +66,12 @@ func HackathonApi(sb *server.ServerBuiler) {
 
 		// Stage 4 - 测试
 		// baseRoute.POST("/test/sbt", testSbtPostHandler)
+
+		// Stage 5 - 临时
+		baseRoute.GET("/follow", followGetHandler)
+		baseRoute.POST("/follow", followPostHandler)
+		baseRoute.GET("/follow/following", followingGetHandler)
+		baseRoute.GET("/follow/follower", followerGetHandler)
 		return nil
 	})
 }

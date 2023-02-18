@@ -11,13 +11,15 @@ type PlatformType int
 const (
 	BoothPlatform    = 0
 	DeSchoolPlatform = 1
+	LensPlatform     = 2
 )
 
 type Id struct {
-	Platform    PlatformType `bson:"platform" json:"platform"`
-	Address     string       `bson:"address" json:"address"`
-	BaseAddress string       `bson:"baseAddress" json:"baseAddress"`
-	LensHandle  string       `bson:"lensHandle" json:"lensHandle"`
+	Platform            PlatformType `bson:"platform" json:"platform"`
+	Address             string       `bson:"address" json:"address"`
+	BaseAddress         string       `bson:"baseAddress" json:"baseAddress"`
+	LensHandle          string       `bson:"lensHandle" json:"lensHandle"`
+	ddd.AuditEntityBase `bson:",inline"`
 }
 
 type IdRepository interface {

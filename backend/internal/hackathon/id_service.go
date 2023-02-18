@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/0xdeschool/deschool-lens/backend/pkg/errx"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/eth"
@@ -14,7 +15,7 @@ import (
 
 // 链接验证 DeSchool ID
 func (hm *HackathonManager) ValidateDeSchoolId(ctx context.Context, address string, baseAddress string, lensHandle string, platform int) bool {
-	if platform != DeSchoolPlatform && platform != BoothPlatform {
+	if platform != DeSchoolPlatform && platform != BoothPlatform && platform != LensPlatform {
 		str := strconv.Itoa(int(platform))
 		errx.Panic("unknown platform type to validate: " + str)
 	}
@@ -32,11 +33,12 @@ func (hm *HackathonManager) ValidateDeSchoolId(ctx context.Context, address stri
 				BaseAddress: baseAddress,
 				LensHandle:  lensHandle,
 			}
+			verifiedId.CreatedAt = time.Now()
 
 			hm.idRepo.Insert(ctx, &verifiedId)
 
 			// 平台新用户进行空投
-			if platform == BoothPlatform {
+			if platform == BoothPlatform || platform == DeSchoolPlatform || platform == LensPlatform {
 				go hm.airdropTwoTokens(address)
 			}
 		}

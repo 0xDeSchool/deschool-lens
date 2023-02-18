@@ -119,3 +119,59 @@ func testSbtPostHandler(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, &Result{Success: result})
 }
+
+func followGetHandler(ctx *gin.Context) {
+	type followInput struct {
+		ToAddr   string `json:"toAddr"`
+		FromAddr string `json:"fromAddr"`
+	}
+	var input followInput
+
+	input.FromAddr = ctx.Query("fromAddr")
+	input.ToAddr = ctx.Query("toAddr")
+	input.FromAddr = eth.NormalizeAddress(input.FromAddr)
+	input.ToAddr = eth.NormalizeAddress(input.ToAddr)
+	hm := *di.Get[hackathon.HackathonManager]()
+
+	result := hm.CheckFollowExists(ctx, input.FromAddr, input.ToAddr)
+	result2 := hm.CheckFollowExists(ctx, input.ToAddr, input.FromAddr)
+	type Result struct {
+		FromFollowedTo bool `json:"fromFollowedTo"`
+		ToFollowedFrom bool `json:"ToFollowedFrom"`
+	}
+	ctx.JSON(http.StatusOK, &Result{FromFollowedTo: result, ToFollowedFrom: result2})
+}
+
+func followPostHandler(ctx *gin.Context) {
+	type followInput struct {
+		ToAddr   string `json:"toAddr"`
+		FromAddr string `json:"fromAddr"`
+	}
+	var input followInput
+	errx.CheckError(ctx.BindJSON(&input))
+	input.FromAddr = eth.NormalizeAddress(input.FromAddr)
+	input.ToAddr = eth.NormalizeAddress(input.ToAddr)
+	hm := *di.Get[hackathon.HackathonManager]()
+
+	result := hm.InsertFollow(ctx, input.FromAddr, input.ToAddr)
+	type Result struct {
+		Success bool `json:"success"`
+	}
+	ctx.JSON(http.StatusOK, &Result{Success: result})
+}
+
+func followingGetHandler(ctx *gin.Context) {
+	addr := ctx.Query("addr")
+	addr = eth.NormalizeAddress(addr)
+	hm := *di.Get[hackathon.HackathonManager]()
+	result := hm.GetFollowing(ctx, addr)
+	ctx.JSON(http.StatusOK, result)
+}
+
+func followerGetHandler(ctx *gin.Context) {
+	addr := ctx.Query("addr")
+	addr = eth.NormalizeAddress(addr)
+	hm := *di.Get[hackathon.HackathonManager]()
+	result := hm.GetFollower(ctx, addr)
+	ctx.JSON(http.StatusOK, result)
+}

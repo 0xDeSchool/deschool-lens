@@ -35,3 +35,21 @@ content-type: application/json
     "toAddr": "0x27aa5a880B512bEaF40D1B2E0F256b09f5711444",
     "tokenId": "0"
 }
+
+### 测试增加 Follow
+POST {{host}}/api/follow
+content-type: application/json
+
+{
+    "toAddr": "{{cl2_addr}}",
+    "fromAddr": "{{cl_addr}}"
+}
+
+### 测试查询 Follow
+GET {{host}}/api/follow?toAddr={{cl2_addr}}&fromAddr={{cl_addr}}
+
+### 测试查询所有 Following 
+GET {{host}}/api/follow/following?addr={{cl_addr}}
+
+### 测试查询所有 Follower
+GET {{host}}/api/follow/follower?addr={{cl2_addr}}
