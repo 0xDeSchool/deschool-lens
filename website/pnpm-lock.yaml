@@ -229,7 +229,7 @@ devDependencies:
   eslint-plugin-react: 7.31.11_eslint@8.31.0
   eslint-plugin-react-hooks: 4.6.0_eslint@8.31.0
   execa: 6.1.0
-  happy-dom: 8.4.3
+  happy-dom: 8.5.0
   jsdom: 21.1.0
   lint-staged: 13.1.0_enquirer@2.3.6
   minimist: 1.2.7
@@ -246,7 +246,7 @@ devDependencies:
   tsc-files: 1.1.3_typescript@4.9.4
   tsx: 3.12.2
   typescript: 4.9.4
-  vitest: 0.28.5_hpmvztynffxszenjb7txlvxawe
+  vitest: 0.28.5_5wsn5qf6qlpbenj5o5vhwm6d4y
 
 packages:
 
@@ -3008,7 +3008,7 @@ packages:
       dns-packet: 5.4.0
       ethers: 5.7.2
       graphql: 16.6.0
-      graphql-request: 5.1.1-next.1_graphql@16.6.0
+      graphql-request: 5.2.0-next.4_graphql@16.6.0
       idna-uts46-hx: 3.4.0
       traverse: 0.6.7
     transitivePeerDependencies:
@@ -11667,8 +11667,8 @@ packages:
     resolution: {integrity: sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==}
     dev: true
 
-  /graphql-request/5.1.1-next.1_graphql@16.6.0:
-    resolution: {integrity: sha512-GPUWyaD1MAQkOc2RD2cLUwQCEbvVuI01Uh6tYEdzQHHXghC/pcQrwmgieW/r0g0hfz/XQE/8KVl9DQH7T8W8KQ==}
+  /graphql-request/5.2.0-next.4_graphql@16.6.0:
+    resolution: {integrity: sha512-Nylg6X3QO6ecOkhXV6O9ZO8djOjvV0aNTmRm2dSDg83KeEX8/s3c9j+ojVdmIora81sNeL3KtXXHOPzXhOTRAQ==}
     peerDependencies:
       graphql: 14 - 16
     dependencies:
@@ -11736,8 +11736,8 @@ packages:
       uglify-js: 3.17.4
     dev: true
 
-  /happy-dom/8.4.3:
-    resolution: {integrity: sha512-mCkO1QWgoRdZqFRj6Fvzz7st9sFhuqKe9CojWmkYOHkBSCnA1AhSTApKTz/uDQIqsbWSBQuo+rek/x+2vQbpOg==}
+  /happy-dom/8.5.0:
+    resolution: {integrity: sha512-lvTGebHYr6h13Fox5Gfej3DinLWzvvfYlBFvlxG2Y/RmaGoDrJ5Xdwyqnk5YxbDJeEpZuKn8holCidlxvkkqGw==}
     dependencies:
       css.escape: 1.5.1
       he: 1.2.0
@@ -18883,7 +18883,7 @@ packages:
     optionalDependencies:
       fsevents: 2.3.2
 
-  /vitest/0.28.5_hpmvztynffxszenjb7txlvxawe:
+  /vitest/0.28.5_5wsn5qf6qlpbenj5o5vhwm6d4y:
     resolution: {integrity: sha512-pyCQ+wcAOX7mKMcBNkzDwEHRGqQvHUl0XnoHR+3Pb1hytAHISgSxv9h0gUiSiYtISXUU3rMrKiKzFYDrI6ZIHA==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
@@ -18918,7 +18918,7 @@ packages:
       cac: 6.7.14
       chai: 4.3.7
       debug: 4.3.4
-      happy-dom: 8.4.3
+      happy-dom: 8.5.0
       jsdom: 21.1.0
       local-pkg: 0.4.2
       pathe: 1.1.0
@@ -20101,7 +20101,7 @@ packages:
     dev: false
 
   github.com/ethereumjs/ethereumjs-abi/ee3994657fa7a427238e6ba92a84d0b529bbcde0:
-    resolution: {tarball: https://codeload.github.com/ethereumjs/ethereumjs-abi/tar.gz/ee3994657fa7a427238e6ba92a84d0b529bbcde0}
+    resolution: {commit: ee3994657fa7a427238e6ba92a84d0b529bbcde0, repo: git+ssh://git@github.com/ethereumjs/ethereumjs-abi.git, type: git}
     name: ethereumjs-abi
     version: 0.6.8
     dependencies:

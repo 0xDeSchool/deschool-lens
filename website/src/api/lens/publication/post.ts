@@ -1,15 +1,20 @@
 import { BigNumber, utils, ethers } from 'ethers'
-// import { v4 as uuidv4 } from 'uuid'
+import { v4 as uuidv4 } from 'uuid'
 import { omit } from '~/utils/omit'
 // import type { Metadata} from '~/lib/types/publication';
 // import { PublicationMainFocus } from '~/lib/types/publication'
 import { apolloClient } from '../index'
 import { splitSignature } from '../ethers.service'
-import type { CreatePublicPostRequest } from '../graphql/generated'
+import { CreatePublicPostRequest, PublicationsDocument, PublicationsQueryRequest } from '../graphql/generated'
 import { CreatePostTypedDataDocument } from '../graphql/generated'
 import { pollUntilIndexed } from '../indexer/has-transaction-been-indexed'
 // import { uploadIpfs } from '../../ipfs'
 import { lensHub } from '../lens-hub'
+import { Metadata, PublicationMainFocus } from '~/lib/types/publication'
+import { uploadIpfs } from '~/api/ipfs'
+import { getUserContext } from '~/context/account'
+
+const BOOTH_PATH = import.meta.env.VITE_APP_BOOTH_PATH
 
 export const createPostTypedData = async (request: CreatePublicPostRequest) => {
   const result = await apolloClient.mutate({
@@ -80,27 +85,42 @@ export const createPost = async (profileId: string, address: string, content: st
   console.log(`create post: address`, address)
   console.log(`create post: content`, content)
 
-  // const ipfsResult = await uploadIpfs<Metadata>({
-  //   version: '2.0.0',
-  //   mainContentFocus: PublicationMainFocus.TEXT_ONLY,
-  //   metadata_id: uuidv4(),
-  //   description: 'Description',
-  //   locale: 'en-US',
-  //   content, // TODO
-  //   external_url: null,
-  //   image: null, // TODO
-  //   imageMimeType: null,
-  //   name: 'Name', // TODO
-  //   attributes: [],
-  //   tags: ['using_api_examples'], // TODO
-  //   appId: 'api_examples_github', // TODO
-  // })
-  // console.log(`create post: ipfs result`, ipfsResult)
+  const CONTENT_TEXT = `
+  Hey everyone! I'm excited to announce that I've just created my resume in the latest web3 style! With Booth, IPFS and Lens, I've created a fully decentralized resume that I can easily share with anyone. If you're interested in checking it out, please follow the link below. I'd love to hear your feedback on this new approach to resume building! #jobsearch #resume #decentralized #LensProtocol #IPFS
+
+  LINK👇👇👇👇👇:
+  ${BOOTH_PATH}/profile/${getUserContext().lensToken?.address}/resume
+
+
+  __METADATA_BELOW__
+
+  ${content}
+
+  `
+
+  const ipfsResult = await uploadIpfs<Metadata>({
+    version: '2.0.0',
+    mainContentFocus: PublicationMainFocus.TEXT_ONLY,
+    metadata_id: uuidv4(),
+    description: `Visit deschool.app to view resume!`,
+    locale: 'en-US',
+    content: CONTENT_TEXT,
+    external_url: null,
+    image: null, // TODO
+    imageMimeType: null,
+    name: `Booth Resume for LensId ${profileId}`,
+    attributes: [],
+    // tags: ['using_api_examples'], // TODO
+    // appId: 'api_examples_github', // TODO
+  })
+  console.log(`create post: ipfs result`, ipfsResult, ipfsResult.cid, ipfsResult.path)
 
   // hard coded to make the code example clear
   const createPostRequest: CreatePublicPostRequest = {
     profileId,
-    contentURI: `ipfs://QmchP6mKZVKgwr4mpuSCFgZu6SMV56R2saUCwZP1pa2JvF`, // `ipfs://${ipfsResult.path}`,
+    contentURI: `ipfs://${ipfsResult.path}`,
+    // `${BOOTH_PATH}/resume/${address}`,
+    // contentURI: `ipfs://QmPogtffEF3oAbKERsoR4Ky8aTvLgBF5totp5AuF8YN6vl`,
     collectModule: {
       freeCollectModule: { followerOnly: true },
     },
@@ -136,4 +156,15 @@ export const createPost = async (profileId: string, address: string, content: st
     console.log(`create post: tx hash`, tx.hash)
     return tx.hash
   }
+}
+
+export const getPublicationsRequest = async (request: PublicationsQueryRequest) => {
+  const result = await apolloClient.query({
+    query: PublicationsDocument,
+    variables: {
+      request,
+    },
+  })
+
+  return result.data.publications
 }

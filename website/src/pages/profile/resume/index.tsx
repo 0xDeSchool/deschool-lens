@@ -1,6 +1,7 @@
 import Divider from 'antd/es/divider'
 import { useEffect, useState } from 'react'
 import Button from 'antd/es/button'
+import Alert from 'antd/es/alert'
 import message from 'antd/es/message'
 import dayjs from 'dayjs'
 import ReactLoading from 'react-loading'
@@ -9,13 +10,16 @@ import Modal from 'antd/es/modal'
 import { useLocation } from 'react-router-dom'
 import { getIdSbt, getResume, putResume } from '~/api/booth/booth'
 import { useAccount } from '~/context/account'
-import { createPost, pollAndIndexPost } from '~/api/lens/publication/post'
+import { createPost, getPublicationsRequest, pollAndIndexPost } from '~/api/lens/publication/post'
 import { getShortAddress } from '~/utils/format'
 import CardEditor from './components/cardEditor'
 import ResumeBlock from './components/resumeBlock'
 import { BlockType } from './enum'
 import type { ResumeCardData, ResumeData, SbtInfo } from './types'
 import { randomConfetti } from './utils/confetti'
+import { PublicationTypes } from '~/api/lens/graphql/generated'
+
+const BOOTH_PATH = import.meta.env.VITE_APP_BOOTH_PATH
 
 // type ResumeProp = {
 //   handle?: string
@@ -64,7 +68,7 @@ const Resume = () => {
   // const { handle } = props
   // const { routeAddress } = useParams()
   const location = useLocation()
-  const { lensProfile, lensToken } = useAccount()
+  const { lensProfile, lensToken, deschoolToken } = useAccount()
 
   const [isEditResume, setIsEditResume] = useState(false)
   const [isCreateCard, setIsCreateCard] = useState(false)
@@ -292,10 +296,15 @@ const Resume = () => {
 
   // 获取当前用户的简历
   const fetchUserResume = async () => {
-    const address = lensToken?.address
+    let address = lensToken?.address
+    // 如果 lens 有简历，就优先用
     if (!address) {
-      setNotLogin(true)
-      return
+      const dscAddress = deschoolToken?.address
+      if (!dscAddress) {
+        setNotLogin(true)
+        return
+      }
+      address = dscAddress
     }
     const result = await getResume(address)
 
@@ -334,25 +343,12 @@ const Resume = () => {
     setSbtList(sbtArr)
   }
 
-  // 初始时，加载用户简历，并调用查询用户可选 SBT 列表
-  useEffect(() => {
-    fetchUserResume()
-    fetchUserSbtList()
-    const addr = lensToken?.address
-    if (addr) {
-      setUserAddr(addr)
-      if (location.pathname === '/profile/resume') {
-        setIsSelf(true)
-      }
-    }
-  }, [])
-
   // 发布个人简历
   const handlePublish = async () => {
     try {
       const address = lensToken?.address
-      // const resumeDataStr = JSON.stringify(resumeData)
-      const resumeDataStr = JSON.stringify(STANDARD_RESUME_DATA)
+      const resumeDataStr = JSON.stringify(resumeData)
+      // const resumeDataStr = JSON.stringify(STANDARD_RESUME_DATA)
       if (lensProfile?.id && address && resumeDataStr) {
         const txhash = await createPost(lensProfile.id, address, resumeDataStr)
         if (txhash) {
@@ -370,11 +366,41 @@ const Resume = () => {
       message.error('PUBLICATION ERROR: Publish Failed')
       console.log('error', error)
     } finally {
-      setCongratulateVisible(false)
-      setStep(1)
-      setTxHash('')
+      // setCongratulateVisible(false)
+      // setStep(1)
+      // setTxHash('')
     }
   }
+
+  // 初始时，加载用户简历，并调用查询用户可选 SBT 列表
+  useEffect(() => {
+    fetchUserResume()
+    fetchUserSbtList()
+    const addr = lensToken?.address
+    if (addr) {
+      setUserAddr(addr)
+      if (location.pathname === '/profile/resume') {
+        setIsSelf(true)
+      }
+    }
+
+    // TO-TEST 初始测试用户有哪些 Publications
+    const getPublications = async () => {
+      const profileId = lensProfile?.id
+      if (!profileId) {
+        throw new Error('Must define PROFILE_ID in the .env to run this')
+      }
+
+      const result = await getPublicationsRequest({
+        profileId,
+        publicationTypes: [PublicationTypes.Post, PublicationTypes.Comment, PublicationTypes.Mirror],
+      })
+      console.log('publications: result', result.items)
+
+      return result
+    }
+    getPublications()
+  }, [])
 
   return (
     <div className="bg-white p-8">
@@ -384,7 +410,7 @@ const Resume = () => {
           RESUME
           {lensProfile?.handle && (
             <span className="ml-1">
-              OF<span className="ml-1 text-gray-5">{lensProfile?.handle}</span>
+              OF <span className="ml-1 text-gray-5">{lensProfile ? `@${lensProfile.handle}` : ''}</span>
             </span>
           )}
           {!lensProfile?.handle && userAddr && (
@@ -395,15 +421,15 @@ const Resume = () => {
         </div>
         <div className="flex">
           {isSelf && !isEditResume && (
-            <Button type="primary" onClick={() => handlePublish()}>
-              {resumeData && step === 2 ? 'Update Resume' : 'Publish On Lens'}
+            <Button type="primary" onClick={() => handlePublish()} disabled={!lensProfile} className="bg-#abfe2c! text-black!">
+              {resumeData && step === 2 ? 'Published' : 'Publish On Lens'}
             </Button>
           )}
 
           <div className="w-2"> </div>
           {isSelf && (
             <Button onClick={onClickEditResume} loading={putting} type={isEditResume ? 'primary' : 'default'}>
-              {isEditResume ? 'Save' : 'Edit'}
+              {isEditResume ? 'Save on DeSchool' : 'Edit'}
             </Button>
           )}
 
@@ -478,16 +504,34 @@ const Resume = () => {
         ) : (
           <div className="w-full">
             <h1 className="text-2xl font-Anton">Congradulations! 🎉</h1>
-            <p className="font-ArchivoNarrow mt-6">Your first web3 Resume is minted! Hooray!!! </p>
+            <p className="font-ArchivoNarrow mt-6">
+              Your first web3 resume is published! Hooray! Thanks for using Booth to create your resume in a web3-enabled way! We hope this
+              decentralized approach will help you stand out in your job search :)
+            </p>
             <p className="font-ArchivoNarrow">Now you can: </p>
             <ol>
-              <li>1. Visit OpenSea to check your resume [BUTTON]</li>
-              <li>2. Send your Resume NFT to someone (for work or just show off!)</li>
-              <li>
-                3. Invite more friends to this SO COOOOOOOOL website with your unique link:
-                <a href="https://stg-deschool-booth.netlify.com?inviter=0x31829814179283719" className="inline break-all ml-2 underline">
-                  https://stg-deschool-booth.netlify.com?inviter=0x31829814179283719
-                </a>
+              <li className="font-ArchivoNarrow mt-1">
+                1. Check{' '}
+                <a href={`https://polygonscan.com/tx/${txHash}`} target="_blank" rel="noreferrer" className="color-#774FF8">
+                  PolygonScan
+                </a>{' '}
+                to check transaction
+              </li>
+              <li className="font-ArchivoNarrow mt-1">
+                2. Visit{' '}
+                <a href={`https://lenster.xyz/u/${lensProfile?.handle}`} target="_blank" rel="noreferrer" className="color-#774FF8">
+                  Lenster
+                </a>{' '}
+                to view your resume, it should update in your feeds as a post in 10 seconds.{' '}
+              </li>
+              <li className="font-ArchivoNarrow mt-1">
+                3. Send your resume to someone (for work or just show off!) and invite more friends to this cool website with your unique
+                rerferral link:
+                <Alert
+                  className="mt-1!"
+                  message={<div className="font-ArchivoNarrow ">{`${BOOTH_PATH}?inviter=${lensToken?.address}`}</div>}
+                  type="info"
+                />
               </li>
             </ol>
           </div>

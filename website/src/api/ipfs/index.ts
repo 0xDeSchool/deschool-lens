@@ -1,36 +1,39 @@
-// import { create } from 'ipfs-http-client'
+import { create } from 'ipfs-http-client'
+import { Buffer } from 'buffer'
 
-// const INFURA_PROJECT_ID = '2Lqk8SEjL85AW9nHLo319H6PPiM'
-// const INFURA_SECRET = '38c0208d768dd41cedd7a879e75c3523'
+// @ts-ignore
+window.Buffer = Buffer
 
-// const projectId = INFURA_PROJECT_ID
-// const secret = INFURA_SECRET
+// TODO: Move this credential out
+const INFURA_PROJECT_ID = '2Lqk8SEjL85AW9nHLo319H6PPiM'
+const INFURA_SECRET = '38c0208d768dd41cedd7a879e75c3523'
 
-// if (!projectId || !secret) {
-//   throw new Error('Must define INFURA_PROJECT_ID and INFURA_SECRET in the .env to run this')
-// }
+const projectId = INFURA_PROJECT_ID
+const secret = INFURA_SECRET
 
-// const client = create({
-//   host: 'ipfs.infura.io',
-//   port: 5001,
-//   protocol: 'https',
-//   headers: {
-//     authorization: `Basic ${window.Buffer.from(`${projectId}:${secret}`, 'utf-8').toString('base64')}`,
-//   },
-// })
+if (!projectId || !secret) {
+  throw new Error('Must define INFURA_PROJECT_ID and INFURA_SECRET in the .env to run this')
+}
 
-// export const uploadIpfs = async <T>(data: T) => {
-//   const result = await client.add(JSON.stringify(data))
+const client = create({
+  host: 'ipfs.infura.io',
+  port: 5001,
+  protocol: 'https',
+  headers: {
+    authorization: `Basic ${window.Buffer.from(`${projectId}:${secret}`, 'utf-8').toString('base64')}`,
+  },
+})
 
-//   console.log('upload result ipfs', result)
-//   return result
-// }
+export const uploadIpfs = async <T>(data: T) => {
+  const result = await client.add(JSON.stringify(data))
 
-// export const uploadIpfsGetPath = async <T>(data: T) => {
-//   const result = await client.add(JSON.stringify(data))
+  console.log('upload result ipfs', result)
+  return result
+}
 
-//   console.log('upload result ipfs', result)
-//   return result.path
-// }
+export const uploadIpfsGetPath = async <T>(data: T) => {
+  const result = await client.add(JSON.stringify(data))
 
-export {}
+  console.log('upload result ipfs', result)
+  return result.path
+}
