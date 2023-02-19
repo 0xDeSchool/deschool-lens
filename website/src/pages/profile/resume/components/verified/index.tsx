@@ -37,7 +37,7 @@ const Verified = (props: VerifiedProp) => {
   }, [handle])
 
   return identities && identities.length > 0 ? (
-    <div className="w-full border shadow-md rounded-xl mt-4">
+    <div className="w-full border shadow-md rounded-xl my-4 p-4">
       <div className="frc-start mx-2 my-2">
         <h1 className="text-2xl font-bold">Verified ID List</h1>
         <Tooltip

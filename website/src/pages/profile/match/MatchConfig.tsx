@@ -301,7 +301,7 @@ const MatchConfig = () => {
           </div>
         </Form.Item>
       </Form>
-      <Modal title="Today's Match" open={open} footer={null} onCancel={() => setOpen(false)}>
+      <Modal title={<h1>Today's Match</h1>} open={open} footer={null} onCancel={() => setOpen(false)}>
         <Suggest />
       </Modal>
     </div>
