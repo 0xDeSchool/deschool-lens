@@ -14,7 +14,7 @@ import Verified from './resume/components/verified'
 const UserProfile = () => {
   const { address } = useParams()
   const navigate = useNavigate()
-  const { lensToken, deschoolToken } = useAccount()
+  const { lensToken, deschoolProfile } = useAccount()
   const location = useLocation()
 
   const [visitCase, setVisitCase] = useState<0 | 1 | -1>(-1) // 0-自己访问自己 1-自己访问别人 -1-没登录访问自己
@@ -23,7 +23,7 @@ const UserProfile = () => {
   const initCase = () => {
     let primaryCase: 0 | 1 | -1 = -1
     const cacheLensAddress = lensToken?.address
-    const cacheDeschoolAddress = deschoolToken?.address
+    const cacheDeschoolAddress = deschoolProfile?.address
 
     if (address) {
       // 有路由参数并且不等于自己地址，即访问他人的空间（不管是否登录都可以看他人空间）
@@ -51,7 +51,7 @@ const UserProfile = () => {
     // 路由存在这个参数，需要判断导向
     if (address) {
       // 自己看自己
-      if (address === lensToken?.address || address === deschoolToken?.address) {
+      if (address === lensToken?.address || address === deschoolProfile?.address) {
         navigate('/profile/resume')
       }
       // 自己看别人

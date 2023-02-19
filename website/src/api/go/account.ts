@@ -1,5 +1,19 @@
 import http from '~/api/go/http'
-import type { UserInfoStruct } from '~/hooks/deschool'
+import type { OtherDeschoolProfile } from '~/lib/types/app'
+
+/**
+ * @method getOtherUserProfile
+ * @description 从后台获取其他用户信息
+ * @returns {Object} Promise
+ */
+export async function getOtherUserProfile(address?: string): Promise<OtherDeschoolProfile | null> {
+  try {
+    const result: any = await http.get(`/account/my-profile?address=${address}`)
+    return result
+  } catch (err) {
+    return null
+  }
+}
 
 /**
  * @method getUserProfile

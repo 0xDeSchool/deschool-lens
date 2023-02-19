@@ -29,7 +29,7 @@ const UserBar = () => {
   const [isShowDeschoolUserMenu, setDeschoolUserMenu] = useState(false)
   const [isShowLensUserMenu, setLensUserMenu] = useState(false)
   const location = useLocation()
-  const { lensProfile, lensToken, deschoolToken } = useAccount()
+  const { lensProfile, lensToken, deschoolProfile } = useAccount()
 
   const navs = [
     {
@@ -262,7 +262,7 @@ const UserBar = () => {
               className="frc-center bg-#774ff8 rounded-xl px-4"
               onClick={e => {
                 e.preventDefault()
-                if (deschoolToken) {
+                if (deschoolProfile) {
                   handleToggleDeschoolMenu()
                 } else {
                   handleLoginDeschool()
@@ -271,7 +271,7 @@ const UserBar = () => {
             >
               <img src={Deschool} alt="lens" width={20} height={24} />
               <button type="button" className="text-white text-14px ml-2 font-ArchivoNarrow">
-                {deschoolToken ? getShortAddress(deschoolToken?.address) : t('Connect Deschool')}
+                {deschoolProfile ? getShortAddress(deschoolProfile?.address) : t('Connect Deschool')}
               </button>
             </span>
           </Dropdown>

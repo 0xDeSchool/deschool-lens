@@ -10,15 +10,16 @@ import MetaMaskImage from '~/assets/logos/mask.png'
 import type { WalletConfig } from '~/wallet'
 import { createProvider, getWallet, WalletType } from '~/wallet'
 import { useLayout } from '~/context/layout'
-import { getUserContext } from '~/context/account'
+import { useAccount } from '~/context/account'
 
 const ConnectDeschoolBoard: FC = () => {
   const { connectDeschoolBoardVisible, setConnectDeschoolBoardVisible } = useLayout()
+  const { setDescoolProfile, deschoolProfile } = useAccount()
   const [loading, setLoading] = useState(false)
   const [loadingUniPass, setLoadingUniPass] = useState(false)
   const [tempAddressObj, setTempAddressObj] = useState<{ type: WalletType; address: string | undefined | null }>({
     type: WalletType.None,
-    address: getUserContext().deschoolToken?.address ? getUserContext().deschoolToken?.address : undefined,
+    address: deschoolProfile?.address ? deschoolProfile?.address : undefined,
   })
   // MetaMask or UniPass
   const { t } = useTranslation()
@@ -61,9 +62,9 @@ const ConnectDeschoolBoard: FC = () => {
         sig: loginSig,
       })
       if (validationRes && validationRes.address && validationRes.jwtToken) {
-        getUserContext().setDescoolToken({ ...validationRes })
+        setDescoolProfile({ ...validationRes })
       } else {
-        getUserContext().setDescoolToken(null)
+        setDescoolProfile(null)
       }
     } catch (error) {
       message.error(t('signMessageError'))
