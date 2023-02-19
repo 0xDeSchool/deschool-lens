@@ -46,6 +46,7 @@ const Layout = () => {
     setIsSwitchingUser(true)
     try {
       const addr = await getWallet().getAddress()
+      // TODO: Q产品 当用户切换时 怎么办
       if (getUserContext().lensToken?.address && addr !== getUserContext().lensToken?.address) {
         const cachedToken = await fetchUserDefaultProfile(addr)
         if (cachedToken == null) {

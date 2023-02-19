@@ -7,10 +7,10 @@ import { useAccount } from '~/context/account'
 
 const TalentRadar = () => {
   const [options, setOptions] = useState<EChartsOption>({})
-  const { lensToken } = useAccount()
+  const { lensToken, deschoolProfile } = useAccount()
 
   const loadData = async () => {
-    const address = lensToken?.address
+    const address = lensToken?.address || deschoolProfile?.address
     let abArr = [1, 1, 1, 1, 1, 1]
 
     // 如果有地址，如果有结果，则设置一下

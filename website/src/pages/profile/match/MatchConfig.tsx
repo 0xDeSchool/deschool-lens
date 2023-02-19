@@ -78,7 +78,7 @@ const MatchConfig = () => {
   const [open, setOpen] = useState(false)
 
   const loadInitialValues = async () => {
-    const address = lensToken?.address
+    const address = lensToken?.address || deschoolProfile?.address
     if (!address) {
       return
     }
@@ -108,7 +108,7 @@ const MatchConfig = () => {
       }
 
       // 检查地址
-      let address = lensToken?.address
+      let address = lensToken?.address || deschoolProfile?.address
       if (!address) {
         const dscAddr = deschoolProfile?.address
         if (!dscAddr) {

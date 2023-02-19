@@ -114,7 +114,7 @@ const Resume = () => {
   // 进入简历编辑 or 保存查看状态
   const onClickEditResume = async () => {
     if (isEditResume) {
-      const address = lensToken?.address
+      const address = lensToken?.address || deschoolProfile?.address
       if (address) {
         setPutting(true)
         await putUserResume(JSON.stringify(resumeData), address)
@@ -324,7 +324,7 @@ const Resume = () => {
 
   // 获取当前用户的 SBT 列表
   const fetchUserSbtList = async () => {
-    const address = lensToken?.address
+    const address = lensToken?.address || deschoolProfile?.address
     if (!address) {
       return
     }
@@ -350,7 +350,7 @@ const Resume = () => {
   // 发布个人简历
   const handlePublish = async () => {
     try {
-      const address = lensToken?.address
+      const address = lensToken?.address || deschoolProfile?.address
       const resumeDataStr = JSON.stringify(resumeData)
       // const resumeDataStr = JSON.stringify(STANDARD_RESUME_DATA)
       if (lensProfile?.id && address && resumeDataStr) {
@@ -380,7 +380,7 @@ const Resume = () => {
   useEffect(() => {
     fetchUserResume()
     fetchUserSbtList()
-    const addr = lensToken?.address
+    const addr = lensToken?.address || deschoolProfile?.address
     if (addr) {
       setUserAddr(addr)
       if (location.pathname === '/profile/resume') {
@@ -533,7 +533,9 @@ const Resume = () => {
                 rerferral link:
                 <Alert
                   className="mt-1!"
-                  message={<div className="font-ArchivoNarrow ">{`${BOOTH_PATH}?inviter=${lensToken?.address}`}</div>}
+                  message={
+                    <div className="font-ArchivoNarrow ">{`${BOOTH_PATH}?inviter=${lensToken?.address || deschoolProfile?.address}`}</div>
+                  }
                   type="info"
                 />
               </li>
