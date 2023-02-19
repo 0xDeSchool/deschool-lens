@@ -1,10 +1,10 @@
 /* eslint-disable class-methods-use-this */
 import type { Dispatch, ReactElement, SetStateAction } from 'react'
-import { useEffect, useState, useContext, createContext } from 'react'
+import { useMemo, useEffect, useState, useContext, createContext } from 'react'
 
 import { getWallet } from '~/wallet'
 import { RoleType } from '~/lib/enum'
-import type { AccountContextProps, ProfileExtend, DeschoolTokenInfo, LensTokenInfo } from '~/lib/types/app'
+import type { AccountContextProps, DeschoolProfile, ProfileExtend, LensTokenInfo } from '~/lib/types/app'
 
 export const DEFAULT_AVATAR = 'https://s3.us-east-1.amazonaws.com/deschool/Avatars/avatar_def.png'
 export const DEFAULT_AVATAR_NAME = 'avatar_def.png'
@@ -12,22 +12,22 @@ export const DEFAULT_AVATAR_NAME = 'avatar_def.png'
 export class UserContext {
   lensProfile: ProfileExtend | null
 
-  deschoolToken: DeschoolTokenInfo | null
+  deschoolProfile: DeschoolProfile | null
 
   lensToken: LensTokenInfo | null
 
   setLensProfile: Dispatch<SetStateAction<ProfileExtend | null>>
 
-  setDescoolToken: Dispatch<SetStateAction<DeschoolTokenInfo | null>>
+  setDescoolProfile: Dispatch<SetStateAction<DeschoolProfile | null>>
 
   setLensToken: Dispatch<SetStateAction<LensTokenInfo | null>>
 
   constructor(accountMemo: AccountContextProps) {
     this.lensProfile = accountMemo.lensProfile
-    this.deschoolToken = accountMemo.deschoolToken
+    this.deschoolProfile = accountMemo.deschoolProfile
     this.lensToken = accountMemo.lensToken
     this.setLensProfile = accountMemo.setLensProfile
-    this.setDescoolToken = accountMemo.setDescoolToken
+    this.setDescoolProfile = accountMemo.setDescoolProfile
     this.setLensToken = accountMemo.setLensToken
   }
 
@@ -47,8 +47,8 @@ export class UserContext {
 
   // 断开deschool的连接
   disconnectFromDeschool = (): void => {
-    this.setDescoolToken(null)
-    localStorage.removeItem('deschoolToken')
+    this.setDescoolProfile(null)
+    localStorage.removeItem('deschoolProfile')
     getWallet().disconnect()
   }
 
@@ -59,13 +59,13 @@ export class UserContext {
     // UserWithoutHandle: lens token存在并且 profile handle不存在
     // UserOfDeschool: deschool token存在
     const roles = [] as RoleType[]
-    if (!this.deschoolToken && !this.lensToken) {
+    if (!this.deschoolProfile && !this.lensToken) {
       roles.push(RoleType.Visitor)
     }
     if (this.lensToken && this.lensProfile?.handle) {
       roles.push(RoleType.UserOfLens)
     }
-    if (this.deschoolToken) {
+    if (this.deschoolProfile) {
       roles.push(RoleType.UserOfDeschool)
     }
     return roles
@@ -74,10 +74,10 @@ export class UserContext {
 
 export const AccountContext = createContext<AccountContextProps>({
   lensProfile: null,
-  deschoolToken: null,
+  deschoolProfile: null,
   lensToken: null,
   setLensProfile: () => {},
-  setDescoolToken: () => {},
+  setDescoolProfile: () => {},
   setLensToken: () => {},
 })
 
@@ -92,17 +92,29 @@ const getStorage = (type: string) => {
 // eslint-disable-next-line import/no-mutable-exports
 let userContext: UserContext = new UserContext({
   lensProfile: null,
-  deschoolToken: null,
+  deschoolProfile: null,
   lensToken: null,
   setLensProfile: () => {},
-  setDescoolToken: () => {},
+  setDescoolProfile: () => {},
   setLensToken: () => {},
 })
 
 export const AccountContextProvider = ({ children }: { children: ReactElement }) => {
   const [lensProfile, setLensProfile] = useState<ProfileExtend | null>(getStorage('lensProfile'))
-  const [deschoolToken, setDescoolToken] = useState<DeschoolTokenInfo | null>(getStorage('deschoolToken'))
+  const [deschoolProfile, setDescoolProfile] = useState<DeschoolProfile | null>(getStorage('deschoolProfile'))
   const [lensToken, setLensToken] = useState<LensTokenInfo | null>(getStorage('lensToken'))
+
+  const accountMemo = useMemo(
+    () => ({
+      lensProfile,
+      deschoolProfile,
+      lensToken,
+      setLensProfile,
+      setDescoolProfile,
+      setLensToken,
+    }),
+    [lensProfile, deschoolProfile, lensToken],
+  )
 
   useEffect(() => {
     if (lensProfile) {
@@ -113,28 +125,24 @@ export const AccountContextProvider = ({ children }: { children: ReactElement })
   }, [lensProfile])
 
   useEffect(() => {
-    if (deschoolToken) {
-      localStorage.setItem('deschoolToken', JSON.stringify(deschoolToken))
+    if (deschoolProfile) {
+      localStorage.setItem('deschoolProfile', JSON.stringify(deschoolProfile))
     } else {
-      localStorage.removeItem('deschoolToken')
+      localStorage.removeItem('deschoolProfile')
     }
-  }, [deschoolToken])
+  }, [deschoolProfile])
 
   useEffect(() => {
     if (lensToken) {
       localStorage.setItem('lensToken', JSON.stringify(lensToken))
     } else {
-      localStorage.removeItem('deschoolToken')
+      localStorage.removeItem('lensToken')
     }
   }, [lensToken])
 
-  userContext = new UserContext({ lensProfile, deschoolToken, lensToken, setLensProfile, setDescoolToken, setLensToken })
-  return (
-    // eslint-disable-next-line react/jsx-no-constructed-context-values
-    <AccountContext.Provider value={{ lensProfile, deschoolToken, lensToken, setLensProfile, setDescoolToken, setLensToken }}>
-      {children}
-    </AccountContext.Provider>
-  )
+  userContext = new UserContext({ lensProfile, deschoolProfile, lensToken, setLensProfile, setDescoolProfile, setLensToken })
+
+  return <AccountContext.Provider value={accountMemo}>{children}</AccountContext.Provider>
 }
 
 export const useAccount = () => {

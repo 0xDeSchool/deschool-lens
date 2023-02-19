@@ -64,7 +64,7 @@ const LensCard = (props: LensCardProps) => {
 
   useEffect(() => {
     initUserInfo()
-  }, [visitCase])
+  }, [visitCase, lensProfile])
 
   const handleJumpFollowers = (num: number | undefined) => {
     if (num && num > 0) {
@@ -101,7 +101,7 @@ const LensCard = (props: LensCardProps) => {
   }
 
   return (
-    <div className={`w-full shadow-md rounded-xl ${loading || !visible ? 'hidden' : ''}`}>
+    <div className={`w-full pb-1 shadow-md rounded-xl ${loading || !visible ? 'hidden' : ''}`}>
       <div className="relative w-full frc-center">
         <SwitchIdentity profileType={profileType} setProfileType={setProfileType} />
         {currentUser?.coverUrl ? (

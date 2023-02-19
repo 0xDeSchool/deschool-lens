@@ -27,7 +27,7 @@ instance.interceptors.request.use(
     // 附带鉴权的token
     // const tokenObj = session.getSession('token', true)
     const userContext = getUserContext()
-    const tokenInfo = userContext.deschoolToken
+    const tokenInfo = userContext.deschoolProfile?.jwtToken
     if (tokenInfo) {
       headers.Authorization = `Bearer ${tokenInfo}`
     }

@@ -2,17 +2,6 @@ import type { Profile } from '~/api/lens/graphql/generated'
 
 export type ContractType = 'ERC20' | 'ERC721' | 'ERC1155'
 
-export interface DeschoolTokenInfo {
-  // deschool user id
-  id: string
-
-  // wallet address
-  address: string
-
-  // deschool auth token
-  token: string
-}
-
 export interface LensTokenInfo {
   // 当前通过 lens API 登录的 address
   address: string
@@ -24,11 +13,11 @@ export interface LensTokenInfo {
 
 export interface AccountContextProps {
   lensProfile: ProfileExtend | null
-  deschoolToken: DeschoolTokenInfo | null
   lensToken: LensTokenInfo | null
+  deschoolProfile: DeschoolProfile | null
   setLensProfile: Dispatch<SetStateAction<ProfileExtend | null>>
-  setDescoolToken: Dispatch<SetStateAction<DeschoolTokenInfo | null>>
   setLensToken: Dispatch<SetStateAction<LensTokenInfo | null>>
+  setDescoolProfile: Dispatch<SetStateAction<DeschoolProfile | null>>
 }
 
 export interface LayoutContextProps {
@@ -314,6 +303,36 @@ export interface CoursePostParticipationInput {
 export interface ProfileExtend extends Profile {
   avatarUrl?: string
   coverUrl?: string
+}
+
+export interface DeschoolProfile {
+  address: string
+  avatar: string
+  code: number
+  expire: string
+  jwtToken: string
+  userId: string
+  username: string
+  bio?: string
+  ensName?: string
+  stats?: {
+    totalFollowers: number
+    totalFollowing: number
+  }
+}
+
+export interface OtherDeschoolProfile {
+  address: string
+  avatar: string
+  userId: string
+  username: string
+  bio?: string
+  ensName?: string
+  isFollowedByMe?: boolean
+  stats?: {
+    totalFollowers: number
+    totalFollowing: number
+  }
 }
 
 export interface RecommendAddr {

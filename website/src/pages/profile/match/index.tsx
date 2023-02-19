@@ -9,8 +9,8 @@ import TalentRadar from './TalentRadar'
 
 const Match = () => {
   const { connectDeschoolBoardVisible, setConnectDeschoolBoardVisible } = useLayout() // 控制请求面板显隐
-  const { deschoolToken } = useAccount()
-  const [loginByDeschool] = useState(deschoolToken?.token)
+  const { deschoolProfile } = useAccount()
+  const [loginByDeschool] = useState(deschoolProfile?.jwtToken)
 
   const handleConnectDeschool = async () => {
     if (connectDeschoolBoardVisible) {
