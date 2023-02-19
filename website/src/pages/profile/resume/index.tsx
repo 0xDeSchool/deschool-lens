@@ -68,7 +68,7 @@ const Resume = () => {
   // const { handle } = props
   // const { routeAddress } = useParams()
   const location = useLocation()
-  const { lensProfile, lensToken, deschoolToken } = useAccount()
+  const { lensProfile, lensToken, deschoolProfile } = useAccount()
 
   const [isEditResume, setIsEditResume] = useState(false)
   const [isCreateCard, setIsCreateCard] = useState(false)
@@ -299,12 +299,16 @@ const Resume = () => {
     let address = lensToken?.address
     // 如果 lens 有简历，就优先用
     if (!address) {
-      const dscAddress = deschoolToken?.address
+      const dscAddress = deschoolProfile?.address
       if (!dscAddress) {
         setNotLogin(true)
         return
       }
       address = dscAddress
+    }
+    if (!address) {
+      setNotLogin(true)
+      return
     }
     const result = await getResume(address)
 
