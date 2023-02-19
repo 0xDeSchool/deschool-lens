@@ -5,6 +5,7 @@ import Button from 'antd/es/button'
 import Checkbox from 'antd/es/checkbox'
 import Select from 'antd/es/select'
 import Space from 'antd/es/space'
+import message from 'antd/es/message'
 import Modal from 'antd/es/modal'
 import { useTranslation } from 'react-i18next'
 import Tooltip from 'antd/es/tooltip'
@@ -73,7 +74,7 @@ const MatchConfig = () => {
   const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
   const { t } = useTranslation()
-  const { lensToken } = useAccount()
+  const { lensToken, deschoolProfile } = useAccount()
   const [open, setOpen] = useState(false)
 
   const loadInitialValues = async () => {
@@ -107,9 +108,15 @@ const MatchConfig = () => {
       }
 
       // 检查地址
-      const address = lensToken?.address
-      if (address == null) {
-        return false
+      let address = lensToken?.address
+      if (!address) {
+        const dscAddr = deschoolProfile?.address
+        if (!dscAddr) {
+          setLoading(false)
+          message.error('Not log in yet. Cannot get address from both Lens and DeSchool, please login and try again')
+          return false
+        }
+        address = dscAddr
       }
 
       // 最后请求
@@ -127,6 +134,7 @@ const MatchConfig = () => {
       await putQ11e(params)
       setLoading(false)
       setOpen(true)
+
       randomConfetti()
       return true
     } catch (error) {
@@ -302,7 +310,7 @@ const MatchConfig = () => {
         </Form.Item>
       </Form>
       <Modal title={<h1>Today's Match</h1>} open={open} footer={null} onCancel={() => setOpen(false)}>
-        <Suggest />
+        <Suggest open={open} />
       </Modal>
     </div>
   )
