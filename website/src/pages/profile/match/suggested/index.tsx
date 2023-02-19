@@ -7,7 +7,9 @@ import Button from 'antd/es/button'
 import { getRecommendation } from '~/api/booth/booth'
 import { getUserContext } from '~/context/account'
 import type { RecommendAddr } from '~/lib/types/app'
+import { getShortAddress } from '~/utils/format'
 
+const BOOTH_PATH = import.meta.env.VITE_APP_BOOTH_PATH
 // 根据match config配置的参数推荐用户想找的人
 const Suggest = () => {
   // const { t } = useTranslation()
@@ -45,24 +47,14 @@ const Suggest = () => {
         </div>
       )}
       {!loading && suggestedUser && suggestedUser.ToAddr ? (
-        <div className="border rounded-xl w-full  p-4 min-h-240px">
-          <div className="frs-start">
+        <div className="border rounded-xl w-full  p-4">
+          {/* 头像 + 推荐分数 */}
+          <div className="flex flex-row justify-between">
             <div className="px-4 mr-2">
               {/* <LensAvatar avatarUrl={suggestedUser?.avatarUrl} size={60} wrapperClassName="fcc-center w-full" /> */}
               <Jazzicon diameter={70} seed={Number(suggestedUser?.ToAddr)} />
             </div>
-            <div className="flex-1 fcs-center ml-">
-              <h1 className="mb-2 font-bold text-lg">{suggestedUser?.ToAddr}</h1>
-              <h2 className="mb-1">He/She is recommended because</h2>
-              <ul>
-                {suggestedUser.Reasons &&
-                  suggestedUser.Reasons.map(item => (
-                    <li key={item} className="ml-2 my-1">
-                      * {item}
-                    </li>
-                  ))}
-              </ul>
-            </div>
+
             <div className="flex flex-col justify-between items-center h-full">
               <div className="flex flex-col items-center">
                 <div>RECOMMENDED SCORE</div>
@@ -70,9 +62,24 @@ const Suggest = () => {
               </div>
             </div>
           </div>
+          {/* 推荐原因 */}
+          <div className="flex fcs-center ml-">
+            <h1 className="mb-2 font-bold text-lg">{getShortAddress(suggestedUser?.ToAddr)}</h1>
+            <h2 className="mb-1">He/She is recommended because</h2>
+            <ul>
+              {suggestedUser.Reasons &&
+                suggestedUser.Reasons.map(item => (
+                  <li key={item} className="ml-2 my-1">
+                    * {item}
+                  </li>
+                ))}
+            </ul>
+          </div>
+          {/* 最下面的操作按钮 */}
           <div className="flex flex-row justify-end">
-            <Button type="primary">Visit Booth</Button>
-            <Button className="ml-2">Follow</Button>
+            <Button type="primary" href={`${BOOTH_PATH}/profile/${suggestedUser.ToAddr}/resume`}>
+              Visit Booth
+            </Button>
             <Button disabled className="ml-2">
               Chat
             </Button>

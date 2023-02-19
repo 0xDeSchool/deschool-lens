@@ -81,9 +81,9 @@ func (hm *HackathonManager) compareTwoId(ctx context.Context, fromQ11e Q11e, toQ
 	score += getSameAndScore(fromQ11e.Interests, toQ11e.Interests, "interest", ur)
 
 	// Preferences match
-	fromPrefs := []string{fromQ11e.Pref1, fromQ11e.Pref2, fromQ11e.Pref3}
-	toPrefs := []string{toQ11e.Pref1, toQ11e.Pref2, toQ11e.Pref3}
-	score += getSameAndScore(fromPrefs, toPrefs, "preference", ur)
+	// fromPrefs := []string{fromQ11e.Pref1, fromQ11e.Pref2, fromQ11e.Pref3}
+	// toPrefs := []string{toQ11e.Pref1, toQ11e.Pref2, toQ11e.Pref3}
+	// score += getSameAndScore(fromPrefs, toPrefs, "preference", ur)
 
 	// Mbti match
 	if 0 <= int(fromQ11e.Mbti) && int(fromQ11e.Mbti) < 16 &&

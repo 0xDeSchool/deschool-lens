@@ -5,11 +5,14 @@ import Button from 'antd/es/button'
 import Checkbox from 'antd/es/checkbox'
 import Select from 'antd/es/select'
 import Space from 'antd/es/space'
+import Modal from 'antd/es/modal'
 import { useTranslation } from 'react-i18next'
 import Tooltip from 'antd/es/tooltip'
 import type { q11eParam } from '~/api/booth/booth'
 import { getQ11e, putQ11e } from '~/api/booth/booth'
 import { useAccount } from '~/context/account'
+import Suggest from './suggested'
+import { randomConfetti } from '../resume/utils/confetti'
 
 const InterestTag = [
   {
@@ -71,6 +74,7 @@ const MatchConfig = () => {
   const [form] = Form.useForm()
   const { t } = useTranslation()
   const { lensToken } = useAccount()
+  const [open, setOpen] = useState(false)
 
   const loadInitialValues = async () => {
     const address = lensToken?.address
@@ -93,7 +97,7 @@ const MatchConfig = () => {
     loadInitialValues()
   }, [])
 
-  const submitMatchParams = async () => {
+  const handleSubmmit = async () => {
     try {
       setLoading(true)
       // 判断表单是否通过验证
@@ -122,6 +126,8 @@ const MatchConfig = () => {
 
       await putQ11e(params)
       setLoading(false)
+      setOpen(true)
+      randomConfetti()
       return true
     } catch (error) {
       console.log(error)
@@ -130,12 +136,8 @@ const MatchConfig = () => {
     }
   }
 
-  const handleSubmmit = async () => {
-    await submitMatchParams()
-  }
-
   return (
-    <div>
+    <div className="flex flex-col">
       <Form
         form={form}
         name="match"
@@ -299,6 +301,9 @@ const MatchConfig = () => {
           </div>
         </Form.Item>
       </Form>
+      <Modal title="Today's Match" open={open} footer={null} onCancel={() => setOpen(false)}>
+        <Suggest />
+      </Modal>
     </div>
   )
 }

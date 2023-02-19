@@ -76,7 +76,6 @@ const UserProfile = () => {
         {/* 用戶面板信息從路由來或者自己緩存來 */}
         <UserCard visitCase={visitCase} routeAddress={address} />
         {location.pathname.includes('/profile/resume') ? <Verified /> : null}
-        {location.pathname.includes('/profile/match') ? <Suggest /> : null}
       </div>
       <div className="w-full xl:w-auto xl:ml-3 flex-1 relative font-ArchivoNarrow">
         <div className="mb-10 overflow-auto p-6 border shadow-md rounded-xl">
