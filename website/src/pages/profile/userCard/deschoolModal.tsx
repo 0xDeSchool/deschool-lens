@@ -1,3 +1,4 @@
+import type { Dispatch, SetStateAction } from 'react'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Modal from 'antd/es/modal/Modal'
@@ -7,8 +8,11 @@ import Empty from 'antd/es/empty'
 import { RoleType } from '~/lib/enum'
 import { getUserContext, useAccount } from '~/context/account'
 import { followUser, unfollowUser } from '~/api/booth/follow'
-import type { DeschoolProfile, OtherDeschoolProfile } from '~/lib/types/app'
-import LensAvatar from './avatar'
+import Jazzicon from 'react-jazzicon'
+import { getShortAddress } from '~/utils/format'
+import { Link } from 'react-router-dom'
+
+type FollowType = { Following?: string; Follower?: string; PersonFollowedVistor: boolean; VistorFollowedPerson: boolean }
 
 const DeschoolFollowersModal = (props: {
   followers: any
@@ -16,10 +20,11 @@ const DeschoolFollowersModal = (props: {
   type: 'followers' | 'following'
   visible: boolean
   closeModal: any
+  setUpdateTrigger: Dispatch<SetStateAction<number>>
 }) => {
-  const { type, visible, closeModal, followers, followings } = props
+  const { type, visible, closeModal, followers, followings, setUpdateTrigger } = props
   const { t } = useTranslation()
-  const [follows, setFollows] = useState([] as Array<OtherDeschoolProfile | null>)
+  const [follows, setFollows] = useState([] as FollowType[])
   const [loading, setLoading] = useState(true)
   const { deschoolProfile } = useAccount()
 
@@ -44,14 +49,16 @@ const DeschoolFollowersModal = (props: {
     }
   }, [visible])
 
-  const handleFollow = async (user: DeschoolProfile | OtherDeschoolProfile) => {
-    await followUser(user.address, deschoolProfile?.address!)
-    message.success(`success following ${user.address}`)
+  const handleFollow = async (address: string) => {
+    await followUser(address, deschoolProfile?.address!)
+    message.success(`success following ${address}`)
+    setUpdateTrigger(new Date().getTime())
   }
 
-  const handleUnFollow = async (user: DeschoolProfile | OtherDeschoolProfile) => {
-    await unfollowUser(user.address, deschoolProfile?.address!)
-    message.success(`success following ${user?.address}`)
+  const handleUnFollow = async (address: string) => {
+    await unfollowUser(address, deschoolProfile?.address!)
+    message.success(`success following ${address}`)
+    setUpdateTrigger(new Date().getTime())
   }
 
   const role = getUserContext().getLoginRoles()
@@ -63,7 +70,7 @@ const DeschoolFollowersModal = (props: {
       destroyOnClose
       closable
       onCancel={e => {
-        setFollows([] as Array<DeschoolProfile>)
+        setFollows([] as FollowType[])
         closeModal(e)
       }}
       footer={null}
@@ -75,13 +82,14 @@ const DeschoolFollowersModal = (props: {
           {follows && follows.length > 0 ? (
             <div className="w-full">
               {follows?.map(follow => (
-                <div key={follow?.address} className="relative border rounded-xl p-2 w-full frs-center">
+                <div key={follow?.Follower || follow?.Following} className="relative border rounded-xl p-2 w-full frc-center">
                   <div className="relative w-60px h-60px">
-                    <LensAvatar avatarUrl={follow?.avatar} size={60} wrapperClassName="fcc-center w-full" />
+                    <Jazzicon diameter={60} seed={Math.floor(Math.random() * 30)} />
                   </div>
                   <div className="flex-1 fcs-center ml-2">
-                    <h1>{follow?.username}</h1>
-                    <p>{follow?.bio}</p>
+                    <Link to={`/profile/${follow?.Follower || follow?.Following}/resume`}>
+                      <h1 className="text-xl">{getShortAddress(follow?.Follower || follow?.Following)}</h1>
+                    </Link>
                   </div>
                   <div>
                     {/* 这里有多种情况： */}
@@ -95,14 +103,14 @@ const DeschoolFollowersModal = (props: {
                         type="button"
                         className="purple-border-button px-2 py-1"
                         onClick={() => {
-                          if (follow?.isFollowedByMe) {
-                            handleUnFollow(follow!)
-                          } else {
-                            handleFollow(follow!)
+                          if (follow?.VistorFollowedPerson) {
+                            handleUnFollow((follow.Follower || follow?.Following)!)
+                          } else if (follow && !follow?.VistorFollowedPerson) {
+                            handleFollow((follow.Follower || follow?.Following)!)
                           }
                         }}
                       >
-                        {follow?.isFollowedByMe ? t('UnFollow') : t('Follow')}
+                        {follow?.VistorFollowedPerson ? t('UnFollow') : t('Follow')}
                       </button>
                     )}
                   </div>

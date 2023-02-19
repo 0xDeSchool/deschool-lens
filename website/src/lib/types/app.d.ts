@@ -324,7 +324,7 @@ export interface DeschoolProfile {
 export interface OtherDeschoolProfile {
   address: string
   avatar: string
-  userId: string
+  userId?: string
   username: string
   bio?: string
   ensName?: string

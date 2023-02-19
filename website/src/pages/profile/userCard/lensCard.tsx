@@ -63,6 +63,10 @@ const LensCard = (props: LensCardProps) => {
   }
 
   useEffect(() => {
+    setModal({ type: 'followers', visible: false })
+  }, [routeAddress])
+
+  useEffect(() => {
     initUserInfo()
   }, [visitCase, lensProfile])
 
@@ -192,7 +196,7 @@ const LensCard = (props: LensCardProps) => {
         </div>
       )}
       <FollowersModal
-        address={routeAddress}
+        routeAddress={routeAddress}
         profileId={currentUser?.id}
         type={modal.type}
         visible={modal.visible}

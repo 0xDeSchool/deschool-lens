@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 
 import Jazzicon from 'react-jazzicon'
 import message from 'antd/es/message'
+import Skeleton from 'antd/es/skeleton'
 import { getShortAddress } from '~/utils/format'
 import { useAccount } from '~/context/account'
 import { useTranslation } from 'react-i18next'
@@ -29,8 +30,9 @@ const DeschoolCard = (props: DeschoolCardProps) => {
   const [modal, setModal] = useState<{ type: 'followers' | 'following'; visible: boolean }>({ type: 'followers', visible: false })
   const [currentUser, setCurrentUser] = useState<DeschoolProfile | OtherDeschoolProfile | null>()
   const [isFollowedByMe, setIsFollowedByMe] = useState<boolean>(false)
-  const [followings, setFollowings] = useState()
-  const [followers, setFollowers] = useState()
+  const [followings, setFollowings] = useState([])
+  const [followers, setFollowers] = useState([])
+  const [updateTrigger, setUpdateTrigger] = useState(0)
   const { t } = useTranslation()
 
   // 根据不同情况初始化用户信息
@@ -42,11 +44,15 @@ const DeschoolCard = (props: DeschoolCardProps) => {
         case 0:
           if (deschoolProfile?.address) {
             const resFollowings = await getFollowings(deschoolProfile?.address)
-            setFollowings(resFollowings)
+            if (resFollowings) {
+              setFollowings(resFollowings)
+            }
             const resFollowers = await getFollowers(deschoolProfile?.address)
-            setFollowers(resFollowers)
+            if (resFollowers) {
+              setFollowers(resFollowers)
+            }
             const deschoolProfileExtend = Object.assign(deschoolProfile, {
-              stats: { totalFollowers: resFollowers, totalFollowing: resFollowings },
+              stats: { totalFollowers: resFollowers ? resFollowers.length : 0, totalFollowing: resFollowings ? resFollowings.length : 0 },
             })
             setCurrentUser(deschoolProfileExtend)
           }
@@ -65,11 +71,15 @@ const DeschoolCard = (props: DeschoolCardProps) => {
           const userInfo = await getOtherUserProfile(routeAddress!) // 此case下必不为空
           if (userInfo) {
             const resFollowings = await getFollowings(userInfo?.address, deschoolProfile?.address)
-            setFollowings(resFollowings)
+            if (resFollowings) {
+              setFollowings(resFollowings)
+            }
             const resFollowers = await getFollowers(userInfo?.address, deschoolProfile?.address)
-            setFollowers(resFollowers)
+            if (resFollowers) {
+              setFollowers(resFollowers)
+            }
             const userInfoExtend = Object.assign(userInfo, {
-              stats: { totalFollowers: resFollowers, totalFollowing: resFollowings },
+              stats: { totalFollowers: resFollowers ? resFollowers.length : 0, totalFollowing: resFollowings ? resFollowings.length : 0 },
             })
             setCurrentUser(userInfoExtend)
           }
@@ -85,8 +95,18 @@ const DeschoolCard = (props: DeschoolCardProps) => {
   }
 
   useEffect(() => {
+    setModal({ type: 'followers', visible: false })
+  }, [routeAddress])
+
+  useEffect(() => {
     initUserInfo()
-  }, [visitCase, deschoolProfile])
+    if (updateTrigger) {
+      setModal({
+        type: 'followers',
+        visible: false,
+      })
+    }
+  }, [updateTrigger, routeAddress, visitCase, deschoolProfile])
 
   const handleJumpFollowers = (num: number | undefined) => {
     if (num && num > 0) {
@@ -123,72 +143,81 @@ const DeschoolCard = (props: DeschoolCardProps) => {
   }
 
   return (
-    <div className={`w-full pb-1 shadow-md rounded-xl ${loading || !visible ? 'hidden' : ''}`}>
-      <div className="relative w-full frc-center">
-        <SwitchIdentity profileType={profileType} setProfileType={setProfileType} />
-        <div className="h-60 object-cover object-center rounded-t-xl overflow-hidden">
-          <Jazzicon paperStyles={{ borderRadius: '10px' }} diameter={400} seed={Math.floor(Math.random() * 30)} />
+    <div className={`w-full pb-1 shadow-md rounded-xl ${!visible ? 'hidden' : ''}`}>
+      {loading ? (
+        <div className="h-400px fcc-center">
+          <Skeleton />
         </div>
-        <LensAvatar avatarUrl={currentUser?.avatar} />
-      </div>
-      {/* 处理数据为空的情况 */}
-      <div className="mt-70px w-full px-6 pb-6 fcc-center font-ArchivoNarrow">
-        <span className="text-xl">
-          {currentUser?.username || routeAddress ? getShortAddress(routeAddress) : getShortAddress(deschoolProfile?.address)}
-        </span>
-        <span className="text-xl text-gray-5">{currentUser?.ensName ? `${currentUser?.ensName}` : ''}</span>
-      </div>
-      <div className="mx-10 frc-center flex-wrap">
-        <a
-          className={`${
-            currentUser?.stats?.totalFollowers && currentUser?.stats?.totalFollowers > 0 ? 'hover:underline hover:cursor-pointer' : ''
-          } text-xl mr-4 `}
-          onClick={() => {
-            handleJumpFollowers(currentUser?.stats?.totalFollowers)
-          }}
-        >
-          <span className="text-black">{currentUser?.stats?.totalFollowers || '-'} </span>
-          <span className="text-gray-5 font-ArchivoNarrow">{t('profile.followers')}</span>
-        </a>
-        <a
-          className={`${
-            currentUser?.stats?.totalFollowing && currentUser?.stats?.totalFollowing > 0 ? 'hover:underline hover:cursor-pointer' : ''
-          } text-xl`}
-          onClick={() => {
-            handleJumpFollowing(currentUser?.stats?.totalFollowing)
-          }}
-        >
-          <span className="text-black">{currentUser?.stats?.totalFollowing || '-'} </span>
-          <span className="text-gray-5 font-ArchivoNarrow">{t('profile.following')}</span>
-        </a>
-      </div>
-      <p className="m-10 text-xl line-wrap three-line-wrap">
-        {currentUser?.bio || visitCase === 0 ? '' : "The user hasn't given a bio on Lens for self yet :)"}
-      </p>
-      {routeAddress && routeAddress !== deschoolProfile?.address && (
-        <div className="m-10">
-          <button
-            type="button"
-            className="purple-border-button px-2 py-1"
-            onClick={() => {
-              if (isFollowedByMe && currentUser) {
-                handleUnFollow(currentUser)
-              } else if (currentUser) {
-                handleFollow(currentUser)
-              }
-            }}
-          >
-            {isFollowedByMe ? t('UnFollow') : t('Follow')}
-          </button>
-        </div>
+      ) : (
+        <>
+          <div className="relative w-full frc-center">
+            <SwitchIdentity profileType={profileType} setProfileType={setProfileType} />
+            <div className="h-60 object-cover object-center rounded-t-xl overflow-hidden">
+              <Jazzicon paperStyles={{ borderRadius: '10px' }} diameter={400} seed={Math.floor(Math.random() * 30)} />
+            </div>
+            <LensAvatar avatarUrl={currentUser?.avatar} />
+          </div>
+          {/* 处理数据为空的情况 */}
+          <div className="mt-70px w-full px-6 pb-6 fcc-center font-ArchivoNarrow">
+            <span className="text-xl">
+              {currentUser?.username || routeAddress ? getShortAddress(routeAddress) : getShortAddress(deschoolProfile?.address)}
+            </span>
+            <span className="text-xl text-gray-5">{currentUser?.ensName ? `${currentUser?.ensName}` : ''}</span>
+          </div>
+          <div className="mx-10 frc-center flex-wrap">
+            <a
+              className={`${
+                currentUser?.stats?.totalFollowers && currentUser?.stats?.totalFollowers > 0 ? 'hover:underline hover:cursor-pointer' : ''
+              } text-xl mr-4 `}
+              onClick={() => {
+                handleJumpFollowers(currentUser?.stats?.totalFollowers)
+              }}
+            >
+              <span className="text-black">{currentUser?.stats?.totalFollowers || '-'} </span>
+              <span className="text-gray-5 font-ArchivoNarrow">{t('profile.followers')}</span>
+            </a>
+            <a
+              className={`${
+                currentUser?.stats?.totalFollowing && currentUser?.stats?.totalFollowing > 0 ? 'hover:underline hover:cursor-pointer' : ''
+              } text-xl`}
+              onClick={() => {
+                handleJumpFollowing(currentUser?.stats?.totalFollowing)
+              }}
+            >
+              <span className="text-black">{currentUser?.stats?.totalFollowing || '-'} </span>
+              <span className="text-gray-5 font-ArchivoNarrow">{t('profile.following')}</span>
+            </a>
+          </div>
+          <p className="m-10 text-xl line-wrap three-line-wrap">
+            {currentUser?.bio || visitCase === 0 ? '' : "The user hasn't given a bio on Lens for self yet :)"}
+          </p>
+          {routeAddress && routeAddress !== deschoolProfile?.address && (
+            <div className="m-10">
+              <button
+                type="button"
+                className="purple-border-button px-2 py-1"
+                onClick={() => {
+                  if (isFollowedByMe && currentUser) {
+                    handleUnFollow(currentUser)
+                  } else if (currentUser) {
+                    handleFollow(currentUser)
+                  }
+                }}
+              >
+                {isFollowedByMe ? t('UnFollow') : t('Follow')}
+              </button>
+            </div>
+          )}
+          <DeschoolFollowersModal
+            type={modal.type}
+            visible={modal.visible}
+            closeModal={closeModal}
+            followings={followings}
+            followers={followers}
+            setUpdateTrigger={setUpdateTrigger}
+          />
+        </>
       )}
-      <DeschoolFollowersModal
-        type={modal.type}
-        visible={modal.visible}
-        closeModal={closeModal}
-        followings={followings}
-        followers={followers}
-      />
     </div>
   )
 }

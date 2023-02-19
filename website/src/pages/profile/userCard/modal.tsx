@@ -10,19 +10,21 @@ import { getExtendProfile } from '~/hooks/profile'
 import ShowMoreLoading from '~/components/loading/showMore'
 import { followByProfileIdWithLens } from '~/api/lens/follow/follow'
 import { RoleType } from '~/lib/enum'
-import { getUserContext } from '~/context/account'
+import { getUserContext, useAccount } from '~/context/account'
+import { Link } from 'react-router-dom'
 import type { ProfileExtend } from '~/lib/types/app'
 import LensAvatar from './avatar'
 
 const FollowersModal = (props: {
-  address: string | undefined
+  routeAddress: string | undefined
   profileId: string | undefined
   type: 'followers' | 'following'
   visible: boolean
   closeModal: any
 }) => {
-  const { address, profileId, type, visible, closeModal } = props
+  const { routeAddress, profileId, type, visible, closeModal } = props
   const { t } = useTranslation()
+  const { lensToken } = useAccount()
   const [cursor, setCursor] = useState<string>('')
   const [follows, setFollows] = useState([] as Array<ProfileExtend | undefined | null>)
   const [loading, setLoading] = useState(true)
@@ -45,7 +47,7 @@ const FollowersModal = (props: {
       result = await followersRequest(params)
       tempFollows = result.items?.map(item => getExtendProfile(item?.wallet?.defaultProfile)) as Array<ProfileExtend | undefined | null>
     } else {
-      const params = { address, limit: 10 }
+      const params = { address: routeAddress || lensToken?.address, limit: 10 }
       if (cursor) {
         Object.assign(params, { cursor })
       }
@@ -118,12 +120,14 @@ const FollowersModal = (props: {
           {follows && follows.length > 0 ? (
             <div className="w-full">
               {follows?.map(follow => (
-                <div key={follow?.handle} className="relative border rounded-xl p-2 w-full frs-center">
+                <div key={follow?.id} className="relative border rounded-xl p-2 w-full frs-center">
                   <div className="relative w-60px h-60px">
                     <LensAvatar avatarUrl={follow?.avatarUrl} size={60} wrapperClassName="fcc-center w-full" />
                   </div>
                   <div className="flex-1 fcs-center ml-2">
-                    <h1>{follow?.name}</h1>
+                    <Link to={`/profile/${follow?.ownedBy}/resume`}>
+                      <h1>{follow?.name}</h1>
+                    </Link>
                     <p>{follow?.bio}</p>
                   </div>
                   <div>

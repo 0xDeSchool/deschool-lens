@@ -40,7 +40,7 @@ export async function unfollowUser(toAddr: string, fromAddr: string): Promise<an
  */
 export async function checkfollowUser(toAddr: string, fromAddr: string): Promise<any> {
   try {
-    const result = await http.post(`/follow?toAddr=${toAddr}&fromAddr=${fromAddr}`)
+    const result = await http.get(`/follow?toAddr=${toAddr}&fromAddr=${fromAddr}`)
     return result
   } catch (err) {
     console.log(err)
@@ -56,7 +56,8 @@ export async function checkfollowUser(toAddr: string, fromAddr: string): Promise
  */
 export async function getFollowings(address: string, visitorAddress?: string): Promise<any> {
   try {
-    const result = await http.post(`/follow/following?addr=${address}&visitorAddress=${visitorAddress}`)
+    const str = visitorAddress ? `/follow/following?addr=${address}&visitorAddress=${visitorAddress}` : `/follow/following?addr=${address}`
+    const result = await http.get(str)
     return result
   } catch (err) {
     console.log(err)
@@ -72,7 +73,8 @@ export async function getFollowings(address: string, visitorAddress?: string): P
  */
 export async function getFollowers(address: string, visitorAddress?: string): Promise<any> {
   try {
-    const result = await http.post(`/follow/follower?addr=${address}&visitorAddress=${visitorAddress}`)
+    const str = visitorAddress ? `/follow/follower?addr=${address}&visitorAddress=${visitorAddress}` : `/follow/follower?addr=${address}`
+    const result = await http.get(str)
     return result
   } catch (err) {
     console.log(err)

@@ -7,7 +7,6 @@ import { useEffect, useState } from 'react'
 import { Outlet, useLocation, useNavigate, useParams } from 'react-router'
 import { useAccount } from '~/context/account'
 import message from 'antd/es/message'
-import Suggest from '~/pages/profile/match/suggested'
 import UserCard from './userCard'
 import Verified from './resume/components/verified'
 
