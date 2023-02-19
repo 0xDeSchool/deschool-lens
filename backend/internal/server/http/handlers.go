@@ -182,3 +182,21 @@ func followerGetHandler(ctx *gin.Context) {
 	result := hm.GetFollower(ctx, addr, vistorAddr)
 	ctx.JSON(http.StatusOK, result)
 }
+
+func followDeleteHandler(ctx *gin.Context) {
+	type followInput struct {
+		ToAddr   string `json:"toAddr"`
+		FromAddr string `json:"fromAddr"`
+	}
+	var input followInput
+	errx.CheckError(ctx.BindJSON(&input))
+	input.FromAddr = eth.NormalizeAddress(input.FromAddr)
+	input.ToAddr = eth.NormalizeAddress(input.ToAddr)
+	hm := *di.Get[hackathon.HackathonManager]()
+	result := hm.DeleteFollow(ctx, input.FromAddr, input.ToAddr)
+	type Result struct {
+		Success bool `json:"success"`
+	}
+	ctx.JSON(http.StatusOK, &Result{Success: result})
+
+}

@@ -52,3 +52,16 @@ func (r *MongoFollowRepository) GetListByFilter(ctx context.Context, addr string
 	}}
 	return r.Find(ctx, filter)
 }
+
+func (r *MongoFollowRepository) DeleteByToAndFrom(ctx context.Context, fromAddr string, toAddr string) bool {
+	// 查询条件
+	filter := bson.D{{
+		Key:   "toAddr",
+		Value: toAddr,
+	}, {
+		Key:   "fromAddr",
+		Value: fromAddr,
+	}}
+	r.Collection(ctx).Col().DeleteOne(ctx, filter)
+	return true
+}

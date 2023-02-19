@@ -60,3 +60,12 @@ func (hm *HackathonManager) GetFollower(ctx context.Context, addr string, vistor
 	}
 	return ret
 }
+
+// 删除
+func (hm *HackathonManager) DeleteFollow(ctx context.Context, fromAddr string, toAddr string) bool {
+	if !hm.followRepo.CheckExistsByToAndFromAddr(ctx, fromAddr, toAddr) {
+		return true
+	}
+	hm.followRepo.DeleteByToAndFrom(ctx, fromAddr, toAddr)
+	return true
+}

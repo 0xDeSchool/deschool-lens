@@ -16,6 +16,7 @@ type FollowRepository interface {
 	ddd.RepositoryBase[Follow]
 	CheckExistsByToAndFromAddr(ctx context.Context, fromAddr string, toAddr string) bool
 	GetListByFilter(ctx context.Context, addr string, key string) []Follow
+	DeleteByToAndFrom(ctx context.Context, fromAddr string, toAddr string) bool
 }
 
 type FollowerList struct {
