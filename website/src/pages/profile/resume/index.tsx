@@ -410,7 +410,7 @@ const Resume = () => {
     <div className="bg-white p-8">
       {/* 简历标题 + 编辑按钮 */}
       <div className="flex justify-between">
-        <div className="text-2xl font-bold">
+        <div className="text-2xl font-bold font-ArchivoNarrow">
           RESUME
           {lensProfile?.handle && (
             <span className="ml-1">

@@ -17,6 +17,7 @@ const HotCelebrities = (props: { searchWord: string }) => {
   const [celebrities, setCelebrities] = useState([] as ProfileExtend[] | Creator[])
   const [cacheCelebrities, setCacheCelebrities] = useState([] as any[])
 
+  // 将deschool数据转换成lens profile也支持的数据
   const getTransformed = (ds: (Creator | null)[]) => {
     const temp: { avatarUrl: string; name: string; bio: string | undefined; id: string | undefined }[] = []
     ds.forEach(d => {
@@ -32,6 +33,36 @@ const HotCelebrities = (props: { searchWord: string }) => {
     return temp
   }
 
+  // 合并地址相同的人
+  // const mergeDateByAddress = (data: any[]) => {
+  //   const temp = [] as any[]
+  //   data.forEach(user => {
+  //     // deschool 数据
+  //     if (user.address) {
+  //       const indexA = temp.findIndex(existUser => existUser.ownedBy === user.address)
+  //       // 已经存过对应的lens数据
+  //       if (indexA > -1) {
+  //         temp[indexA].avatar = user.avatar
+  //         temp[indexA].username = user.username
+  //         temp[indexA].bio = user.bio
+  //       } else {
+  //         temp.push(user)
+  //       }
+  //     }
+  //     // lens 数据
+  //     else {
+  //       const indexB = temp.findIndex(existUser => existUser.address === user.ownedBy)
+  //       // 已经存过对应的deschool数据
+  //       if (indexB > -1) {
+  //         temp[indexB].handle = user.handle
+  //       } else {
+  //         temp.push(user)
+  //       }
+  //     }
+  //   })
+  //   return temp
+  // }
+
   const initSeries = async () => {
     setLoading(true)
     try {
@@ -42,8 +73,8 @@ const HotCelebrities = (props: { searchWord: string }) => {
         handles: lensUsers.map((lu: { lensHandle: any }) => lu.lensHandle),
       })
       /* loop over profiles, create properly formatted ipfs image links */
-      const profilesData = lensUsersProfiles
-        ? lensUsersProfiles.map((profileInfo: any, index: number) => ({
+      const profilesData = lensUsersProfiles?.items
+        ? lensUsersProfiles.items.map((profileInfo: any, index: number) => ({
             ...getExtendProfile(profileInfo),
             address: lensUsers[index].address,
           }))
@@ -55,8 +86,11 @@ const HotCelebrities = (props: { searchWord: string }) => {
         deschoolUsers.map(async (profileInfo: any) => getOtherUserProfile(profileInfo.address)),
       )
       const allData = profilesData.concat(getTransformed(deschoolProfilesData))
-      setCelebrities(allData)
-      setCacheCelebrities(allData)
+
+      // 合并同地址数据
+      const tempDatas = allData // mergeDateByAddress(allData)
+      setCelebrities(tempDatas)
+      setCacheCelebrities(tempDatas)
     } finally {
       setLoading(false)
     }

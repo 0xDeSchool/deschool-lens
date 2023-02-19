@@ -20,9 +20,12 @@ const Verified = (props: VerifiedProp) => {
   const initIdentities = async () => {
     try {
       if (address) {
-        const res = await getVerifiedIdentities(address)
+        let res = await getVerifiedIdentities(address)
+        if (res) {
+          res = res.filter(iden => iden.platform > 0)
+          setIdentities(res)
+        }
         // TODO: 根据handles批量获取对应平台的profiles信息
-        setIdentities(res)
       } else {
         message.error('VerifiedIds error: address missing, please disconnect and re-login')
       }
