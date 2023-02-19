@@ -14,7 +14,7 @@ type VerifiedProp = {
 
 const Verified = (props: VerifiedProp) => {
   const { handle } = props
-  const address = getUserContext().lensToken?.address
+  const address = getUserContext().lensToken?.address || getUserContext().deschoolProfile?.address
   const [identities, setIdentities] = useState<Identity[]>()
 
   const initIdentities = async () => {
