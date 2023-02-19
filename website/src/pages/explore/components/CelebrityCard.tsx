@@ -30,7 +30,8 @@ const CelebrityCard = (props: { celebrity: any; index: number }) => {
       <div className="w-357px flex flex-col items-start justify-start p-24px">
         {/* <RoleTag status={0} /> */}
         <div className="z-1 flex flex-col items-start justify-start">
-          <h1 className="font-Anton text-black text-24px leading-32px h-64px mb-24px line-wrap two-line-wrap">{celebrity?.name}</h1>
+          <h1 className="font-Anton text-black text-24px leading-32px h-64px mb-24px line-wrap two-line-wrap">{celebrity?.username}</h1>
+          <h1 className="font-Anton text-black text-24px leading-32px h-64px mb-24px line-wrap two-line-wrap">{celebrity?.handle}</h1>
           <p className="font-ArchivoNarrow text-#000000d8 text-16px leading-24px h-120px line-wrap three-line-wrap">{celebrity?.bio}</p>
           <div className="frc-start">
             {/* <Link to={`/profile/${celebrity.handle}/resume`}> */}
