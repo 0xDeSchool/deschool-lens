@@ -1,8 +1,5 @@
 import { create } from 'ipfs-http-client'
-import { Buffer } from 'buffer'
-
-// @ts-ignore
-window.Buffer = Buffer
+import { Base64 } from 'js-base64'
 
 // TODO: Move this credential out
 const INFURA_PROJECT_ID = '2Lqk8SEjL85AW9nHLo319H6PPiM'
@@ -20,7 +17,7 @@ const client = create({
   port: 5001,
   protocol: 'https',
   headers: {
-    authorization: `Basic ${window.Buffer.from(`${projectId}:${secret}`, 'utf-8').toString('base64')}`,
+    authorization: `Basic ${Base64.encode(`${projectId}:${secret}`)}`,
   },
 })
 
