@@ -10,7 +10,7 @@ export const getProfilesRequest = async (request: ProfileQueryRequest) => {
     },
   })
 
-  return result.data.profiles
+  return result.data?.profiles
 }
 
 export const exploreProfilesRequest = async (request: ExploreProfilesRequest) => {

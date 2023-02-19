@@ -54,6 +54,21 @@ export async function getVerifiedIdentities(address: string): Promise<Identity[]
   }
 }
 
+/**
+ * @method getBoothUsers
+ * @description 获取当前登录的booth账号绑定的其余identities, 用于verifiedId页面数据获取
+ * @returns {Object} Promise
+ */
+export async function getBoothUsers(): Promise<any[]> {
+  try {
+    const result: any[] = await http.get(`/id/new`)
+    return result
+  } catch (err) {
+    console.log(err)
+    return []
+  }
+}
+
 export interface Resume {
   address: string
   data: string

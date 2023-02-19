@@ -114,7 +114,7 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
             address,
             lensHandle: userInfo?.handle,
             baseAddress: address,
-            platform: PlatformType.BOOTH,
+            platform: PlatformType.LENS,
           })
         }
       }

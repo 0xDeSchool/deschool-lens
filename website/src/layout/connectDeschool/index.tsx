@@ -11,6 +11,7 @@ import type { WalletConfig } from '~/wallet'
 import { createProvider, getWallet, WalletType } from '~/wallet'
 import { useLayout } from '~/context/layout'
 import { useAccount } from '~/context/account'
+import { PlatformType, postVerifiedIdentity } from '~/api/booth/booth'
 
 const ConnectDeschoolBoard: FC = () => {
   const { connectDeschoolBoardVisible, setConnectDeschoolBoardVisible } = useLayout()
@@ -63,6 +64,12 @@ const ConnectDeschoolBoard: FC = () => {
       })
       if (validationRes && validationRes.address && validationRes.jwtToken) {
         setDescoolProfile({ ...validationRes })
+        // 不管是deschool还是lens登录后,均提交此地址的绑定信息给后台，后台判断是否是第一次来发 Deschool-Booth-Onboarding SBT
+        await postVerifiedIdentity({
+          address,
+          baseAddress: address,
+          platform: PlatformType.DESCHOOL,
+        })
       } else {
         setDescoolProfile(null)
       }

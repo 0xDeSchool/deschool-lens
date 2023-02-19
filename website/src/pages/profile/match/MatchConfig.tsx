@@ -263,10 +263,10 @@ const MatchConfig = () => {
             label={<div className="py-3 text-xl font-bold">{t('matchpage.character')}</div>}
             hasFeedback
             tooltip={t('matchpage.mbti')}
-            rules={[{ required: true, message: 'Please select your mbti type!' }]}
             style={{ marginBottom: 0 }}
           >
             <Select placeholder="Please select a character">
+              <Select.Option value={-1}>UnKnown</Select.Option>
               <Select.Option value={0}>INFP</Select.Option>
               <Select.Option value={1}>ENFP</Select.Option>
               <Select.Option value={2}>INFJ</Select.Option>

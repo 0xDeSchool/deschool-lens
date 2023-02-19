@@ -2,34 +2,61 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Star1 from '~/assets/images/star1.png'
 import Skeleton from 'antd/es/skeleton'
-import { ProfileSortCriteria } from '~/api/lens/graphql/generated'
-import { exploreProfilesRequest } from '~/api/lens/profile/get-profiles'
+import { getProfilesRequest } from '~/api/lens/profile/get-profiles'
 import Empty from 'antd/es/empty'
 import { getExtendProfile } from '~/hooks/profile'
+import { PlatformType, getBoothUsers } from '~/api/booth/booth'
+import { getOtherUserProfile } from '~/api/go/account'
 import CelebrityCard from './CelebrityCard'
-import type { ProfileExtend } from '~/lib/types/app'
+import type { Creator, ProfileExtend } from '~/lib/types/app'
 
 const HotCelebrities = (props: { searchWord: string }) => {
   const { searchWord } = props
   const { t } = useTranslation()
   const [loading, setLoading] = useState(true)
-  const [celebrities, setCelebrities] = useState([] as ProfileExtend[])
-  const [cacheCelebrities, setCacheCelebrities] = useState([] as ProfileExtend[])
+  const [celebrities, setCelebrities] = useState([] as ProfileExtend[] | Creator[])
+  const [cacheCelebrities, setCacheCelebrities] = useState([] as any[])
+
+  const getTransformed = (ds: (Creator | null)[]) => {
+    const temp: { avatarUrl: string; name: string; bio: string | undefined; id: string | undefined }[] = []
+    ds.forEach(d => {
+      if (d) {
+        temp.push({
+          avatarUrl: d.avatar,
+          name: d.username,
+          bio: d.bio,
+          id: d.id,
+        })
+      }
+    })
+    return temp
+  }
 
   const initSeries = async () => {
     setLoading(true)
     try {
-      const response = await exploreProfilesRequest({
-        sortCriteria: ProfileSortCriteria.MostFollowers,
-        // cursor?: InputMaybe<Scalars['Cursor']>;
-        // customFilters?: InputMaybe<Array<CustomFiltersTypes>>;
-        limit: 9,
-        // timestamp?: InputMaybe<Scalars['TimestampScalar']>;
+      const response = await getBoothUsers()
+      // lens 用户
+      const lensUsers = response.filter((user: { platform: PlatformType }) => user.platform === PlatformType.LENS)
+      const lensUsersProfiles: any = await getProfilesRequest({
+        handles: lensUsers.map((lu: { lensHandle: any }) => lu.lensHandle),
       })
       /* loop over profiles, create properly formatted ipfs image links */
-      const profilesData = await Promise.all(response.items.map(async (profileInfo: any) => getExtendProfile(profileInfo)))
-      setCelebrities(profilesData as ProfileExtend[])
-      setCacheCelebrities(profilesData as ProfileExtend[])
+      const profilesData = lensUsersProfiles
+        ? lensUsersProfiles.map((profileInfo: any, index: number) => ({
+            ...getExtendProfile(profileInfo),
+            address: lensUsers[index].address,
+          }))
+        : []
+
+      // deschool 用户
+      const deschoolUsers = response.filter((user: { platform: PlatformType }) => user.platform === PlatformType.DESCHOOL)
+      const deschoolProfilesData = await Promise.all(
+        deschoolUsers.map(async (profileInfo: any) => getOtherUserProfile(profileInfo.address)),
+      )
+      const allData = profilesData.concat(getTransformed(deschoolProfilesData))
+      setCelebrities(allData)
+      setCacheCelebrities(allData)
     } finally {
       setLoading(false)
     }
@@ -40,7 +67,9 @@ const HotCelebrities = (props: { searchWord: string }) => {
   }, [])
 
   useEffect(() => {
-    setCelebrities(cacheCelebrities.filter(c => c.handle.includes(searchWord) || c.name?.includes(searchWord) || c.id.includes(searchWord)))
+    setCelebrities(
+      cacheCelebrities.filter(c => c.handle?.includes(searchWord) || c.name?.includes(searchWord) || c.id?.includes(searchWord)),
+    )
   }, [searchWord])
 
   return (
