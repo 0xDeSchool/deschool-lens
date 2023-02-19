@@ -98,7 +98,7 @@ func (hm *HackathonManager) compareTwoId(ctx context.Context, fromQ11e Q11e, toQ
 			reasonStr = "Your characters perfectly fit each other according to MBTi personality theory."
 		}
 		ur.Reasons = append(ur.Reasons, reasonStr)
-		ur.Score = score
+		ur.Score = score * 2
 	}
 
 	return ur
@@ -119,9 +119,9 @@ func getSameAndScore(fromItems []string, toItems []string, fieldName string, ur 
 	if sameItemCnt > 0 {
 		// 加分
 		if sameItemCnt > PERFECT_MATCH_THRESHOLD {
-			delta += 30
+			delta += 50
 		} else {
-			delta += 20
+			delta += 30
 		}
 		// 组装原因句子
 		reasonStr := ""
