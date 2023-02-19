@@ -3,12 +3,11 @@ import message from 'antd/es/message'
 import type { Identity } from '~/api/booth/booth'
 import { PlatformType, getVerifiedIdentities } from '~/api/booth/booth'
 
-import Skeleton from 'antd/es/skeleton'
-import Empty from 'antd/es/empty'
 import { DEFAULT_AVATAR, getUserContext } from '~/context/account'
 import Avatar from 'antd/es/avatar'
 import Tooltip from 'antd/es/tooltip'
 import { InfoCircleOutlined } from '@ant-design/icons'
+import { getShortAddress } from '~/utils/format'
 
 type VerifiedProp = {
   handle?: string
@@ -18,10 +17,8 @@ const Verified = (props: VerifiedProp) => {
   const { handle } = props
   const address = getUserContext().lensToken?.address
   const [identities, setIdentities] = useState<Identity[]>()
-  const [loading, setLoading] = useState<boolean>(true)
 
   const initIdentities = async () => {
-    setLoading(true)
     try {
       if (address) {
         const res = await getVerifiedIdentities(address)
@@ -33,8 +30,6 @@ const Verified = (props: VerifiedProp) => {
     } catch (error) {
       message.error(`VerifiedIds error: check console log`)
       console.log('VerifiedIds error:', error)
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -42,9 +37,9 @@ const Verified = (props: VerifiedProp) => {
     initIdentities()
   }, [handle])
 
-  return (
-    <div>
-      <div className="frc-start mb-6">
+  return identities && identities.length > 0 ? (
+    <div className="w-full border shadow-md rounded-xl mt-4">
+      <div className="frc-start mx-2 my-2">
         <h1 className="text-2xl font-bold">Verified ID List</h1>
         <Tooltip
           className="ml-2"
@@ -52,23 +47,17 @@ const Verified = (props: VerifiedProp) => {
             "SBT scattered across your multiple addresses? It doesn't matter, Booth allows you to link multiple identities, and the address identities you have associated are all below"
           }
         >
-          <InfoCircleOutlined />{' '}
+          <InfoCircleOutlined />
         </Tooltip>
       </div>
-      {/* eslint-disable-next-line no-nested-ternary */}
-      {loading ? (
-        <Skeleton />
-      ) : identities && identities.length > 0 ? (
-        identities?.map(identity => (
-          <div key={identity?.address} className="relative border rounded-xl p-4 w-full frs-center mt-2">
-            <div className="relative w-60px h-60px">
-              <Avatar src={DEFAULT_AVATAR} size={60} className="fcc-center w-full" />
-            </div>
-            <div className="flex-1 fcs-center ml-4 font-ArchivoNarrow">
-              <h1 className="text-large font-bold">{identity?.address}</h1>
-              <h3 className=" mt-1">Provider: {identity?.platform ? 'DeSchool' : 'Booth'}</h3>
-              <div className="mt-4">
-                <p>
+      <div className="mx-2 my-2">
+        {identities?.map(identity => (
+          <div key={identity?.address} className="relative p-4 w-full frs-center mt-2 bg-gray-1 rounded-xl">
+            <div className="flex-1 fcs-center font-ArchivoNarrow">
+              <h1 className="text-large font-bold">{identity?.lensHandle ? identity?.lensHandle : getShortAddress(identity?.address)}</h1>
+              <h3 className=" mt-1">Provider: {['Booth', 'Deschool', 'Lens'][identity?.platform]}</h3>
+              <div className="mt-4 text-sm color-gray">
+                <p className='mb-0'>
                   {identity.platform === PlatformType.BOOTH
                     ? 'Your account is linked with an address on Booth platform. You can add SBTs gained from this verified address. This address can only be binded with your address.'
                     : 'Your account is linked with an address on DeSchool platform. You can add SBTs gained from this verified address. This address can only be binded with your address.'}
@@ -76,11 +65,11 @@ const Verified = (props: VerifiedProp) => {
               </div>
             </div>
           </div>
-        ))
-      ) : (
-        <Empty />
-      )}
+        ))}
+      </div>
     </div>
+  ) : (
+    <div>{null}</div>
   )
 }
 export default Verified

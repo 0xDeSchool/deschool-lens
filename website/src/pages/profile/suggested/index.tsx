@@ -44,12 +44,7 @@ const Suggest = () => {
   }
 
   return (
-    <div className="w-full fcs-center">
-      <div className="w-full mb-6 text-right">
-        <button type="button" className="purple-border-button p-2" onClick={handleJumpMatch}>
-          FIND PAIR
-        </button>
-      </div>
+    <div className="w-full fcs-center border shadow-md rounded-xl mt-4">
       {loading && <Skeleton />}
       {!loading && suggestedUser && suggestedUser.ToAddr ? (
         <div className="border rounded-xl w-full  p-4 min-h-240px">
@@ -86,9 +81,9 @@ const Suggest = () => {
           </div>
         </div>
       ) : (
-        <div className="w-full h-500px flex flex-col justify-center items-center">
-          <div className="text-2xl font-bold">Recommendation Requires a Form Filled by You</div>
-          <div className="mt-4">You haven't fill the preference form yet. Try the top right button "FIND PAIR" first!</div>
+        <div className="w-full h-200px flex flex-col justify-center items-center">
+          <div className="text-xl font-bold">Recommendation Requires a Form Filled by You</div>
+          <div className="mt-4">You haven't fill the preference form in the right of this page yet. </div>
         </div>
       )}
     </div>

@@ -32,6 +32,11 @@ export async function postVerifiedIdentity(params: VerifiedInfo): Promise<{ succ
 export interface Identity {
   address: string
   platform: PlatformType
+  CreatedAt: string
+  CreatorId: string
+  ID: string
+  baseAddress: string
+  lensHandle: string
 }
 
 /**

@@ -70,17 +70,24 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
         getUserContext().setLensProfile(null)
         getUserContext().setLensToken(null)
         message.info({
+          key: 'nohandle',
           content: (
-            <p>
-              Visit{' '}
-              <a className="font-bold" href="https://claim.lens.xyz" target="_blank" rel="noreferrer noopener">
+            <p className="inline">
+              Visit
+              <a className="font-bold mx-2" href="https://claim.lens.xyz" target="_blank" rel="noreferrer noopener">
                 claiming site
               </a>
               to claim your profile now 🏃‍♂️
+              <CloseOutlined
+                size={12}
+                className="inline ml-2 hover:color-purple!"
+                onClick={() => {
+                  message.destroy('nohandle')
+                }}
+              />
             </p>
           ),
           duration: 0,
-          onClose: () => {},
         })
       }
       // 有handle,更新default profile
