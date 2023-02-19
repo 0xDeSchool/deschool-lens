@@ -18,6 +18,7 @@ import { useLayout } from '~/context/layout'
 import { changeLanguage, getLanguage } from '~/utils/language'
 import './userbar.css'
 import { NavLink, useLocation } from 'react-router-dom'
+import { getShortAddress } from '~/utils/format'
 import Logo from '../logo'
 
 const UserBar = () => {
@@ -270,7 +271,7 @@ const UserBar = () => {
             >
               <img src={Deschool} alt="lens" width={20} height={24} />
               <button type="button" className="text-white text-14px ml-2 font-ArchivoNarrow">
-                {t('Connect Deschool')}
+                {deschoolToken ? getShortAddress(deschoolToken?.address) : t('Connect Deschool')}
               </button>
             </span>
           </Dropdown>

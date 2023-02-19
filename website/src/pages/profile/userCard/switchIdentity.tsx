@@ -9,7 +9,7 @@ const SwitchIdentity = (props: { setProfileType: Dispatch<SetStateAction<string>
   const { lensProfile } = useAccount()
 
   return (
-    <div className="frc-between absolute">
+    <div className="frc-between absolute top-3 z-1">
       <span
         className={`flex-1 frc-center bg-#abfe2c ${
           profileType === 'lens' ? 'rounded-xl border border-#00ae00' : 'rounded-xl'
