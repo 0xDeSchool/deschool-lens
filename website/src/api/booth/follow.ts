@@ -24,7 +24,7 @@ export async function followUser(toAddr: string, fromAddr: string): Promise<any>
  */
 export async function unfollowUser(toAddr: string, fromAddr: string): Promise<any> {
   try {
-    const result = await http.post(`/unfollow`, { toAddr, fromAddr })
+    const result = await http.delete(`/follow`, { data: { toAddr, fromAddr } })
     return result
   } catch (err) {
     console.log(err)
