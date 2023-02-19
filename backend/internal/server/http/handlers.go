@@ -171,7 +171,11 @@ func followingGetHandler(ctx *gin.Context) {
 	addr = eth.NormalizeAddress(addr)
 
 	vistorAddr := ctx.Query("visitorAddress")
-	vistorAddr = eth.NormalizeAddress(vistorAddr)
+	if vistorAddr != "" && vistorAddr != "undefined" {
+		vistorAddr = eth.NormalizeAddress(vistorAddr)
+	} else {
+		vistorAddr = addr
+	}
 
 	hm := *di.Get[hackathon.HackathonManager]()
 	result := hm.GetFollowing(ctx, addr, vistorAddr)
@@ -183,7 +187,11 @@ func followerGetHandler(ctx *gin.Context) {
 	addr = eth.NormalizeAddress(addr)
 
 	vistorAddr := ctx.Query("visitorAddress")
-	vistorAddr = eth.NormalizeAddress(vistorAddr)
+	if vistorAddr != "" && vistorAddr != "undefined" {
+		vistorAddr = eth.NormalizeAddress(vistorAddr)
+	} else {
+		vistorAddr = addr
+	}
 	hm := *di.Get[hackathon.HackathonManager]()
 	result := hm.GetFollower(ctx, addr, vistorAddr)
 	ctx.JSON(http.StatusOK, result)

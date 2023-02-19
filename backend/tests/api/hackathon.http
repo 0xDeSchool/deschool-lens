@@ -54,5 +54,9 @@ GET {{host}}/api/follow/following?addr={{cl_addr}}&vistorAddress={{cl3_addr}}
 ### 测试查询所有 Follower
 GET {{host}}/api/follow/follower?addr={{cl2_addr}}&vistorAddress={{cl3_addr}}
 
-### cha
+### 查新用户
 GET {{host}}/api/id/new
+
+### 聪哥 Debug
+GET {{host}}/api/follow/following?addr=0x27aa5a880B512bEaF40D1B2E0F256b09f5711444
+
