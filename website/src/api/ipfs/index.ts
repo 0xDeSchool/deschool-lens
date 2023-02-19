@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-unresolved
 import { create } from 'ipfs-http-client'
 import { Base64 } from 'js-base64'
 

@@ -3,8 +3,7 @@ import message from 'antd/es/message'
 import type { Identity } from '~/api/booth/booth'
 import { PlatformType, getVerifiedIdentities } from '~/api/booth/booth'
 
-import { DEFAULT_AVATAR, getUserContext } from '~/context/account'
-import Avatar from 'antd/es/avatar'
+import { getUserContext } from '~/context/account'
 import Tooltip from 'antd/es/tooltip'
 import { InfoCircleOutlined } from '@ant-design/icons'
 import { getShortAddress } from '~/utils/format'
@@ -57,7 +56,7 @@ const Verified = (props: VerifiedProp) => {
               <h1 className="text-large font-bold">{identity?.lensHandle ? identity?.lensHandle : getShortAddress(identity?.address)}</h1>
               <h3 className=" mt-1">Provider: {['Booth', 'Deschool', 'Lens'][identity?.platform]}</h3>
               <div className="mt-4 text-sm color-gray">
-                <p className='mb-0'>
+                <p className="mb-0">
                   {identity.platform === PlatformType.BOOTH
                     ? 'Your account is linked with an address on Booth platform. You can add SBTs gained from this verified address. This address can only be binded with your address.'
                     : 'Your account is linked with an address on DeSchool platform. You can add SBTs gained from this verified address. This address can only be binded with your address.'}

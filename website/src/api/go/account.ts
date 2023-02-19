@@ -1,5 +1,5 @@
 import http from '~/api/go/http'
-import { UserInfoStruct } from '~/hooks/deschool'
+import type { UserInfoStruct } from '~/hooks/deschool'
 import type { OtherDeschoolProfile } from '~/lib/types/app'
 
 /**

@@ -3,16 +3,18 @@ import { v4 as uuidv4 } from 'uuid'
 import { omit } from '~/utils/omit'
 // import type { Metadata} from '~/lib/types/publication';
 // import { PublicationMainFocus } from '~/lib/types/publication'
+import type { Metadata} from '~/lib/types/publication';
+import { PublicationMainFocus } from '~/lib/types/publication'
+import { uploadIpfs } from '~/api/ipfs'
+import { getUserContext } from '~/context/account'
 import { apolloClient } from '../index'
 import { splitSignature } from '../ethers.service'
-import { CreatePublicPostRequest, PublicationsDocument, PublicationsQueryRequest } from '../graphql/generated'
-import { CreatePostTypedDataDocument } from '../graphql/generated'
+import type { CreatePublicPostRequest, PublicationsQueryRequest } from '../graphql/generated';
+import { PublicationsDocument , CreatePostTypedDataDocument } from '../graphql/generated'
+
 import { pollUntilIndexed } from '../indexer/has-transaction-been-indexed'
 // import { uploadIpfs } from '../../ipfs'
 import { lensHub } from '../lens-hub'
-import { Metadata, PublicationMainFocus } from '~/lib/types/publication'
-import { uploadIpfs } from '~/api/ipfs'
-import { getUserContext } from '~/context/account'
 
 const BOOTH_PATH = import.meta.env.VITE_APP_BOOTH_PATH
 

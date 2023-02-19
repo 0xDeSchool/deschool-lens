@@ -12,12 +12,12 @@ import { getIdSbt, getResume, putResume } from '~/api/booth/booth'
 import { useAccount } from '~/context/account'
 import { createPost, getPublicationsRequest, pollAndIndexPost } from '~/api/lens/publication/post'
 import { getShortAddress } from '~/utils/format'
+import { PublicationTypes } from '~/api/lens/graphql/generated'
 import CardEditor from './components/cardEditor'
 import ResumeBlock from './components/resumeBlock'
 import { BlockType } from './enum'
 import type { ResumeCardData, ResumeData, SbtInfo } from './types'
 import { randomConfetti } from './utils/confetti'
-import { PublicationTypes } from '~/api/lens/graphql/generated'
 
 const BOOTH_PATH = import.meta.env.VITE_APP_BOOTH_PATH
 
