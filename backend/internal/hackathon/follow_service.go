@@ -27,17 +27,14 @@ func (hm *HackathonManager) InsertFollow(ctx context.Context, fromAddr string, t
 // 查询偶像列表
 func (hm *HackathonManager) GetFollowing(ctx context.Context, addr string, vistorAddr string) []FollowingList {
 
-	if vistorAddr == "" {
-		vistorAddr = addr
-	}
 	result := hm.followRepo.GetListByFilter(ctx, addr, "fromAddr")
 
 	var ret []FollowingList
 	for _, item := range result {
 		ret = append(ret, FollowingList{
 			Following:            item.ToAddr,
-			VistorFollowedPerson: hm.CheckFollowExists(ctx, vistorAddr, item.FromAddr),
-			PersonFollowedVistor: hm.CheckFollowExists(ctx, item.FromAddr, vistorAddr),
+			VistorFollowedPerson: hm.CheckFollowExists(ctx, vistorAddr, item.ToAddr),
+			PersonFollowedVistor: hm.CheckFollowExists(ctx, item.ToAddr, vistorAddr),
 		})
 	}
 	return ret
@@ -45,9 +42,7 @@ func (hm *HackathonManager) GetFollowing(ctx context.Context, addr string, visto
 
 // 查询粉丝列表
 func (hm *HackathonManager) GetFollower(ctx context.Context, addr string, vistorAddr string) []FollowerList {
-	if vistorAddr == "" {
-		vistorAddr = addr
-	}
+
 	result := hm.followRepo.GetListByFilter(ctx, addr, "toAddr")
 
 	var ret []FollowerList
