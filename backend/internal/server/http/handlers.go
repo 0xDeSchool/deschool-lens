@@ -163,15 +163,22 @@ func followPostHandler(ctx *gin.Context) {
 func followingGetHandler(ctx *gin.Context) {
 	addr := ctx.Query("addr")
 	addr = eth.NormalizeAddress(addr)
+
+	vistorAddr := ctx.Query("vistorAddress")
+	vistorAddr = eth.NormalizeAddress(vistorAddr)
+
 	hm := *di.Get[hackathon.HackathonManager]()
-	result := hm.GetFollowing(ctx, addr)
+	result := hm.GetFollowing(ctx, addr, vistorAddr)
 	ctx.JSON(http.StatusOK, result)
 }
 
 func followerGetHandler(ctx *gin.Context) {
 	addr := ctx.Query("addr")
 	addr = eth.NormalizeAddress(addr)
+
+	vistorAddr := ctx.Query("vistorAddress")
+	vistorAddr = eth.NormalizeAddress(vistorAddr)
 	hm := *di.Get[hackathon.HackathonManager]()
-	result := hm.GetFollower(ctx, addr)
+	result := hm.GetFollower(ctx, addr, vistorAddr)
 	ctx.JSON(http.StatusOK, result)
 }

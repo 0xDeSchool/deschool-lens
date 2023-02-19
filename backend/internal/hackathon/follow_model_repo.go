@@ -17,3 +17,15 @@ type FollowRepository interface {
 	CheckExistsByToAndFromAddr(ctx context.Context, fromAddr string, toAddr string) bool
 	GetListByFilter(ctx context.Context, addr string, key string) []Follow
 }
+
+type FollowerList struct {
+	VistorFollowedPerson bool
+	PersonFollowedVistor bool
+	Follower             string
+}
+
+type FollowingList struct {
+	VistorFollowedPerson bool
+	PersonFollowedVistor bool
+	Following            string
+}

@@ -49,7 +49,7 @@ content-type: application/json
 GET {{host}}/api/follow?toAddr={{cl2_addr}}&fromAddr={{cl_addr}}
 
 ### 测试查询所有 Following 
-GET {{host}}/api/follow/following?addr={{cl_addr}}
+GET {{host}}/api/follow/following?addr={{cl_addr}}&vistorAddress={{cl3_addr}}
 
 ### 测试查询所有 Follower
-GET {{host}}/api/follow/follower?addr={{cl2_addr}}
+GET {{host}}/api/follow/follower?addr={{cl2_addr}}&vistorAddress={{cl3_addr}}
