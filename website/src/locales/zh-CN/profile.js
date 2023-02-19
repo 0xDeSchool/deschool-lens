@@ -14,6 +14,8 @@ const ZH_CN_PROFILE = {
       bio: '一句话简介',
       contacts: '社交信息',
     },
+    deschool: "Deschool 身份",
+    lens: "Lens 身份",
   },
   matchpage: {
     goals: '倾向类型',

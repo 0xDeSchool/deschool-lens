@@ -6,7 +6,6 @@ import Checkbox from 'antd/es/checkbox'
 import Select from 'antd/es/select'
 import Space from 'antd/es/space'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router'
 import Tooltip from 'antd/es/tooltip'
 import type { q11eParam } from '~/api/booth/booth'
 import { getQ11e, putQ11e } from '~/api/booth/booth'
@@ -71,7 +70,6 @@ const MatchConfig = () => {
   const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
   const { t } = useTranslation()
-  const navigate = useNavigate()
   const { lensToken } = useAccount()
 
   const loadInitialValues = async () => {
@@ -133,10 +131,7 @@ const MatchConfig = () => {
   }
 
   const handleSubmmit = async () => {
-    const result = await submitMatchParams()
-    if (result) {
-      await navigate(`/profile/suggested`)
-    }
+    await submitMatchParams()
   }
 
   return (

@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this */
 import type { Dispatch, ReactElement, SetStateAction } from 'react'
-import { useEffect, useMemo, useState, useContext, createContext } from 'react'
+import { useEffect, useState, useContext, createContext } from 'react'
 
 import { getWallet } from '~/wallet'
 import { RoleType } from '~/lib/enum'
@@ -104,18 +104,6 @@ export const AccountContextProvider = ({ children }: { children: ReactElement })
   const [deschoolToken, setDescoolToken] = useState<DeschoolTokenInfo | null>(getStorage('deschoolToken'))
   const [lensToken, setLensToken] = useState<LensTokenInfo | null>(getStorage('lensToken'))
 
-  const accountMemo = useMemo(
-    () => ({
-      lensProfile: null,
-      deschoolToken: null,
-      lensToken: null,
-      setLensProfile: () => {},
-      setDescoolToken: () => {},
-      setLensToken: () => {},
-    }),
-    [lensProfile, deschoolToken, lensToken, setLensProfile, setDescoolToken, setLensToken],
-  )
-
   useEffect(() => {
     if (lensProfile) {
       localStorage.setItem('lensProfile', JSON.stringify(lensProfile))
@@ -141,7 +129,12 @@ export const AccountContextProvider = ({ children }: { children: ReactElement })
   }, [lensToken])
 
   userContext = new UserContext({ lensProfile, deschoolToken, lensToken, setLensProfile, setDescoolToken, setLensToken })
-  return <AccountContext.Provider value={accountMemo}>{children}</AccountContext.Provider>
+  return (
+    // eslint-disable-next-line react/jsx-no-constructed-context-values
+    <AccountContext.Provider value={{ lensProfile, deschoolToken, lensToken, setLensProfile, setDescoolToken, setLensToken }}>
+      {children}
+    </AccountContext.Provider>
+  )
 }
 
 export const useAccount = () => {

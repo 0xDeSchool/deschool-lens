@@ -14,6 +14,8 @@ const EN_US_PROFILE = {
       bio: 'Bio',
       contacts: 'Contacts',
     },
+    deschool: "Deschool Identity",
+    lens: "Lens Identity",
   },
   matchpage: {
     goals: 'Goals',

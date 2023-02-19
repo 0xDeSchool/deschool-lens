@@ -7,7 +7,7 @@ import CloseOutlined from '@ant-design/icons/CloseOutlined'
 import LoadingOutlined from '@ant-design/icons/LoadingOutlined'
 import { RoleType } from '~/lib/enum'
 
-import { getUserContext } from '~/context/account'
+import { getUserContext, useAccount } from '~/context/account'
 import { useLayout } from '~/context/layout'
 import type { WalletConfig } from '~/wallet'
 import { createProvider, getWallet, WalletType } from '~/wallet'
@@ -26,6 +26,7 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
   const [loading, setLoading] = useState(false)
   const [tempAddress, setTempAddress] = useState<string | undefined>()
   const { t } = useTranslation()
+  const { setLensToken, setLensProfile } = useAccount()
 
   useEffect(() => {
     if (connectLensBoardVisible === false) {
@@ -67,8 +68,8 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
       const userInfo = await fetchUserDefaultProfile(address)
       // 没handle,则lens profile为空
       if (!userInfo) {
-        getUserContext().setLensProfile(null)
-        getUserContext().setLensToken(null)
+        setLensProfile(null)
+        setLensToken(null)
         message.info({
           key: 'nohandle',
           content: (
@@ -92,8 +93,6 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
       }
       // 有handle,更新default profile
       else {
-        getUserContext().changeUserProfile(userInfo)
-
         // request a challenge from the server
         const challengeResponse = await generateChallenge({ address })
 
@@ -104,11 +103,12 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
         const authenticatedResult = await authenticate({ address, signature })
 
         if (signature) {
-          getUserContext().setLensToken({
+          setLensToken({
             address,
             accessToken: authenticatedResult.accessToken,
             refreshToken: authenticatedResult.refreshToken,
           })
+          setLensProfile(userInfo)
           // 不管是deschool还是lens登录后,均提交此地址的绑定信息给后台，后台判断是否是第一次来发 Deschool-Booth-Onboarding SBT
           await postVerifiedIdentity({
             address,

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import Skeleton from 'antd/es/skeleton'
 import message from 'antd/es/message'
 // import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router'
 import Jazzicon from 'react-jazzicon'
 import Button from 'antd/es/button'
 import { getRecommendation } from '~/api/booth/booth'
@@ -12,7 +11,6 @@ import type { RecommendAddr } from '~/lib/types/app'
 // 根据match config配置的参数推荐用户想找的人
 const Suggest = () => {
   // const { t } = useTranslation()
-  const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const [suggestedUser, setSuggestedUser] = useState({} as RecommendAddr)
 
@@ -39,13 +37,13 @@ const Suggest = () => {
     initSuggestedUsers()
   }, [])
 
-  const handleJumpMatch = () => {
-    navigate('/profile/match')
-  }
-
   return (
     <div className="w-full fcs-center border shadow-md rounded-xl mt-4">
-      {loading && <Skeleton />}
+      {loading && (
+        <div className="w-full h-200px fcc-center">
+          <Skeleton />
+        </div>
+      )}
       {!loading && suggestedUser && suggestedUser.ToAddr ? (
         <div className="border rounded-xl w-full  p-4 min-h-240px">
           <div className="frs-start">
@@ -81,7 +79,7 @@ const Suggest = () => {
           </div>
         </div>
       ) : (
-        <div className="w-full h-200px flex flex-col justify-center items-center">
+        <div className="w-full h-200px fcc-center">
           <div className="text-xl font-bold">Recommendation Requires a Form Filled by You</div>
           <div className="mt-4">You haven't fill the preference form in the right of this page yet. </div>
         </div>

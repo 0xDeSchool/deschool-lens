@@ -49,6 +49,7 @@ const UserBar = () => {
   const disconnectFromDeschool = () => {
     try {
       getUserContext().disconnectFromDeschool()
+      setDeschoolUserMenu(false)
     } catch (error: any) {
       message.error(error?.message ? error.message : '退出登录失败')
     }
@@ -58,6 +59,7 @@ const UserBar = () => {
   const disconnectFromLens = async () => {
     try {
       getUserContext().disconnectFromLens()
+      setLensUserMenu(false)
     } catch (error: any) {
       message.error(error?.message ? error.message : '退出登录失败')
     }
