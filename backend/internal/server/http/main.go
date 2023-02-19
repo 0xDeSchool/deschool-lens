@@ -52,6 +52,7 @@ func HackathonApi(sb *server.ServerBuiler) {
 		baseRoute.GET("/ping", pingHandler)
 		baseRoute.POST("/id/validate", idValidateHandler)
 		baseRoute.GET("/id/list", idListHandler)
+		baseRoute.GET("/id/new", idNewHandle)
 
 		// Stage 2 - 简历 + 技能
 		baseRoute.GET("/resume", resumeGetHandler)

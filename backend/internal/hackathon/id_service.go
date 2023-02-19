@@ -83,3 +83,8 @@ func signHash(data []byte) []byte {
 func (hm *HackathonManager) GetIdListByAddr(ctx context.Context, address string) []Id {
 	return hm.idRepo.GetListByAddress(ctx, address)
 }
+
+// 获取新用户
+func (hm *HackathonManager) GetNewIdList(ctx context.Context) []Id {
+	return hm.idRepo.GetTen(ctx)
+}

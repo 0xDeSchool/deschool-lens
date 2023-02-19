@@ -86,16 +86,20 @@ func (hm *HackathonManager) compareTwoId(ctx context.Context, fromQ11e Q11e, toQ
 	score += getSameAndScore(fromPrefs, toPrefs, "preference", ur)
 
 	// Mbti match
-	delta := MBTI_MATCHING_MAP[fromQ11e.Mbti][toQ11e.Mbti]
-	score += delta
-	var reasonStr string
-	if 4 <= score && score <= 8 {
-		reasonStr = "Your characters fit each other according to MBTi personality theory."
-	} else if 8 < score {
-		reasonStr = "Your characters perfectly fit each other according to MBTi personality theory."
+	if 0 <= int(fromQ11e.Mbti) && int(fromQ11e.Mbti) < 16 &&
+		0 <= int(toQ11e.Mbti) && int(toQ11e.Mbti) < 16 {
+
+		delta := MBTI_MATCHING_MAP[fromQ11e.Mbti][toQ11e.Mbti]
+		score += delta
+		var reasonStr string
+		if 4 <= score && score <= 8 {
+			reasonStr = "Your characters fit each other according to MBTi personality theory."
+		} else if 8 < score {
+			reasonStr = "Your characters perfectly fit each other according to MBTi personality theory."
+		}
+		ur.Reasons = append(ur.Reasons, reasonStr)
+		ur.Score = score
 	}
-	ur.Reasons = append(ur.Reasons, reasonStr)
-	ur.Score = score
 
 	return ur
 }

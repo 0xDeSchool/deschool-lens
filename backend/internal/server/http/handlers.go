@@ -53,6 +53,12 @@ func resumePutHandler(ctx *gin.Context) {
 	ginx.EntityCreated(ctx, id.Hex())
 }
 
+func idNewHandle(ctx *gin.Context) {
+	hm := *di.Get[hackathon.HackathonManager]()
+	result := hm.GetNewIdList(ctx)
+	ctx.JSON(http.StatusOK, result)
+}
+
 func sbtDetailGetHandler(ctx *gin.Context) {
 	hm := *di.Get[hackathon.HackathonManager]()
 

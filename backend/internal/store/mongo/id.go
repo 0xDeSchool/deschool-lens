@@ -8,6 +8,7 @@ import (
 	"github.com/0xdeschool/deschool-lens/backend/pkg/errx"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 const IdCollectionName = "id"
@@ -62,4 +63,11 @@ func (r *MongoIdRepository) GetListByBaseAddr(ctx context.Context, baseAddr stri
 		Value: baseAddr,
 	}}
 	return r.Find(ctx, filter)
+}
+
+func (r *MongoIdRepository) GetTen(ctx context.Context) []hackathon.Id {
+	// 查询条件
+	filter := bson.D{{}}
+	opts := options.Find().SetSort(bson.D{{Key: "createdAt", Value: -1}}).SetLimit(25)
+	return r.Find(ctx, filter, opts)
 }

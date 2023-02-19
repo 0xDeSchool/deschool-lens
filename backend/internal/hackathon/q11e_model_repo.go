@@ -28,6 +28,8 @@ const (
 	ESFJ MbtiType = 13
 	ISTJ MbtiType = 14
 	ESTJ MbtiType = 15
+
+	UnKnown MbtiType = -1
 )
 
 type Q11e struct {
