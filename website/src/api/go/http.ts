@@ -1,7 +1,7 @@
 import message from 'antd/es/message'
 import type { AxiosInstance, AxiosRequestConfig, RawAxiosRequestHeaders } from 'axios'
 import axios from 'axios'
-import { getToken } from '~/auth'
+import { getUserContext } from '~/context/account'
 import Session from '~/utils/session'
 
 const session = new Session()
@@ -26,9 +26,10 @@ instance.interceptors.request.use(
     const headers: RawAxiosRequestHeaders = {}
     // 附带鉴权的token
     // const tokenObj = session.getSession('token', true)
-    const tokenInfo = getToken()
-    if (tokenInfo && tokenInfo.deschool?.token) {
-      headers.Authorization = `Bearer ${tokenInfo.deschool.token}`
+    const userContext = getUserContext()
+    const tokenInfo = userContext.deschoolToken
+    if (tokenInfo) {
+      headers.Authorization = `Bearer ${tokenInfo}`
     }
 
     return {

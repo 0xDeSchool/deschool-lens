@@ -10,7 +10,6 @@ import Skeleton from 'antd/es/skeleton'
 import { useEffect, useState } from 'react'
 import { useAccount } from '~/context/account'
 import { fetchUserDefaultProfile, getExtendProfile } from '~/hooks/profile'
-import { getAddress } from '~/auth/user'
 import { useTranslation } from 'react-i18next'
 import fallbackImage from '~/assets/images/fallbackImage'
 import { getShortAddress } from '~/utils/format'
@@ -28,10 +27,10 @@ type UserCardProps = {
 const UserCard = (props: UserCardProps) => {
   const { visitCase, address } = props
   const { t } = useTranslation()
-  const user = useAccount()
+  const { lensToken, lensProfile } = useAccount()
   const [loading, setLoading] = useState(true)
   const [modal, setModal] = useState<{ type: 'followers' | 'following'; visible: boolean }>({ type: 'followers', visible: false })
-  const [currentUser, setCurrentUser] = useState<ProfileExtend | undefined>()
+  const [currentUser, setCurrentUser] = useState<ProfileExtend | null>()
 
   // 根据不同情况初始化用户信息
   const initUserInfo = async () => {
@@ -40,7 +39,7 @@ const UserCard = (props: UserCardProps) => {
       switch (visitCase) {
         // 访问自己的空间
         case 0:
-          setCurrentUser(user)
+          setCurrentUser(lensProfile)
           break
         // 访问他人的空间
         case 1: {
@@ -131,7 +130,7 @@ const UserCard = (props: UserCardProps) => {
       </div>
       {/* 处理数据为空的情况 */}
       <div className="mt-70px w-full px-6 pb-6 fcc-center font-ArchivoNarrow">
-        <span className="text-xl">{currentUser?.name || address ? getShortAddress(address) : getShortAddress(getAddress())}</span>
+        <span className="text-xl">{currentUser?.name || address ? getShortAddress(address) : getShortAddress(lensToken?.address)}</span>
         <span className="text-xl text-gray-5">{currentUser?.handle ? `@${currentUser?.handle}` : 'Lens Handle Not Found'}</span>
       </div>
       <div className="mx-10 frc-center flex-wrap">
@@ -158,7 +157,7 @@ const UserCard = (props: UserCardProps) => {
           <span className="text-gray-5 font-ArchivoNarrow">{t('profile.following')}</span>
         </a>
       </div>
-      {user?.handle ? (
+      {lensProfile?.handle ? (
         <p className="m-10 text-xl line-wrap three-line-wrap">
           {currentUser?.bio || visitCase === 0 ? '' : "The user hasn't given a bio on Lens for self yet :)"}
         </p>
@@ -171,7 +170,7 @@ const UserCard = (props: UserCardProps) => {
         </p>
       )}
 
-      {address && address !== getAddress() && (
+      {address && address !== lensToken?.address && (
         <div className="m-10">
           <button
             type="button"

@@ -1,15 +1,15 @@
 // @ts-nocheck 忽略文件校验
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import LoadingOutlined from '@ant-design/icons/LoadingOutlined'
 import Modal from 'antd/es/modal/Modal'
-import { isLogin } from '~/auth'
 import { getUserContext } from '~/context/account'
 import type { WalletConfig } from '~/wallet'
 import { getWallet } from '~/wallet'
-import { getAddress } from '~/auth/user'
 import { scrollToTop } from '~/utils/common'
+import ConnectDeschoolBoard from '~/layout/connectDeschool'
+import { RoleType } from '~/lib/enum'
 import ConnectLensBoard from './connectLens'
 import Footer from './footer'
 import UserBar from './userbar'
@@ -21,13 +21,10 @@ import UserBar from './userbar'
 const Layout = () => {
   const location = useLocation()
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
   const [isSwitchingUser, setIsSwitchingUser] = useState(false)
   const [pageLayout, setPageLayout] = useState('w-full')
   const [footerLayout, setFooterLayout] = useState('')
   const [connectTrigger, setConnectTrigger] = useState<number | null>(null)
-
-  const userContext = getUserContext()
 
   const navigate = useNavigate()
   const { t } = useTranslation()
@@ -49,7 +46,7 @@ const Layout = () => {
     setIsSwitchingUser(true)
     try {
       const addr = await getWallet().getAddress()
-      if (getAddress() && addr !== getAddress()) {
+      if (getUserContext().lensToken?.address && addr !== getUserContext().lensToken?.address) {
         const cachedToken = await fetchUserDefaultProfile(addr)
         if (cachedToken == null) {
           setIsModalOpen(false)
@@ -68,19 +65,23 @@ const Layout = () => {
 
   const config: WalletConfig = {
     accountChanged: (account: string) => {
-      if (!isLogin()) {
+      const role = getUserContext().getLoginRoles()
+      if (role.includes(RoleType.Visitor)) {
         handleOk()
       } else if (account) {
         setIsModalOpen(true)
       } else {
-        userContext.disconnect()
-        navigate('/explore')
+        // 账户地址变则lens和deschool都受影响
+        getUserContext().disconnectFromDeschool()
+        getUserContext().disconnectFromLens()
+        navigate('/landing')
         window.location.reload()
       }
     },
     disconnected: () => {
-      userContext.disconnect()
-      navigate('/explore')
+      getUserContext().disconnectFromDeschool()
+      getUserContext().disconnectFromLens()
+      navigate('/landing')
       window.location.reload()
     },
     // chainChanged: chainId => {
@@ -94,7 +95,7 @@ const Layout = () => {
 
   return (
     <div className="relative w-full h-full bg-white">
-      <UserBar walletConfig={walletconfig} isLoading={isLoading} setIsLoading={setIsLoading} />
+      <UserBar />
       <div
         className={`relative w-full  ${
           location.pathname.startsWith('/profile') ? 'h-full overflow-auto' : 'h-fit min-h-full'
@@ -106,12 +107,15 @@ const Layout = () => {
             location.pathname.startsWith('/explore') || location.pathname.startsWith('/landing') ? '' : 'pt-64px'
           }`}
         >
-          <div className={`flex-1 overflow-auto flex flex-col ${pageLayout}`}>{isLoading ? null : <Outlet />}</div>
+          <div className={`flex-1 overflow-auto flex flex-col ${pageLayout}`}>
+            <Outlet />
+          </div>
         </div>
         {location.pathname.startsWith('/profile') ? null : <Footer footerLayout={footerLayout} />}
       </div>
-      {/* login board */}
+      {/* login lens board */}
       <ConnectLensBoard wallectConfig={walletconfig} connectTrigger={connectTrigger} />
+      <ConnectDeschoolBoard />
       <Modal
         title={<h1>{t('system.notify_title')}</h1>}
         closable={false}

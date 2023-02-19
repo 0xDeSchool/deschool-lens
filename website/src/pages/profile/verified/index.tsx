@@ -3,10 +3,9 @@ import message from 'antd/es/message'
 import type { Identity } from '~/api/booth/booth'
 import { PlatformType, getVerifiedIdentities } from '~/api/booth/booth'
 
-import { getAddress } from '~/auth'
 import Skeleton from 'antd/es/skeleton'
 import Empty from 'antd/es/empty'
-import { DEFAULT_AVATAR } from '~/context/account'
+import { DEFAULT_AVATAR, getUserContext } from '~/context/account'
 import Avatar from 'antd/es/avatar'
 import Tooltip from 'antd/es/tooltip'
 import { InfoCircleOutlined } from '@ant-design/icons'
@@ -17,7 +16,7 @@ type VerifiedProp = {
 
 const Verified = (props: VerifiedProp) => {
   const { handle } = props
-  const address = getAddress()
+  const address = getUserContext().lensToken?.address
   const [identities, setIdentities] = useState<Identity[]>()
   const [loading, setLoading] = useState<boolean>(true)
 

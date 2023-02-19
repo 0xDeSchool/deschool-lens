@@ -7,12 +7,9 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Outlet, useLocation, useNavigate, useParams } from 'react-router'
-
-import { useLayout } from '~/context/layout'
-
-import { getAddress } from '~/auth/user'
 import { getLanguage } from '~/utils/language'
-
+import { useAccount } from '~/context/account'
+import message from 'antd/es/message'
 import UserCard from './userCard'
 
 type Tab = {
@@ -24,33 +21,35 @@ type Tab = {
 const UserProfile = () => {
   const { address } = useParams()
   const navigate = useNavigate()
+  const { lensToken, deschoolToken } = useAccount()
   const { t } = useTranslation()
   const location = useLocation()
 
-  const { setConnectBoardVisible } = useLayout()
   const [tabs, setTabs] = useState<Tab[]>([] as Tab[])
   const [visitCase, setVisitCase] = useState<0 | 1 | -1>(-1) // 0-自己访问自己 1-自己访问别人 -1-没登录访问自己
 
   // 初始化登录场景
   const initCase = () => {
     let primaryCase: 0 | 1 | -1 = -1
-    const cacheAddress = getAddress()
+    const cacheLensAddress = lensToken?.address
+    const cacheDeschoolAddress = deschoolToken?.address
 
-    // 有路由参数并且不等于自己地址，即访问他人的空间（不管是否登录都可以看他人空间）
-    if (address && address !== cacheAddress) {
-      primaryCase = 1
-
-      setConnectBoardVisible(false)
+    if (address) {
+      // 有路由参数并且不等于自己地址，即访问他人的空间（不管是否登录都可以看他人空间）
+      if (address !== cacheLensAddress && address !== cacheDeschoolAddress) primaryCase = 1
+      // 有路由参数并且等于自己lens或者deschool地址，即访问自己空间
+      else if (address === cacheLensAddress || address === cacheDeschoolAddress) {
+        primaryCase = 0
+      }
     }
     // 没有路由参数并且有缓存自己地址, 访问自己空间
-    else if (!address && cacheAddress) {
+    else if (cacheLensAddress || cacheDeschoolAddress) {
       primaryCase = 0
-      setConnectBoardVisible(false)
     }
     // 地址栏和缓存都没有地址，既不是访问他人空间也不是访问自己，需要登录访问自己
     else {
       primaryCase = -1
-      setConnectBoardVisible(true)
+      message.warning('please login first')
     }
     setVisitCase(primaryCase)
     return primaryCase
@@ -92,7 +91,7 @@ const UserProfile = () => {
     // 路由存在这个参数，需要判断导向
     if (address) {
       // 自己看自己
-      if (address === getAddress()) {
+      if (address === lensToken?.address || address === deschoolToken?.address) {
         navigate('/profile/resume')
       }
       // 自己看别人

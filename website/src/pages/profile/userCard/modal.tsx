@@ -9,8 +9,8 @@ import Empty from 'antd/es/empty'
 import { getExtendProfile } from '~/hooks/profile'
 import ShowMoreLoading from '~/components/loading/showMore'
 import { followByProfileIdWithLens } from '~/api/lens/follow/follow'
-import { getRole } from '~/hooks/access'
 import { RoleType } from '~/lib/enum'
+import { getUserContext } from '~/context/account'
 import type { ProfileExtend } from '~/lib/types/app'
 import LensAvatar from './avatar'
 
@@ -97,7 +97,7 @@ const FollowersModal = (props: {
     message.success(`success following ${followUser?.handle},tx is ${tx}`)
   }
 
-  const role = getRole()
+  const role = getUserContext().getLoginRoles()
 
   return (
     <Modal
@@ -132,7 +132,8 @@ const FollowersModal = (props: {
                     {/* 二、用户在看自己的Followers，此时有 Follow 按钮用以回关，如果双向关注则显示出来，hover上去变成 Unfollow */}
                     {/* 三、用户在看别人的 Following，啥事都不能做，没有按钮。如果别人和他的关注者双向关注则用文字显示出来 */}
                     {/* 四、用户在看别人的 Follower，啥事都不能做，没有按钮。如果别人和他的关注者双向关注则用文字显示出来 */}
-                    {role !== RoleType.User ? null : (
+                    {/* TODO */}
+                    {!role.includes(RoleType.UserOfLens) ? null : (
                       <button
                         type="button"
                         className="purple-border-button px-2 py-1"

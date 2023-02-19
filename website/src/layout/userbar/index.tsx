@@ -6,45 +6,29 @@ import React, { useState, useEffect } from 'react'
 // import addToNetwork from '~/hooks/useAddToNetwork'
 import { useTranslation } from 'react-i18next'
 import { MenuOutlined } from '@ant-design/icons'
+import type { MenuProps } from 'antd'
+import Dropdown from 'antd/es/dropdown'
 import { ArrowDownIcon } from '~/components/icon'
 import Drawer from 'antd/es/drawer'
 import message from 'antd/es/message'
 import Lens from '~/assets/icons/lens.svg'
 import Deschool from '~/assets/icons/deschool.svg'
-import { DEFAULT_AVATAR, getUserContext, useAccount } from '~/context/account'
+import { getUserContext, useAccount } from '~/context/account'
 import { useLayout } from '~/context/layout'
 import { changeLanguage, getLanguage } from '~/utils/language'
 import './userbar.css'
-import { NavLink, useLocation, useNavigate } from 'react-router-dom'
-import { initAccess } from '~/hooks/access'
-import type { WalletConfig } from '~/wallet'
-import { createProvider, getWallet, WalletType } from '~/wallet'
-import { RoleType } from '~/lib/enum'
-import { getCachedToken, setLensToken } from '~/auth/user'
-import { fetchUserDefaultProfile } from '~/hooks/profile'
+import { NavLink, useLocation } from 'react-router-dom'
 import Logo from '../logo'
-import type { ProfileExtend } from '~/lib/types/app'
 
-// const EXPECT_CHAINID = import.meta.env.VITE_APP_CHAIN
-
-// function clearAllCookie() {
-//   var keys = document.cookie.match(/[^ =;]+(?=\=)/g)
-//   if (keys) {
-//     for (var i = keys.length; i--; ) document.cookie = keys[i] + '=0;expires=' + new Date(0).toUTCString()
-//   }
-// }
-
-const UserBar = (props: { walletConfig?: WalletConfig; setIsLoading: Function; isLoading: boolean }) => {
-  const { walletConfig, setIsLoading, isLoading } = props
+const UserBar = () => {
   const { currentWidth, setConnectLensBoardVisible, setConnectDeschoolBoardVisible } = useLayout()
   const { t, i18n } = useTranslation()
-  const user = useAccount()
-  const userContext = getUserContext()
   const [visible, setVisible] = useState(false) // 控制抽屉是否显示
   const [activeNav, setActiveNav] = useState('/landing') // 当前激活的路由
-  const [isShowUserMenu, setUserMenu] = useState(false)
+  const [isShowDeschoolUserMenu, setDeschoolUserMenu] = useState(false)
+  const [isShowLensUserMenu, setLensUserMenu] = useState(false)
   const location = useLocation()
-  const navigate = useNavigate()
+  const { lensProfile, lensToken, deschoolToken } = useAccount()
 
   const navs = [
     {
@@ -61,15 +45,68 @@ const UserBar = (props: { walletConfig?: WalletConfig; setIsLoading: Function; i
     },
   ]
 
-  // 退出登录
-  const disconnect = async () => {
+  // 退出 Deschool 登录
+  const disconnectFromDeschool = () => {
     try {
-      userContext.disconnect()
-      navigate('/landing')
-      window.location.reload()
+      getUserContext().disconnectFromDeschool()
     } catch (error: any) {
       message.error(error?.message ? error.message : '退出登录失败')
     }
+  }
+
+  // 退出 Lens 登录
+  const disconnectFromLens = async () => {
+    try {
+      getUserContext().disconnectFromLens()
+    } catch (error: any) {
+      message.error(error?.message ? error.message : '退出登录失败')
+    }
+  }
+
+  const DeschoolItems: MenuProps['items'] = [
+    {
+      key: '1',
+      label: (
+        <button
+          type="button"
+          onClick={() => {
+            disconnectFromDeschool()
+          }}
+        >
+          Disconnect from Deschool
+        </button>
+      ),
+    },
+  ]
+
+  const LensItems: MenuProps['items'] = [
+    {
+      key: '1',
+      label: (
+        <button
+          type="button"
+          onClick={() => {
+            disconnectFromLens()
+          }}
+        >
+          Disconnect from Lens
+        </button>
+      ),
+    },
+  ]
+
+  /**
+   * @description 控制 Deschool 用户登录以后的下拉菜单
+   */
+  const handleToggleDeschoolMenu = (value?: boolean) => {
+    setDeschoolUserMenu(value || !isShowDeschoolUserMenu)
+  }
+
+  /**
+   * @description 控制 Lens 用户登录以后的下拉菜单
+   */
+  const handleToggleLensMenu = (value?: boolean) => {
+    setLensUserMenu(value || !isShowLensUserMenu)
   }
 
   const updateNavStatus = () => {
@@ -109,67 +146,12 @@ const UserBar = (props: { walletConfig?: WalletConfig; setIsLoading: Function; i
     setVisible(false)
   }
 
-  /**
-   * @description 控制用户登录以后的下拉菜单
-   */
-  const handleToggleMenu = (value?: boolean) => {
-    setUserMenu(value || !isShowUserMenu)
-  }
-
-  // 初始化用户信息
-  const initUserInfo = async () => {
-    try {
-      setIsLoading(true)
-      const type: WalletType = (localStorage.getItem('WallatType') as WalletType) || WalletType.None
-      if (type !== WalletType.None) {
-        const provider = createProvider({ walletConfig, type })
-        await getWallet().setProvider(type, provider)
-      }
-
-      const addr = await getWallet().getConnectedAddress()
-
-      let userInfo: ProfileExtend | undefined
-      if (addr) {
-        const cacheTokenStr = getCachedToken(addr)
-        if (cacheTokenStr) {
-          const cacheToken = JSON.parse(cacheTokenStr)
-          // TODO: refresh token?
-          // const refreshResult = await refreshAuth({ refreshToken: cacheToken.refreshToken })
-          // setToken(addr, refreshResult.accessToken, refreshResult.refreshToken)
-          setLensToken(addr, cacheToken.accessToken, cacheToken.refreshToken)
-        }
-        userInfo = await fetchUserDefaultProfile(addr)
-      }
-      if (!userInfo) {
-        await initAccess(RoleType.Visiter) // todo 如果登陆成功就更新用户角色，否则为游客角色
-      } else {
-        userContext.changeUser({ ...userInfo })
-        await initAccess(RoleType.User) // todo 如果登陆成功就更新用户角色，否则为游客角色
-      }
-      setUserMenu(false)
-    } catch (error) {
-      message.error('信息初始化失败')
-      throw error
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
   const handleLoginLens = async () => {
     setConnectLensBoardVisible(true)
   }
 
   const handleLoginDeschool = async () => {
     setConnectDeschoolBoardVisible(true)
-  }
-
-  useEffect(() => {
-    initUserInfo()
-  }, [])
-
-  const handleClickAway = (e: React.FocusEvent<HTMLUListElement>) => {
-    e.preventDefault()
-    setUserMenu(false)
   }
 
   return (
@@ -254,28 +236,42 @@ const UserBar = (props: { walletConfig?: WalletConfig; setIsLoading: Function; i
         )}
         {/* lens & deschool connect */}
         <div className="flex flex-row items-center justify-end">
-          <span
-            className="frc-center bg-#abfe2c rounded-xl px-4 mr-4"
-            onClick={() => {
-              handleLoginLens()
-            }}
-          >
-            <img src={Lens} alt="lens" width={24} height={24} />
-            <button type="button" className="text-black text-14px ml-2 font-ArchivoNarrow">
-              {t('Connect Lens')}
-            </button>
-          </span>
-          <span
-            className="frc-center bg-#774ff8 rounded-xl px-4"
-            onClick={() => {
-              handleLoginDeschool()
-            }}
-          >
-            <img src={Deschool} alt="lens" width={20} height={24} />
-            <button type="button" className="text-white text-14px ml-2 font-ArchivoNarrow">
-              {t('Connect Deschool')}
-            </button>
-          </span>
+          <Dropdown menu={{ items: LensItems }} placement="bottom" trigger={['click']} open={isShowLensUserMenu}>
+            <span
+              className="frc-center bg-#abfe2c rounded-xl px-4 mr-4"
+              onClick={e => {
+                e.preventDefault()
+                if (lensToken) {
+                  handleToggleLensMenu()
+                } else {
+                  handleLoginLens()
+                }
+              }}
+            >
+              <img src={Lens} alt="lens" width={24} height={24} />
+              <button type="button" className="text-black text-14px ml-2 font-ArchivoNarrow">
+                {lensProfile ? lensProfile?.handle : t('Connect Lens')}
+              </button>
+            </span>
+          </Dropdown>
+          <Dropdown menu={{ items: DeschoolItems }} placement="bottom" trigger={['click']} open={isShowDeschoolUserMenu}>
+            <span
+              className="frc-center bg-#774ff8 rounded-xl px-4"
+              onClick={e => {
+                e.preventDefault()
+                if (deschoolToken) {
+                  handleToggleDeschoolMenu()
+                } else {
+                  handleLoginDeschool()
+                }
+              }}
+            >
+              <img src={Deschool} alt="lens" width={20} height={24} />
+              <button type="button" className="text-white text-14px ml-2 font-ArchivoNarrow">
+                {t('Connect Deschool')}
+              </button>
+            </span>
+          </Dropdown>
         </div>
         {/* language switch */}
         <div className="frc-center ml-4">

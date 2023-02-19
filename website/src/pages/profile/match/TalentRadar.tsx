@@ -3,13 +3,14 @@ import { Charts } from '~/components/Charts.tsx'
 import * as echarts from 'echarts'
 import type { EChartsOption } from 'echarts/types/dist/shared'
 import { getIdSbt } from '~/api/booth/booth'
-import { getAddress } from '~/auth'
+import { useAccount } from '~/context/account'
 
 const TalentRadar = () => {
   const [options, setOptions] = useState<EChartsOption>({})
+  const { lensToken } = useAccount()
 
   const loadData = async () => {
-    const address = getAddress()
+    const address = lensToken?.address
     let abArr = [1, 1, 1, 1, 1, 1]
 
     // 如果有地址，如果有结果，则设置一下

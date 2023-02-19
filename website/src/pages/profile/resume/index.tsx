@@ -8,7 +8,6 @@ import Modal from 'antd/es/modal'
 // import { useParams } from 'react-router'
 import { useLocation } from 'react-router-dom'
 import { getIdSbt, getResume, putResume } from '~/api/booth/booth'
-import { getAddress } from '~/auth'
 import { useAccount } from '~/context/account'
 import { createPost, pollAndIndexPost } from '~/api/lens/publication/post'
 import { getShortAddress } from '~/utils/format'
@@ -65,7 +64,7 @@ const Resume = () => {
   // const { handle } = props
   // const { routeAddress } = useParams()
   const location = useLocation()
-  const user = useAccount()
+  const { lensProfile, lensToken } = useAccount()
 
   const [isEditResume, setIsEditResume] = useState(false)
   const [isCreateCard, setIsCreateCard] = useState(false)
@@ -111,11 +110,11 @@ const Resume = () => {
   // 进入简历编辑 or 保存查看状态
   const onClickEditResume = async () => {
     if (isEditResume) {
-      const address = getAddress()
-      if (address !== null) {
-        await setPutting(true)
+      const address = lensToken?.address
+      if (address) {
+        setPutting(true)
         await putUserResume(JSON.stringify(resumeData), address)
-        await setPutting(false)
+        setPutting(false)
       }
     } else {
       // 深拷贝
@@ -293,8 +292,8 @@ const Resume = () => {
 
   // 获取当前用户的简历
   const fetchUserResume = async () => {
-    const address = getAddress()
-    if (address === null) {
+    const address = lensToken?.address
+    if (!address) {
       setNotLogin(true)
       return
     }
@@ -312,8 +311,8 @@ const Resume = () => {
 
   // 获取当前用户的 SBT 列表
   const fetchUserSbtList = async () => {
-    const address = getAddress()
-    if (address === null) {
+    const address = lensToken?.address
+    if (!address) {
       return
     }
     const result = await getIdSbt(address)
@@ -339,7 +338,7 @@ const Resume = () => {
   useEffect(() => {
     fetchUserResume()
     fetchUserSbtList()
-    const addr = getAddress()
+    const addr = lensToken?.address
     if (addr) {
       setUserAddr(addr)
       if (location.pathname === '/profile/resume') {
@@ -351,16 +350,16 @@ const Resume = () => {
   // 发布个人简历
   const handlePublish = async () => {
     try {
-      const address = getAddress()
+      const address = lensToken?.address
       // const resumeDataStr = JSON.stringify(resumeData)
       const resumeDataStr = JSON.stringify(STANDARD_RESUME_DATA)
-      if (user?.id && address && resumeDataStr) {
-        const txhash = await createPost(user.id, address, resumeDataStr)
+      if (lensProfile?.id && address && resumeDataStr) {
+        const txhash = await createPost(lensProfile.id, address, resumeDataStr)
         if (txhash) {
           setStep(1)
           setTxHash(txhash)
           setCongratulateVisible(true)
-          await pollAndIndexPost(txhash, user.id)
+          await pollAndIndexPost(txhash, lensProfile.id)
           setStep(2)
           randomConfetti()
         }
@@ -383,12 +382,12 @@ const Resume = () => {
       <div className="flex justify-between">
         <div className="text-2xl font-bold">
           RESUME
-          {user?.handle && (
+          {lensProfile?.handle && (
             <span className="ml-1">
-              OF<span className="ml-1 text-gray-5">{user?.handle}</span>
+              OF<span className="ml-1 text-gray-5">{lensProfile?.handle}</span>
             </span>
           )}
-          {!user?.handle && userAddr && (
+          {!lensProfile?.handle && userAddr && (
             <span className="ml-1">
               OF <span className="ml-1 text-gray-5">{getShortAddress(userAddr).toUpperCase()}</span>
             </span>

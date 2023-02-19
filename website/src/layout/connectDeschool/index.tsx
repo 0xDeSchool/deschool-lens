@@ -1,4 +1,4 @@
-import type { Dispatch, FC, SetStateAction } from 'react'
+import type { FC } from 'react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import message from 'antd/es/message'
@@ -9,22 +9,16 @@ import UnipassLogo from '~/assets/logos/unipass.svg'
 import MetaMaskImage from '~/assets/logos/mask.png'
 import type { WalletConfig } from '~/wallet'
 import { createProvider, getWallet, WalletType } from '~/wallet'
-import { getAddress, setDeschoolToken } from '~/auth'
-import { PlatformType, postVerifiedIdentity } from '~/api/booth/booth'
+import { useLayout } from '~/context/layout'
+import { getUserContext } from '~/context/account'
 
-interface ConnectBoardProps {
-  connectBoardVisible: boolean
-  setConnectBoardVisible: Dispatch<SetStateAction<boolean>>
-  setLoginByDeschool?: Dispatch<SetStateAction<boolean>>
-}
-
-const ConnectDeschoolBoard: FC<ConnectBoardProps> = props => {
-  const { connectBoardVisible, setConnectBoardVisible, setLoginByDeschool } = props
+const ConnectDeschoolBoard: FC = () => {
+  const { connectDeschoolBoardVisible, setConnectDeschoolBoardVisible } = useLayout()
   const [loading, setLoading] = useState(false)
   const [loadingUniPass, setLoadingUniPass] = useState(false)
-  const [tempAddressObj, setTempAddressObj] = useState<{ type: WalletType; address: string | null }>({
+  const [tempAddressObj, setTempAddressObj] = useState<{ type: WalletType; address: string | undefined | null }>({
     type: WalletType.None,
-    address: getAddress(),
+    address: getUserContext().deschoolToken?.address ? getUserContext().deschoolToken?.address : undefined,
   })
   // MetaMask or UniPass
   const { t } = useTranslation()
@@ -40,7 +34,7 @@ const ConnectDeschoolBoard: FC<ConnectBoardProps> = props => {
     } else {
       message.error(err?.toString() || err)
     }
-    setConnectBoardVisible(false)
+    setConnectDeschoolBoardVisible(false)
   }
 
   const signLoginMessage = async (nonce: string) => {
@@ -67,25 +61,16 @@ const ConnectDeschoolBoard: FC<ConnectBoardProps> = props => {
         sig: loginSig,
       })
       if (validationRes && validationRes.address && validationRes.jwtToken) {
-        setDeschoolToken(address, validationRes.jwtToken)
-        if (setLoginByDeschool) setLoginByDeschool(true)
-        const lensAccountAddress = getAddress()
-        if (lensAccountAddress) {
-          await postVerifiedIdentity({
-            address,
-            baseAddress: lensAccountAddress,
-            platform: PlatformType.DESCHOOL,
-          })
-        } else {
-          message.error('please login by lens first')
-        }
+        getUserContext().setDescoolToken({ ...validationRes })
+      } else {
+        getUserContext().setDescoolToken(null)
       }
     } catch (error) {
       message.error(t('signMessageError'))
       throw error
     } finally {
       setTempAddressObj({ type: WalletType.None, address: null })
-      setConnectBoardVisible(false)
+      setConnectDeschoolBoardVisible(false)
     }
   }
 
@@ -136,7 +121,7 @@ const ConnectDeschoolBoard: FC<ConnectBoardProps> = props => {
         className="text-2xl text-red-300 hover:text-red-400 cursor-pointer absolute right-6 top-0"
         onClick={e => {
           e.preventDefault()
-          setConnectBoardVisible(false)
+          setConnectDeschoolBoardVisible(false)
         }}
       >
         <CloseOutlined className="mt-2" />
@@ -212,7 +197,7 @@ const ConnectDeschoolBoard: FC<ConnectBoardProps> = props => {
   return (
     <div
       className={`fixed top-0 bottom-0 left-0 right-0 w-full h-full z-[9999] ${
-        connectBoardVisible ? 'flex flex-row' : 'hidden'
+        connectDeschoolBoardVisible ? 'flex flex-row' : 'hidden'
       } justify-center items-center text-2xl bg-gray-900 bg-opacity-50`}
       style={{ backdropFilter: ' blur(5px)' }}
     >

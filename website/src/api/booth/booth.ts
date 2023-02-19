@@ -4,6 +4,7 @@ import type { RecommendAddr } from '~/lib/types/app'
 export enum PlatformType {
   BOOTH = 0,
   DESCHOOL = 1,
+  LENS = 2,
 }
 
 export interface VerifiedInfo {

@@ -2,6 +2,35 @@ import type { Profile } from '~/api/lens/graphql/generated'
 
 export type ContractType = 'ERC20' | 'ERC721' | 'ERC1155'
 
+export interface DeschoolTokenInfo {
+  // deschool user id
+  id: string
+
+  // wallet address
+  address: string
+
+  // deschool auth token
+  token: string
+}
+
+export interface LensTokenInfo {
+  // 当前通过 lens API 登录的 address
+  address: string
+
+  // lens tokens
+  accessToken: string
+  refreshToken: string
+}
+
+export interface AccountContextProps {
+  lensProfile: ProfileExtend | null
+  deschoolToken: DeschoolTokenInfo | null
+  lensToken: LensTokenInfo | null
+  setLensProfile: Dispatch<SetStateAction<ProfileExtend | null>>
+  setDescoolToken: Dispatch<SetStateAction<DeschoolTokenInfo | null>>
+  setLensToken: Dispatch<SetStateAction<LensTokenInfo | null>>
+}
+
 export interface LayoutContextProps {
   theme: string
   currentWidth: number

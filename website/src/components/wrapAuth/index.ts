@@ -6,7 +6,13 @@
  */
 
 import type { FC } from 'react'
-import { checkAuth } from '~/hooks/access'
+import { getUserContext } from '~/context/account'
+import { RoleType } from '~/lib/enum'
+
+const checkAuth = () => {
+  const roles = getUserContext().getLoginRoles()
+  return roles.includes(RoleType.UserOfLens) || roles.includes(RoleType.UserOfDeschool)
+}
 
 type WrapAuthProps = {
   children: any // 内嵌组件

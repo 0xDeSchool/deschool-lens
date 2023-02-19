@@ -12,7 +12,7 @@ export enum validResultOfDomain {
 }
 
 export enum RoleType {
-  User = 'User',
-  UserWithoutHandle = 'UserWithoutHandle',
-  Visiter = 'Visiter',
+  UserOfDeschool = 'UserOfDeschool',
+  UserOfLens = 'UserOfLens',
+  Visitor = 'Visitor',
 }

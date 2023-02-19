@@ -18,6 +18,7 @@ export interface SocialLink extends Contact {
   name?: string
 }
 
+// 获取当前用户的deschool信息，默认根据缓存中的deschool token认定身份
 export const fetchUserInfoFromDeschool = async (): Promise<UserInfoStruct | null> => {
   const info = await getUserProfile()
   if (!info) {

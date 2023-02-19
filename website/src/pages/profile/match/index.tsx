@@ -1,20 +1,22 @@
 import { useState } from 'react'
 import message from 'antd/es/message'
 import Alert from 'antd/es/alert'
-import ConnectDeschoolBoard from '~/pages/profile/match/connectDeschool'
-import { getToken } from '~/auth'
+import ConnectDeschoolBoard from '~/layout/connectDeschool'
+import { useLayout } from '~/context/layout'
+import { useAccount } from '~/context/account'
 import MatchConfig from './MatchConfig'
 import TalentRadar from './TalentRadar'
 
 const Match = () => {
-  const [connectBoardVisible, setConnectBoardVisible] = useState(false) // 控制请求面板显隐
-  const [loginByDeschool, setLoginByDeschool] = useState(!!getToken()?.deschool.token)
+  const { connectDeschoolBoardVisible, setConnectDeschoolBoardVisible } = useLayout() // 控制请求面板显隐
+  const { deschoolToken } = useAccount()
+  const [loginByDeschool] = useState(deschoolToken?.token)
 
   const handleConnectDeschool = async () => {
-    if (connectBoardVisible) {
+    if (connectDeschoolBoardVisible) {
       return
     }
-    setConnectBoardVisible(true)
+    setConnectDeschoolBoardVisible(true)
   }
 
   return (
@@ -78,11 +80,7 @@ const Match = () => {
       {/* 填表环节 */}
       <div className="w-full h-1px bg-gray-3"> </div>
       <MatchConfig />
-      <ConnectDeschoolBoard
-        setConnectBoardVisible={setConnectBoardVisible}
-        connectBoardVisible={connectBoardVisible}
-        setLoginByDeschool={setLoginByDeschool}
-      />
+      <ConnectDeschoolBoard />
     </div>
   )
 }

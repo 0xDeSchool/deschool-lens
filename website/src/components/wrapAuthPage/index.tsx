@@ -5,8 +5,14 @@
  * @param {string} webKey 操作web key
  */
 import type { FC } from 'react'
-import { checkAuth } from '~/hooks/access'
 import NoAuth from '~/pages/noAuth'
+import { getUserContext } from '~/context/account'
+import { RoleType } from '~/lib/enum'
+
+const checkAuth = () => {
+  const roles = getUserContext().getLoginRoles()
+  return roles.includes(RoleType.UserOfLens) || roles.includes(RoleType.UserOfDeschool)
+}
 
 type WrapAuthPageProps = {
   children: any // 内嵌组件

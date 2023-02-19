@@ -10,8 +10,7 @@ import { useNavigate } from 'react-router'
 import Tooltip from 'antd/es/tooltip'
 import type { q11eParam } from '~/api/booth/booth'
 import { getQ11e, putQ11e } from '~/api/booth/booth'
-
-import { getAddress } from '~/auth'
+import { useAccount } from '~/context/account'
 
 const InterestTag = [
   {
@@ -73,9 +72,10 @@ const MatchConfig = () => {
   const [form] = Form.useForm()
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const { lensToken } = useAccount()
 
   const loadInitialValues = async () => {
-    const address = getAddress()
+    const address = lensToken?.address
     if (!address) {
       return
     }
@@ -105,7 +105,7 @@ const MatchConfig = () => {
       }
 
       // 检查地址
-      const address = getAddress()
+      const address = lensToken?.address
       if (address == null) {
         return false
       }

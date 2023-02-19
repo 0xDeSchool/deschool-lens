@@ -1,5 +1,4 @@
 import MetaMaskImage from '~/assets/logos/mask.png'
-// import UnipassLogo from '~/assets/logos/unipass.svg'
 import type { FC } from 'react'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -12,9 +11,7 @@ import { getUserContext } from '~/context/account'
 import { useLayout } from '~/context/layout'
 import type { WalletConfig } from '~/wallet'
 import { createProvider, getWallet, WalletType } from '~/wallet'
-import { initAccess } from '~/hooks/access'
 import { fetchUserDefaultProfile } from '~/hooks/profile'
-import { getToken, setLensToken, getAddress } from '~/auth/user'
 import { authenticate, generateChallenge } from '~/api/lens/authentication/login'
 import { postVerifiedIdentity, PlatformType } from '~/api/booth/booth'
 
@@ -25,16 +22,16 @@ interface ConnectBoardProps {
 
 const ConnectLensBoard: FC<ConnectBoardProps> = props => {
   const { connectTrigger } = props
-  const userContext = getUserContext()
-  const { connectBoardVisible, setConnectBoardVisible } = useLayout()
+  const { connectLensBoardVisible, setConnectLensBoardVisible } = useLayout()
   const [loading, setLoading] = useState(false)
+  const [tempAddress, setTempAddress] = useState<string | undefined>()
   const { t } = useTranslation()
 
   useEffect(() => {
-    if (connectBoardVisible === false) {
+    if (connectLensBoardVisible === false) {
       setLoading(false)
     }
-  }, [connectBoardVisible])
+  }, [connectLensBoardVisible])
 
   /**
    * @description 连接失败的异常处理
@@ -47,9 +44,10 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
     } else {
       message.error(err?.toString() || err)
     }
-    setConnectBoardVisible(false)
+    setConnectLensBoardVisible(false)
   }
 
+  // 对传入的challenge信息签名并返回签名结果
   const signLoginMessage = async (challengeText: string) => {
     const SIGN_MESSAGE = challengeText
     const signMessageReturn = await getWallet().signMessage(SIGN_MESSAGE)
@@ -58,38 +56,60 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
 
   // 通过len签名登录
   const handleLoginByAddress = async (address: string, isReload?: boolean) => {
-    // 如果已经保存过登录记录则不需要重新签名登录
-    if (getToken()?.lens.accessToken && getAddress() && address === getAddress()) {
-      setConnectBoardVisible(false)
+    // 如果当前库中已经保存过登录记录则不需要重新签名登录
+    const roles = getUserContext().getLoginRoles()
+    if (roles.includes(RoleType.UserOfLens)) {
+      setConnectLensBoardVisible(false)
       return
     }
     try {
-      // request a challenge from the server
-      const challengeResponse = await generateChallenge({ address })
-
-      // sign the challenge text with the wallet
-      const signature = await signLoginMessage(challengeResponse.text)
-
-      // check signature
-      const authenticatedResult = await authenticate({ address, signature })
-      setLensToken(address, authenticatedResult.accessToken, authenticatedResult.refreshToken)
-
-      if (signature) {
-        await initAccess(RoleType.Visiter) // 如果登陆成功就更新用户角色，否则为游客角色
-        const userInfo = await fetchUserDefaultProfile(address)
-        if (!userInfo) {
-          await initAccess(RoleType.UserWithoutHandle) // 如果登陆成功就更新用户角色，否则为游客角色
-        } else {
-          userContext.changeUser({ ...userInfo })
-          await initAccess(RoleType.User) // 如果登陆成功就更新用户角色，否则为游客角色
-        }
-        // 登录后提交此地址的绑定信息给后台，后台判断是否是第一次来发 Deschool-Booth-Onboarding SBT
-        await postVerifiedIdentity({
-          address,
-          lensHandle: userInfo?.handle,
-          baseAddress: address,
-          platform: PlatformType.BOOTH,
+      // 根据钱包地址查用户profile信息
+      const userInfo = await fetchUserDefaultProfile(address)
+      // 没handle,则lens profile为空
+      if (!userInfo) {
+        getUserContext().setLensProfile(null)
+        getUserContext().setLensToken(null)
+        message.info({
+          content: (
+            <p>
+              Visit{' '}
+              <a className="font-bold" href="https://claim.lens.xyz" target="_blank" rel="noreferrer noopener">
+                claiming site
+              </a>
+              to claim your profile now 🏃‍♂️
+            </p>
+          ),
+          duration: 0,
+          onClose: () => {},
         })
+      }
+      // 有handle,更新default profile
+      else {
+        getUserContext().changeUserProfile(userInfo)
+
+        // request a challenge from the server
+        const challengeResponse = await generateChallenge({ address })
+
+        // sign the challenge text with the wallet
+        const signature = await signLoginMessage(challengeResponse.text)
+
+        // check signature
+        const authenticatedResult = await authenticate({ address, signature })
+
+        if (signature) {
+          getUserContext().setLensToken({
+            address,
+            accessToken: authenticatedResult.accessToken,
+            refreshToken: authenticatedResult.refreshToken,
+          })
+          // 不管是deschool还是lens登录后,均提交此地址的绑定信息给后台，后台判断是否是第一次来发 Deschool-Booth-Onboarding SBT
+          await postVerifiedIdentity({
+            address,
+            lensHandle: userInfo?.handle,
+            baseAddress: address,
+            platform: PlatformType.BOOTH,
+          })
+        }
       }
     } catch (error: any) {
       if (error?.reason) {
@@ -102,25 +122,25 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
         message.error(String(error))
       }
     } finally {
-      setConnectBoardVisible(false)
+      setConnectLensBoardVisible(false)
       if (isReload) window.location.reload()
     }
   }
 
   /**
-   * 链接第三方钱包，缓存钱包类型和地址
+   * 链接小狐狸钱包
    * @returns
    */
-  const handleConnect = async (type: WalletType) => {
+  const handleConnect = async () => {
     if (loading) return
-    if (type === WalletType.MetaMask) {
-      setLoading(true)
-    }
+    setLoading(true)
     try {
-      const config = { ...props.wallectConfig, type }
+      // 初始化小狐狸钱包并获取地址
+      const config = { ...props.wallectConfig, type: WalletType.MetaMask }
       const provider = createProvider(config)
-      await getWallet().setProvider(type, provider)
+      await getWallet().setProvider(WalletType.MetaMask, provider)
       const address = await getWallet().getAddress()
+      setTempAddress(address)
       if (address) {
         await handleLoginByAddress(address)
       } else {
@@ -142,14 +162,14 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
   const panel = (
     <div
       className="relative bg-white flex flex-col justify-center items-center w-full p-10 rounded-lg dark:bg-#1a253b shadow dark:shadow-slate-300"
-      style={{ minHeight: '24rem', maxWidth: '38rem' }}
+      style={{ minHeight: '16rem', maxWidth: '38rem' }}
     >
       <p className="dark:text-white text-3xl">{t('connectWallet')}</p>
       <div
         className="text-2xl text-red-300 hover:text-red-400 cursor-pointer absolute right-6 top-0"
         onClick={e => {
           e.preventDefault()
-          setConnectBoardVisible(false)
+          setConnectLensBoardVisible(false)
         }}
       >
         <CloseOutlined className="mt-2" />
@@ -165,7 +185,7 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
         <button
           onClick={e => {
             e.preventDefault()
-            handleConnect(WalletType.MetaMask)
+            handleConnect()
           }}
           type="button"
           className="flex flex-col items-center justify-between dark:bg-#1a253b cursor-pointer w-full p-3 mb-2 rounded-md border border-solid border-#6525FF bg-white hover:border-#6525FF66 hover:bg-#6525FF22"
@@ -183,7 +203,7 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
             </div>
             <img alt="mask" src={MetaMaskImage} style={{ width: '25px', height: '25px' }} />
           </div>
-          <div className="mt-2 text-sm text-black">{getAddress()}</div>
+          <div className="mt-2 text-sm text-black">{tempAddress}</div>
         </button>
       </div>
     </div>
@@ -192,7 +212,7 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
   return (
     <div
       className={`fixed top-0 bottom-0 left-0 right-0 w-full h-full z-[9999] ${
-        connectBoardVisible ? 'flex flex-row' : 'hidden'
+        connectLensBoardVisible ? 'flex flex-row' : 'hidden'
       } justify-center items-center text-2xl bg-gray-900 bg-opacity-50`}
       style={{ backdropFilter: ' blur(5px)' }}
     >

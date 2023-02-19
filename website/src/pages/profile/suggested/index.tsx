@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router'
 import Jazzicon from 'react-jazzicon'
 import Button from 'antd/es/button'
 import { getRecommendation } from '~/api/booth/booth'
-import { getAddress } from '~/auth'
+import { getUserContext } from '~/context/account'
 import type { RecommendAddr } from '~/lib/types/app'
 
 // 根据match config配置的参数推荐用户想找的人
@@ -19,7 +19,7 @@ const Suggest = () => {
   const initSuggestedUsers = async () => {
     setLoading(true)
     try {
-      const address = getAddress()
+      const address = getUserContext().lensToken?.address
       if (!address) {
         return
       }
