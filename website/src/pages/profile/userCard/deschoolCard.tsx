@@ -135,11 +135,13 @@ const DeschoolCard = (props: DeschoolCardProps) => {
   const handleFollow = async (user: DeschoolProfile | OtherDeschoolProfile) => {
     await followUser(user.address, deschoolProfile?.address!)
     message.success(`success following ${user.address}`)
+    setUpdateTrigger(new Date().getTime())
   }
 
   const handleUnFollow = async (user: DeschoolProfile | OtherDeschoolProfile) => {
     await unfollowUser(user.address, deschoolProfile?.address!)
-    message.success(`success following ${user?.address}`)
+    message.success(`success unfollow ${user?.address}`)
+    setUpdateTrigger(new Date().getTime())
   }
 
   return (
@@ -160,7 +162,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
           {/* 处理数据为空的情况 */}
           <div className="mt-70px w-full px-6 pb-6 fcc-center font-ArchivoNarrow">
             <span className="text-xl">
-              {currentUser?.username || routeAddress ? getShortAddress(routeAddress) : getShortAddress(deschoolProfile?.address)}
+              {currentUser?.username || (routeAddress ? getShortAddress(routeAddress) : getShortAddress(deschoolProfile?.address))}
             </span>
             <span className="text-xl text-gray-5">{currentUser?.ensName ? `${currentUser?.ensName}` : ''}</span>
           </div>

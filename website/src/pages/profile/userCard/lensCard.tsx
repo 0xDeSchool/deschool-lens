@@ -9,6 +9,7 @@ import { unfollowByProfileIdWithLens } from '~/api/lens/follow/unfollow'
 import { fetchUserDefaultProfile, getExtendProfile } from '~/hooks/profile'
 import { useAccount } from '~/context/account'
 import { useTranslation } from 'react-i18next'
+import CloseOutlined from '@ant-design/icons/CloseOutlined'
 import FollowersModal from './modal'
 import type { ProfileExtend } from '~/lib/types/app'
 import LensAvatar from './avatar'
@@ -26,9 +27,10 @@ type LensCardProps = {
 const LensCard = (props: LensCardProps) => {
   const { visible, visitCase, routeAddress, setProfileType, profileType } = props
   const { lensToken, lensProfile } = useAccount()
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [modal, setModal] = useState<{ type: 'followers' | 'following'; visible: boolean }>({ type: 'followers', visible: false })
   const [currentUser, setCurrentUser] = useState<ProfileExtend | null>()
+  const [updateTrigger, setUpdateTrigger] = useState(0) // 此页面局部刷新
   const { t } = useTranslation()
 
   // 根据不同情况初始化用户信息
@@ -67,8 +69,10 @@ const LensCard = (props: LensCardProps) => {
   }, [routeAddress])
 
   useEffect(() => {
-    initUserInfo()
-  }, [visitCase, lensProfile])
+    if (!loading) {
+      initUserInfo()
+    }
+  }, [visitCase, routeAddress, updateTrigger, lensProfile])
 
   const handleJumpFollowers = (num: number | undefined) => {
     if (num && num > 0) {
@@ -95,13 +99,45 @@ const LensCard = (props: LensCardProps) => {
   }
 
   const handleFollow = async (followUser: ProfileExtend | undefined | null) => {
-    const tx = await followByProfileIdWithLens(followUser?.id)
-    message.success(`success following ${followUser?.handle},tx is ${tx}`)
+    // 有 lens handle
+    if (lensProfile?.handle) {
+      const tx = await followByProfileIdWithLens(followUser?.id)
+      message.success(`success following ${followUser?.handle},tx is ${tx}`)
+      setUpdateTrigger(new Date().getTime())
+    }
+    // 登录了lens 没有lens handle
+    else if (lensToken) {
+      message.info({
+        key: 'nohandle_lenscard',
+        content: (
+          <p className="inline">
+            Visit
+            <a className="font-bold mx-2" href="https://claim.lens.xyz" target="_blank" rel="noreferrer noopener">
+              claiming site
+            </a>
+            to claim your profile now 🏃‍♂️
+            <CloseOutlined
+              size={12}
+              className="inline ml-2 hover:color-purple!"
+              onClick={() => {
+                message.destroy('nohandle_lenscard')
+              }}
+            />
+          </p>
+        ),
+        duration: 0,
+      })
+    }
+    // 没登录 lens
+    else {
+      message.warning('Please connect lens first')
+    }
   }
 
   const handleUnFollow = async (followUser: ProfileExtend | undefined | null) => {
     const tx = await unfollowByProfileIdWithLens(followUser?.id)
-    message.success(`success following ${followUser?.handle},tx is ${tx}`)
+    message.success(`success unfollow ${followUser?.handle},tx is ${tx}`)
+    setUpdateTrigger(new Date().getTime())
   }
 
   return (
@@ -133,7 +169,7 @@ const LensCard = (props: LensCardProps) => {
       {/* 处理数据为空的情况 */}
       <div className="mt-70px w-full px-6 pb-6 fcc-center font-ArchivoNarrow">
         <span className="text-xl">
-          {currentUser?.name || routeAddress ? getShortAddress(routeAddress) : getShortAddress(lensToken?.address)}
+          {currentUser?.name || (routeAddress ? getShortAddress(routeAddress) : getShortAddress(lensToken?.address))}
         </span>
         <span className="text-xl text-gray-5">{currentUser?.handle ? `@${currentUser?.handle}` : 'Lens Handle Not Found'}</span>
       </div>
