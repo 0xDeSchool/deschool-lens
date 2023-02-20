@@ -3,14 +3,14 @@ import { v4 as uuidv4 } from 'uuid'
 import { omit } from '~/utils/omit'
 // import type { Metadata} from '~/lib/types/publication';
 // import { PublicationMainFocus } from '~/lib/types/publication'
-import type { Metadata} from '~/lib/types/publication';
+import type { Metadata } from '~/lib/types/publication'
 import { PublicationMainFocus } from '~/lib/types/publication'
 import { uploadIpfs } from '~/api/ipfs'
 import { getUserContext } from '~/context/account'
 import { apolloClient } from '../index'
 import { splitSignature } from '../ethers.service'
-import type { CreatePublicPostRequest, PublicationsQueryRequest } from '../graphql/generated';
-import { PublicationsDocument , CreatePostTypedDataDocument } from '../graphql/generated'
+import type { CreatePublicPostRequest, PublicationsQueryRequest } from '../graphql/generated'
+import { PublicationsDocument, CreatePostTypedDataDocument } from '../graphql/generated'
 
 import { pollUntilIndexed } from '../indexer/has-transaction-been-indexed'
 // import { uploadIpfs } from '../../ipfs'
@@ -88,7 +88,7 @@ export const createPost = async (profileId: string, address: string, content: st
   console.log(`create post: content`, content)
 
   const CONTENT_TEXT = `
-  Hey everyone! I'm excited to announce that I've just created my resume in the latest web3 style! With Booth, IPFS and Lens, I've created a fully decentralized resume that I can easily share with anyone. If you're interested in checking it out, please follow the link below. I'd love to hear your feedback on this new approach to resume building! #jobsearch #resume #decentralized #LensProtocol #IPFS
+  Hey everyone! I'm excited to announce that I've just created my resume in web3 style! With Booth, IPFS and Lens, I've created a fully decentralized resume that I can easily share with anyone. If you're interested in checking it out, please follow the link below. I'd love to hear your feedback on this new approach to resume building! #jobsearch #resume #decentralized #LensProtocol #IPFS
 
   LINK👇👇👇👇👇:
   ${BOOTH_PATH}/profile/${getUserContext().lensToken?.address}/resume

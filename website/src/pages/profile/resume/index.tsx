@@ -27,16 +27,16 @@ const BOOTH_PATH = import.meta.env.VITE_APP_BOOTH_PATH
 export const STANDARD_RESUME_DATA: ResumeData = {
   career: [
     {
-      title: 'Product Experiencer & Co-builder - Booth',
+      title: 'Booth Product Experiencer',
       description:
         "I experienced Booth's novel product, which is the LinkedIn of the Web3 world, which can provide people with authentic and credible work and education experience SBT as resume proof. Through Booth, we link to better and more real Web3 workers. I have fully experienced this product and made valuable suggestions",
       startTime: dayjs('2023-02-04T16:00:00.000Z'),
       endTime: dayjs('2023-02-04T16:00:00.000Z'),
       proofs: [
         {
-          address: '0xEd1e617b9485168EEB25c6d56e1219747cE62D0e',
+          address: '0x45DDB27dD9791957ae20781A2159D780A9626630',
           tokenId: '0',
-          img: 'https://www.ensoul.io/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fensoul-labs-image%2FgdzbhdBooth-logos.jpeg&w=256&q=75',
+          img: 'https://www.ensoul.io/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fensoul-labs-image%2F9qdqo3Booth-logos.jpeg&w=256&q=75',
         },
       ],
       blockType: BlockType.CareerBlockType,
@@ -45,16 +45,16 @@ export const STANDARD_RESUME_DATA: ResumeData = {
   ],
   edu: [
     {
-      title: 'Education Cert from Booth & DeSchool',
+      title: 'Booth & DeSchool Product Research',
       description:
         'I learned the knowledge of Web3 products, and successfully logged into the Booth product by linking Metamask and lens. This is an important educational experience for me. I learned the basic usage of Web3 products, so I have a credible skill certification when I look for a Web3 job or communicate with people in DAO in the future.',
       startTime: dayjs('2022-02-04T16:00:00.000Z'),
       endTime: dayjs('2023-02-04T16:00:00.000Z'),
       proofs: [
         {
-          address: '0xEd1e617b9485168EEB25c6d56e1219747cE62D0e',
+          address: '0x45DDB27dD9791957ae20781A2159D780A9626630',
           tokenId: '1',
-          img: 'https://www.ensoul.io/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fensoul-labs-image%2FfjvfqfBooth-logos.jpeg&w=256&q=75',
+          img: 'https://www.ensoul.io/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fensoul-labs-image%2FqvsspbBooth-logos.jpeg&w=256&q=75',
         },
       ],
       blockType: BlockType.EduBlockType,
@@ -84,6 +84,7 @@ const Resume = () => {
   const [txHash, setTxHash] = useState<string>('')
   const [userAddr, setUserAddr] = useState<string>('')
   const [isSelf, setIsSelf] = useState(false)
+  const [loadingLens, setLoadingLens] = useState(false)
 
   // 把一条变成 Dayjs Obj
   const convertStrToDayJsObj = (input: ResumeCardData) => {
@@ -346,9 +347,10 @@ const Resume = () => {
     setSbtList(sbtArr)
   }
 
-  // 发布个人简历
+  // Lens 上发布个人简历
   const handlePublish = async () => {
     try {
+      setLoadingLens(true)
       const address = lensToken?.address || deschoolProfile?.address
       const resumeDataStr = JSON.stringify(resumeData)
       // const resumeDataStr = JSON.stringify(STANDARD_RESUME_DATA)
@@ -369,6 +371,7 @@ const Resume = () => {
       message.error('PUBLICATION ERROR: Publish Failed')
       console.log('error', error)
     } finally {
+      setLoadingLens(false)
       // setCongratulateVisible(false)
       // setStep(1)
       // setTxHash('')
@@ -407,7 +410,13 @@ const Resume = () => {
         </div>
         <div className="flex">
           {isSelf && !isEditResume && (
-            <Button type="primary" onClick={() => handlePublish()} disabled={!lensProfile} className="bg-#abfe2c! text-black!">
+            <Button
+              type="primary"
+              onClick={() => handlePublish()}
+              disabled={!lensProfile}
+              loading={loadingLens}
+              className={`${lensProfile ? 'bg-#abfe2c!' : ''} ${lensProfile ? 'text-black!' : ''}`}
+            >
               {resumeData && step === 2 ? 'Published' : 'Publish On Lens'}
             </Button>
           )}
@@ -490,9 +499,10 @@ const Resume = () => {
         ) : (
           <div className="w-full">
             <h1 className="text-2xl font-Anton">Congradulations! 🎉</h1>
-            <p className="font-ArchivoNarrow mt-6">
-              Your first web3 resume is published! Hooray! Thanks for using Booth to create your resume in a web3-enabled way! We hope this
-              decentralized approach will help you stand out in your job search :)
+            <p className="font-ArchivoNarrow mt-6">Your first web3 resume is published! Hooray!</p>
+            <p className="font-ArchivoNarrow mt-1">
+              Thanks for using Booth to create your resume in a web3-enabled way! We hope this decentralized approach will help you stand
+              out in your job search :)
             </p>
             <p className="font-ArchivoNarrow">Now you can: </p>
             <ol>
