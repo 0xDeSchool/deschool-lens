@@ -104,7 +104,7 @@ export default defineConfig(({ mode }) => {
           secure: false,
           ws: true,
           changeOrigin: true,
-          rewrite: pathGoapi => pathGoapi.replace(/^\/goapiBoothStg/, '/api'),
+          rewrite: pathGoapi => pathGoapi.replace(/^\/goapiBoothPrd/, '/api'),
         },
       },
     },

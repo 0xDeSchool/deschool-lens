@@ -1,8 +1,9 @@
 import { useTranslation } from 'react-i18next'
-import Avatar from 'antd/es/avatar'
-import { DEFAULT_AVATAR } from '~/context/account'
+import Image from 'antd/es/image'
 import { useNavigate } from 'react-router'
 import { getShortAddress } from '~/utils/format'
+import { DEFAULT_AVATAR } from '~/context/account'
+import Jazzicon from 'react-jazzicon/dist/Jazzicon'
 
 export type CelebrityType = {
   deschool: {
@@ -31,16 +32,18 @@ const CelebrityCard = (props: { celebrity: CelebrityType }) => {
   return (
     <div className="fcs-center inline-flex bg-white rounded-md shadow-md m-2 col-span-1">
       <div className="relative frc-center ml-24px mt-24px">
-        <Avatar
-          size={86}
-          alt="user avatar"
-          className="w-86px h-86px mb-4px rounded-full"
-          src={
-            // eslint-disable-next-line no-nested-ternary
-            celebrity.deschool?.avatar ? celebrity.deschool.avatar : celebrity.lens?.avatarUrl ? celebrity.lens?.avatarUrl : DEFAULT_AVATAR
-          }
-          style={{ display: 'inline-block' }}
-        />
+        {celebrity.deschool?.avatar || celebrity.lens?.avatarUrl ? (
+          <Image
+            preview={false}
+            alt="user avatar"
+            className="w-86px! h-86px! mb-4px rounded-full"
+            src={celebrity.deschool?.avatar ? celebrity.deschool.avatar : celebrity.lens?.avatarUrl}
+            fallback={DEFAULT_AVATAR}
+            style={{ display: 'inline-block' }}
+          />
+        ) : (
+          <Jazzicon diameter={86} seed={Math.floor(Math.random() * 1000)} />
+        )}
         <svg className="absolute bottom-0" width="92" height="48" viewBox="0 0 92 48" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M90 2C90 26.3005 70.3005 46 46 46C21.6995 46 2 26.3005 2 2" stroke="#774FF8" strokeWidth="4" strokeLinecap="round" />
         </svg>

@@ -12,7 +12,6 @@ const LensAvatar = (props: { wrapperClassName?: string; avatarUrl?: string; size
       style={{ width: size || 80, height: size || 80 }}
       className="rounded-full border border-4 border-white shadow-lg"
       wrapperClassName={wrapperClassName || 'absolute bottom--40px fcc-center w-full'}
-      crossOrigin="anonymous"
     />
   ) : (
     <Image

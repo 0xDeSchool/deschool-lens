@@ -6,6 +6,7 @@ import dayjs from 'dayjs'
 import DatePicker from 'antd/es/date-picker'
 import Image from 'antd/es/image'
 import VerifiedIcon from '@mui/icons-material/Verified'
+import fallbackImage from '~/assets/images/fallbackImage'
 import type { CardEditorInput, ResumeCardData, SbtInfo } from '../../types'
 
 const { TextArea } = Input
@@ -18,11 +19,11 @@ const SbtItem = (props: { list: string[]; toggleList: (key: string) => void; ite
   return (
     <div
       key={key}
-      className={`aspect-square border-2 
+      className={`aspect-square border-2 max-w-112px overflow-hidden 
       cursor-pointer ${isInList(key) ? 'border-#6525FF bg-gray-100' : 'border-black'}`}
       onClick={() => toggleList(key)}
     >
-      <Image src={item.img} preview={false} />
+      <Image src={item.img} preview={false} fallback={fallbackImage} className="w-full h-full object-contain object-center" />
       <div className="flex justify-end" style={{ position: 'relative' }}>
         {list.includes(key) && (
           <div style={{ position: 'absolute', bottom: '5px', right: '5px' }}>

@@ -7,6 +7,7 @@ import Divider from 'antd/es/divider'
 import { useNavigate } from 'react-router'
 import type { ResumeCardInput } from '../../types'
 import { BlockType } from '../../enum'
+import fallbackImage from '~/assets/images/fallbackImage'
 
 const { confirm } = Modal
 
@@ -66,7 +67,7 @@ const ResumeCard = (input: ResumeCardInput) => {
 
       {/* Proofs of Work */}
       <div className="flex justify-between">
-        <div className="flex ">
+        <div className="flex flex-wrap">
           {data.proofs &&
             data.proofs.map(item => (
               <div key={`sbt-${item.address}-${item.tokenId}`} className="w-[110px] mr-2 relative">
@@ -74,7 +75,7 @@ const ResumeCard = (input: ResumeCardInput) => {
                   className="hover:cursor-pointer p-1 border border-white hover:border-#6525FF"
                   onClick={() => navigate(`/sbtIntro/${item.address}/${item.tokenId}`)}
                 >
-                  <Image width={100} src={item.img} preview={false} />
+                  <Image width={100} height={100} src={item.img} fallback={fallbackImage} preview={false} />
                   <div style={{ position: 'absolute', bottom: '0px', right: '0px' }}>
                     <VerifiedIcon style={{ color: blockType === BlockType.CareerBlockType ? '#009411' : '#266DE0', fontSize: 22 }} />
                   </div>

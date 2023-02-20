@@ -11,7 +11,7 @@ const LandingHeader = () => {
   const navigate = useNavigate()
 
   const handleJumpExplore = () => {
-    navigate('/explore')
+    window.open('https://t.me/deschoolcommunity')
   }
 
   const handleJumpProfile = () => {

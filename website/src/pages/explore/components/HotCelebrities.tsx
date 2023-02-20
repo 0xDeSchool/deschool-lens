@@ -22,7 +22,7 @@ const HotCelebrities = (props: { searchWord: string }) => {
     setLoading(true)
     try {
       const response = await getBoothUsers()
-      if (!response) return
+      if (!response || !Object.prototype.toString.call(response).includes('Array')) return
 
       const baseAddressesArray = response.map(boothUser => boothUser.baseAddress)
       const baseAddressesSet = new Set(baseAddressesArray)
@@ -74,7 +74,7 @@ const HotCelebrities = (props: { searchWord: string }) => {
 
       // 查所有 deschool 用户信息
       const deschoolUsers = boothUsersArray.filter(user => user.deschool?.address)
-      const strArray = deschoolUsers.map((deschoolInfo: CelebrityType) => deschoolInfo.deschool.address)
+      const strArray = deschoolUsers.map((deschoolInfo: CelebrityType) => deschoolInfo.deschool?.address)
       const deschoolProfilesData: (Creator | null)[] = await getOtherUsersProfile(strArray)
 
       // 合并 lens 同地址
