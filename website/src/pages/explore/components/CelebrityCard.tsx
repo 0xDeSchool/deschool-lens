@@ -2,14 +2,30 @@ import { useTranslation } from 'react-i18next'
 import Avatar from 'antd/es/avatar'
 import { DEFAULT_AVATAR } from '~/context/account'
 import { useNavigate } from 'react-router'
+import { getShortAddress } from '~/utils/format'
 
-const CelebrityCard = (props: { celebrity: any; index: number }) => {
+export type CelebrityType = {
+  deschool: {
+    username: string
+    address: string
+    avatar: string
+    bio: string
+  }
+  lens: {
+    name: string
+    ownedBy: string
+    avatarUrl: string
+    handle: string
+    bio: string
+  }
+}
+const CelebrityCard = (props: { celebrity: CelebrityType; index: number }) => {
   const { celebrity } = props
   const { t } = useTranslation()
   const navigate = useNavigate()
 
   const handleJumpProfile = () => {
-    navigate(`/profile/${celebrity.address}/resume`)
+    navigate(`/profile/${celebrity.deschool?.address || celebrity.lens?.ownedBy}/resume`)
   }
 
   return (
@@ -19,8 +35,10 @@ const CelebrityCard = (props: { celebrity: any; index: number }) => {
           size={86}
           alt="user avatar"
           className="w-86px h-86px mb-4px rounded-full"
-          // eslint-disable-next-line no-nested-ternary
-          src={celebrity?.avatarUrl ? celebrity?.avatarUrl : DEFAULT_AVATAR}
+          src={
+            // eslint-disable-next-line no-nested-ternary
+            celebrity.deschool?.avatar ? celebrity.deschool.avatar : celebrity.lens?.avatarUrl ? celebrity.lens?.avatarUrl : DEFAULT_AVATAR
+          }
           style={{ display: 'inline-block' }}
         />
         <svg className="absolute bottom-0" width="92" height="48" viewBox="0 0 92 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -30,9 +48,23 @@ const CelebrityCard = (props: { celebrity: any; index: number }) => {
       <div className="w-357px flex flex-col items-start justify-start p-24px">
         {/* <RoleTag status={0} /> */}
         <div className="z-1 flex flex-col items-start justify-start">
-          <h1 className="font-Anton text-black text-24px leading-32px h-64px mb-24px line-wrap two-line-wrap">{celebrity?.username}</h1>
-          <h1 className="font-Anton text-black text-24px leading-32px h-64px mb-24px line-wrap two-line-wrap">{celebrity?.handle}</h1>
-          <p className="font-ArchivoNarrow text-#000000d8 text-16px leading-24px h-120px line-wrap three-line-wrap">{celebrity?.bio}</p>
+          <h1 className="font-Anton text-black text-24px leading-32px h-32px line-wrap two-line-wrap">
+            {celebrity.deschool?.username ||
+              celebrity.lens?.name ||
+              (celebrity.deschool?.address && getShortAddress(celebrity.deschool?.address))}
+          </h1>
+          {celebrity.lens?.handle ? (
+            <h2 className="leading-32px font-ArchivoNarrow from-brand-600 dark:from-brand-400 bg-gradient-to-r to-pink-600 bg-clip-text text-transparent dark:to-pink-400">
+              @{celebrity.lens?.handle}
+            </h2>
+          ) : (
+            <h2 className="leading-32px font-ArchivoNarrow text-18px text-gray-6 leading-32px h-64px line-wrap two-line-wrap">
+              {celebrity.deschool?.address}
+            </h2>
+          )}
+          <p className="font-ArchivoNarrow text-#000000d8 text-16px leading-24px h-120px line-wrap three-line-wrap">
+            {celebrity.deschool?.bio || celebrity.lens?.bio}
+          </p>
           <div className="frc-start">
             {/* <Link to={`/profile/${celebrity.handle}/resume`}> */}
             <button

@@ -5,17 +5,19 @@ import Skeleton from 'antd/es/skeleton'
 import { getProfilesRequest } from '~/api/lens/profile/get-profiles'
 import Empty from 'antd/es/empty'
 import { getExtendProfile } from '~/hooks/profile'
-import { PlatformType, getBoothUsers } from '~/api/booth/booth'
+import { BoothUser, PlatformType, getBoothUsers } from '~/api/booth/booth'
 import { getOtherUserProfile } from '~/api/go/account'
+import type { CelebrityType } from './CelebrityCard'
 import CelebrityCard from './CelebrityCard'
 import type { Creator, ProfileExtend } from '~/lib/types/app'
+import { Profile } from '~/api/lens/graphql/generated'
 
 const HotCelebrities = (props: { searchWord: string }) => {
   const { searchWord } = props
   const { t } = useTranslation()
   const [loading, setLoading] = useState(true)
-  const [celebrities, setCelebrities] = useState([] as ProfileExtend[] | Creator[])
-  const [cacheCelebrities, setCacheCelebrities] = useState([] as any[])
+  const [celebrities, setCelebrities] = useState([] as CelebrityType[])
+  const [cacheCelebrities, setCacheCelebrities] = useState([] as CelebrityType[])
 
   // 将deschool数据转换成lens profile也支持的数据
   const getTransformed = (ds: (Creator | null)[]) => {
@@ -67,30 +69,84 @@ const HotCelebrities = (props: { searchWord: string }) => {
     setLoading(true)
     try {
       const response = await getBoothUsers()
-      // lens 用户
-      const lensUsers = response.filter((user: { platform: PlatformType }) => user.platform === PlatformType.LENS)
+      if (!response) return
+
+      const baseAddressesArray = response.map(boothUser => boothUser.baseAddress)
+      const baseAddressesSet = new Set(baseAddressesArray)
+      const baseAddresses = Array.from(baseAddressesSet) // 去重后的地址
+
+      // 根据去重的地址整理展示的Celebrity List
+      const boothUsersArray = [] as CelebrityType[]
+      baseAddresses.forEach(baseAddress => {
+        // all results of an address
+        const results = response.filter(boothUser => boothUser.baseAddress === baseAddress)
+        const param = {} as CelebrityType
+        // TODO: 问题在于同一个地址，同一个lens,不同deschool身份的覆盖
+        results.forEach(user => {
+          if (user.platform === PlatformType.DESCHOOL) {
+            Object.assign(param, {
+              deschool: {
+                username: '',
+                address: user.baseAddress,
+                avatar: '',
+                bio: '',
+              },
+            })
+          } else if (user.platform === PlatformType.LENS) {
+            Object.assign(param, {
+              lens: {
+                name: '',
+                ownedBy: user.address,
+                avatarUrl: '',
+                handle: user.lensHandle,
+                bio: '',
+              },
+            })
+          }
+        })
+        if (JSON.stringify(param) !== '{}') boothUsersArray.push(param)
+      })
+
+      // 查所有 lens 用户信息
+      const lensUsers = boothUsersArray.filter(user => user.lens?.handle)
       const lensUsersProfiles: any = await getProfilesRequest({
-        handles: lensUsers.map((lu: { lensHandle: any }) => lu.lensHandle),
+        handles: lensUsers.map((lensUser: CelebrityType) => lensUser.lens.handle),
       })
       /* loop over profiles, create properly formatted ipfs image links */
-      const profilesData = lensUsersProfiles?.items
-        ? lensUsersProfiles.items.map((profileInfo: any, index: number) => ({
+      const lensProfilesData: (ProfileExtend | null)[] = lensUsersProfiles?.items
+        ? lensUsersProfiles.items.map((profileInfo: any) => ({
             ...getExtendProfile(profileInfo),
-            address: lensUsers[index].address,
           }))
         : []
 
-      // deschool 用户
-      const deschoolUsers = response.filter((user: { platform: PlatformType }) => user.platform === PlatformType.DESCHOOL)
-      const deschoolProfilesData = await Promise.all(
-        deschoolUsers.map(async (profileInfo: any) => getOtherUserProfile(profileInfo.address)),
+      // 查所有 deschool 用户信息
+      const deschoolUsers = boothUsersArray.filter(user => user.deschool?.address)
+      const deschoolProfilesData: (Creator | null)[] = await Promise.all(
+        deschoolUsers.map(async (deschoolInfo: CelebrityType) => getOtherUserProfile(deschoolInfo.deschool.address)),
       )
-      const allData = profilesData.concat(getTransformed(deschoolProfilesData))
 
-      // 合并同地址数据
-      const tempDatas = allData // mergeDateByAddress(allData)
-      setCelebrities(tempDatas)
-      setCacheCelebrities(tempDatas)
+      // 合并 lens 同地址
+      lensProfilesData.forEach(lensProfile => {
+        const index = boothUsersArray.findIndex(boothUser => boothUser.lens?.handle === lensProfile?.handle)
+        if (index > -1) {
+          boothUsersArray[index].lens.name = lensProfile?.name || ''
+          boothUsersArray[index].lens.avatarUrl = lensProfile?.avatarUrl || ''
+          boothUsersArray[index].lens.bio = lensProfile?.bio || ''
+        }
+      })
+
+      // 合并 deschool 同地址
+      deschoolProfilesData.forEach(deschoolProfile => {
+        const index = boothUsersArray.findIndex(boothUser => boothUser.deschool?.address === deschoolProfile?.address)
+        if (index > -1) {
+          boothUsersArray[index].deschool.username = deschoolProfile?.username || ''
+          boothUsersArray[index].deschool.avatar = deschoolProfile?.avatar || ''
+          boothUsersArray[index].deschool.bio = deschoolProfile?.bio || ''
+        }
+      })
+
+      setCelebrities(boothUsersArray)
+      setCacheCelebrities(boothUsersArray)
     } finally {
       setLoading(false)
     }
@@ -102,7 +158,14 @@ const HotCelebrities = (props: { searchWord: string }) => {
 
   useEffect(() => {
     setCelebrities(
-      cacheCelebrities.filter(c => c.handle?.includes(searchWord) || c.name?.includes(searchWord) || c.id?.includes(searchWord)),
+      cacheCelebrities.filter(
+        c =>
+          c.lens?.handle?.includes(searchWord) ||
+          c.lens?.name?.includes(searchWord) ||
+          c.lens?.ownedBy?.includes(searchWord) ||
+          c.deschool?.address?.includes(searchWord) ||
+          c.deschool?.username?.includes(searchWord),
+      ),
     )
   }, [searchWord])
 
