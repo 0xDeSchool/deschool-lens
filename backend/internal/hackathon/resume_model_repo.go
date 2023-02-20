@@ -14,4 +14,5 @@ type Resume struct {
 type ResumeRepository interface {
 	ddd.RepositoryBase[Resume]
 	FindOneByAddress(ctx context.Context, address string) *Resume
+	CheckExistsByAddr(ctx context.Context, address string) bool
 }

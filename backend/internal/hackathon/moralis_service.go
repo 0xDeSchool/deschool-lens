@@ -73,6 +73,7 @@ func GetNftByWallet(address string) *NftByWalletOutput {
 	// set up param
 	ho := *di.Get[HackathonOptions]()
 	var API_KEY = ho.MoralisKey
+	// TODO: Move this to config
 	const TOKEN_ADDR_LIST_STR = "&token_addresses%5B0%5D=0xbac24a47c9f9d53500dfee0f4d996a009a5ba2d4&token_addresses%5B1%5D=0xEd1e617b9485168EEB25c6d56e1219747cE62D0e&token_addresses%5B2%5D=0x0D9ea891B4C30e17437D00151399990ED7965F00&token_addresses%5B3%5D=0x45ddb27dd9791957ae20781a2159d780a9626630"
 
 	// prepare http request
