@@ -48,7 +48,7 @@ export const STANDARD_RESUME_DATA: ResumeData = {
       title: 'Booth & DeSchool Product Research',
       description:
         'I learned the knowledge of Web3 products, and successfully logged into the Booth product by linking Metamask and lens. This is an important educational experience for me. I learned the basic usage of Web3 products, so I have a credible skill certification when I look for a Web3 job or communicate with people in DAO in the future.',
-      startTime: dayjs('2022-02-04T16:00:00.000Z'),
+      startTime: dayjs('2023-02-04T16:00:00.000Z'),
       endTime: dayjs('2023-02-04T16:00:00.000Z'),
       proofs: [
         {
