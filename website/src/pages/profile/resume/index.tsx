@@ -10,9 +10,8 @@ import Modal from 'antd/es/modal'
 import { useLocation } from 'react-router-dom'
 import { getIdSbt, getResume, putResume } from '~/api/booth/booth'
 import { useAccount } from '~/context/account'
-import { createPost, getPublicationsRequest, pollAndIndexPost } from '~/api/lens/publication/post'
+import { createPost, pollAndIndexPost } from '~/api/lens/publication/post'
 import { getShortAddress } from '~/utils/format'
-import { PublicationTypes } from '~/api/lens/graphql/generated'
 import CardEditor from './components/cardEditor'
 import ResumeBlock from './components/resumeBlock'
 import { BlockType } from './enum'
@@ -387,23 +386,6 @@ const Resume = () => {
         setIsSelf(true)
       }
     }
-
-    // TO-TEST 初始测试用户有哪些 Publications
-    const getPublications = async () => {
-      const profileId = lensProfile?.id
-      if (!profileId) {
-        throw new Error('Must define PROFILE_ID in the .env to run this')
-      }
-
-      const result = await getPublicationsRequest({
-        profileId,
-        publicationTypes: [PublicationTypes.Post, PublicationTypes.Comment, PublicationTypes.Mirror],
-      })
-      console.log('publications: result', result.items)
-
-      return result
-    }
-    getPublications()
   }, [])
 
   return (

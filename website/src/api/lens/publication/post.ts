@@ -82,7 +82,7 @@ export const pollAndIndexPost = async (txHash: string, profileId: string) => {
 // TODO：暂时先写死一个模板，下个版本再通过IPFS上传用户编辑过的内容
 export const createPost = async (profileId: string, address: string, content: string): Promise<string | undefined> => {
   if (!profileId) {
-    throw new Error('Must define PROFILE_ID in the .env to run this')
+    throw new Error('createPost Error: profileId missing')
   }
   console.log(`create post: address`, address)
   console.log(`create post: content`, content)
@@ -160,7 +160,7 @@ export const createPost = async (profileId: string, address: string, content: st
   }
 }
 
-export const getPublicationsRequest = async (request: PublicationsQueryRequest) => {
+export const GETPUBLICATIONSRequest = async (request: PublicationsQueryRequest) => {
   const result = await apolloClient.query({
     query: PublicationsDocument,
     variables: {
