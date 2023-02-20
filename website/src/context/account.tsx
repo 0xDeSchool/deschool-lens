@@ -2,7 +2,7 @@
 import type { Dispatch, ReactElement, SetStateAction } from 'react'
 import { useMemo, useEffect, useState, useContext, createContext } from 'react'
 
-import { getWallet } from '~/wallet'
+// import { getWallet } from '~/wallet'
 import { RoleType } from '~/lib/enum'
 import type { AccountContextProps, DeschoolProfile, ProfileExtend, LensTokenInfo } from '~/lib/types/app'
 

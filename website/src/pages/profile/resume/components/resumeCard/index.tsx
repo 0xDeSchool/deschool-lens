@@ -5,9 +5,9 @@ import { DeleteOutlined, EditOutlined, ExclamationCircleFilled } from '@ant-desi
 import VerifiedIcon from '@mui/icons-material/Verified'
 import Divider from 'antd/es/divider'
 import { useNavigate } from 'react-router'
+import fallbackImage from '~/assets/images/fallbackImage'
 import type { ResumeCardInput } from '../../types'
 import { BlockType } from '../../enum'
-import fallbackImage from '~/assets/images/fallbackImage'
 
 const { confirm } = Modal
 

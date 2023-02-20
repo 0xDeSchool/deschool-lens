@@ -32,13 +32,15 @@ export async function unfollowUser(toAddr: string, fromAddr: string): Promise<an
   }
 }
 
+export type FollowRelationType = { ToFollowedFrom: false; fromFollowedTo: false }
+
 /**
  * @description deschool check follow or not
  * @param toAddr string
  * @param fromAddr string
  * @returns
  */
-export async function checkfollowUser(toAddr: string, fromAddr: string): Promise<any> {
+export async function checkfollowUser(toAddr: string, fromAddr: string): Promise<FollowRelationType | any> {
   try {
     const result = await http.get(`/follow?toAddr=${toAddr}&fromAddr=${fromAddr}`)
     return result

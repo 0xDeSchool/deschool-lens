@@ -214,7 +214,7 @@ const LensCard = (props: LensCardProps) => {
         </p>
       )}
       {routeAddress && routeAddress !== lensToken?.address && (
-        <div className="m-10">
+        <div className="m-10 text-right">
           <button
             type="button"
             className={`${

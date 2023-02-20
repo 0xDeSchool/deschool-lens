@@ -7,6 +7,7 @@ import Skeleton from 'antd/es/skeleton'
 import { getShortAddress } from '~/utils/format'
 import { useAccount } from '~/context/account'
 import { useTranslation } from 'react-i18next'
+import type { FollowRelationType } from '~/api/booth/follow';
 import { getFollowings, getFollowers, followUser, unfollowUser, checkfollowUser } from '~/api/booth/follow'
 import { getOtherUsersProfile } from '~/api/go/account'
 import type { DeschoolProfile, OtherDeschoolProfile } from '~/lib/types/app'
@@ -61,8 +62,8 @@ const DeschoolCard = (props: DeschoolCardProps) => {
         case 1: {
           // 我登录了
           if (deschoolProfile?.address) {
-            const isFollowed = await checkfollowUser(routeAddress!, deschoolProfile?.address)
-            setIsFollowedByMe(isFollowed)
+            const isFollowed: FollowRelationType | any = await checkfollowUser(routeAddress!, deschoolProfile?.address)
+            setIsFollowedByMe(isFollowed.fromFollowedTo || false) // 我A(from)=>他人B(to)
           }
           // 没登录
           else {
@@ -204,7 +205,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
             {currentUser?.bio || visitCase === 0 ? '' : "The user hasn't given a bio on Lens for self yet :)"}
           </p>
           {routeAddress && routeAddress !== deschoolProfile?.address && (
-            <div className="m-10">
+            <div className="m-10 text-right">
               <button
                 type="button"
                 className="purple-border-button px-2 py-1"
