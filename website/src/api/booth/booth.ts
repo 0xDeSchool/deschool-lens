@@ -54,14 +54,24 @@ export async function getVerifiedIdentities(address: string): Promise<Identity[]
   }
 }
 
+export type BoothUser = {
+  CreatedAt: string
+  CreatorId: string
+  ID: string
+  address: string
+  baseAddress: string
+  lensHandle: string
+  platform: number
+}
+
 /**
  * @method getBoothUsers
  * @description 获取当前登录的booth账号绑定的其余identities, 用于verifiedId页面数据获取
  * @returns {Object} Promise
  */
-export async function getBoothUsers(): Promise<any[]> {
+export async function getBoothUsers(): Promise<BoothUser[] | null> {
   try {
-    const result: any[] = await http.get(`/id/new`)
+    const result: BoothUser[] | null = await http.get(`/id/new`)
     return result
   } catch (err) {
     console.log(err)

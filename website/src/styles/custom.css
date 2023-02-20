@@ -247,3 +247,22 @@ a:hover {
 .five-line-wrap {
   -webkit-line-clamp: 5;
 }
+
+/**
+ * lenstar handle 样式
+ */
+.bg-gradient-to-r {
+  background-image: linear-gradient(to right, #7c3aed, #db2777);
+}
+
+.from-brand-400 {
+  --tw-gradient-from: #a78bfa;
+  --tw-gradient-to: rgba(167, 139, 250, 0);
+  --tw-gradient-stops: var(--tw-gradient-from), #7c3aed, #db2777;
+}
+
+.from-brand-600 {
+  --tw-gradient-from: #7c3aed;
+  --tw-gradient-to: rgba(124, 58, 237, 0);
+  --tw-gradient-stops: var(--tw-gradient-from), #7c3aed, #db2777;
+}
