@@ -19,20 +19,24 @@ const UserCard = (props: UserCardProps) => {
 
   return (
     <div>
-      <LensCard
-        visitCase={visitCase}
-        routeAddress={routeAddress}
-        visible={profileType === 'lens'}
-        setProfileType={setProfileType}
-        profileType={profileType}
-      />
-      <DeschoolCard
-        visitCase={visitCase}
-        routeAddress={routeAddress}
-        visible={profileType === 'deschool'}
-        setProfileType={setProfileType}
-        profileType={profileType}
-      />
+      {profileType === 'lens' && (
+        <LensCard
+          visitCase={visitCase}
+          routeAddress={routeAddress}
+          visible={profileType === 'lens'}
+          setProfileType={setProfileType}
+          profileType={profileType}
+        />
+      )}
+      {profileType === 'deschool' && (
+        <DeschoolCard
+          visitCase={visitCase}
+          routeAddress={routeAddress}
+          visible={profileType === 'deschool'}
+          setProfileType={setProfileType}
+          profileType={profileType}
+        />
+      )}
     </div>
   )
 }

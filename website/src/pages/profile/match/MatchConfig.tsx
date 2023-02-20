@@ -76,6 +76,7 @@ const MatchConfig = () => {
   const { t } = useTranslation()
   const { lensToken, deschoolProfile } = useAccount()
   const [open, setOpen] = useState(false)
+  const [fired, setFired] = useState(false)
 
   const loadInitialValues = async () => {
     const address = lensToken?.address || deschoolProfile?.address
@@ -135,7 +136,10 @@ const MatchConfig = () => {
       setLoading(false)
       setOpen(true)
 
-      randomConfetti()
+      if (!fired) {
+        randomConfetti()
+        setFired(true)
+      }
       return true
     } catch (error) {
       console.log(error)
