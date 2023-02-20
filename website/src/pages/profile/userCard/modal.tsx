@@ -109,6 +109,8 @@ const FollowersModal = (props: {
       closable
       onCancel={e => {
         setFollows([] as Array<ProfileExtend | undefined | null>)
+        setTotal(0)
+        setCursor('')
         closeModal(e)
       }}
       footer={null}

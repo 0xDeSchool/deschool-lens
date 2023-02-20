@@ -4,7 +4,8 @@
  * @exports {UserInfo}
  * @props
  */
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useAccount } from '~/context/account'
 import DeschoolCard from './deschoolCard'
 import LensCard from './lensCard'
 
@@ -15,28 +16,46 @@ type UserCardProps = {
 
 const UserCard = (props: UserCardProps) => {
   const { visitCase, routeAddress } = props
+  const { lensProfile, deschoolProfile } = useAccount()
   const [profileType, setProfileType] = useState('lens')
+
+  // 登录UserCard跟随变化
+  useEffect(() => {
+    if (!lensProfile) {
+      if (deschoolProfile) {
+        setProfileType('deschool')
+      }
+    } else {
+      setProfileType('lens')
+    }
+  }, [lensProfile])
+
+  useEffect(() => {
+    if (!deschoolProfile) {
+      if (lensProfile) {
+        setProfileType('lens')
+      }
+    } else {
+      setProfileType('deschool')
+    }
+  }, [deschoolProfile])
 
   return (
     <div>
-      {profileType === 'lens' && (
-        <LensCard
-          visitCase={visitCase}
-          routeAddress={routeAddress}
-          visible={profileType === 'lens'}
-          setProfileType={setProfileType}
-          profileType={profileType}
-        />
-      )}
-      {profileType === 'deschool' && (
-        <DeschoolCard
-          visitCase={visitCase}
-          routeAddress={routeAddress}
-          visible={profileType === 'deschool'}
-          setProfileType={setProfileType}
-          profileType={profileType}
-        />
-      )}
+      <LensCard
+        visitCase={visitCase}
+        routeAddress={routeAddress}
+        visible={profileType === 'lens'}
+        setProfileType={setProfileType}
+        profileType={profileType}
+      />
+      <DeschoolCard
+        visitCase={visitCase}
+        routeAddress={routeAddress}
+        visible={profileType === 'deschool'}
+        setProfileType={setProfileType}
+        profileType={profileType}
+      />
     </div>
   )
 }

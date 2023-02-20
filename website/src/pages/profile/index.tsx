@@ -6,9 +6,9 @@
 import { useEffect, useState } from 'react'
 import { Outlet, useLocation, useNavigate, useParams } from 'react-router'
 import { useAccount } from '~/context/account'
-import message from 'antd/es/message'
 import UserCard from './userCard'
 import Verified from './resume/components/verified'
+import getVisitCase from './utils/visitCase'
 
 const UserProfile = () => {
   const { address } = useParams()
@@ -20,27 +20,7 @@ const UserProfile = () => {
 
   // 初始化登录场景，区分自己访问自己或自己访问别人或者别人访问
   const initCase = () => {
-    let primaryCase: 0 | 1 | -1 = -1
-    const cacheLensAddress = lensToken?.address
-    const cacheDeschoolAddress = deschoolProfile?.address
-
-    if (address) {
-      // 有路由参数并且不等于自己地址，即访问他人的空间（不管是否登录都可以看他人空间）
-      if (address !== cacheLensAddress && address !== cacheDeschoolAddress) primaryCase = 1
-      // 有路由参数并且等于自己lens或者deschool地址，即访问自己空间
-      else if (address === cacheLensAddress || address === cacheDeschoolAddress) {
-        primaryCase = 0
-      }
-    }
-    // 没有路由参数并且有缓存自己地址, 访问自己空间
-    else if (cacheLensAddress || cacheDeschoolAddress) {
-      primaryCase = 0
-    }
-    // 地址栏和缓存都没有地址，既不是访问他人空间也不是访问自己，需要登录访问自己
-    else {
-      primaryCase = -1
-      message.warning('please login first')
-    }
+    const primaryCase = getVisitCase(address)
     setVisitCase(primaryCase)
     return primaryCase
   }
@@ -63,9 +43,10 @@ const UserProfile = () => {
 
   useEffect(() => {
     initCase()
-  }, [])
+  }, [deschoolProfile, lensToken])
 
   useEffect(() => {
+    initCase()
     initRoute()
   }, [address])
 

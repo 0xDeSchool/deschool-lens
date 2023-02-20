@@ -7,7 +7,7 @@ import dayjs from 'dayjs'
 import ReactLoading from 'react-loading'
 import Modal from 'antd/es/modal'
 // import { useParams } from 'react-router'
-import { useLocation } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { getIdSbt, getResume, putResume } from '~/api/booth/booth'
 import { useAccount } from '~/context/account'
 import { createPost, pollAndIndexPost } from '~/api/lens/publication/post'
@@ -17,6 +17,7 @@ import ResumeBlock from './components/resumeBlock'
 import { BlockType } from './enum'
 import type { ResumeCardData, ResumeData, SbtInfo } from './types'
 import { randomConfetti } from './utils/confetti'
+import getVisitCase from '../utils/visitCase'
 
 const BOOTH_PATH = import.meta.env.VITE_APP_BOOTH_PATH
 
@@ -65,8 +66,7 @@ export const STANDARD_RESUME_DATA: ResumeData = {
 
 const Resume = () => {
   // const { handle } = props
-  // const { routeAddress } = useParams()
-  const location = useLocation()
+  const { address } = useParams()
   const { lensProfile, lensToken, deschoolProfile } = useAccount()
 
   const [isEditResume, setIsEditResume] = useState(false)
@@ -75,7 +75,6 @@ const Resume = () => {
   const [resumeData, setResumeData] = useState<ResumeData | undefined>()
   const [cardData, setCardData] = useState<ResumeCardData | undefined>()
   const [loading, setLoading] = useState(true)
-  const [notLogin, setNotLogin] = useState(false)
   const [putting, setPutting] = useState(false)
   const [prevData, setPrev] = useState<ResumeData | undefined>()
   const [sbtList, setSbtList] = useState<SbtInfo[]>([])
@@ -83,8 +82,8 @@ const Resume = () => {
   const [step, setStep] = useState<number>(1)
   const [txHash, setTxHash] = useState<string>('')
   const [userAddr, setUserAddr] = useState<string>('')
-  const [isSelf, setIsSelf] = useState(false)
   const [loadingLens, setLoadingLens] = useState(false)
+  const [visitCase, setVisitCase] = useState<0 | 1 | -1>(-1) // 0-自己访问自己 1-自己访问别人 -1-没登录访问自己
 
   // 把一条变成 Dayjs Obj
   const convertStrToDayJsObj = (input: ResumeCardData) => {
@@ -107,17 +106,15 @@ const Resume = () => {
   }
 
   // 提交用户简历
-  const putUserResume = async (data: string, address: string) => {
-    await putResume({ address, data })
-  }
 
   // 进入简历编辑 or 保存查看状态
   const onClickEditResume = async () => {
     if (isEditResume) {
-      const address = lensToken?.address || deschoolProfile?.address
-      if (address) {
+      const myAddress = lensToken?.address || deschoolProfile?.address
+      if (myAddress) {
         setPutting(true)
-        await putUserResume(JSON.stringify(resumeData), address)
+        const dataStr = JSON.stringify(resumeData)
+        await putResume({ address: myAddress, data: dataStr })
         setPutting(false)
       }
     } else {
@@ -295,26 +292,15 @@ const Resume = () => {
   }
 
   // 获取当前用户的简历
-  const fetchUserResume = async () => {
-    let address = lensToken?.address
-    // 如果 lens 有简历，就优先用
-    if (!address) {
-      const dscAddress = deschoolProfile?.address
-      if (!dscAddress) {
-        setNotLogin(true)
-        return
-      }
-      address = dscAddress
+  const fetchUserResume = async (resumeAddress: string) => {
+    if (!resumeAddress) {
+      return message.error("fetchUserResume Error: resumeAddress can't be null")
     }
-    if (!address) {
-      setNotLogin(true)
-      return
-    }
-    const result = await getResume(address)
+    const result = await getResume(resumeAddress)
 
     if (!result) {
       setResumeData(STANDARD_RESUME_DATA)
-      await putUserResume(JSON.stringify(STANDARD_RESUME_DATA), address)
+      await putResume({ address: resumeAddress, data: JSON.stringify(STANDARD_RESUME_DATA) })
       return
     }
     const resumeObj = covertCareerAndEdu(result.data)
@@ -323,12 +309,11 @@ const Resume = () => {
   }
 
   // 获取当前用户的 SBT 列表
-  const fetchUserSbtList = async () => {
-    const address = lensToken?.address || deschoolProfile?.address
-    if (!address) {
-      return
+  const fetchUserSbtList = async (resumeAddress: string) => {
+    if (!resumeAddress) {
+      return message.error("fetchUserSbtList Error: resumeAddress can't be null")
     }
-    const result = await getIdSbt(address)
+    const result = await getIdSbt(resumeAddress)
     if (result === undefined || !result.sbts) {
       return
     }
@@ -351,11 +336,11 @@ const Resume = () => {
   const handlePublish = async () => {
     try {
       setLoadingLens(true)
-      const address = lensToken?.address || deschoolProfile?.address
+      const resumeAddress = lensToken?.address || deschoolProfile?.address
       const resumeDataStr = JSON.stringify(resumeData)
       // const resumeDataStr = JSON.stringify(STANDARD_RESUME_DATA)
-      if (lensProfile?.id && address && resumeDataStr) {
-        const txhash = await createPost(lensProfile.id, address, resumeDataStr)
+      if (lensProfile?.id && resumeAddress && resumeDataStr) {
+        const txhash = await createPost(lensProfile.id, resumeAddress, resumeDataStr)
         if (txhash) {
           setStep(1)
           setTxHash(txhash)
@@ -378,18 +363,31 @@ const Resume = () => {
     }
   }
 
+  // 处理不同场景下的resume初始化
+  const handlePrimaryCase = async (primaryCase: 0 | 1 | -1) => {
+    let currentAddress: string | undefined | null = null
+    if (primaryCase > -1) {
+      // 0访问自己的地址，1访问他人地址（从路由拿）
+      currentAddress = primaryCase === 0 ? lensToken?.address || deschoolProfile?.address : address
+      if (currentAddress) {
+        await fetchUserResume(currentAddress)
+        await fetchUserSbtList(currentAddress)
+        setUserAddr(currentAddress)
+      } else {
+        message.warning(`handlePrimaryCase Warning: case:${primaryCase},currentAddress:${currentAddress} error`)
+      }
+    } else {
+      console.log('handlePrimaryCase log: 未登录', primaryCase)
+    }
+  }
+
   // 初始时，加载用户简历，并调用查询用户可选 SBT 列表
   useEffect(() => {
-    fetchUserResume()
-    fetchUserSbtList()
-    const addr = lensToken?.address || deschoolProfile?.address
-    if (addr) {
-      setUserAddr(addr)
-      if (location.pathname === '/profile/resume') {
-        setIsSelf(true)
-      }
-    }
-  }, [])
+    // 初始化登录场景，区分自己访问自己或自己访问别人或者别人访问
+    const primaryCase = getVisitCase(address)
+    setVisitCase(primaryCase)
+    handlePrimaryCase(primaryCase)
+  }, [address, deschoolProfile, lensToken])
 
   return (
     <div className="bg-white p-8">
@@ -409,20 +407,20 @@ const Resume = () => {
           )}
         </div>
         <div className="flex">
-          {isSelf && !isEditResume && (
+          {visitCase === 0 && !isEditResume && (
             <Button
               type="primary"
               onClick={() => handlePublish()}
               disabled={!lensProfile}
               loading={loadingLens}
-              className={`${lensProfile ? 'bg-#abfe2c!' : ''} ${lensProfile ? 'text-black!' : ''}`}
+              className="bg-#abfe2c! text-black!"
             >
               {resumeData && step === 2 ? 'Published' : 'Publish On Lens'}
             </Button>
           )}
 
           <div className="w-2"> </div>
-          {isSelf && (
+          {visitCase === 0 && (
             <Button onClick={onClickEditResume} loading={putting} type={isEditResume ? 'primary' : 'default'}>
               {isEditResume ? 'Save on DeSchool' : 'Edit'}
             </Button>
@@ -439,8 +437,8 @@ const Resume = () => {
       </div>
       <Divider />
 
-      {!notLogin && loading && <ReactLoading type="bars" />}
-      {!notLogin && !loading && (
+      {visitCase !== -1 && loading && <ReactLoading type="bars" />}
+      {visitCase !== -1 && !loading && (
         <>
           {/* 职业板块数据 */}
           <ResumeBlock
@@ -474,7 +472,7 @@ const Resume = () => {
         </>
       )}
 
-      {notLogin && <div>You haven't log in yet. Please log in first</div>}
+      {visitCase === -1 && <div>You haven't log in yet. Please log in first</div>}
 
       {/* Mint Lens NFT 后的 Model */}
       <Modal
