@@ -93,7 +93,14 @@ export default defineConfig(({ mode }) => {
           rewrite: pathGoapi => pathGoapi.replace(/^\/goapiBoothLocal/, '/api'),
         },
         '/goapiBoothStg': {
-          target: 'http://ec2-52-91-140-246.compute-1.amazonaws.com:80',
+          target: 'http://ec2-54-90-108-215.compute-1.amazonaws.com:80',
+          secure: false,
+          ws: true,
+          changeOrigin: true,
+          rewrite: pathGoapi => pathGoapi.replace(/^\/goapiBoothStg/, '/api'),
+        },
+        '/goapiBoothPrd': {
+          target: 'http://ec2-54-211-102-5.compute-1.amazonaws.com:80',
           secure: false,
           ws: true,
           changeOrigin: true,

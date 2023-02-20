@@ -2,39 +2,45 @@ import { t } from 'i18next'
 import type { Dispatch, SetStateAction } from 'react'
 import Deschool from '~/assets/icons/deschool.svg'
 import Lens from '~/assets/icons/lens.svg'
-import { useAccount } from '~/context/account'
 
 const SwitchIdentity = (props: { setProfileType: Dispatch<SetStateAction<string>>; profileType: string }) => {
   const { setProfileType, profileType } = props
-  const { lensProfile } = useAccount()
 
   return (
-    <div className="frc-between absolute top-3 z-1">
+    <div className="w-full frc-between absolute top-3 z-1">
       <span
-        className={`flex-1 frc-center bg-#abfe2c ${
-          profileType === 'lens' ? 'rounded-xl border border-#00ae00' : 'rounded-xl'
-        } px-4 mr-4`}
+        className={`cursor-pointer transition frc-center bg-#abfe2c ${
+          profileType === 'lens' ? 'flex-1 rounded-xl border border-#00ae00 px-4' : 'p-1 w-32px overflow-hidden rounded-full'
+        } ml-2 mr-4`}
         onClick={e => {
           e.preventDefault()
           setProfileType('lens')
         }}
       >
-        <img src={Lens} alt="lens" width={24} height={24} />
-        <button type="button" className="text-black text-14px leading-26px ml-2 font-ArchivoNarrow">
-          {lensProfile ? lensProfile?.handle : t('profile.lens')}
+        <img src={Lens} alt="lens" className="w-20px h-24px" />
+        <button
+          type="button"
+          className={`text-black text-14px leading-26px ml-2 font-ArchivoNarrow ${profileType === 'lens' ? '' : 'hidden'}`}
+        >
+          {t('profile.lens')}
         </button>
       </span>
       <span
-        className={`flex-1 frc-center bg-#774ff8 ${
-          profileType === 'deschool' ? 'rounded-xl border border-#6c3eff' : 'rounded-xl'
-        } px-4`}
+        className={`cursor-pointer transition frc-center bg-#774ff8 ${
+          profileType === 'deschool'
+            ? 'flex-1 rounded-xl border border-#6c3eff px-4'
+            : 'p-1 w-32px overflow-hidden rounded-full'
+        } mr-2`}
         onClick={e => {
           e.preventDefault()
           setProfileType('deschool')
         }}
       >
-        <img src={Deschool} alt="lens" width={20} height={24} />
-        <button type="button" className="text-white text-14px leading-26px ml-2 font-ArchivoNarrow">
+        <img src={Deschool} alt="lens" className="w-20px h-24px" />
+        <button
+          type="button"
+          className={`text-white text-14px leading-26px ml-2 font-ArchivoNarrow ${profileType === 'deschool' ? '' : 'hidden'}`}
+        >
           {t('profile.deschool')}
         </button>
       </span>

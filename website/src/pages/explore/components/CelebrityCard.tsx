@@ -19,7 +19,7 @@ export type CelebrityType = {
     bio: string
   }
 }
-const CelebrityCard = (props: { celebrity: CelebrityType; index: number }) => {
+const CelebrityCard = (props: { celebrity: CelebrityType }) => {
   const { celebrity } = props
   const { t } = useTranslation()
   const navigate = useNavigate()

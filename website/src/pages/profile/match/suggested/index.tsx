@@ -7,12 +7,12 @@ import Button from 'antd/es/button'
 import { getRecommendation, getVerifiedIdentities, PlatformType } from '~/api/booth/booth'
 import { getUserContext } from '~/context/account'
 import { getShortAddress } from '~/utils/format'
-import type { ProfileExtend, RecommendAddr } from '~/lib/types/app'
 import { unfollowByProfileIdWithLens } from '~/api/lens/follow/unfollow'
 import { checkfollowUser, followUser, unfollowUser } from '~/api/booth/follow'
 import { fetchUserDefaultProfile } from '~/hooks/profile'
 import { doesFollow } from '~/api/lens/follow/doesFollow'
 import { followByProfileIdWithLens } from '~/api/lens/follow/follow'
+import type { ProfileExtend, RecommendAddr } from '~/lib/types/app'
 
 const BOOTH_PATH = import.meta.env.VITE_APP_BOOTH_PATH
 // 根据match config配置的参数推荐用户想找的人
