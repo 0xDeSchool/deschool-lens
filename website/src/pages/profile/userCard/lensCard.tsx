@@ -69,8 +69,12 @@ const LensCard = (props: LensCardProps) => {
   }, [routeAddress])
 
   useEffect(() => {
-    if (!loading) {
-      initUserInfo()
+    initUserInfo()
+    if (updateTrigger > 0) {
+      setModal({
+        type: 'followers',
+        visible: false,
+      })
     }
   }, [visitCase, routeAddress, updateTrigger, lensProfile])
 

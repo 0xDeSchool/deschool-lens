@@ -1,5 +1,5 @@
 import type { Dispatch, SetStateAction } from 'react'
-import { useEffect, useState } from 'react'
+import { useMemo, useEffect, useState } from 'react'
 
 import Jazzicon from 'react-jazzicon'
 import message from 'antd/es/message'
@@ -8,7 +8,7 @@ import { getShortAddress } from '~/utils/format'
 import { useAccount } from '~/context/account'
 import { useTranslation } from 'react-i18next'
 import { getFollowings, getFollowers, followUser, unfollowUser, checkfollowUser } from '~/api/booth/follow'
-import { getOtherUserProfile } from '~/api/go/account'
+import { getOtherUsersProfile } from '~/api/go/account'
 import type { DeschoolProfile, OtherDeschoolProfile } from '~/lib/types/app'
 import LensAvatar from './avatar'
 import SwitchIdentity from './switchIdentity'
@@ -68,17 +68,18 @@ const DeschoolCard = (props: DeschoolCardProps) => {
           else {
             setIsFollowedByMe(false)
           }
-          const userInfo = await getOtherUserProfile(routeAddress!) // 此case下必不为空
-          if (userInfo) {
-            const resFollowings = await getFollowings(userInfo?.address, deschoolProfile?.address)
+          const userInfo = await getOtherUsersProfile([routeAddress!]) // 此case下必不为空
+          
+          if (userInfo && userInfo.length > 0 && userInfo[0]) {
+            const resFollowings = await getFollowings(userInfo[0]?.address, deschoolProfile?.address)
             if (resFollowings) {
               setFollowings(resFollowings)
             }
-            const resFollowers = await getFollowers(userInfo?.address, deschoolProfile?.address)
+            const resFollowers = await getFollowers(userInfo[0]?.address, deschoolProfile?.address)
             if (resFollowers) {
               setFollowers(resFollowers)
             }
-            const userInfoExtend = Object.assign(userInfo, {
+            const userInfoExtend = Object.assign(userInfo[0], {
               stats: { totalFollowers: resFollowers ? resFollowers.length : 0, totalFollowing: resFollowings ? resFollowings.length : 0 },
             })
             setCurrentUser(userInfoExtend)
@@ -100,7 +101,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
 
   useEffect(() => {
     initUserInfo()
-    if (updateTrigger) {
+    if (updateTrigger > 0) {
       setModal({
         type: 'followers',
         visible: false,
@@ -144,6 +145,11 @@ const DeschoolCard = (props: DeschoolCardProps) => {
     setUpdateTrigger(new Date().getTime())
   }
 
+  const computedUserName = useMemo(
+    () => currentUser?.username || (routeAddress ? getShortAddress(routeAddress) : getShortAddress(deschoolProfile?.address)),
+    [currentUser, routeAddress, deschoolProfile],
+  )
+
   return (
     <div className={`w-full pb-1 shadow-md rounded-xl ${!visible ? 'hidden' : ''}`}>
       {loading ? (
@@ -161,8 +167,8 @@ const DeschoolCard = (props: DeschoolCardProps) => {
           </div>
           {/* 处理数据为空的情况 */}
           <div className="mt-70px w-full px-6 pb-6 fcc-center font-ArchivoNarrow">
-            <span className="text-xl">
-              {currentUser?.username || (routeAddress ? getShortAddress(routeAddress) : getShortAddress(deschoolProfile?.address))}
+            <span className="text-xl w-200px overflow-hidden text-ellipsis" title={computedUserName}>
+              {computedUserName}
             </span>
             <span className="text-xl text-gray-5">{currentUser?.ensName ? `${currentUser?.ensName}` : ''}</span>
           </div>

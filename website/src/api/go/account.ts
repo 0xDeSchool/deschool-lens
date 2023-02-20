@@ -3,16 +3,16 @@ import type { UserInfoStruct } from '~/hooks/deschool'
 import type { Creator } from '~/lib/types/app'
 
 /**
- * @method getOtherUserProfile
+ * @method getOtherUsersProfile
  * @description 从后台获取其他用户信息
  * @returns {Object} Promise
  */
-export async function getOtherUserProfile(address?: string): Promise<Creator | null> {
+export async function getOtherUsersProfile(address: string[]): Promise<(Creator | null)[]> {
   try {
-    const result: any = await http.get(`/account/my-profile?address=${address}`)
+    const result: any = await http.post(`/account/users`, JSON.stringify(address))
     return result
   } catch (err) {
-    return null
+    return []
   }
 }
 

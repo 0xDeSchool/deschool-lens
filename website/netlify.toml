@@ -54,7 +54,13 @@
 
 [[redirects]]
   from = "/goapiBoothStg/*"
-  to = "http://ec2-52-91-140-246.compute-1.amazonaws.com:80/api/:splat"
+  to = "http://ec2-54-90-108-215.compute-1.amazonaws.com:80/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/goapiBoothPrd/*"
+  to = "http://ec2-54-211-102-5.compute-1.amazonaws.com:80/api/:splat"
   status = 200
   force = true
 

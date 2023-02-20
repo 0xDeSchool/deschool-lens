@@ -5,12 +5,11 @@ import Skeleton from 'antd/es/skeleton'
 import { getProfilesRequest } from '~/api/lens/profile/get-profiles'
 import Empty from 'antd/es/empty'
 import { getExtendProfile } from '~/hooks/profile'
-import { BoothUser, PlatformType, getBoothUsers } from '~/api/booth/booth'
-import { getOtherUserProfile } from '~/api/go/account'
+import { PlatformType, getBoothUsers } from '~/api/booth/booth'
+import { getOtherUsersProfile } from '~/api/go/account'
 import type { CelebrityType } from './CelebrityCard'
 import CelebrityCard from './CelebrityCard'
 import type { Creator, ProfileExtend } from '~/lib/types/app'
-import { Profile } from '~/api/lens/graphql/generated'
 
 const HotCelebrities = (props: { searchWord: string }) => {
   const { searchWord } = props
@@ -18,52 +17,6 @@ const HotCelebrities = (props: { searchWord: string }) => {
   const [loading, setLoading] = useState(true)
   const [celebrities, setCelebrities] = useState([] as CelebrityType[])
   const [cacheCelebrities, setCacheCelebrities] = useState([] as CelebrityType[])
-
-  // 将deschool数据转换成lens profile也支持的数据
-  const getTransformed = (ds: (Creator | null)[]) => {
-    const temp: { avatarUrl: string; name: string; bio: string | undefined; id: string | undefined }[] = []
-    ds.forEach(d => {
-      if (d) {
-        temp.push({
-          avatarUrl: d.avatar,
-          name: d.username,
-          bio: d.bio,
-          id: d.id,
-        })
-      }
-    })
-    return temp
-  }
-
-  // 合并地址相同的人
-  // const mergeDateByAddress = (data: any[]) => {
-  //   const temp = [] as any[]
-  //   data.forEach(user => {
-  //     // deschool 数据
-  //     if (user.address) {
-  //       const indexA = temp.findIndex(existUser => existUser.ownedBy === user.address)
-  //       // 已经存过对应的lens数据
-  //       if (indexA > -1) {
-  //         temp[indexA].avatar = user.avatar
-  //         temp[indexA].username = user.username
-  //         temp[indexA].bio = user.bio
-  //       } else {
-  //         temp.push(user)
-  //       }
-  //     }
-  //     // lens 数据
-  //     else {
-  //       const indexB = temp.findIndex(existUser => existUser.address === user.ownedBy)
-  //       // 已经存过对应的deschool数据
-  //       if (indexB > -1) {
-  //         temp[indexB].handle = user.handle
-  //       } else {
-  //         temp.push(user)
-  //       }
-  //     }
-  //   })
-  //   return temp
-  // }
 
   const initSeries = async () => {
     setLoading(true)
@@ -121,9 +74,8 @@ const HotCelebrities = (props: { searchWord: string }) => {
 
       // 查所有 deschool 用户信息
       const deschoolUsers = boothUsersArray.filter(user => user.deschool?.address)
-      const deschoolProfilesData: (Creator | null)[] = await Promise.all(
-        deschoolUsers.map(async (deschoolInfo: CelebrityType) => getOtherUserProfile(deschoolInfo.deschool.address)),
-      )
+      const strArray = deschoolUsers.map((deschoolInfo: CelebrityType) => deschoolInfo.deschool.address)
+      const deschoolProfilesData: (Creator | null)[] = await getOtherUsersProfile(strArray)
 
       // 合并 lens 同地址
       lensProfilesData.forEach(lensProfile => {
@@ -197,7 +149,9 @@ const HotCelebrities = (props: { searchWord: string }) => {
         ) : (
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 m-auto">
             {celebrities && celebrities.length > 0 ? (
-              celebrities.map(celebrity => <CelebrityCard key={celebrity.id} celebrity={celebrity} index={celebrity.id} />)
+              celebrities.map(celebrity => (
+                <CelebrityCard key={celebrity.deschool.address || celebrity.lens.handle} celebrity={celebrity} />
+              ))
             ) : (
               <Empty />
             )}
