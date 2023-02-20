@@ -42,14 +42,12 @@ export class UserContext {
     this.setLensToken(null)
     localStorage.removeItem('lensProfile')
     localStorage.removeItem('lensToken')
-    getWallet().disconnect()
   }
 
   // 断开deschool的连接
   disconnectFromDeschool = (): void => {
     this.setDescoolProfile(null)
     localStorage.removeItem('deschoolProfile')
-    getWallet().disconnect()
   }
 
   // 根据登录情况，获取登录角色

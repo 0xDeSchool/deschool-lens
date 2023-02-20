@@ -28,7 +28,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
   const { deschoolProfile } = useAccount()
   const [loading, setLoading] = useState(true)
   const [modal, setModal] = useState<{ type: 'followers' | 'following'; visible: boolean }>({ type: 'followers', visible: false })
-  const [currentUser, setCurrentUser] = useState<DeschoolProfile | OtherDeschoolProfile | null>()
+  const [currentUser, setCurrentUser] = useState<DeschoolProfile | OtherDeschoolProfile | null>(null)
   const [isFollowedByMe, setIsFollowedByMe] = useState<boolean>(false)
   const [followings, setFollowings] = useState([])
   const [followers, setFollowers] = useState([])
@@ -69,7 +69,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
             setIsFollowedByMe(false)
           }
           const userInfo = await getOtherUsersProfile([routeAddress!]) // 此case下必不为空
-          
+
           if (userInfo && userInfo.length > 0 && userInfo[0]) {
             const resFollowings = await getFollowings(userInfo[0]?.address, deschoolProfile?.address)
             if (resFollowings) {
@@ -88,6 +88,10 @@ const DeschoolCard = (props: DeschoolCardProps) => {
           break
         }
         default:
+          setIsFollowedByMe(false)
+          setFollowers([])
+          setFollowings([])
+          setCurrentUser(null)
           break
       }
     } finally {
@@ -167,7 +171,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
           </div>
           {/* 处理数据为空的情况 */}
           <div className="mt-70px w-full px-6 pb-6 fcc-center font-ArchivoNarrow">
-            <span className="text-xl w-200px overflow-hidden text-ellipsis" title={computedUserName}>
+            <span className="text-center text-xl w-200px overflow-hidden text-ellipsis" title={computedUserName}>
               {computedUserName}
             </span>
             <span className="text-xl text-gray-5">{currentUser?.ensName ? `${currentUser?.ensName}` : ''}</span>
