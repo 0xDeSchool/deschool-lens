@@ -114,7 +114,7 @@ resource "aws_security_group" "sg_booth_stg" {
 }
 
 ### booth_stg vm
-resource "aws_instance" "bankder_booth_stg" {
+resource "aws_instance" "booth_stg" {
   ami           = local.u20lts_ami
   instance_type = local.vm_type_booth_stg
 
@@ -125,7 +125,7 @@ resource "aws_instance" "bankder_booth_stg" {
 
 
   tags = {
-    Name = "[terraform] banker booth_stg"
+    Name = "[terraform] booth_stg"
   }
 
   user_data = file("./init.sh")
