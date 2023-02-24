@@ -1,7 +1,7 @@
 import Icon from '@ant-design/icons'
 import mirror from '~/assets/icons/mirror.png'
 
-function NotFoundIcon(props: any) {
+export function NotFoundIcon(props: any) {
   return (
     <Icon
       {...props}
@@ -33,7 +33,7 @@ function NotFoundIcon(props: any) {
   )
 }
 
-function UserlaneIcon(props: any) {
+export function UserlaneIcon(props: any) {
   return (
     <Icon
       {...props}
@@ -48,7 +48,7 @@ function UserlaneIcon(props: any) {
   )
 }
 
-function ArrowDownIcon(props: any) {
+export function ArrowDownIcon(props: any) {
   return (
     <Icon
       {...props}
@@ -61,11 +61,11 @@ function ArrowDownIcon(props: any) {
   )
 }
 
-function MirrorIcon(props: any) {
+export function MirrorIcon(props: any) {
   return <Icon {...props} component={() => <img {...props} src={mirror} alt="mirror" />} />
 }
 
-function TelegramIcon(props: any) {
+export function TelegramIcon(props: any) {
   return (
     <Icon
       {...props}
@@ -83,4 +83,3 @@ function TelegramIcon(props: any) {
   )
 }
 
-export { UserlaneIcon, ArrowDownIcon, TelegramIcon, MirrorIcon, NotFoundIcon }

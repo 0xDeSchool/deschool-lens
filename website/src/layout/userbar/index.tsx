@@ -279,7 +279,7 @@ const UserBar = () => {
         <div className="flex flex-row items-center justify-end">
           <Dropdown menu={{ items: cyberConnectItems }} placement="bottom" trigger={['click']} open={isShowCyberConnectUserMenu}>
             <span
-              className="frc-center bg-black rounded-xl px-4 mr-4"
+              className="frc-center bg-black rounded-xl px-4 mr-4 cursor-pointer"
               onClick={e => {
                 e.preventDefault()
                 if (cyberToken) {
@@ -297,7 +297,7 @@ const UserBar = () => {
           </Dropdown>
           <Dropdown menu={{ items: LensItems }} placement="bottom" trigger={['click']} open={isShowLensUserMenu}>
             <span
-              className="frc-center bg-#abfe2c rounded-xl px-4 mr-4"
+              className="frc-center bg-#abfe2c rounded-xl px-4 mr-4 cursor-pointer "
               onClick={e => {
                 e.preventDefault()
                 if (lensToken) {
@@ -315,7 +315,7 @@ const UserBar = () => {
           </Dropdown>
           <Dropdown menu={{ items: DeschoolItems }} placement="bottom" trigger={['click']} open={isShowDeschoolUserMenu}>
             <span
-              className="frc-center bg-#774ff8 rounded-xl px-4"
+              className="frc-center bg-#774ff8 rounded-xl px-4 cursor-pointer"
               onClick={e => {
                 e.preventDefault()
                 if (deschoolProfile) {
