@@ -84,7 +84,7 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
           content: (
             <p className="inline">
               Visit
-              <a className="font-bold mx-2" href="https://testnet.cyberconnect.me/" target="_blank" rel="noreferrer noopener">
+              <a className="font-bold mx-2" href={import.meta.env.VITE_APP_CYBERCONNECT_CLAIM_SITE} target="_blank" rel="noreferrer noopener">
                 claiming site
               </a>
               to claim your profile now 🏃‍♂️
