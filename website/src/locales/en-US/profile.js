@@ -16,6 +16,7 @@ const EN_US_PROFILE = {
     },
     deschool: "Deschool",
     lens: "Lens",
+    cyberconnect: "CyberConnect",
   },
   matchpage: {
     goals: 'Goals',

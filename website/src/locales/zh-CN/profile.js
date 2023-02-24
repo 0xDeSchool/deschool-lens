@@ -16,6 +16,7 @@ const ZH_CN_PROFILE = {
     },
     deschool: "Deschool 身份",
     lens: "Lens 身份",
+    cyberconnect: "CyberConnect 身份",
   },
   matchpage: {
     goals: '倾向类型',

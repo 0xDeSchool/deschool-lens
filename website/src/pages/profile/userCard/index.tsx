@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import { useAccount } from '~/context/account'
 import DeschoolCard from './deschoolCard'
 import LensCard from './lensCard'
+import CyberConnectCard from './cyberConnectCard'
 
 type UserCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
@@ -16,19 +17,29 @@ type UserCardProps = {
 
 const UserCard = (props: UserCardProps) => {
   const { visitCase, routeAddress } = props
-  const { lensProfile, deschoolProfile } = useAccount()
-  const [profileType, setProfileType] = useState('lens')
+  const { lensProfile, cyberProfile, deschoolProfile } = useAccount()
+  const [profileType, setProfileType] = useState('cyber') // lens, deschool, cyber
 
   // 登录UserCard跟随变化
+  // useEffect(() => {
+  //   if (!lensProfile) {
+  //     if (deschoolProfile) {
+  //       setProfileType('deschool')
+  //     }
+  //   } else {
+  //     setProfileType('lens')
+  //   }
+  // }, [lensProfile])
+
   useEffect(() => {
-    if (!lensProfile) {
+    if (!cyberProfile) {
       if (deschoolProfile) {
         setProfileType('deschool')
       }
     } else {
-      setProfileType('lens')
+      setProfileType('cyber')
     }
-  }, [lensProfile])
+  }, [cyberProfile])
 
   useEffect(() => {
     if (!deschoolProfile) {
@@ -46,6 +57,13 @@ const UserCard = (props: UserCardProps) => {
         visitCase={visitCase}
         routeAddress={routeAddress}
         visible={profileType === 'lens'}
+        setProfileType={setProfileType}
+        profileType={profileType}
+      />
+      <CyberConnectCard
+        visitCase={visitCase}
+        routeAddress={routeAddress}
+        visible={profileType === 'cyber'}
         setProfileType={setProfileType}
         profileType={profileType}
       />

@@ -2,6 +2,7 @@ import { t } from 'i18next'
 import type { Dispatch, SetStateAction } from 'react'
 import Deschool from '~/assets/icons/deschool.svg'
 import Lens from '~/assets/icons/lens.svg'
+import IconCyberConnect from '~/assets/icons/cyberConnect.svg'
 
 const SwitchIdentity = (props: { setProfileType: Dispatch<SetStateAction<string>>; profileType: string }) => {
   const { setProfileType, profileType } = props
@@ -23,6 +24,23 @@ const SwitchIdentity = (props: { setProfileType: Dispatch<SetStateAction<string>
           className={`text-black text-14px leading-32px ml-2 font-ArchivoNarrow ${profileType === 'lens' ? '' : 'hidden'}`}
         >
           {t('profile.lens')}
+        </button>
+      </span>
+      <span
+        className={`cursor-pointer transition frc-center bg-black ${
+          profileType === 'cyber' ? 'flex-1 rounded-xl border border-black px-4' : 'p-1 w-32px overflow-hidden rounded-full'
+        } ml-2 mr-4`}
+        onClick={e => {
+          e.preventDefault()
+          setProfileType('cyber')
+        }}
+      >
+        <img src={IconCyberConnect} alt="cyberconnect" className="w-20px h-20px" />
+        <button
+          type="button"
+          className={`text-white text-14px leading-32px ml-2 font-ArchivoNarrow ${profileType === 'cyber' ? '' : 'hidden'}`}
+        >
+          {t('profile.cyberconnect')}
         </button>
       </span>
       <span
