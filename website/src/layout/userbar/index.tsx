@@ -22,14 +22,19 @@ import { getShortAddress } from '~/utils/format'
 import Logo from '../logo'
 
 const UserBar = () => {
-  const { currentWidth, setConnectLensBoardVisible, setConnectDeschoolBoardVisible } = useLayout()
+  const { currentWidth,
+    setConnectLensBoardVisible,
+    setConnectDeschoolBoardVisible,
+    setCyberConnectBoardVisible,
+   } = useLayout()
   const { t, i18n } = useTranslation()
   const [visible, setVisible] = useState(false) // 控制抽屉是否显示
   const [activeNav, setActiveNav] = useState('/landing') // 当前激活的路由
   const [isShowDeschoolUserMenu, setDeschoolUserMenu] = useState(false)
   const [isShowLensUserMenu, setLensUserMenu] = useState(false)
+  const [isShowCyberConnectUserMenu, setCyberConnectUserMenu] = useState(false)
   const location = useLocation()
-  const { lensProfile, lensToken, deschoolProfile } = useAccount()
+  const { lensProfile, lensToken, cyberToken, deschoolProfile } = useAccount()
 
   const navs = [
     {
@@ -66,6 +71,16 @@ const UserBar = () => {
     }
   }
 
+  // 退出 CyberConnect 登录
+  const disconnectFromCyberConnect = async () => {
+    try {
+      getUserContext().disconnectFromLens()
+      setLensUserMenu(false)
+    } catch (error: any) {
+      message.error(error?.message ? error.message : '退出登录失败')
+    }
+  }
+
   const DeschoolItems: MenuProps['items'] = [
     {
       key: '1',
@@ -93,6 +108,22 @@ const UserBar = () => {
           }}
         >
           Disconnect from Lens
+        </button>
+      ),
+    },
+  ]
+
+  const cyberConnectItems: MenuProps['items'] = [
+    {
+      key: '1',
+      label: (
+        <button
+          type="button"
+          onClick={() => {
+            disconnectFromLens()
+          }}
+        >
+          Disconnect from CyberConnect
         </button>
       ),
     },
@@ -239,6 +270,24 @@ const UserBar = () => {
         )}
         {/* lens & deschool connect */}
         <div className="flex flex-row items-center justify-end">
+          <Dropdown menu={{ items: cyberConnectItems }} placement="bottom" trigger={['click']} open={isShowCyberConnectUserMenu}>
+            <span
+              className="frc-center bg-#abfe2c rounded-xl px-4 mr-4"
+              onClick={e => {
+                e.preventDefault()
+                if (cyberToken) {
+                  handleToggleLensMenu()
+                } else {
+                  setCyberConnectBoardVisible(true)
+                }
+              }}
+            >
+              <img src={Lens} alt="lens" width={24} height={24} />
+              <button type="button" className="text-black text-14px ml-2 font-ArchivoNarrow">
+                {lensProfile ? lensProfile?.handle : t('Connect CyberConnect')}
+              </button>
+            </span>
+          </Dropdown>
           <Dropdown menu={{ items: LensItems }} placement="bottom" trigger={['click']} open={isShowLensUserMenu}>
             <span
               className="frc-center bg-#abfe2c rounded-xl px-4 mr-4"

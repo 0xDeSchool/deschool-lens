@@ -14,5 +14,6 @@ export enum validResultOfDomain {
 export enum RoleType {
   UserOfDeschool = 'UserOfDeschool',
   UserOfLens = 'UserOfLens',
+  UserOfCyber = 'UserOfCyber',
   Visitor = 'Visitor',
 }

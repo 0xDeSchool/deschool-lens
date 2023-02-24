@@ -5,6 +5,7 @@ export enum PlatformType {
   BOOTH = 0,
   DESCHOOL = 1,
   LENS = 2,
+  CYBER = 3,
 }
 
 export interface VerifiedInfo {

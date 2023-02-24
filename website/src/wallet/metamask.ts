@@ -6,8 +6,9 @@ import { checkIsExpectChain, checkProvider } from '~/utils'
 import type { ethers } from 'ethers'
 import type { ProviderRpcError } from '~/auth'
 import { onAccountchanged, onChainChange, onDisconnect } from '~/auth'
-import addToNetwork from '~/hooks/useAddToNetwork'
-import * as polygonchain from '~/assets/chain.json'
+import { swtichChain } from '~/hooks/useAddToNetwork'
+// import * as polygonchain from '~/assets/chain.json'
+import * as binanceTestnetChain from '~/assets/chain_binance_testnet.json'
 import type { TransactionMessage, WalletConfig, WalletProvider } from './wallet'
 
 export class MetaMaskProvider implements WalletProvider {
@@ -30,24 +31,41 @@ export class MetaMaskProvider implements WalletProvider {
   }
 
   async getConnectAccount(): Promise<string | undefined> {
-    const acts = await window.ethereum.request({
-      method: 'eth_accounts',
-    })
-    if (acts && acts.length > 0) {
-      return acts[0]
+    try {
+      const acts = await window.ethereum.request({
+        method: 'eth_accounts',
+      })
+      if (acts && acts.length > 0) {
+        return acts[0]
+      }
+    } catch (err) {
+      console.log(err)
     }
   }
 
   // 切链
-  async changeChain(): Promise<void> {
-    const address = await this.getConnectAccount()
-    await addToNetwork({ address, chain: polygonchain, rpc: null })
+  private async changeChain(): Promise<boolean> {
+    try {
+      await swtichChain({ chain: binanceTestnetChain, rpc: null })
+      return true
+    } catch (err) {
+      console.log(err)
+    }
+    return false
+  }
+
+  private async checkChain(): Promise<boolean> {
+    const isChainRight = checkIsExpectChain()
+    if (!isChainRight) {
+      const result = await this.changeChain()
+      return result
+    }
+    return isChainRight
   }
 
   async requestAccount(): Promise<string | undefined> {
-    const isChainRight = checkIsExpectChain()
+    const isChainRight = await this.checkChain()
     if (!isChainRight) {
-      await this.changeChain()
       return
     }
     let acts = await this.getConnectAccount()
@@ -63,7 +81,7 @@ export class MetaMaskProvider implements WalletProvider {
   }
 
   async sendTransaction(tx: TransactionMessage): Promise<string> {
-    const isChainRight = checkIsExpectChain()
+    const isChainRight = await this.checkChain()
     if (!isChainRight) {
       return ''
     }
@@ -72,6 +90,10 @@ export class MetaMaskProvider implements WalletProvider {
   }
 
   async signMessage(msg: string): Promise<string> {
+    const isChainRight = await this.checkChain()
+    if (!isChainRight) {
+      return ''
+    }
     return this.signer.signMessage(msg)
   }
 

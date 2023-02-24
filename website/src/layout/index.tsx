@@ -11,6 +11,7 @@ import { scrollToTop } from '~/utils/common'
 import ConnectDeschoolBoard from '~/layout/connectDeschool'
 import { RoleType } from '~/lib/enum'
 import ConnectLensBoard from './connectLens'
+import ConnectCyberBoard from './cyberConnect'
 import Footer from './footer'
 import UserBar from './userbar'
 
@@ -116,6 +117,7 @@ const Layout = () => {
       </div>
       {/* login lens board */}
       <ConnectLensBoard wallectConfig={walletconfig} connectTrigger={connectTrigger} />
+      <ConnectCyberBoard />
       <ConnectDeschoolBoard />
       <Modal
         title={<h1>{t('system.notify_title')}</h1>}

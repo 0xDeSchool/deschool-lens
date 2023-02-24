@@ -22,6 +22,7 @@ const ZH_CN_USERBAR = {
     placeholder: "查询 handle/address...",
   },
   "Connect Lens": "连接Lens",
+  "Connect CyberConnect": "连接 CyberConnect",
   "Connect Deschool": "连接Deschool",
 }
 

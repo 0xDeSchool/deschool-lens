@@ -14,10 +14,14 @@ export interface LensTokenInfo {
 export interface AccountContextProps {
   lensProfile: ProfileExtend | null
   lensToken: LensTokenInfo | null
+  cyberProfile: any | null
+  cyberToken: any | null
   deschoolProfile: DeschoolProfile | null
   setLensProfile: Dispatch<SetStateAction<ProfileExtend | null>>
   setLensToken: Dispatch<SetStateAction<LensTokenInfo | null>>
   setDescoolProfile: Dispatch<SetStateAction<DeschoolProfile | null>>
+  setCyberProfile: Dispatch<SetStateAction<any | null>>
+  setCyberToken: Dispatch<SetStateAction<any | null>>
 }
 
 export interface LayoutContextProps {
@@ -27,8 +31,10 @@ export interface LayoutContextProps {
   layoutPosition: Position
   connectLensBoardVisible: boolean
   connectDeschoolBoardVisible: boolean
+  cyberConnectBoardVisible: boolean
   setConnectLensBoardVisible: Dispatch<SetStateAction<boolean>>
   setConnectDeschoolBoardVisible: Dispatch<SetStateAction<boolean>>
+  setCyberConnectBoardVisible: Dispatch<SetStateAction<boolean>>
   setCurrentWidth: Dispatch<SetStateAction<number>>
   setCurrentHeight: Dispatch<SetStateAction<number>>
   setTheme: Dispatch<SetStateAction<string>>

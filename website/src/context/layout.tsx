@@ -9,6 +9,8 @@ export const LayoutContext = createContext<LayoutContextProps>({
   layoutPosition: {},
   connectLensBoardVisible: false,
   setConnectLensBoardVisible: () => {},
+  cyberConnectBoardVisible: false,
+  setCyberConnectBoardVisible: () => {},
   connectDeschoolBoardVisible: false,
   setConnectDeschoolBoardVisible: () => {},
   setCurrentWidth: () => {},
@@ -22,6 +24,7 @@ export const LayoutContextProvider = ({ children }: { children: ReactElement }) 
   const [currentWidth, setCurrentWidth] = useState(1920)
   const [currentHeight, setCurrentHeight] = useState(1080)
   const [connectLensBoardVisible, setConnectLensBoardVisible] = useState(false)
+  const [cyberConnectBoardVisible, setCyberConnectBoardVisible] = useState(false)
   const [connectDeschoolBoardVisible, setConnectDeschoolBoardVisible] = useState(false)
   const [layoutPosition, setLayoutPosition] = useState({})
 
@@ -55,6 +58,8 @@ export const LayoutContextProvider = ({ children }: { children: ReactElement }) 
       setCurrentHeight,
       connectLensBoardVisible,
       setConnectLensBoardVisible,
+      cyberConnectBoardVisible,
+      setCyberConnectBoardVisible,
       connectDeschoolBoardVisible,
       setConnectDeschoolBoardVisible,
       layoutPosition,
@@ -69,6 +74,8 @@ export const LayoutContextProvider = ({ children }: { children: ReactElement }) 
       setCurrentHeight,
       connectLensBoardVisible,
       setConnectLensBoardVisible,
+      cyberConnectBoardVisible,
+      setCyberConnectBoardVisible,
       connectDeschoolBoardVisible,
       setConnectDeschoolBoardVisible,
       layoutPosition,

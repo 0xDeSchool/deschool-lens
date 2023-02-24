@@ -123,6 +123,7 @@ specifiers:
   vite-plugin-react-js-support: ^1.0.7
   vite-plugin-style-import: ^2.0.0
   vitest: latest
+  zen-observable: ^0.10.0
 
 dependencies:
   '@ant-design/icons': 4.8.0_biqbaboplfbrettd7655fr4n2y
@@ -194,6 +195,7 @@ dependencies:
   vite: 4.0.4_qfz55zahqkp66vn23sxaaw3yfe
   vite-plugin-react-js-support: 1.0.7
   vite-plugin-style-import: 2.0.0_vite@4.0.4
+  zen-observable: 0.10.0
 
 devDependencies:
   '@babel/core': 7.20.12
@@ -231,7 +233,7 @@ devDependencies:
   eslint-plugin-react: 7.31.11_eslint@8.31.0
   eslint-plugin-react-hooks: 4.6.0_eslint@8.31.0
   execa: 6.1.0
-  happy-dom: 8.5.0
+  happy-dom: 8.7.1
   jsdom: 21.1.0
   lint-staged: 13.1.0_enquirer@2.3.6
   minimist: 1.2.7
@@ -248,7 +250,7 @@ devDependencies:
   tsc-files: 1.1.3_typescript@4.9.4
   tsx: 3.12.2
   typescript: 4.9.4
-  vitest: 0.28.5_5wsn5qf6qlpbenj5o5vhwm6d4y
+  vitest: 0.28.5_vct57xqx7sdryogp2iahy4tola
 
 packages:
 
@@ -11738,8 +11740,8 @@ packages:
       uglify-js: 3.17.4
     dev: true
 
-  /happy-dom/8.5.0:
-    resolution: {integrity: sha512-lvTGebHYr6h13Fox5Gfej3DinLWzvvfYlBFvlxG2Y/RmaGoDrJ5Xdwyqnk5YxbDJeEpZuKn8holCidlxvkkqGw==}
+  /happy-dom/8.7.1:
+    resolution: {integrity: sha512-/z+B/LUEETO9qGbUw80TTCjyhibmczB7OF1XxJ+UU1LlFOBkqO+GCVM+lDaQKVH62HxvX4sbu/EL2KlUtmyyZw==}
     dependencies:
       css.escape: 1.5.1
       he: 1.2.0
@@ -18885,7 +18887,7 @@ packages:
     optionalDependencies:
       fsevents: 2.3.2
 
-  /vitest/0.28.5_5wsn5qf6qlpbenj5o5vhwm6d4y:
+  /vitest/0.28.5_vct57xqx7sdryogp2iahy4tola:
     resolution: {integrity: sha512-pyCQ+wcAOX7mKMcBNkzDwEHRGqQvHUl0XnoHR+3Pb1hytAHISgSxv9h0gUiSiYtISXUU3rMrKiKzFYDrI6ZIHA==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
@@ -18920,7 +18922,7 @@ packages:
       cac: 6.7.14
       chai: 4.3.7
       debug: 4.3.4
-      happy-dom: 8.5.0
+      happy-dom: 8.7.1
       jsdom: 21.1.0
       local-pkg: 0.4.2
       pathe: 1.1.0
@@ -20086,6 +20088,10 @@ packages:
     resolution: {integrity: sha512-QZWQekv6iB72Naeake9hS1KxHlotfRpe+WGNbNx5/ta+R3DNjVO2bswf63gXlWDcs+EMd7XY8HfVQyP1X6T4Zg==}
     dependencies:
       zen-observable: 0.8.15
+    dev: false
+
+  /zen-observable/0.10.0:
+    resolution: {integrity: sha512-iI3lT0iojZhKwT5DaFy2Ce42n3yFcLdFyOh01G7H0flMY60P8MJuVFEoJoNwXlmAyQ45GrjL6AcZmmlv8A5rbw==}
     dev: false
 
   /zen-observable/0.8.15:
