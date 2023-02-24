@@ -11,6 +11,10 @@ export interface LensTokenInfo {
   refreshToken: string
 }
 
+export interface CyberTokenInfo {
+  address: string
+}
+
 export interface AccountContextProps {
   lensProfile: ProfileExtend | null
   lensToken: LensTokenInfo | null
@@ -304,6 +308,11 @@ export interface CoursePostParticipationInput {
    * 用户 Participation 交互信息数组
    */
   updates: Array<CourseParticipationUpdateInput>
+}
+
+export interface CyberProfile extends Profile {
+  avatar?: string
+  profileID?: number
 }
 
 export interface ProfileExtend extends Profile {

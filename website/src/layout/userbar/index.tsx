@@ -290,7 +290,7 @@ const UserBar = () => {
                 }
               }}
             >
-              <img src={IconCyberConnect} alt="lens" width={24} height={24} />
+              <img src={IconCyberConnect} alt="lens" width={20} height={20} />
               <button type="button" className="text-white text-14px ml-2 font-ArchivoNarrow">
                 {cyberProfile ? cyberProfile?.handle : t('Connect CyberConnect')}
               </button>

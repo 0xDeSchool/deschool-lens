@@ -4,7 +4,7 @@ import { useMemo, useEffect, useState, useContext, createContext } from 'react'
 
 // import { getWallet } from '~/wallet'
 import { RoleType } from '~/lib/enum'
-import type { AccountContextProps, DeschoolProfile, ProfileExtend, LensTokenInfo } from '~/lib/types/app'
+import type { AccountContextProps, DeschoolProfile, ProfileExtend, LensTokenInfo, CyberProfile, CyberTokenInfo } from '~/lib/types/app'
 
 export const DEFAULT_AVATAR = 'https://s3.us-east-1.amazonaws.com/deschool/Avatars/avatar_def.png'
 export const DEFAULT_AVATAR_NAME = 'avatar_def.png'
@@ -26,9 +26,9 @@ export class UserContext {
 
   setLensToken: Dispatch<SetStateAction<LensTokenInfo | null>>
 
-  setCyberToken: Dispatch<SetStateAction<any | null>>
+  setCyberToken: Dispatch<SetStateAction<CyberTokenInfo | null>>
 
-  setCyberProfile: Dispatch<SetStateAction<any | null>>
+  setCyberProfile: Dispatch<SetStateAction<CyberProfile | null>>
 
   constructor(accountMemo: AccountContextProps) {
     this.lensProfile = accountMemo.lensProfile
@@ -129,8 +129,8 @@ export const AccountContextProvider = ({ children }: { children: ReactElement })
   const [lensProfile, setLensProfile] = useState<ProfileExtend | null>(getStorage('lensProfile'))
   const [deschoolProfile, setDescoolProfile] = useState<DeschoolProfile | null>(getStorage('deschoolProfile'))
   const [lensToken, setLensToken] = useState<LensTokenInfo | null>(getStorage('lensToken'))
-  const [cyberProfile, setCyberProfile] = useState<LensTokenInfo | null>(getStorage('cyberProfile'))
-  const [cyberToken, setCyberToken] = useState<LensTokenInfo | null>(getStorage('cyberToken'))
+  const [cyberProfile, setCyberProfile] = useState<CyberProfile | null>(getStorage('cyberProfile'))
+  const [cyberToken, setCyberToken] = useState<CyberTokenInfo | null>(getStorage('cyberToken'))
 
   const accountMemo = useMemo(
     () => ({
