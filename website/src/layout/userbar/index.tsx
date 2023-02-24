@@ -35,7 +35,6 @@ const UserBar = () => {
   const [isShowCyberConnectUserMenu, setCyberConnectUserMenu] = useState(false)
   const location = useLocation()
   const { lensProfile, lensToken, cyberToken, cyberProfile, deschoolProfile } = useAccount()
-  console.log('cyberProfile', cyberProfile)
 
   const navs = [
     {

@@ -13,19 +13,20 @@ export interface LensTokenInfo {
 
 export interface CyberTokenInfo {
   address: string
+  accessToken: string
 }
 
 export interface AccountContextProps {
   lensProfile: ProfileExtend | null
   lensToken: LensTokenInfo | null
-  cyberProfile: any | null
-  cyberToken: any | null
+  cyberProfile: CyberProfile | null
+  cyberToken: CyberTokenInfo | null
   deschoolProfile: DeschoolProfile | null
   setLensProfile: Dispatch<SetStateAction<ProfileExtend | null>>
   setLensToken: Dispatch<SetStateAction<LensTokenInfo | null>>
   setDescoolProfile: Dispatch<SetStateAction<DeschoolProfile | null>>
-  setCyberProfile: Dispatch<SetStateAction<any | null>>
-  setCyberToken: Dispatch<SetStateAction<any | null>>
+  setCyberProfile: Dispatch<SetStateAction<CyberProfile | null>>
+  setCyberToken: Dispatch<SetStateAction<CyberTokenInfo | null>>
 }
 
 export interface LayoutContextProps {

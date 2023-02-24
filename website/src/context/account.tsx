@@ -172,6 +172,22 @@ export const AccountContextProvider = ({ children }: { children: ReactElement })
     }
   }, [lensToken])
 
+  useEffect(() => {
+    if (cyberProfile) {
+      localStorage.setItem('cyberProfile', JSON.stringify(cyberProfile))
+    } else {
+      localStorage.removeItem('cyberProfile')
+    }
+  }, [cyberProfile])
+
+  useEffect(() => {
+    if (cyberToken) {
+      localStorage.setItem('cyberToken', JSON.stringify(cyberToken))
+    } else {
+      localStorage.removeItem('cyberToken')
+    }
+  }, [cyberToken])
+
   userContext = new UserContext({
     lensProfile, deschoolProfile, lensToken, cyberProfile, cyberToken,
     setLensProfile, setDescoolProfile, setLensToken, setCyberProfile, setCyberToken
