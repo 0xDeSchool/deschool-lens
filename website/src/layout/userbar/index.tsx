@@ -333,9 +333,9 @@ const UserBar = () => {
           </Dropdown>
         </div>
         {/* language switch */}
-        <div className="frc-center ml-4">
+        <div className="frc-center ml-4 cursor-pointer">
           <span
-            className="font-ArchivoNarrow text-black cursor-pointer"
+            className="font-ArchivoNarrow text-black"
             onClick={e => {
               handleChange(e)
             }}
