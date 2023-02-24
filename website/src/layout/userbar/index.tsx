@@ -34,7 +34,7 @@ const UserBar = () => {
   const [isShowLensUserMenu, setLensUserMenu] = useState(false)
   const [isShowCyberConnectUserMenu, setCyberConnectUserMenu] = useState(false)
   const location = useLocation()
-  const { lensProfile, lensToken, cyberToken, deschoolProfile } = useAccount()
+  const { lensProfile, lensToken, cyberToken, cyberProfile, deschoolProfile } = useAccount()
 
   const navs = [
     {
@@ -74,7 +74,7 @@ const UserBar = () => {
   // 退出 CyberConnect 登录
   const disconnectFromCyberConnect = async () => {
     try {
-      getUserContext().disconnectFromLens()
+      getUserContext().disconnectFromCyberConnect()
       setLensUserMenu(false)
     } catch (error: any) {
       message.error(error?.message ? error.message : '退出登录失败')
@@ -120,7 +120,7 @@ const UserBar = () => {
         <button
           type="button"
           onClick={() => {
-            disconnectFromLens()
+            disconnectFromCyberConnect()
           }}
         >
           Disconnect from CyberConnect
@@ -284,7 +284,7 @@ const UserBar = () => {
             >
               <img src={Lens} alt="lens" width={24} height={24} />
               <button type="button" className="text-black text-14px ml-2 font-ArchivoNarrow">
-                {lensProfile ? lensProfile?.handle : t('Connect CyberConnect')}
+                {cyberProfile ? cyberProfile?.handle : t('Connect CyberConnect')}
               </button>
             </span>
           </Dropdown>

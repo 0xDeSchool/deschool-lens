@@ -73,10 +73,8 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
 					address,
 				},
 			});
-      console.log('res', res)
-      console.log('data', res?.data?.address?.wallet?.primaryProfile)
       const userInfo = res?.data?.address?.wallet?.primaryProfile
-      // 没handle,则 cyber profile为空
+      // 没handle,则 ccProfile为空
       if (!userInfo) {
         setCyberProfile(null)
         setCyberToken(null)
