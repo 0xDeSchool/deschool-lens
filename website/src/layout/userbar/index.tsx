@@ -3,7 +3,6 @@
  * @author: fc
  */
 import React, { useState, useEffect } from 'react'
-// import addToNetwork from '~/hooks/useAddToNetwork'
 import { useTranslation } from 'react-i18next'
 import { MenuOutlined } from '@ant-design/icons'
 import type { MenuProps } from 'antd'
@@ -11,7 +10,8 @@ import Dropdown from 'antd/es/dropdown'
 import { ArrowDownIcon } from '~/components/icon'
 import Drawer from 'antd/es/drawer'
 import message from 'antd/es/message'
-import Lens from '~/assets/icons/lens.svg'
+import IconLens from '~/assets/icons/lens.svg'
+import IconCyberConnect from '~/assets/icons/cyberconnect.svg'
 import Deschool from '~/assets/icons/deschool.svg'
 import { getUserContext, useAccount } from '~/context/account'
 import { useLayout } from '~/context/layout'
@@ -35,6 +35,7 @@ const UserBar = () => {
   const [isShowCyberConnectUserMenu, setCyberConnectUserMenu] = useState(false)
   const location = useLocation()
   const { lensProfile, lensToken, cyberToken, cyberProfile, deschoolProfile } = useAccount()
+  console.log('cyberProfile', cyberProfile)
 
   const navs = [
     {
@@ -75,7 +76,7 @@ const UserBar = () => {
   const disconnectFromCyberConnect = async () => {
     try {
       getUserContext().disconnectFromCyberConnect()
-      setLensUserMenu(false)
+      setCyberConnectUserMenu(false)
     } catch (error: any) {
       message.error(error?.message ? error.message : '退出登录失败')
     }
@@ -141,6 +142,13 @@ const UserBar = () => {
    */
   const handleToggleLensMenu = (value?: boolean) => {
     setLensUserMenu(value || !isShowLensUserMenu)
+  }
+
+  /**
+   * @description 控制 CyberConnect 用户登录以后的下拉菜单
+   */
+  const handleToggleCyberConnectMenu = (value?: boolean) => {
+    setCyberConnectUserMenu(value || !isShowCyberConnectUserMenu)
   }
 
   const updateNavStatus = () => {
@@ -272,18 +280,18 @@ const UserBar = () => {
         <div className="flex flex-row items-center justify-end">
           <Dropdown menu={{ items: cyberConnectItems }} placement="bottom" trigger={['click']} open={isShowCyberConnectUserMenu}>
             <span
-              className="frc-center bg-#abfe2c rounded-xl px-4 mr-4"
+              className="frc-center bg-black rounded-xl px-4 mr-4"
               onClick={e => {
                 e.preventDefault()
                 if (cyberToken) {
-                  handleToggleLensMenu()
+                  handleToggleCyberConnectMenu()
                 } else {
                   setCyberConnectBoardVisible(true)
                 }
               }}
             >
-              <img src={Lens} alt="lens" width={24} height={24} />
-              <button type="button" className="text-black text-14px ml-2 font-ArchivoNarrow">
+              <img src={IconCyberConnect} alt="lens" width={24} height={24} />
+              <button type="button" className="text-white text-14px ml-2 font-ArchivoNarrow">
                 {cyberProfile ? cyberProfile?.handle : t('Connect CyberConnect')}
               </button>
             </span>
@@ -300,7 +308,7 @@ const UserBar = () => {
                 }
               }}
             >
-              <img src={Lens} alt="lens" width={24} height={24} />
+              <img src={IconLens} alt="lens" width={24} height={24} />
               <button type="button" className="text-black text-14px ml-2 font-ArchivoNarrow">
                 {lensProfile ? lensProfile?.handle : t('Connect Lens')}
               </button>

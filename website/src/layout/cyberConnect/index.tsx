@@ -135,11 +135,11 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
         // // 根据钱包地址查用户profile信息
         setCyberProfile(userInfo)
         // 不管是deschool还是cyber登录后,均提交此地址的绑定信息给后台，后台判断是否是第一次来发 Deschool-Booth-Onboarding SBT
-        await postVerifiedIdentity({
-          address,
-          baseAddress: address,
-          platform: PlatformType.CYBER,
-        })
+        // await postVerifiedIdentity({
+        //   address,
+        //   baseAddress: address,
+        //   platform: PlatformType.CYBER,
+        // })
       }
     } catch (error: any) {
       if (error?.reason) {
