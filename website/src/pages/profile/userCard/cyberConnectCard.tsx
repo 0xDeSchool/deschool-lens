@@ -14,6 +14,9 @@ import FollowersModal from './cyberConnecdCardModal'
 import type { ProfileExtend } from '~/lib/types/app'
 import LensAvatar from './avatar'
 import SwitchIdentity from './switchIdentity'
+import { useMutation } from '@apollo/client'
+import { CC_FOLLOW, CC_UNFOLLOW } from '~/api/cc/graphql'
+import { generateSigningKey, getPublicKey, signWithSigningKey } from '~/api/cc/signingKey'
 
 type CyberCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
@@ -31,6 +34,9 @@ const CyberCard = (props: CyberCardProps) => {
   const [modal, setModal] = useState<{ type: 'followers' | 'following'; visible: boolean }>({ type: 'followers', visible: false })
   const [currentUser, setCurrentUser] = useState<ProfileExtend | null>()
   const [updateTrigger, setUpdateTrigger] = useState(0) // 此页面局部刷新
+  const [ccFollow] = useMutation(CC_FOLLOW);
+  const [ccUnfollow] = useMutation(CC_UNFOLLOW);
+  const [signingKey, setSigningKey] = useState<string | null>(null);
   const { t } = useTranslation()
 
   // 根据不同情况初始化用户信息
@@ -102,7 +108,7 @@ const CyberCard = (props: CyberCardProps) => {
     })
   }
 
-  const handleFollow = async (followUser: ProfileExtend | undefined | null) => {
+  const handleFollow01 = async (followUser: ProfileExtend | undefined | null) => {
     // 有 cyber handle
     if (cyberProfile?.handle) {
       const tx = await followByProfileIdWithLens(followUser?.id)
@@ -144,8 +150,75 @@ const CyberCard = (props: CyberCardProps) => {
     setUpdateTrigger(new Date().getTime())
   }
 
+
+  const handleClick = async (type: "follow" | "unfollow") => {
+    let key = signingKey;
+    if (!key) {
+      key = await generateSigningKey();
+      setSigningKey(key);
+    }
+
+    console.log(key);
+
+    if (!key) {
+      throw new Error("SigningKey is empty");
+    }
+
+    if (!registered) {
+      await registerKey(key);
+    }
+
+    const operation = {
+      name: type,
+      from: address,
+      to: toAddress,
+      namespace: NAMESPACE,
+      network: "ETH",
+      alias: "",
+      timestamp: Date.now()
+    };
+
+    const signature = await signWithSigningKey(JSON.stringify(operation), key);
+    const publicKey = await getPublicKey(key);
+
+    const params = {
+      fromAddr: address,
+      toAddr: toAddress,
+      namespace: NAMESPACE,
+      signature,
+      signingKey: publicKey,
+      operation: JSON.stringify(operation)
+    };
+
+    return params;
+  };
+
+  const handleFollow = async (type: "follow" | "unfollow") => {
+    try {
+      const params = await handleClick(type);
+      if (type === "follow") {
+        const resp = await ccFollow({
+          variables: {
+            address: params.fromAddr,
+          }
+        });
+      } else {
+        const resp = await ccUnfollow({
+          variables: {
+            address: params.fromAddr,
+          }
+        });
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      console.log("finally");
+    }
+  };
+
   return (
     <div className={`w-full pb-1 shadow-md rounded-xl ${loading || !visible ? 'hidden' : ''}`}>
+      <button onClick={() => handleFollow('follow')}>follow</button>
       <div className="relative w-full frc-center">
         <SwitchIdentity profileType={profileType} setProfileType={setProfileType} />
         {currentUser?.coverUrl ? (

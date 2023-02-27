@@ -8,12 +8,16 @@ import message from 'antd/es/message'
 import Empty from 'antd/es/empty'
 import { getExtendProfile } from '~/hooks/profile'
 import ShowMoreLoading from '~/components/loading/showMore'
-import { followByProfileIdWithLens } from '~/api/lens/follow/follow'
 import { RoleType } from '~/lib/enum'
 import { getUserContext, useAccount } from '~/context/account'
 import { Link } from 'react-router-dom'
 import type { ProfileExtend } from '~/lib/types/app'
 import LensAvatar from './avatar'
+import { useLazyQuery, useMutation } from '@apollo/client'
+import { CC_FOLLOW, CC_UNFOLLOW, CC_REGISTER_SIGNING_KEY } from '~/api/cc/graphql'
+import { generateSigningKey, getPublicKey, signWithSigningKey } from '~/api/cc/signingKey'
+import { GET_FOLLOWING_BY_ADDRESS_EVM } from '~/api/cc/graphql/GetFollowingByAddressEVM'
+const NAMESPACE = 'test'
 
 const FollowersModal = (props: {
   routeAddress: string | undefined
@@ -24,47 +28,33 @@ const FollowersModal = (props: {
 }) => {
   const { routeAddress, profileId, type, visible, closeModal } = props
   const { t } = useTranslation()
-  const { lensToken } = useAccount()
-  const [cursor, setCursor] = useState<string>('')
+  const { cyberToken } = useAccount()
   const [follows, setFollows] = useState([] as Array<ProfileExtend | undefined | null>)
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
   const [total, setTotal] = useState(0)
+  const [ccFollow] = useMutation(CC_FOLLOW);
+  const [ccUnfollow] = useMutation(CC_UNFOLLOW);
+  const [getFollowingByAddressEVM] = useLazyQuery(GET_FOLLOWING_BY_ADDRESS_EVM)
+  const [registerSigningKey] = useMutation(CC_REGISTER_SIGNING_KEY);
+  const [toAddress, setToAddress] = useState<string>(
+    "0x89c60C01F2E1d1b233253596bf1c2386bDfeB898"
+  );
+  const [signingKey, setSigningKey] = useState<CryptoKeyPair | null>(null);
+  const [registered, setRegistered] = useState<boolean>(false);
 
-  // 自己查自己
-  const requestUserInfo = async () => {
-    let result
-    let tempFollows
-    if (type === 'followers') {
-      const params = {
-        profileId,
-        limit: 10,
+  const getFollowings = async () => {
+    const resp = await getFollowingByAddressEVM({
+      variables: {
+        address: routeAddress || cyberToken?.address,
       }
-
-      if (cursor) {
-        Object.assign(params, { cursor })
-      }
-      result = await followersRequest(params)
-      tempFollows = result.items?.map(item => getExtendProfile(item?.wallet?.defaultProfile)) as Array<ProfileExtend | undefined | null>
-    } else {
-      const params = { address: routeAddress || lensToken?.address, limit: 10 }
-      if (cursor) {
-        Object.assign(params, { cursor })
-      }
-      console.log('params', params)
-
-      result = await followingRequest(params)
-      tempFollows = result.items.map(item => getExtendProfile(item?.profile)) as Array<ProfileExtend | undefined | null>
-    }
-    setCursor(result.pageInfo.next)
-    setFollows(follows.concat(tempFollows))
-    setTotal(result.pageInfo.totalCount || 0)
+    })
   }
 
   const initList = async () => {
     setLoading(true)
     try {
-      await requestUserInfo()
+      await getFollowings()
     } catch (error: any) {
       if (error && error.name && error.message) message.error(`${error.name}:${error.message}`)
     } finally {
@@ -81,7 +71,7 @@ const FollowersModal = (props: {
   const handleAddMore = async () => {
     setLoadingMore(true)
     try {
-      await requestUserInfo()
+      await getFollowingByAddressEVM()
     } catch (error: any) {
       if (error && error.name && error.message) message.error(`${error.name}:${error.message}`)
     } finally {
@@ -89,15 +79,85 @@ const FollowersModal = (props: {
     }
   }
 
-  const handleUnFollow = async (followUser: ProfileExtend | undefined | null) => {
-    const tx = await followByProfileIdWithLens(followUser?.id)
-    message.success(`success following ${followUser?.handle},tx is ${tx}`)
-  }
+  const registerKey = async (signingKey: CryptoKeyPair) => {
+    const publicKey = await getPublicKey(signingKey);
 
-  const handleFollow = async (followUser: ProfileExtend | undefined | null) => {
-    const tx = await followByProfileIdWithLens(followUser?.id)
-    message.success(`success following ${followUser?.handle},tx is ${tx}`)
-  }
+    const resp = await registerSigningKey({
+      variables: {
+        input: {
+          address: routeAddress,
+          publicKey,
+        }
+      }
+    });
+    setRegistered(true);
+  };
+
+  const handleClick = async (type: "follow" | "unfollow") => {
+    let key = signingKey;
+    if (!key) {
+      key = await generateSigningKey();
+      setSigningKey(key);
+    }
+
+    console.log(key);
+
+    if (!key) {
+      throw new Error("SigningKey is empty");
+    }
+
+    if (!registered) {
+      await registerKey(key);
+    }
+
+    const operation = {
+      name: type,
+      from: routeAddress,
+      to: toAddress,
+      namespace: NAMESPACE,
+      network: "ETH",
+      alias: "",
+      timestamp: Date.now()
+    };
+
+    const signature = await signWithSigningKey(JSON.stringify(operation), key);
+    const publicKey = await getPublicKey(key);
+
+    const params = {
+      fromAddr: routeAddress,
+      toAddr: toAddress,
+      namespace: NAMESPACE,
+      signature,
+      signingKey: publicKey,
+      operation: JSON.stringify(operation)
+    };
+
+    return params;
+  };
+
+  const handleFollow = async (type: "follow" | "unfollow") => {
+    try {
+      const params = await handleClick(type);
+      if (type === "follow") {
+        const resp = await ccFollow({
+          variables: {
+            address: params.fromAddr,
+          }
+        });
+      } else {
+        const resp = await ccUnfollow({
+          variables: {
+            address: params.fromAddr,
+          }
+        });
+        // message.success(`success following ${followUser?.handle},tx is ${tx}`)
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      console.log("finally");
+    }
+  };
 
   const role = getUserContext().getLoginRoles()
 
@@ -110,7 +170,6 @@ const FollowersModal = (props: {
       onCancel={e => {
         setFollows([] as Array<ProfileExtend | undefined | null>)
         setTotal(0)
-        setCursor('')
         closeModal(e)
       }}
       footer={null}
@@ -119,6 +178,7 @@ const FollowersModal = (props: {
         <Skeleton />
       ) : (
         <div className="fcc-start max-h-600px space-y-2 overflow-auto scroll-hidden">
+          <button onClick={() => handleFollow('follow')}>follow</button>
           {follows && follows.length > 0 ? (
             <div className="w-full">
               {follows?.map(follow => (
@@ -139,15 +199,15 @@ const FollowersModal = (props: {
                     {/* 三、用户在看别人的 Following，啥事都不能做，没有按钮。如果别人和他的关注者双向关注则用文字显示出来 */}
                     {/* 四、用户在看别人的 Follower，啥事都不能做，没有按钮。如果别人和他的关注者双向关注则用文字显示出来 */}
                     {/* TODO */}
-                    {!role.includes(RoleType.UserOfLens) ? null : (
+                    {!role.includes(RoleType.UserOfCyber) ? null : (
                       <button
                         type="button"
                         className="purple-border-button px-2 py-1"
                         onClick={() => {
                           if (follow?.isFollowedByMe) {
-                            handleUnFollow(follow)
+                            // handleUnFollow(follow)
                           } else {
-                            handleFollow(follow)
+                            // handleFollow(follow)
                           }
                         }}
                       >

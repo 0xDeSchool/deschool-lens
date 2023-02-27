@@ -15,4 +15,4 @@ export { ESSENCES_BY_FILTER } from "./EssencesByFilter";
 export { RELAY_ACTION_STATUS } from "./RelayActionStatus";
 export { CC_FOLLOW } from "./Follow";
 export { CC_UNFOLLOW } from "./Unfollow";
-import { CC_CC_REGISTER_SIGNING_KEY } from "./RegisterSigningKey";
+export { CC_REGISTER_SIGNING_KEY } from "./RegisterSigningKey";
