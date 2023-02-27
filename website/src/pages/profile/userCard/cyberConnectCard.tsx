@@ -10,7 +10,7 @@ import { fetchUserDefaultProfile, getExtendProfile } from '~/hooks/profile'
 import { useAccount } from '~/context/account'
 import { useTranslation } from 'react-i18next'
 import CloseOutlined from '@ant-design/icons/CloseOutlined'
-import FollowersModal from './modal'
+import FollowersModal from './cyberConnecdCardModal'
 import type { ProfileExtend } from '~/lib/types/app'
 import LensAvatar from './avatar'
 import SwitchIdentity from './switchIdentity'
@@ -239,7 +239,7 @@ const CyberCard = (props: CyberCardProps) => {
         routeAddress={routeAddress}
         profileId={currentUser?.id}
         type={modal.type}
-        visible={modal.visible}
+        visible={true || modal.visible}
         closeModal={closeModal}
       />
     </div>
