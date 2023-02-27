@@ -1,35 +1,18 @@
 import type { Dispatch, SetStateAction } from 'react'
 import { useEffect, useState } from 'react'
 import Image from 'antd/es/image'
-import message from 'antd/es/message'
 import fallbackImage from '~/assets/images/fallbackImage'
 import { getShortAddress } from '~/utils/format'
-import { followByProfileIdWithLens } from '~/api/lens/follow/follow'
-import { unfollowByProfileIdWithLens } from '~/api/lens/follow/unfollow'
 import { fetchUserDefaultProfile, getExtendProfile } from '~/hooks/profile'
 import { useAccount } from '~/context/account'
 import { useTranslation } from 'react-i18next'
-import CloseOutlined from '@ant-design/icons/CloseOutlined'
 import FollowersModal from './cyberConnecdCardModal'
 import type { ProfileExtend } from '~/lib/types/app'
 import LensAvatar from './avatar'
 import SwitchIdentity from './switchIdentity'
-import { useMutation } from '@apollo/client'
-import { CC_FOLLOW, CC_UNFOLLOW } from '~/api/cc/graphql'
-import { generateSigningKey, getPublicKey, signWithSigningKey } from '~/api/cc/signingKey'
+import useFollow from '~/hooks/useCyberConnectFollow'
+import useUnFollow from '~/hooks/useCyberConnectUnfollow'
 
-const NAMESPACE = 'Booth'
-
-import CyberConnect, {
-  Env
-} from '@cyberlab/cyberconnect-v2';
-
-const cyberConnect = new CyberConnect({
-  namespace: NAMESPACE,
-  env: Env.PRODUCTION,
-  provider: window.ethereum,
-  signingMessageEntity: NAMESPACE,
-});
 
 type CyberCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
@@ -47,10 +30,9 @@ const CyberCard = (props: CyberCardProps) => {
   const [modal, setModal] = useState<{ type: 'followers' | 'following'; visible: boolean }>({ type: 'followers', visible: false })
   const [currentUser, setCurrentUser] = useState<ProfileExtend | null>()
   const [updateTrigger, setUpdateTrigger] = useState(0) // 此页面局部刷新
-  const [ccFollow] = useMutation(CC_FOLLOW);
-  const [ccUnfollow] = useMutation(CC_UNFOLLOW);
-  const [signingKey, setSigningKey] = useState<string | null>(null);
   const { t } = useTranslation()
+  const { follow } = useFollow();
+  const { unFollow } = useUnFollow();
 
   // 根据不同情况初始化用户信息
   const initUserInfo = async () => {
@@ -123,13 +105,13 @@ const CyberCard = (props: CyberCardProps) => {
 
   const handleFollow = async () => {
     const handle = 'cyberconnect'
-    const result = cyberConnect.follow(routeAddress!, handle)
+    const result = follow(routeAddress!, handle)
     console.log('result', result)
   };
 
   const handleUnfollow = async () => {
     const handle = 'cyberconnect'
-    const result = cyberConnect.unfollow(routeAddress!, handle)
+    const result = unFollow(routeAddress!, handle)
     console.log('result', result)
   };
 
