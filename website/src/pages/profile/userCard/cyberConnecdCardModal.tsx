@@ -11,20 +11,11 @@ import { Link } from 'react-router-dom'
 import type { ProfileExtend } from '~/lib/types/app'
 import LensAvatar from './avatar'
 import { useLazyQuery } from '@apollo/client'
-import { GET_FOLLOWING_BY_ADDRESS_EVM } from '~/api/cc/graphql/GetFollowingByAddressEVM'
+import { GET_FOLLOWING_BY_ADDRESS_EVM } from '~/api/cc/graphql/GetFollowingsByAddressEVM'
+import { GET_FOLLOWING_BY_HANDLE } from '~/api/cc/graphql/GetFollowingsByHandle'
 
-const NAMESPACE = 'Booth'
-
-import CyberConnect, {
-  Env
-} from '@cyberlab/cyberconnect-v2';
-
-const cyberConnect = new CyberConnect({
-  namespace: NAMESPACE,
-  env: Env.PRODUCTION,
-  provider: window.ethereum,
-  signingMessageEntity: NAMESPACE,
-});
+import useFollow from '~/hooks/useCyberConnectFollow'
+import useUnFollow from '~/hooks/useCyberConnectUnfollow'
 
 const FollowersModal = (props: {
   routeAddress: string | undefined
@@ -35,27 +26,31 @@ const FollowersModal = (props: {
 }) => {
   const { routeAddress, profileId, type, visible, closeModal } = props
   const { t } = useTranslation()
-  const { cyberToken } = useAccount()
+  const { cyberToken, cyberProfile } = useAccount()
   const [follows, setFollows] = useState([] as Array<ProfileExtend | undefined | null>)
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
   const [total, setTotal] = useState(0)
   const [getFollowingByAddressEVM] = useLazyQuery(GET_FOLLOWING_BY_ADDRESS_EVM)
-  const [toAddress, setToAddress] = useState<string>(
-    "0x89c60C01F2E1d1b233253596bf1c2386bDfeB898"
-  );
-
-  const getFollowings = async () => {
-    const resp = await getFollowingByAddressEVM({
-      variables: {
-        address: routeAddress || cyberToken?.address,
-      }
-    })
-  }
+  const [getFollowingByHandle] = useLazyQuery(GET_FOLLOWING_BY_HANDLE)
+  const { follow } = useFollow();
+  const { unFollow } = useUnFollow();
 
   const initList = async () => {
     setLoading(true)
     try {
+      const getFollowings = async () => {
+        const resp = await getFollowingByAddressEVM({
+          variables: {
+            address: routeAddress || cyberToken?.address,
+          }
+        })
+        const resp1 = await getFollowingByHandle({
+          variables: {
+            handle: 'Arjun',
+          }
+        })
+      }
       await getFollowings()
     } catch (error: any) {
       if (error && error.name && error.message) message.error(`${error.name}:${error.message}`)
@@ -82,12 +77,12 @@ const FollowersModal = (props: {
   }
 
   const handleFollow = async () => {
-    const result = cyberConnect.follow(routeAddress!, 'cyberconnect')
+    const result = follow(routeAddress!, '@Arjun003.cc')
     console.log('result', result)
   };
 
   const handleUnfollow = async () => {
-    const result = cyberConnect.unfollow(routeAddress!, 'cyberconnect')
+    const result = unFollow(routeAddress!, '@Arjun003.cc')
     console.log('result', result)
   };
 

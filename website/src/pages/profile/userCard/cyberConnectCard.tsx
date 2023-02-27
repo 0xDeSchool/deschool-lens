@@ -210,7 +210,7 @@ const CyberCard = (props: CyberCardProps) => {
         routeAddress={routeAddress}
         profileId={currentUser?.id}
         type={modal.type}
-        visible={modal.visible}
+        visible={true || modal.visible}
         closeModal={closeModal}
       />
     </div>
