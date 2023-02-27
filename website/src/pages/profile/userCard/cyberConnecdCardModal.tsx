@@ -16,6 +16,7 @@ import { GET_FOLLOWING_BY_HANDLE } from '~/api/cc/graphql/GetFollowingsByHandle'
 
 import useFollow from '~/hooks/useCyberConnectFollow'
 import useUnFollow from '~/hooks/useCyberConnectUnfollow'
+import { PRIMARY_PROFILE_ESSENCES } from '~/api/cc/graphql'
 
 const FollowersModal = (props: {
   routeAddress: string | undefined
@@ -40,14 +41,10 @@ const FollowersModal = (props: {
     setLoading(true)
     try {
       const getFollowings = async () => {
-        const resp = await getFollowingByAddressEVM({
-          variables: {
-            address: routeAddress || cyberToken?.address,
-          }
-        })
         const resp1 = await getFollowingByHandle({
           variables: {
-            handle: 'Arjun',
+            handle: 'shiyu',
+            me: "0xD790D1711A9dCb3970F47fd775f2f9A2f0bCc348"
           }
         })
       }
@@ -77,12 +74,12 @@ const FollowersModal = (props: {
   }
 
   const handleFollow = async () => {
-    const result = follow(routeAddress!, '@Arjun003.cc')
+    const result = follow(cyberToken?.address!, 'shiyu')
     console.log('result', result)
   };
 
   const handleUnfollow = async () => {
-    const result = unFollow(routeAddress!, '@Arjun003.cc')
+    const result = unFollow(cyberToken?.address!, 'shiyu')
     console.log('result', result)
   };
 

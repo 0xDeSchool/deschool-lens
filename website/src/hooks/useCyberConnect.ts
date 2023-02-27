@@ -10,7 +10,8 @@ const getCCInstance = (provider: any) => {
 
   const instance = new CyberConnect({
     namespace: "Booth",
-    env: import.meta.env.MODE === 'production' ? Env.PRODUCTION : Env.STAGING,
+    env: Env.STAGING,
+    // env: import.meta.env.MODE === 'production' ? Env.PRODUCTION : Env.STAGING,
     provider,
     signingMessageEntity: "Booth",
   });

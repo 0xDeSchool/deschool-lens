@@ -12,6 +12,10 @@ import LensAvatar from './avatar'
 import SwitchIdentity from './switchIdentity'
 import useFollow from '~/hooks/useCyberConnectFollow'
 import useUnFollow from '~/hooks/useCyberConnectUnfollow'
+import { GET_FOLLOWING_BY_HANDLE } from '~/api/cc/graphql/GetFollowingsByHandle'
+import { useLazyQuery } from '@apollo/client'
+import { GET_FOLLOWING_BY_ADDRESS_EVM } from '~/api/cc/graphql/GetFollowingsByAddressEVM'
+import { PRIMARY_PROFILE } from '~/api/cc/graphql'
 
 
 type CyberCardProps = {
@@ -30,9 +34,13 @@ const CyberCard = (props: CyberCardProps) => {
   const [modal, setModal] = useState<{ type: 'followers' | 'following'; visible: boolean }>({ type: 'followers', visible: false })
   const [currentUser, setCurrentUser] = useState<ProfileExtend | null>()
   const [updateTrigger, setUpdateTrigger] = useState(0) // 此页面局部刷新
+  const [getFollowingByHandle] = useLazyQuery(GET_FOLLOWING_BY_HANDLE)
+  const [getFollowingByAddressEVM] = useLazyQuery(GET_FOLLOWING_BY_ADDRESS_EVM)
+  const [getPrimaryProfile] = useLazyQuery(PRIMARY_PROFILE);
   const { t } = useTranslation()
   const { follow } = useFollow();
   const { unFollow } = useUnFollow();
+  const [isFollowLoaindg, setIsFollowLoading] = useState(false)
 
   // 根据不同情况初始化用户信息
   const initUserInfo = async () => {
@@ -45,16 +53,21 @@ const CyberCard = (props: CyberCardProps) => {
           break
         // 访问他人的空间
         case 1: {
-          const userInfo = await fetchUserDefaultProfile(routeAddress!) // 此case下必不为空
+          const res = await getPrimaryProfile({
+            variables: {
+              address: routeAddress,
+              me: cyberToken?.address
+            },
+          });
+          const userInfo = res?.data?.address?.wallet?.primaryProfile
           // 此人没有handle，cyber没数据
           if (!userInfo) {
             setCurrentUser({} as ProfileExtend)
+            return
           }
           // 此人有数据
-          else {
-            const extendUserInfo = getExtendProfile(userInfo)
-            setCurrentUser(extendUserInfo)
-          }
+          const extendUserInfo = getExtendProfile(userInfo)
+          setCurrentUser(extendUserInfo)
           break
         }
         default:
@@ -65,12 +78,26 @@ const CyberCard = (props: CyberCardProps) => {
     }
   }
 
+  const initFollowsRelationship = async () => {
+    const getFollowings = async () => {
+      const resp1 = await getFollowingByHandle({
+        variables: {
+          "handle": "shiyu",
+          "me": "0xD790D1711A9dCb3970F47fd775f2f9A2f0bCc348"
+        }
+      })
+    }
+    const result = await getFollowings()
+    console.log('result', result)
+  }
+
   useEffect(() => {
     setModal({ type: 'followers', visible: false })
   }, [routeAddress])
 
   useEffect(() => {
     initUserInfo()
+    initFollowsRelationship()
     if (updateTrigger > 0) {
       setModal({
         type: 'followers',
@@ -104,14 +131,14 @@ const CyberCard = (props: CyberCardProps) => {
   }
 
   const handleFollow = async () => {
-    const handle = 'cyberconnect'
-    const result = follow(routeAddress!, handle)
+    const result = await follow(cyberToken?.address!, currentUser?.handle)
     console.log('result', result)
   };
 
   const handleUnfollow = async () => {
-    const handle = 'cyberconnect'
-    const result = unFollow(routeAddress!, handle)
+    setIsFollowLoading(true)
+    const result = await unFollow(cyberToken?.address!, currentUser?.handle)
+    setIsFollowLoading(false)
     console.log('result', result)
   };
 
@@ -210,7 +237,7 @@ const CyberCard = (props: CyberCardProps) => {
         routeAddress={routeAddress}
         profileId={currentUser?.id}
         type={modal.type}
-        visible={true || modal.visible}
+        visible={modal.visible}
         closeModal={closeModal}
       />
     </div>
