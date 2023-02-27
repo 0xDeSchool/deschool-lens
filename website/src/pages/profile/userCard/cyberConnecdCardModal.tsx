@@ -1,23 +1,30 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Modal from 'antd/es/modal/Modal'
-import { followersRequest } from '~/api/lens/follow/followers'
-import { followingRequest } from '~/api/lens/follow/following'
 import Skeleton from 'antd/es/skeleton'
 import message from 'antd/es/message'
 import Empty from 'antd/es/empty'
-import { getExtendProfile } from '~/hooks/profile'
 import ShowMoreLoading from '~/components/loading/showMore'
 import { RoleType } from '~/lib/enum'
 import { getUserContext, useAccount } from '~/context/account'
 import { Link } from 'react-router-dom'
 import type { ProfileExtend } from '~/lib/types/app'
 import LensAvatar from './avatar'
-import { useLazyQuery, useMutation } from '@apollo/client'
-import { CC_FOLLOW, CC_UNFOLLOW, CC_REGISTER_SIGNING_KEY } from '~/api/cc/graphql'
-import { generateSigningKey, getPublicKey, signWithSigningKey } from '~/api/cc/signingKey'
+import { useLazyQuery } from '@apollo/client'
 import { GET_FOLLOWING_BY_ADDRESS_EVM } from '~/api/cc/graphql/GetFollowingByAddressEVM'
-const NAMESPACE = 'test'
+
+const NAMESPACE = 'Booth'
+
+import CyberConnect, {
+  Env
+} from '@cyberlab/cyberconnect-v2';
+
+const cyberConnect = new CyberConnect({
+  namespace: NAMESPACE,
+  env: Env.PRODUCTION,
+  provider: window.ethereum,
+  signingMessageEntity: NAMESPACE,
+});
 
 const FollowersModal = (props: {
   routeAddress: string | undefined
@@ -33,10 +40,7 @@ const FollowersModal = (props: {
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
   const [total, setTotal] = useState(0)
-  const [ccFollow] = useMutation(CC_FOLLOW);
-  const [ccUnfollow] = useMutation(CC_UNFOLLOW);
   const [getFollowingByAddressEVM] = useLazyQuery(GET_FOLLOWING_BY_ADDRESS_EVM)
-  const [registerSigningKey] = useMutation(CC_REGISTER_SIGNING_KEY);
   const [toAddress, setToAddress] = useState<string>(
     "0x89c60C01F2E1d1b233253596bf1c2386bDfeB898"
   );
@@ -79,84 +83,14 @@ const FollowersModal = (props: {
     }
   }
 
-  const registerKey = async (signingKey: CryptoKeyPair) => {
-    const publicKey = await getPublicKey(signingKey);
-
-    const resp = await registerSigningKey({
-      variables: {
-        input: {
-          address: routeAddress,
-          publicKey,
-        }
-      }
-    });
-    setRegistered(true);
+  const handleFollow = async () => {
+    const result = cyberConnect.follow(routeAddress!, 'cyberconnect')
+    console.log('result', result)
   };
 
-  const handleClick = async (type: "follow" | "unfollow") => {
-    let key = signingKey;
-    if (!key) {
-      key = await generateSigningKey();
-      setSigningKey(key);
-    }
-
-    console.log(key);
-
-    if (!key) {
-      throw new Error("SigningKey is empty");
-    }
-
-    if (!registered) {
-      await registerKey(key);
-    }
-
-    const operation = {
-      name: type,
-      from: routeAddress,
-      to: toAddress,
-      namespace: NAMESPACE,
-      network: "ETH",
-      alias: "",
-      timestamp: Date.now()
-    };
-
-    const signature = await signWithSigningKey(JSON.stringify(operation), key);
-    const publicKey = await getPublicKey(key);
-
-    const params = {
-      fromAddr: routeAddress,
-      toAddr: toAddress,
-      namespace: NAMESPACE,
-      signature,
-      signingKey: publicKey,
-      operation: JSON.stringify(operation)
-    };
-
-    return params;
-  };
-
-  const handleFollow = async (type: "follow" | "unfollow") => {
-    try {
-      const params = await handleClick(type);
-      if (type === "follow") {
-        const resp = await ccFollow({
-          variables: {
-            address: params.fromAddr,
-          }
-        });
-      } else {
-        const resp = await ccUnfollow({
-          variables: {
-            address: params.fromAddr,
-          }
-        });
-        // message.success(`success following ${followUser?.handle},tx is ${tx}`)
-      }
-    } catch (e) {
-      console.log(e);
-    } finally {
-      console.log("finally");
-    }
+  const handleUnfollow = async () => {
+    const result = cyberConnect.unfollow(routeAddress!, 'cyberconnect')
+    console.log('result', result)
   };
 
   const role = getUserContext().getLoginRoles()
@@ -178,7 +112,7 @@ const FollowersModal = (props: {
         <Skeleton />
       ) : (
         <div className="fcc-start max-h-600px space-y-2 overflow-auto scroll-hidden">
-          <button onClick={() => handleFollow('follow')}>follow</button>
+          <button onClick={() => handleFollow()}>follow</button>
           {follows && follows.length > 0 ? (
             <div className="w-full">
               {follows?.map(follow => (
@@ -205,9 +139,9 @@ const FollowersModal = (props: {
                         className="purple-border-button px-2 py-1"
                         onClick={() => {
                           if (follow?.isFollowedByMe) {
-                            // handleUnFollow(follow)
+                            handleUnfollow()
                           } else {
-                            // handleFollow(follow)
+                            handleFollow()
                           }
                         }}
                       >

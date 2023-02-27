@@ -18,6 +18,19 @@ import { useMutation } from '@apollo/client'
 import { CC_FOLLOW, CC_UNFOLLOW } from '~/api/cc/graphql'
 import { generateSigningKey, getPublicKey, signWithSigningKey } from '~/api/cc/signingKey'
 
+const NAMESPACE = 'Booth'
+
+import CyberConnect, {
+  Env
+} from '@cyberlab/cyberconnect-v2';
+
+const cyberConnect = new CyberConnect({
+  namespace: NAMESPACE,
+  env: Env.PRODUCTION,
+  provider: window.ethereum,
+  signingMessageEntity: NAMESPACE,
+});
+
 type CyberCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
   routeAddress: string | undefined // 父组件希望展示的地址，如果为空则展示登录者自己信息
@@ -108,117 +121,20 @@ const CyberCard = (props: CyberCardProps) => {
     })
   }
 
-  const handleFollow01 = async (followUser: ProfileExtend | undefined | null) => {
-    // 有 cyber handle
-    if (cyberProfile?.handle) {
-      const tx = await followByProfileIdWithLens(followUser?.id)
-      message.success(`success following ${followUser?.handle},tx is ${tx}`)
-      setUpdateTrigger(new Date().getTime())
-    }
-    // 登录了 cyber 没有 cyber handle
-    else if (cyberToken) {
-      message.info({
-        key: 'nohandle_CyberCard',
-        content: (
-          <p className="inline">
-            Visit
-            <a className="font-bold mx-2" href={import.meta.env.VITE_APP_CYBERCONNECT_CLAIM_SITE} target="_blank" rel="noreferrer noopener">
-              claiming site
-            </a>
-            to claim your profile now 🏃‍♂️
-            <CloseOutlined
-              size={12}
-              className="inline ml-2 hover:color-purple!"
-              onClick={() => {
-                message.destroy('nohandle_CyberCard')
-              }}
-            />
-          </p>
-        ),
-        duration: 0,
-      })
-    }
-    // 没登录 cyber
-    else {
-      message.warning('Please connect cyberconnect first')
-    }
-  }
-
-  const handleUnFollow = async (followUser: ProfileExtend | undefined | null) => {
-    const tx = await unfollowByProfileIdWithLens(followUser?.id)
-    message.success(`success unfollow ${followUser?.handle},tx is ${tx}`)
-    setUpdateTrigger(new Date().getTime())
-  }
-
-
-  const handleClick = async (type: "follow" | "unfollow") => {
-    let key = signingKey;
-    if (!key) {
-      key = await generateSigningKey();
-      setSigningKey(key);
-    }
-
-    console.log(key);
-
-    if (!key) {
-      throw new Error("SigningKey is empty");
-    }
-
-    if (!registered) {
-      await registerKey(key);
-    }
-
-    const operation = {
-      name: type,
-      from: address,
-      to: toAddress,
-      namespace: NAMESPACE,
-      network: "ETH",
-      alias: "",
-      timestamp: Date.now()
-    };
-
-    const signature = await signWithSigningKey(JSON.stringify(operation), key);
-    const publicKey = await getPublicKey(key);
-
-    const params = {
-      fromAddr: address,
-      toAddr: toAddress,
-      namespace: NAMESPACE,
-      signature,
-      signingKey: publicKey,
-      operation: JSON.stringify(operation)
-    };
-
-    return params;
+  const handleFollow = async () => {
+    const handle = 'cyberconnect'
+    const result = cyberConnect.follow(routeAddress!, handle)
+    console.log('result', result)
   };
 
-  const handleFollow = async (type: "follow" | "unfollow") => {
-    try {
-      const params = await handleClick(type);
-      if (type === "follow") {
-        const resp = await ccFollow({
-          variables: {
-            address: params.fromAddr,
-          }
-        });
-      } else {
-        const resp = await ccUnfollow({
-          variables: {
-            address: params.fromAddr,
-          }
-        });
-      }
-    } catch (e) {
-      console.log(e);
-    } finally {
-      console.log("finally");
-    }
+  const handleUnfollow = async () => {
+    const handle = 'cyberconnect'
+    const result = cyberConnect.unfollow(routeAddress!, handle)
+    console.log('result', result)
   };
 
   return (
     <div className={`w-full pb-1 shadow-md rounded-xl ${loading || !visible ? 'hidden' : ''}`}>
-      <button onClick={() => handleFollow('follow')}>follow</button>
       <div className="relative w-full frc-center">
         <SwitchIdentity profileType={profileType} setProfileType={setProfileType} />
         {currentUser?.coverUrl ? (
@@ -298,9 +214,9 @@ const CyberCard = (props: CyberCardProps) => {
             disabled={!currentUser?.handle}
             onClick={() => {
               if (currentUser?.isFollowedByMe) {
-                handleUnFollow(currentUser)
+                handleUnfollow()
               } else {
-                handleFollow(currentUser)
+                handleFollow()
               }
             }}
           >
@@ -312,7 +228,7 @@ const CyberCard = (props: CyberCardProps) => {
         routeAddress={routeAddress}
         profileId={currentUser?.id}
         type={modal.type}
-        visible={true || modal.visible}
+        visible={modal.visible}
         closeModal={closeModal}
       />
     </div>
