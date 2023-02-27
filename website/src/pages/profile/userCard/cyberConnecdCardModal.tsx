@@ -44,8 +44,6 @@ const FollowersModal = (props: {
   const [toAddress, setToAddress] = useState<string>(
     "0x89c60C01F2E1d1b233253596bf1c2386bDfeB898"
   );
-  const [signingKey, setSigningKey] = useState<CryptoKeyPair | null>(null);
-  const [registered, setRegistered] = useState<boolean>(false);
 
   const getFollowings = async () => {
     const resp = await getFollowingByAddressEVM({

@@ -26,7 +26,7 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
   const [loading, setLoading] = useState(false)
   const [tempAddress, setTempAddress] = useState<string | undefined>()
   const { t } = useTranslation()
-  const { cyberProfile, setCyberToken, setCyberProfile } = useAccount()
+  const { setCyberToken, setCyberProfile } = useAccount()
   const [loginGetMessage] = useMutation(LOGIN_GET_MESSAGE);
   const [loginVerify] = useMutation(LOGIN_VERIFY);
   const [getPrimaryProfile] = useLazyQuery(PRIMARY_PROFILE);

@@ -43,11 +43,6 @@ export class UserContext {
     this.setCyberProfile = accountMemo.setCyberProfile
   }
 
-  // 设置当前lens账号默认的profile
-  changeUserProfile(info: ProfileExtend) {
-    this.setLensProfile(info)
-  }
-
   // 断开lens的连接
   disconnectFromLens = (): void => {
     this.setLensProfile(null)
@@ -82,6 +77,9 @@ export class UserContext {
     }
     if (this.lensToken && this.lensProfile?.handle) {
       roles.push(RoleType.UserOfLens)
+    }
+    if (this.cyberToken && this.cyberProfile?.handle) {
+      roles.push(RoleType.UserOfCyber)
     }
     if (this.deschoolProfile) {
       roles.push(RoleType.UserOfDeschool)
@@ -145,7 +143,7 @@ export const AccountContextProvider = ({ children }: { children: ReactElement })
       setCyberProfile,
       setCyberToken,
     }),
-    [lensProfile, deschoolProfile, lensToken],
+    [lensProfile, deschoolProfile, lensToken, cyberProfile, cyberToken],
   )
 
   useEffect(() => {
