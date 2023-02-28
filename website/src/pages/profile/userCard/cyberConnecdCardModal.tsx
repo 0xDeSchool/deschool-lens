@@ -8,7 +8,7 @@ import ShowMoreLoading from '~/components/loading/showMore'
 import { RoleType } from '~/lib/enum'
 import { getUserContext, useAccount } from '~/context/account'
 import { Link } from 'react-router-dom'
-import type { ProfileExtend } from '~/lib/types/app'
+import type { CyberProfile, ProfileExtend } from '~/lib/types/app'
 import LensAvatar from './avatar'
 import { useLazyQuery } from '@apollo/client'
 import { GET_FOLLOWING_BY_HANDLE } from '~/api/cc/graphql/GetFollowingsByHandle'
@@ -27,7 +27,7 @@ const FollowersModal = (props: {
   const { routeAddress, profileId, type, visible, closeModal } = props
   const { t } = useTranslation()
   const { cyberToken, cyberProfile } = useAccount()
-  const [follows, setFollows] = useState([] as Array<ProfileExtend | undefined | null>)
+  const [follows, setFollows] = useState([] as Array<CyberProfile | null>)
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
   const [total, setTotal] = useState(0)
@@ -56,7 +56,15 @@ const FollowersModal = (props: {
         address
       }
     })
-    console.log('FollowingsInfo', resp)
+    const followings = resp?.data?.address?.followings
+    let edges = followings?.edges || []
+    edges = edges.map((item: any) => {
+      return {
+        address: item.node.address.address,
+        ...item.node.profile,
+      }
+    })
+    setFollows(edges)
   }
 
   const initList = async () => {
@@ -122,7 +130,7 @@ const FollowersModal = (props: {
       destroyOnClose
       closable
       onCancel={e => {
-        setFollows([] as Array<ProfileExtend | undefined | null>)
+        setFollows([] as Array<CyberProfile | null>)
         setTotal(0)
         closeModal(e)
       }}
@@ -137,7 +145,7 @@ const FollowersModal = (props: {
               {follows?.map(follow => (
                 <div key={follow?.id} className="relative border rounded-xl p-2 w-full frs-center">
                   <div className="relative w-60px h-60px">
-                    <LensAvatar avatarUrl={follow?.avatarUrl} size={60} wrapperClassName="fcc-center w-full" />
+                    <LensAvatar avatarUrl={follow?.avatar} size={60} wrapperClassName="fcc-center w-full" />
                   </div>
                   <div className="flex-1 fcs-center ml-2">
                     <Link to={`/profile/${follow?.ownedBy}/resume`}>

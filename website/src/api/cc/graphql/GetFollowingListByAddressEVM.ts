@@ -11,7 +11,10 @@ export const GET_FOLLOWING_LIST_BY_ADDRESS_EVM = gql`
               address
             }
             profile {
+              id
               handle
+              profileID
+              avatar
             }
           }
         }
