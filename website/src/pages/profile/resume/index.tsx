@@ -18,13 +18,9 @@ import { BlockType } from './enum'
 import type { ResumeCardData, ResumeData, SbtInfo } from './types'
 import { randomConfetti } from './utils/confetti'
 import getVisitCase from '../utils/visitCase'
-import CyberCard from '../userCard/cyberConnectCard'
+import useCyberConnect from '~/hooks/useCyberConnect'
 
 const BOOTH_PATH = import.meta.env.VITE_APP_BOOTH_PATH
-
-// type ResumeProp = {
-//   handle?: string
-// }
 
 export const STANDARD_RESUME_DATA: ResumeData = {
   career: [
@@ -86,6 +82,7 @@ const Resume = () => {
   const [loadingLens, setLoadingLens] = useState(false)
   const [loadingCyber, setLoadingCyber] = useState(false)
   const [visitCase, setVisitCase] = useState<0 | 1 | -1>(-1) // 0-自己访问自己 1-自己访问别人 -1-没登录访问自己
+  const cc = useCyberConnect()
 
   // 把一条变成 Dayjs Obj
   const convertStrToDayJsObj = (input: ResumeCardData) => {
@@ -371,13 +368,13 @@ const Resume = () => {
       setLoadingCyber(true)
       const resumeAddress = cyberToken?.address || deschoolProfile?.address
       const resumeDataStr = JSON.stringify(resumeData)
-      if (lensProfile?.id && resumeAddress && resumeDataStr) {
-        const txhash = await createPost(lensProfile.id, resumeAddress, resumeDataStr)
+      if (cyberProfile?.id && resumeAddress && resumeDataStr) {
+        const txhash = await cc.createPost(resumeDataStr, cyberProfile?.handle)
         if (txhash) {
           setStep(1)
           setTxHash(txhash)
           setCongratulateVisible(true)
-          await pollAndIndexPost(txhash, lensProfile.id)
+          await pollAndIndexPost(txhash, cyberProfile.id)
           setStep(2)
           randomConfetti()
         }
@@ -443,7 +440,7 @@ const Resume = () => {
                 onClick={() => handlePublish()}
                 disabled={!lensProfile}
                 loading={loadingLens}
-                className="bg-#abfe2c! text-black!"
+                className="bg-#abfe2c! text-black! mr-2"
               >
                 {resumeData && step === 2 ? 'Published' : 'Publish On Lens'}
               </Button>
@@ -452,7 +449,7 @@ const Resume = () => {
                 onClick={() => handlePublishCyber()}
                 disabled={!lensProfile}
                 loading={loadingLens}
-                className="bg-#abfe2c! text-black!"
+                className="bg-black! text-white!"
               >
                 {resumeData && step === 2 ? 'Published' : 'Publish On CC'}
               </Button>

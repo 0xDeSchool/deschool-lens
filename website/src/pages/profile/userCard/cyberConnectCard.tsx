@@ -78,7 +78,7 @@ const CyberCard = (props: CyberCardProps) => {
   // 根据不同情况初始化用户信息
   const initUserInfo = async () => {
     setLoading(true)
-    let currentUserHandle = parseHandle(cyberProfile?.handle)
+    let currentUserHandle = cyberProfile?.handle
     try {
       switch (visitCase) {
         // 访问自己的空间
@@ -101,7 +101,7 @@ const CyberCard = (props: CyberCardProps) => {
           }
           // 此人有数据
           setCurrentUser(userInfo)
-          currentUserHandle = parseHandle(userInfo.handle)
+          currentUserHandle = userInfo.handle
           break
         }
         default:
@@ -160,19 +160,13 @@ const CyberCard = (props: CyberCardProps) => {
     })
   }
 
-  // 需要在这里处理一下handle，因为cyber的handle是带有.cc的
-  const parseHandle = (val: string) => {
-    if (!val) return ''
-    return val.split('.cc')[0]
-  }
-
   const handleFollow = async () => {
     if (isFollowLoaindg) {
       message.warning('Please wait a moment')
       return
     }
     setIsFollowLoading(true)
-    const result = await follow(cyberToken?.address!, parseHandle(currentUser?.handle))
+    const result = await follow(cyberToken?.address!, currentUser?.handle)
     setIsFollowLoading(false)
     console.log('result', result)
     // 关注成功后，刷新页面
@@ -223,7 +217,7 @@ const CyberCard = (props: CyberCardProps) => {
         <span className="text-xl">
           {currentUser?.name || (routeAddress ? getShortAddress(routeAddress) : getShortAddress(cyberToken?.address))}
         </span>
-        <span className="text-xl text-gray-5">{currentUser?.handle ? `@${currentUser?.handle}` : 'CyberConnect Handle Not Found'}</span>
+        <span className="text-xl text-gray-5">{currentUser?.handleStr ? `@${currentUser?.handleStr}` : 'CyberConnect Handle Not Found'}</span>
       </div>
       <div className="mx-10 frc-center flex-wrap">
         <a

@@ -314,6 +314,7 @@ export interface CoursePostParticipationInput {
 export interface CyberProfile extends Profile {
   avatar?: string
   profileID?: number
+  handleStr?: string
 }
 
 export interface ProfileExtend extends Profile {

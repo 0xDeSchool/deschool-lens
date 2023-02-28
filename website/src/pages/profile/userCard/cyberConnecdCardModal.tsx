@@ -87,12 +87,6 @@ const FollowersModal = (props: {
     }
   }
 
-  // 需要在这里处理一下handle，因为cyber的handle是带有.cc的
-  const parseHandle = (val: string) => {
-    if (!val) return ''
-    return val.split('.cc')[0]
-  }
-
   const handleFollow = async (handle: string) => {
     if (isFollowLoaindg) {
       message.warning('Please wait a moment')
