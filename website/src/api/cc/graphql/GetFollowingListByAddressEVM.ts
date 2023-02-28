@@ -7,8 +7,12 @@ export const GET_FOLLOWING_LIST_BY_ADDRESS_EVM = gql`
         totalCount
         edges {
           node {
-            handle
-            address
+            address {
+              address
+            }
+            profile {
+              handle
+            }
           }
         }
         pageInfo {
