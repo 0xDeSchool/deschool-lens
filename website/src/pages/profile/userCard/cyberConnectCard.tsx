@@ -130,8 +130,15 @@ const CyberCard = (props: CyberCardProps) => {
     })
   }
 
+  // 需要在这里处理一下handle，因为cyber的handle是带有.cc的
+  const parseHanlde = (val: string) => {
+    return val.split('.cc')[0]
+  }
+
   const handleFollow = async () => {
-    const result = await follow(cyberToken?.address!, currentUser?.handle)
+    setIsFollowLoading(true)
+    const result = await follow(cyberToken?.address!, parseHanlde(currentUser?.handle))
+    setIsFollowLoading(false)
     console.log('result', result)
   };
 

@@ -18,6 +18,7 @@ import { BlockType } from './enum'
 import type { ResumeCardData, ResumeData, SbtInfo } from './types'
 import { randomConfetti } from './utils/confetti'
 import getVisitCase from '../utils/visitCase'
+import CyberCard from '../userCard/cyberConnectCard'
 
 const BOOTH_PATH = import.meta.env.VITE_APP_BOOTH_PATH
 
@@ -67,7 +68,7 @@ export const STANDARD_RESUME_DATA: ResumeData = {
 const Resume = () => {
   // const { handle } = props
   const { address } = useParams()
-  const { lensProfile, lensToken, deschoolProfile } = useAccount()
+  const { lensProfile, lensToken, cyberProfile, cyberToken, deschoolProfile } = useAccount()
 
   const [isEditResume, setIsEditResume] = useState(false)
   const [isCreateCard, setIsCreateCard] = useState(false)
@@ -83,6 +84,7 @@ const Resume = () => {
   const [txHash, setTxHash] = useState<string>('')
   const [userAddr, setUserAddr] = useState<string>('')
   const [loadingLens, setLoadingLens] = useState(false)
+  const [loadingCyber, setLoadingCyber] = useState(false)
   const [visitCase, setVisitCase] = useState<0 | 1 | -1>(-1) // 0-自己访问自己 1-自己访问别人 -1-没登录访问自己
 
   // 把一条变成 Dayjs Obj
@@ -363,6 +365,33 @@ const Resume = () => {
     }
   }
 
+  // Cyber 上发布个人简历
+  const handlePublishCyber = async () => {
+    try {
+      setLoadingCyber(true)
+      const resumeAddress = cyberToken?.address || deschoolProfile?.address
+      const resumeDataStr = JSON.stringify(resumeData)
+      if (lensProfile?.id && resumeAddress && resumeDataStr) {
+        const txhash = await createPost(lensProfile.id, resumeAddress, resumeDataStr)
+        if (txhash) {
+          setStep(1)
+          setTxHash(txhash)
+          setCongratulateVisible(true)
+          await pollAndIndexPost(txhash, lensProfile.id)
+          setStep(2)
+          randomConfetti()
+        }
+      } else {
+        message.error('PUBLICATION ERROR: Please get a lens handle first')
+      }
+    } catch (error) {
+      message.error('PUBLICATION ERROR: Publish Failed')
+      console.log('error', error)
+    } finally {
+      setLoadingCyber(false)
+    }
+  }
+
   // 处理不同场景下的resume初始化
   const handlePrimaryCase = async (primaryCase: 0 | 1 | -1) => {
     let currentAddress: string | undefined | null = null
@@ -408,15 +437,26 @@ const Resume = () => {
         </div>
         <div className="flex">
           {visitCase === 0 && !isEditResume && (
-            <Button
-              type="primary"
-              onClick={() => handlePublish()}
-              disabled={!lensProfile}
-              loading={loadingLens}
-              className="bg-#abfe2c! text-black!"
-            >
-              {resumeData && step === 2 ? 'Published' : 'Publish On Lens'}
-            </Button>
+            <>
+              <Button
+                type="primary"
+                onClick={() => handlePublish()}
+                disabled={!lensProfile}
+                loading={loadingLens}
+                className="bg-#abfe2c! text-black!"
+              >
+                {resumeData && step === 2 ? 'Published' : 'Publish On Lens'}
+              </Button>
+              <Button
+                type="primary"
+                onClick={() => handlePublishCyber()}
+                disabled={!lensProfile}
+                loading={loadingLens}
+                className="bg-#abfe2c! text-black!"
+              >
+                {resumeData && step === 2 ? 'Published' : 'Publish On CC'}
+              </Button>
+            </>
           )}
 
           <div className="w-2"> </div>

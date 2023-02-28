@@ -291,7 +291,7 @@ const UserBar = () => {
             >
               <img src={IconCyberConnect} alt="lens" width={20} height={20} />
               <button type="button" className="text-white text-14px ml-2 font-ArchivoNarrow">
-                {cyberProfile ? cyberProfile?.handle : t('Connect CyberConnect')}
+                {cyberProfile ? cyberProfile?.handle : t('CyberConnect')}
               </button>
             </span>
           </Dropdown>
