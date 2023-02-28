@@ -186,3 +186,12 @@ export interface IPrimaryProfileCard {
 	avatar: string;
 	metadata: string;
 }
+
+export interface ICyberFollowers {
+  followerCount: number
+  isFollowedByMe: boolean
+}
+
+export interface ICyberFollowings {
+  followingCount: number
+}

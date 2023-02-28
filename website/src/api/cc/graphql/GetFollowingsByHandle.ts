@@ -4,13 +4,5 @@ export const GET_FOLLOWING_BY_HANDLE = gql`
     profileByHandle(handle: $handle) {
       followerCount
       isFollowedByMe(me: $me)
-      followers {
-        totalCount
-        pageInfo {
-          hasPreviousPage
-          startCursor
-          hasNextPage
-        }
-      }
     }
   }`;
