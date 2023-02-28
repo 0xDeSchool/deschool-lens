@@ -377,7 +377,7 @@ const Resume = () => {
           setStep(1)
           setTxHash(txhash)
           setCongratulateVisible(true)
-          await pollAndIndexPost(txhash, cyberProfile.id)
+          // await pollAndIndexPost(txhash, cyberProfile.id)
           setStep(2)
           randomConfetti()
         }
