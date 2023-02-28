@@ -135,7 +135,8 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
         })
         // // 根据钱包地址查用户profile信息
         // 需要在这里处理一下handle，因为cyber的handle是带有.cc的
-        userInfo.handleStr = userInfo?.handle?.split('.cc')[0]
+        userInfo.handleStr = userInfo?.handle
+        userInfo.handle = userInfo?.handle?.split('.cc')[0]
         setCyberProfile(userInfo)
         // 不管是deschool还是cyber登录后,均提交此地址的绑定信息给后台，后台判断是否是第一次来发 Deschool-Booth-Onboarding SBT
         // await postVerifiedIdentity({

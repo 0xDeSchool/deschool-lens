@@ -82,7 +82,7 @@ const Resume = () => {
   const [loadingLens, setLoadingLens] = useState(false)
   const [loadingCyber, setLoadingCyber] = useState(false)
   const [visitCase, setVisitCase] = useState<0 | 1 | -1>(-1) // 0-自己访问自己 1-自己访问别人 -1-没登录访问自己
-  const cc = useCyberConnect()
+  const ccInstance = useCyberConnect()
 
   // 把一条变成 Dayjs Obj
   const convertStrToDayJsObj = (input: ResumeCardData) => {
@@ -369,7 +369,10 @@ const Resume = () => {
       const resumeAddress = cyberToken?.address || deschoolProfile?.address
       const resumeDataStr = JSON.stringify(resumeData)
       if (cyberProfile?.id && resumeAddress && resumeDataStr) {
-        const txhash = await cc.createPost(resumeDataStr, cyberProfile?.handle)
+        const txhash = await ccInstance.createPost({
+          title: `RESUME OF${cyberToken?.address}`,
+          body: resumeDataStr
+        }, cyberProfile?.handle)
         if (txhash) {
           setStep(1)
           setTxHash(txhash)
@@ -447,8 +450,8 @@ const Resume = () => {
               <Button
                 type="primary"
                 onClick={() => handlePublishCyber()}
-                disabled={!lensProfile}
-                loading={loadingLens}
+                disabled={!cyberProfile}
+                loading={loadingCyber}
                 className="bg-black! text-white!"
               >
                 {resumeData && step === 2 ? 'Published' : 'Publish On CC'}
