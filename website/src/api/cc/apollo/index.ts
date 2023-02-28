@@ -30,11 +30,12 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 // example how you can pass in the x-access-token into requests using `ApolloLink`
 const authLink = new ApolloLink((operation, forward) => {
   const userContext = getUserContext()
-  const token = userContext?.lensToken?.accessToken
-
+  const token = userContext?.cyberToken?.accessToken
   // Use the setContext method to set the HTTP headers.
   operation.setContext({
     headers: {
+      // 'Content-Type': 'application/json;charset=UTF-8',
+      // 'Access-Control-Allow-Origin': '*',
       Authorization: token ? `bearer ${token}` : '',
 			'X-API-KEY': import.meta.env.VITE_APP_CYBERCONNECT_API_KEY,
     },

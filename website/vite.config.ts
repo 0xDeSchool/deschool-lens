@@ -99,6 +99,13 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true,
           rewrite: pathGoapi => pathGoapi.replace(/^\/goapiBoothPrd/, '/api'),
         },
+        '/ccprofile': {
+          target: 'https://api.cyberconnect.dev/profile/',
+          secure: false,
+          ws: true,
+          changeOrigin: true,
+          rewrite: pathGoapi => pathGoapi.replace(/^\/ccprofile/, ''),
+        },
       },
     },
     // 构建
