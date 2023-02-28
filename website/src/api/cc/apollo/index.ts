@@ -36,7 +36,7 @@ const authLink = new ApolloLink((operation, forward) => {
   operation.setContext({
     headers: {
       Authorization: token ? `bearer ${token}` : '',
-			'X-API-KEY': process.env.NEXT_PUBLIC_CYBERCONNECT_API_KEY,
+			'X-API-KEY': import.meta.env.VITE_APP_CYBERCONNECT_API_KEY,
     },
   })
 
