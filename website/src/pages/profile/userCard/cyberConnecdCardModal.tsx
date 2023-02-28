@@ -11,12 +11,11 @@ import { Link } from 'react-router-dom'
 import type { ProfileExtend } from '~/lib/types/app'
 import LensAvatar from './avatar'
 import { useLazyQuery } from '@apollo/client'
-import { GET_FOLLOWING_BY_ADDRESS_EVM } from '~/api/cc/graphql/GetFollowingsByAddressEVM'
 import { GET_FOLLOWING_BY_HANDLE } from '~/api/cc/graphql/GetFollowingsByHandle'
 
 import useFollow from '~/hooks/useCyberConnectFollow'
 import useUnFollow from '~/hooks/useCyberConnectUnfollow'
-import { PRIMARY_PROFILE_ESSENCES } from '~/api/cc/graphql'
+import { GET_FOLLOWING_LIST_BY_ADDRESS_EVM } from '~/api/cc/graphql/GetFollowingListByAddressEVM'
 
 const FollowersModal = (props: {
   routeAddress: string | undefined
@@ -32,23 +31,37 @@ const FollowersModal = (props: {
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
   const [total, setTotal] = useState(0)
-  const [getFollowingByAddressEVM] = useLazyQuery(GET_FOLLOWING_BY_ADDRESS_EVM)
+  const [getFollowingByAddressEVM] = useLazyQuery(GET_FOLLOWING_LIST_BY_ADDRESS_EVM)
   const [getFollowingByHandle] = useLazyQuery(GET_FOLLOWING_BY_HANDLE)
   const { follow } = useFollow();
   const { unFollow } = useUnFollow();
+  const [isFollowLoaindg, setIsFollowLoading] = useState(false)
+
+  // 获取用户的关注者
+  const initUserFollowersInfo = async (handle: string, address: string) => {
+    const resp = await getFollowingByHandle({
+      variables: {
+        handle,
+        me: address,
+      }
+    })
+    const primaryProfile = resp?.data?.profileByHandle
+    console.log('primaryProfile', primaryProfile)
+  }
+
+  // 获取用户的关注的人
+  const initUserFollowingsInfo = async (address: string) => {
+    const resp = await getFollowingByAddressEVM({
+      variables: {
+        address
+      }
+    })
+    console.log('FollowingsInfo', resp)
+  }
 
   const initList = async () => {
     setLoading(true)
     try {
-      const getFollowings = async () => {
-        const resp1 = await getFollowingByHandle({
-          variables: {
-            handle: 'shiyu',
-            me: "0xD790D1711A9dCb3970F47fd775f2f9A2f0bCc348"
-          }
-        })
-      }
-      await getFollowings()
     } catch (error: any) {
       if (error && error.name && error.message) message.error(`${error.name}:${error.message}`)
     } finally {
@@ -59,6 +72,7 @@ const FollowersModal = (props: {
   useEffect(() => {
     if (visible) {
       initList()
+      initUserFollowingsInfo(routeAddress!)
     }
   }, [visible])
 
@@ -73,14 +87,36 @@ const FollowersModal = (props: {
     }
   }
 
-  const handleFollow = async () => {
-    const result = follow(cyberToken?.address!, 'shiyu')
+  // 需要在这里处理一下handle，因为cyber的handle是带有.cc的
+  const parseHandle = (val: string) => {
+    if (!val) return ''
+    return val.split('.cc')[0]
+  }
+
+  const handleFollow = async (handle: string) => {
+    if (isFollowLoaindg) {
+      message.warning('Please wait a moment')
+      return
+    }
+    setIsFollowLoading(true)
+    const result = await follow(cyberToken?.address!, handle)
+    setIsFollowLoading(false)
     console.log('result', result)
+    // 关注成功后，刷新页面
+    // setUpdateTrigger(updateTrigger + 1)
   };
 
-  const handleUnfollow = async () => {
-    const result = unFollow(cyberToken?.address!, 'shiyu')
+  const handleUnfollow = async (handle: string) => {
+    if (isFollowLoaindg) {
+      message.warning('Please wait a moment')
+      return
+    }
+    setIsFollowLoading(true)
+    const result = await unFollow(cyberToken?.address!, handle)
+    setIsFollowLoading(false)
     console.log('result', result)
+    // 关注成功后，刷新页面
+    // setUpdateTrigger(updateTrigger + 1)
   };
 
   const role = getUserContext().getLoginRoles()
@@ -102,7 +138,6 @@ const FollowersModal = (props: {
         <Skeleton />
       ) : (
         <div className="fcc-start max-h-600px space-y-2 overflow-auto scroll-hidden">
-          <button onClick={() => handleFollow()}>follow</button>
           {follows && follows.length > 0 ? (
             <div className="w-full">
               {follows?.map(follow => (
@@ -129,9 +164,9 @@ const FollowersModal = (props: {
                         className="purple-border-button px-2 py-1"
                         onClick={() => {
                           if (follow?.isFollowedByMe) {
-                            handleUnfollow()
+                            handleUnfollow(follow?.handle)
                           } else {
-                            handleFollow()
+                            handleFollow(follow?.handle)
                           }
                         }}
                       >

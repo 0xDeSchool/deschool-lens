@@ -276,7 +276,7 @@ const CyberCard = (props: CyberCardProps) => {
         </div>
       )}
       <FollowersModal
-        routeAddress={routeAddress}
+        routeAddress={routeAddress || cyberToken?.address}
         profileId={currentUser?.id}
         type={modal.type}
         visible={modal.visible}
