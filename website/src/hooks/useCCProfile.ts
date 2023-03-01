@@ -18,7 +18,6 @@ export const useCCProfile = () => {
       try {
         setLoading(true)
         const result = await client.query({query: GET_RECOMENDED_EVENTS})
-        console.log('result======', result)
         setRecomendedEvents(result.data.trendingEvents.list)
       } catch (error: Error | unknown) {
         if (error instanceof Error) {
