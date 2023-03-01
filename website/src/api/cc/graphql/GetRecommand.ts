@@ -5,6 +5,31 @@ export const GET_RECOMENDED_EVENTS = gql`
       list {
         id
         title
+        language
+        tags
+        info
+        recap
+        posterUrl
+        startTimestamp
+        endTimestamp
+        createTimestamp
+        status
+        visibility
+        speakers {
+          twitterId
+          twitterHandle
+          displayName
+          avatar
+          avatarFrameTokenId
+          title
+          profileId
+          twitterFollowers
+        }
+        registrantsCount
+        lightInfo {
+          hasRaffle
+          hasW3ST
+        }
       }
     }
   }
