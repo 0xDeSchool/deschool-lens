@@ -1,5 +1,6 @@
 import { useCCProfile } from '~/hooks/useCCProfile';
 import RecommandEventCard from './componnets/RecommandEventCard';
+import RecommnadEventMatch from './componnets/RecommnadEventMatch';
 
 const LearnTogether = () => {
   const [recommandEvents] = useCCProfile()
@@ -15,7 +16,7 @@ const LearnTogether = () => {
             {/* card info */}
             <RecommandEventCard info={item}/>
             {/* match info */}
-            <div className="flex-1">match info</div>
+            <RecommnadEventMatch info={item}/>
           </div>
         )
       })}

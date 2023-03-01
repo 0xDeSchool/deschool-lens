@@ -28,6 +28,9 @@ interface EventSpeaker {
   twitterFollowers: number
 }
 
+interface Organization {
+  id: string
+}
 interface RecomendedEvents {
   id: string
   title: string
@@ -45,5 +48,6 @@ interface RecomendedEvents {
   speakers: EventSpeaker[]
   registrantsCount: number
   lightInfo: EventLightInfo
+  organizer: Organization
 }
 

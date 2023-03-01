@@ -8,6 +8,12 @@ type RecommandEventCardProps = {
 
 const RecommandEventCard: React.FC<RecommandEventCardProps> = (props) => {
   const { info } = props
+
+  const handleIterested = () => {
+    // TODO record user interested event
+    window.open(`https://link3.to/e/${info.id}`)
+  }
+
   return (
     <div className="flex-1 rounded-2 max-w-420px bg-white shadow">
       <img src={info?.posterUrl} alt="poster" className="rounded-tl-2 rounded-tr-2"/>
@@ -25,7 +31,7 @@ const RecommandEventCard: React.FC<RecommandEventCardProps> = (props) => {
           })}
         </div>
         <div className="frc-between gap-4">
-          <Button >I’m interested</Button>
+          <Button onClick={() => handleIterested()}>I’m interested</Button>
           <div className="flex-1">
             <Avatar />
             xxx + on Booth is also going
