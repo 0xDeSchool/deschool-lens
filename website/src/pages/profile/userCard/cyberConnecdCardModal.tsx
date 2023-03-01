@@ -18,19 +18,18 @@ import useUnFollow from '~/hooks/useCyberConnectUnfollow'
 import { GET_FOLLOWING_LIST_BY_ADDRESS_EVM } from '~/api/cc/graphql/GetFollowingListByAddressEVM'
 
 const FollowersModal = (props: {
-  routeAddress: string | undefined
+  routeAddress: string
   profileId: string | undefined
   type: 'followers' | 'following'
   visible: boolean
   closeModal: any
 }) => {
-  const { routeAddress, profileId, type, visible, closeModal } = props
+  const { routeAddress, type, visible, closeModal } = props
   const { t } = useTranslation()
-  const { cyberToken, cyberProfile } = useAccount()
+  const { cyberToken } = useAccount()
   const [follows, setFollows] = useState([] as Array<CyberProfile | null>)
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
-  const [total, setTotal] = useState(0)
   const [getFollowingByAddressEVM] = useLazyQuery(GET_FOLLOWING_LIST_BY_ADDRESS_EVM)
   const [getFollowingByHandle] = useLazyQuery(GET_FOLLOWING_BY_HANDLE)
   const { follow } = useFollow();
@@ -67,10 +66,15 @@ const FollowersModal = (props: {
     setFollows(edges)
   }
 
-  const initList = async () => {
+  const initFollowRelationship = async () => {
     setLoading(true)
     try {
-    } catch (error: any) {
+      if (type === 'followers') {
+        initUserFollowersInfo(routeAddress!, cyberToken?.address!)
+      } else {
+        initUserFollowingsInfo(routeAddress!)
+      }
+    } catch(error: any) {
       if (error && error.name && error.message) message.error(`${error.name}:${error.message}`)
     } finally {
       setLoading(false)
@@ -79,15 +83,14 @@ const FollowersModal = (props: {
 
   useEffect(() => {
     if (visible) {
-      initList()
-      initUserFollowingsInfo(routeAddress!)
+      initFollowRelationship()
     }
   }, [visible])
 
   const handleAddMore = async () => {
     setLoadingMore(true)
     try {
-      await getFollowingByAddressEVM()
+      await initFollowRelationship()
     } catch (error: any) {
       if (error && error.name && error.message) message.error(`${error.name}:${error.message}`)
     } finally {
@@ -131,7 +134,6 @@ const FollowersModal = (props: {
       closable
       onCancel={e => {
         setFollows([] as Array<CyberProfile | null>)
-        setTotal(0)
         closeModal(e)
       }}
       footer={null}
@@ -183,7 +185,7 @@ const FollowersModal = (props: {
                   <ShowMoreLoading />
                 </div>
               )}
-              {follows && follows.length > 0 && total > follows.length && (
+              {follows?.length > 0 && (
                 <div className="text-center mt-10">
                   <button
                     type="button"

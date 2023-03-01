@@ -1,12 +1,10 @@
 import Divider from 'antd/es/divider'
 import { useEffect, useState } from 'react'
 import Button from 'antd/es/button'
-import Alert from 'antd/es/alert'
 import message from 'antd/es/message'
 import dayjs from 'dayjs'
 import ReactLoading from 'react-loading'
 import Modal from 'antd/es/modal'
-// import { useParams } from 'react-router'
 import { useParams } from 'react-router-dom'
 import { getIdSbt, getResume, putResume } from '~/api/booth/booth'
 import { useAccount } from '~/context/account'
@@ -19,8 +17,7 @@ import type { ResumeCardData, ResumeData, SbtInfo } from './types'
 import { randomConfetti } from './utils/confetti'
 import {getVisitCase, VisiteType} from '../utils/visitCase'
 import useCyberConnect from '~/hooks/useCyberConnect'
-
-const BOOTH_PATH = import.meta.env.VITE_APP_BOOTH_PATH
+import Congradulations from './components/congradulations'
 
 export const STANDARD_RESUME_DATA: ResumeData = {
   career: [
@@ -61,8 +58,9 @@ export const STANDARD_RESUME_DATA: ResumeData = {
   ],
 }
 
+type PublishType = 'CyberConnect' | 'Lens'
+
 const Resume = () => {
-  // const { handle } = props
   const { address } = useParams()
   const { lensProfile, lensToken, cyberProfile, cyberToken, deschoolProfile } = useAccount()
 
@@ -76,7 +74,8 @@ const Resume = () => {
   const [prevData, setPrev] = useState<ResumeData | undefined>()
   const [sbtList, setSbtList] = useState<SbtInfo[]>([])
   const [congratulateVisible, setCongratulateVisible] = useState<boolean>(false)
-  const [step, setStep] = useState<number>(1)
+  const [step, setStep] = useState<1 | 2>(1)
+  const [PublishType, setPublishType] = useState<PublishType>('Lens')
   const [txHash, setTxHash] = useState<string>('')
   const [userAddr, setUserAddr] = useState<string>('')
   const [loadingLens, setLoadingLens] = useState(false)
@@ -341,6 +340,7 @@ const Resume = () => {
       if (lensProfile?.id && resumeAddress && resumeDataStr) {
         const txhash = await createPost(lensProfile.id, resumeAddress, resumeDataStr)
         if (txhash) {
+          setPublishType('Lens')
           setStep(1)
           setTxHash(txhash)
           setCongratulateVisible(true)
@@ -356,14 +356,11 @@ const Resume = () => {
       console.log('error', error)
     } finally {
       setLoadingLens(false)
-      // setCongratulateVisible(false)
-      // setStep(1)
-      // setTxHash('')
     }
   }
 
   // Cyber 上发布个人简历
-  const handlePublishCyber = async () => {
+  const handlePublishCyberConnect = async () => {
     try {
       setLoadingCyber(true)
       const resumeAddress = cyberToken?.address || deschoolProfile?.address
@@ -374,6 +371,7 @@ const Resume = () => {
           body: resumeDataStr
         }, cyberProfile?.handle)
         if (txhash) {
+          setPublishType('CyberConnect')
           setStep(1)
           setTxHash(txhash)
           setCongratulateVisible(true)
@@ -452,7 +450,7 @@ const Resume = () => {
               </Button>
               <Button
                 type="primary"
-                onClick={() => handlePublishCyber()}
+                onClick={() => handlePublishCyberConnect()}
                 disabled={!cyberProfile}
                 loading={loadingCyber}
                 className="bg-black! text-white!"
@@ -538,42 +536,7 @@ const Resume = () => {
             </p>
           </div>
         ) : (
-          <div className="w-full">
-            <h1 className="text-2xl font-Anton">Congradulations! 🎉</h1>
-            <p className="font-ArchivoNarrow mt-6">Your first web3 resume is published! Hooray!</p>
-            <p className="font-ArchivoNarrow mt-1">
-              Thanks for using Booth to create your resume in a web3-enabled way! We hope this decentralized approach will help you stand
-              out in your job search :)
-            </p>
-            <p className="font-ArchivoNarrow">Now you can: </p>
-            <ol>
-              <li className="font-ArchivoNarrow mt-1">
-                1. Check{' '}
-                <a href={`https://polygonscan.com/tx/${txHash}`} target="_blank" rel="noreferrer" className="color-#774FF8">
-                  PolygonScan
-                </a>{' '}
-                to check transaction
-              </li>
-              <li className="font-ArchivoNarrow mt-1">
-                2. Visit{' '}
-                <a href={`https://lenster.xyz/u/${lensProfile?.handle}`} target="_blank" rel="noreferrer" className="color-#774FF8">
-                  Lenster
-                </a>{' '}
-                to view your resume, it should update in your feeds as a post in 10 seconds.{' '}
-              </li>
-              <li className="font-ArchivoNarrow mt-1">
-                3. Send your resume to someone (for work or just show off!) and invite more friends to this cool website with your unique
-                rerferral link:
-                <Alert
-                  className="mt-1!"
-                  message={
-                    <div className="font-ArchivoNarrow ">{`${BOOTH_PATH}?inviter=${lensToken?.address || deschoolProfile?.address}`}</div>
-                  }
-                  type="info"
-                />
-              </li>
-            </ol>
-          </div>
+          <Congradulations txHash={txHash} type={PublishType}/>
         )}
       </Modal>
     </div>
