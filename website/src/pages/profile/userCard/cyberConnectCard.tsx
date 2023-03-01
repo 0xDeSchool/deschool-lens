@@ -17,8 +17,6 @@ import { GET_FOLLOWING_BY_ADDRESS_EVM } from '~/api/cc/graphql/GetFollowingsByAd
 import { PRIMARY_PROFILE } from '~/api/cc/graphql'
 import { ICyberFollowers, ICyberFollowings } from '~/lib/types/cyberConnect'
 import message from 'antd/es/message'
-import { GET_RECOMENDED_EVENTS } from '~/api/cc/graphql/GetRecommand'
-
 
 type CyberCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
@@ -39,7 +37,6 @@ const CyberCard = (props: CyberCardProps) => {
   const [getFollowingByHandle] = useLazyQuery(GET_FOLLOWING_BY_HANDLE)
   const [getFollowingByAddressEVM] = useLazyQuery(GET_FOLLOWING_BY_ADDRESS_EVM)
   const [getPrimaryProfile] = useLazyQuery(PRIMARY_PROFILE);
-  const [getRecomendedEvents] = useLazyQuery(GET_RECOMENDED_EVENTS);
   const { t } = useTranslation()
   const { follow } = useFollow();
   const { unFollow } = useUnFollow();
@@ -121,13 +118,6 @@ const CyberCard = (props: CyberCardProps) => {
   useEffect(() => {
     initUserInfo()
     initUserFollowingsInfo(routeAddress || cyberToken?.address!)
-    // hidden for now
-    // getRecomendedEvents({
-    //   variables: {
-    //     first: 12
-    //   }
-    // })
-
     if (updateTrigger > 0) {
       setModal({
         type: 'followers',
