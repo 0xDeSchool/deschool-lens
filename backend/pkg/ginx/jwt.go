@@ -52,36 +52,31 @@ const (
 	ClaimUserAddr = "addr"
 )
 
-// 添加jwt
-func AddJwt(builder *server.ServerBuiler, configure func(*jwt.GinJWTMiddleware)) {
+// AddJwt 添加jwt
+func AddJwt(builder *server.ServerBuiler, routePrefix string, configure func(*jwt.GinJWTMiddleware)) {
 	authMidd := AuthHandlerFunc(builder)
 	if authMidd != nil {
 		return
 	}
-	authMiddleware, err := NewJwtMiddleware(configure)
+	jwtMid, err := NewJwtMiddleware(configure)
 	errx.CheckError(err)
-	builder.Items["JwtAuthMiddleware"] = authMiddleware
+	builder.Items["JwtAuthMiddleware"] = jwtMid
 	builder.PreConfigure(func(s *server.Server) error {
 		// 登录接口，验证签名
-		s.G.POST("/api/login", authMiddleware.LoginHandler)
+		s.Route.POST(routePrefix+"/login", jwtMid.LoginHandler)
 		// 登出接口
-		s.G.POST("/api/logout", authMiddleware.LogoutHandler)
+		s.Route.POST(routePrefix+"/logout", jwtMid.LogoutHandler)
 		// 其他认证接口
-		s.G.POST("/api/refresh_token", authMiddleware.RefreshHandler)
-
-		// 未匹配路由
-		s.G.NoRoute(func(c *gin.Context) {
-			NotFound(c)
-		})
+		s.Route.POST(routePrefix+"/refresh_token", jwtMid.RefreshHandler)
 		return nil
 	})
 	builder.App.ConfigureServices(func() error {
-		di.AddValue(authMiddleware)
+		di.AddValue(jwtMid)
 		return nil
 	})
 }
 
-// 获取认证中间件handler
+// AuthHandlerFunc 获取认证中间件handler
 func AuthHandlerFunc(buidler *server.ServerBuiler) gin.HandlerFunc {
 	m, ok := buidler.Items["JwtAuthMiddleware"]
 	if !ok {
@@ -94,7 +89,7 @@ func AuthHandlerFunc(buidler *server.ServerBuiler) gin.HandlerFunc {
 	// return func(ctx *gin.Context) {}
 }
 
-// 支持匿名和用户登录两种访问方式
+// OptionalAuthHandlerFunc 支持匿名和用户登录两种访问方式
 func OptionalAuthHandlerFunc(buidler *server.ServerBuiler) gin.HandlerFunc {
 	m, ok := buidler.Items["JwtAuthMiddleware"]
 	if !ok {

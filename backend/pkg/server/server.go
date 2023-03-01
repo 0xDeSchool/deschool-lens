@@ -18,14 +18,17 @@ type ServerOptions struct {
 }
 
 type Server struct {
-	G       *gin.Engine
+	g *gin.Engine
+
 	Options *ServerOptions
+	Route   gin.IRouter
 }
 
 func NewServer(g *gin.Engine, options *ServerOptions) *Server {
 	return &Server{
-		G:       g,
+		g:       g,
 		Options: options,
+		Route:   g,
 	}
 }
 
@@ -37,5 +40,5 @@ func (s Server) Run() error {
 	log.Info("********** Lens Hackathon Micro-service Starting ***********\n")
 	log.Info("Listening port: " + addr)
 
-	return s.G.Run(addr)
+	return s.g.Run(addr)
 }
