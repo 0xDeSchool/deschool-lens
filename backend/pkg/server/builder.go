@@ -39,6 +39,11 @@ func (b *ServerBuiler) Configure(action ServerConfigureFunc) *ServerBuiler {
 	return b
 }
 
+func (b *ServerBuiler) Add(module func(*ServerBuiler)) *ServerBuiler {
+	module(b)
+	return b
+}
+
 func (b *ServerBuiler) Build() (*Server, error) {
 	g := gin.Default()
 	server := NewServer(g, b.Options)
