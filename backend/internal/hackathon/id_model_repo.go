@@ -2,7 +2,6 @@ package hackathon
 
 import (
 	"context"
-
 	"github.com/0xdeschool/deschool-lens/backend/pkg/ddd"
 )
 
