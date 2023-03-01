@@ -1,7 +1,9 @@
 const EN_US_USERBAR = {
   home: 'HOME',
   exploreNav: 'EXPLORE',
+  plazaNav: 'PLAZA',
   matchNav: 'MATCH',
+  learnTogetherNav: 'LEARN TOGETHER',
   courses: 'COURSE CENTER',
   roadmap: 'ROADMAP',
   community: 'COMMUNITY',

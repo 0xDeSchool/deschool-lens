@@ -1,7 +1,9 @@
 const ZH_CN_USERBAR = {
   home: '主页',
   exploreNav: '名人堂',
+  plazaNav: '广场',
   matchNav: '同道中人',
+  learnTogetherNav: 'LEARN TOGETHER',
   roadmap: '路线图',
   community: '社区',
   whitepaper: '白皮书',

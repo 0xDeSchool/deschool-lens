@@ -42,12 +42,16 @@ const UserBar = () => {
       name: t('home'),
     },
     {
-      path: '/explore',
-      name: t('exploreNav'),
+      path: '/plaza',
+      name: t('plazaNav'),
     },
     {
       path: '/profile/match',
       name: t('matchNav'),
+    },
+    {
+      path: '/learntogether',
+      name: t('learnTogetherNav'),
     },
   ]
 
@@ -151,8 +155,8 @@ const UserBar = () => {
   }
 
   const updateNavStatus = () => {
-    if (location.pathname.startsWith('/explore')) {
-      setActiveNav('/explore')
+    if (location.pathname.startsWith('/plaza')) {
+      setActiveNav('/plaza')
     } else if (location.pathname.includes('/landing')) {
       setActiveNav('/landing')
     } else {
