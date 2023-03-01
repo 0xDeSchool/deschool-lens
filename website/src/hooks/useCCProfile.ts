@@ -7,7 +7,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 5;
 
 const useCCProfile = (defaultPage: number) => {
   const [recomendedEvents, setRecomendedEvents] = useState<RecomendedEvents[]>([]);
@@ -22,8 +22,8 @@ const useCCProfile = (defaultPage: number) => {
       try {
         setLoading(true)
         const result = await client.query({query: GET_RECOMENDED_EVENTS, variables: {first: PAGE_SIZE * page}})
-        setRecomendedEvents(result.data.trendingEvents.list)
-        console.log('result', result.data.trendingEvents.pageInfo.hasNextPage)
+        setRecomendedEvents(result?.data?.trendingEvents?.list)
+        setHasNextPage(result?.data?.trendingEvents?.pageInfo?.hasNextPage)
       } catch (error: Error | unknown) {
         setHasNextPage(false)
         if (error instanceof Error) {
@@ -42,7 +42,7 @@ const useCCProfile = (defaultPage: number) => {
     if (hasNextPage) {
       setPage(page + 1)
     }
-  }, [page])
+  }, [page, hasNextPage])
 
   return {loading, error, value, hasNextPage, loadMore}
 }
