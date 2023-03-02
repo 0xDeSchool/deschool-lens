@@ -10,8 +10,8 @@ import (
 )
 
 func httpApi(s *server.Server) {
-	s.G.POST("/api/interest", createInterest)
-	s.G.DELETE("/api/interest", cancelInterest)
+	s.Route.POST("/api/interest", createInterest)
+	s.Route.DELETE("/api/interest", cancelInterest)
 
 }
 

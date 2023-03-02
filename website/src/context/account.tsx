@@ -86,6 +86,18 @@ export class UserContext {
     }
     return roles
   }
+
+  get address() {
+    if (this.cyberToken){
+      return this.cyberToken.address
+    }
+    if (this.lensToken) {
+      return this.lensToken.address
+    }
+    if (this.deschoolProfile) {
+      return this.deschoolProfile.address
+    }
+  }
 }
 
 export const AccountContext = createContext<AccountContextProps>({

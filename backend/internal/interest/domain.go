@@ -16,6 +16,8 @@ type Interest struct {
 type Repository interface {
 	ddd.RepositoryBase[Interest]
 
+	GetManyByAddr(ctx context.Context, addresses []string, targetType string) []Interest
+
 	DeleteBy(ctx context.Context, address, targetId, targetType string) int
-	CheckMany(ctx context.Context, address []string, targetId, targetType string) []string
+	CheckMany(ctx context.Context, address []string, targetId []string, targetType string) []Interest
 }

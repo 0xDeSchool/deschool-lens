@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
 
-	"github.com/0xdeschool/deschool-lens/backend/pkg/errx"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/utils/linq"
 )
 
@@ -38,7 +37,7 @@ func (hm *HackathonManager) RunRecommendations(ctx context.Context, address stri
 		}
 	}
 	if recommendation == nil {
-		errx.Panic("The application's questionnaire stamps are not enough to give a convincing recommendation, please come back later and thanks for your support!")
+		//errx.Panic("The application's questionnaire stamps are not enough to give a convincing recommendation, please come back later and thanks for your support!")
 		return nil
 	}
 

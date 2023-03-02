@@ -33,7 +33,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: caesarlynch/booth:main
+          tags: caesarlynch/booth-cc:main
 
       - name: Remote SSH Commands
         uses: fifsky/ssh-action@v0.0.6

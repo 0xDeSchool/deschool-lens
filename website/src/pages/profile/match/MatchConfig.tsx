@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next'
 import Tooltip from 'antd/es/tooltip'
 import type { q11eParam } from '~/api/booth/booth'
 import { getQ11e, putQ11e } from '~/api/booth/booth'
-import { useAccount } from '~/context/account'
+import { getUserContext } from '~/context/account'
 import Suggest from './suggested'
 import { randomConfetti } from '../resume/utils/confetti'
 
@@ -19,6 +19,10 @@ const InterestTag = [
   {
     value: 'defi',
     label: 'DeFi',
+  },
+  {
+    value: 'web3',
+    label: 'Web3',
   },
   {
     value: 'dao',
@@ -74,12 +78,11 @@ const MatchConfig = () => {
   const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
   const { t } = useTranslation()
-  const { lensToken, deschoolProfile } = useAccount()
   const [open, setOpen] = useState(false)
   const [fired, setFired] = useState(false)
 
   const loadInitialValues = async () => {
-    const address = lensToken?.address || deschoolProfile?.address
+    const address = getUserContext().address
     if (!address) {
       return
     }
@@ -109,9 +112,9 @@ const MatchConfig = () => {
       }
 
       // 检查地址
-      let address = lensToken?.address || deschoolProfile?.address
+      let address = getUserContext().address
       if (!address) {
-        const dscAddr = deschoolProfile?.address
+        const dscAddr = getUserContext().address
         if (!dscAddr) {
           setLoading(false)
           message.error('Not log in yet. Cannot get address from both Lens and DeSchool, please login and try again')
