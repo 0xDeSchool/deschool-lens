@@ -11,12 +11,14 @@ import { Link } from 'react-router-dom'
 import type { CyberProfile } from '~/lib/types/app'
 import LensAvatar from './avatar'
 import { useLazyQuery } from '@apollo/client'
-import { GET_FOLLOWING_BY_HANDLE } from '~/api/cc/graphql/GetFollowingsByHandle'
 
 import useFollow from '~/hooks/useCyberConnectFollow'
 import useUnFollow from '~/hooks/useCyberConnectUnfollow'
 import { GET_FOLLOWING_LIST_BY_ADDRESS_EVM } from '~/api/cc/graphql/GetFollowingListByAddressEVM'
+import { GET_FOLLOWER_LIST_BY_HANDLE } from '~/api/cc/graphql/GetFollowersListByHandle'
 
+const PADE_SIZE = 10
+let page = 1
 const FollowersModal = (props: {
   routeAddress: string
   profileId: string | undefined
@@ -26,15 +28,16 @@ const FollowersModal = (props: {
 }) => {
   const { routeAddress, type, visible, closeModal } = props
   const { t } = useTranslation()
-  const { cyberToken } = useAccount()
+  const { cyberToken, cyberProfile } = useAccount()
   const [follows, setFollows] = useState([] as Array<CyberProfile | null>)
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
   const [getFollowingByAddressEVM] = useLazyQuery(GET_FOLLOWING_LIST_BY_ADDRESS_EVM)
-  const [getFollowingByHandle] = useLazyQuery(GET_FOLLOWING_BY_HANDLE)
+  const [getFollowingByHandle] = useLazyQuery(GET_FOLLOWER_LIST_BY_HANDLE)
   const { follow } = useFollow();
   const { unFollow } = useUnFollow();
   const [isFollowLoaindg, setIsFollowLoading] = useState(false)
+  const [hasNextPage, setHasNextPage] = useState(false)
 
   // 获取用户的关注者
   const initUserFollowersInfo = async (handle: string, address: string) => {
@@ -42,10 +45,27 @@ const FollowersModal = (props: {
       variables: {
         handle,
         me: address,
+        first: page * PADE_SIZE,
       }
     })
-    const primaryProfile = resp?.data?.profileByHandle
-    console.log('primaryProfile', primaryProfile)
+    const followers = resp?.data?.profileByHandle?.followers
+    const hasNextPage = followers?.pageInfo?.hasNextPage
+    setHasNextPage(hasNextPage)
+    console.log('followers', followers)
+    let edges = followers?.edges || []
+    edges = edges.map((item: any) => {
+      return {
+        address: item.node.address.address,
+        avatar: item.node.profile.avatar,
+        handleStr: item.node.profile.handle,
+        handle: item.node.profile.handle.split('.cc')[0],
+        id: item.node.profile.id,
+        isFollowedByMe: item.node.profile.isFollowedByMe,
+        bio: item.node.profile.metadataInfo.bio,
+        displayName: item.node.profile.metadataInfo.displayName,
+      }
+    })
+    setFollows(edges)
   }
 
   // 获取用户的关注的人
@@ -56,6 +76,8 @@ const FollowersModal = (props: {
       }
     })
     const followings = resp?.data?.address?.followings
+    const hasNextPage = followings?.pageInfo?.hasNextPage
+    setHasNextPage(hasNextPage)
     let edges = followings?.edges || []
     edges = edges.map((item: any) => {
       return {
@@ -70,7 +92,7 @@ const FollowersModal = (props: {
     setLoading(true)
     try {
       if (type === 'followers') {
-        initUserFollowersInfo(routeAddress!, cyberToken?.address!)
+        initUserFollowersInfo(cyberProfile?.handle, cyberToken?.address!)
       } else {
         initUserFollowingsInfo(routeAddress!)
       }
@@ -89,6 +111,7 @@ const FollowersModal = (props: {
 
   const handleAddMore = async () => {
     setLoadingMore(true)
+    page += 1
     try {
       await initFollowRelationship()
     } catch (error: any) {
@@ -145,12 +168,12 @@ const FollowersModal = (props: {
           {follows && follows.length > 0 ? (
             <div className="w-full">
               {follows?.map(follow => (
-                <div key={follow?.id} className="relative border rounded-xl p-2 w-full frs-center">
+                <div key={`${follow?.id}-${follow?.address}`} className="relative border rounded-xl p-2 w-full frs-center">
                   <div className="relative w-60px h-60px">
                     <LensAvatar avatarUrl={follow?.avatar} size={60} wrapperClassName="fcc-center w-full" />
                   </div>
                   <div className="flex-1 fcs-center ml-2">
-                    <Link to={`/profile/${follow?.ownedBy}/resume`}>
+                    <Link to={`/profile/${follow?.address}/resume`}>
                       <h1>{follow?.name}</h1>
                     </Link>
                     <p>{follow?.bio}</p>
@@ -185,7 +208,7 @@ const FollowersModal = (props: {
                   <ShowMoreLoading />
                 </div>
               )}
-              {follows?.length > 0 && (
+              {hasNextPage && (
                 <div className="text-center mt-10">
                   <button
                     type="button"

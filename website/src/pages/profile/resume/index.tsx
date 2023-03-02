@@ -15,7 +15,7 @@ import ResumeBlock from './components/resumeBlock'
 import { BlockType } from './enum'
 import type { ResumeCardData, ResumeData, SbtInfo } from './types'
 import { randomConfetti } from './utils/confetti'
-import {getVisitCase, VisiteType} from '../utils/visitCase'
+import {getVisitCase, VisitType} from '../utils/visitCase'
 import useCyberConnect from '~/hooks/useCyberConnect'
 import Congradulations from './components/congradulations'
 
@@ -80,7 +80,7 @@ const Resume = () => {
   const [userAddr, setUserAddr] = useState<string>('')
   const [loadingLens, setLoadingLens] = useState(false)
   const [loadingCyber, setLoadingCyber] = useState(false)
-  const [visitCase, setVisitCase] = useState<VisiteType>(-1) // 0-自己访问自己 1-自己访问别人 -1-没登录访问自己
+  const [visitCase, setVisitCase] = useState<VisitType>(-1) // 0-自己访问自己 1-自己访问别人 -1-没登录访问自己
   const ccInstance = useCyberConnect()
 
   // 把一条变成 Dayjs Obj

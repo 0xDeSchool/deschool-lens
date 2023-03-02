@@ -13,6 +13,7 @@ const AvatarList: React.FC<AvatarListProps> = (props) => {
       {avatarList.map((avatar: string, index: number) => {
         return (
           <Avatar
+            key={`${index}-${avatar}`}
             src={avatar}
             size={size}
             style={{ transform: `translateX(-${10 * index}px)`, border: '2px solid white', cursor: 'pointer' }}

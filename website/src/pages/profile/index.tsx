@@ -8,7 +8,7 @@ import { Outlet, useLocation, useNavigate, useParams } from 'react-router'
 import { useAccount } from '~/context/account'
 import UserCard from './userCard'
 import Verified from './resume/components/verified'
-import {getVisitCase, VisiteType} from './utils/visitCase'
+import {getVisitCase, VisitType} from './utils/visitCase'
 import message from 'antd/es/message'
 
 const UserProfile = () => {
@@ -17,7 +17,7 @@ const UserProfile = () => {
   const { lensToken, cyberToken, deschoolProfile } = useAccount()
   const location = useLocation()
 
-  const [visitCase, setVisitCase] = useState<VisiteType>(-1) // 0-自己访问自己 1-自己访问别人 -1-没登录访问自己
+  const [visitCase, setVisitCase] = useState<VisitType>(-1) // 0-自己访问自己 1-自己访问别人 -1-没登录访问自己
 
   // 初始化登录场景，区分自己访问自己或自己访问别人或者别人访问
   const initCase = () => {

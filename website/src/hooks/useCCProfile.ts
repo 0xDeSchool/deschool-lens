@@ -1,5 +1,5 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { GET_RECOMENDED_EVENTS } from '~/api/cc/graphql/GetRecommand';
 
 const client = new ApolloClient({
@@ -7,20 +7,25 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-export const useCCProfile = () => {
+const PAGE_SIZE = 5;
+
+const useCCProfile = (defaultPage: number) => {
   const [recomendedEvents, setRecomendedEvents] = useState<RecomendedEvents[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<Error>();
-  const value = useMemo(() => recomendedEvents, [recomendedEvents]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<Error | null>(null);
+  const [page, setPage] = useState<number>(defaultPage);
+  const [hasNextPage, setHasNextPage] = useState<boolean>(false);
+  const value = useMemo(() => recomendedEvents, [recomendedEvents])
 
   useEffect(() => {
     const initData = async () => {
       try {
         setLoading(true)
-        const result = await client.query({query: GET_RECOMENDED_EVENTS})
-        console.log('result======', result)
-        setRecomendedEvents(result.data.trendingEvents.list)
+        const result = await client.query({query: GET_RECOMENDED_EVENTS, variables: {first: PAGE_SIZE * page}})
+        setRecomendedEvents(result?.data?.trendingEvents?.list)
+        setHasNextPage(result?.data?.trendingEvents?.pageInfo?.hasNextPage)
       } catch (error: Error | unknown) {
+        setHasNextPage(false)
         if (error instanceof Error) {
           setError(error)
         } else {
@@ -31,6 +36,15 @@ export const useCCProfile = () => {
       }
     }
     initData()
-  }, [])
-  return [value]
+  }, [page])
+
+  const loadMore = useCallback(() => {
+    if (hasNextPage) {
+      setPage(page + 1)
+    }
+  }, [page, hasNextPage])
+
+  return {loading, error, value, hasNextPage, loadMore}
 }
+
+export default useCCProfile;
