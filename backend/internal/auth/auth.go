@@ -157,12 +157,13 @@ func getSignMsg(ctx *gin.Context) {
 	var input SignMessageInput
 	err := ctx.BindJSON(&input)
 	errx.CheckError(err)
-	if !common.IsHexAddress(input.Address) {
-		ginx.PanicValidatition("invalid address")
+	currentUser := ginx.CurrentUser(ctx)
+	if !currentUser.Authenticated() {
+		ginx.PanicUnAuthenticated("unauthenticated")
 	}
-	addr := common.HexToAddress(input.Address)
-	message := identity.CreateSignMessage(addr)
-	ctx.JSONP(http.StatusOK, SingMessageOutput{
+	addr := common.HexToAddress(currentUser.Address)
+	message := identity.CreateSignMessage(addr, input.SignType)
+	ctx.JSON(http.StatusOK, SingMessageOutput{
 		Message: message,
 	})
 }

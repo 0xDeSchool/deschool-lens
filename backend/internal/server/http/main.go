@@ -63,6 +63,8 @@ func HackathonApi(sb *server.ServerBuiler) {
 		baseRoute.GET("/follow/following", followingGetHandler)
 		baseRoute.GET("/follow/follower", followerGetHandler)
 		baseRoute.DELETE("/follow", followDeleteHandler)
+
+		baseRoute.POST("/events", filterEvents)
 		return nil
 	})
 }

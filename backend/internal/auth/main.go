@@ -43,9 +43,10 @@ func AddAuth(builder *server.ServerBuiler) {
 }
 
 func configureRoutes(builder *server.ServerBuiler) {
+	auth := ginx.AuthHandlerFunc(builder)
 	builder.Configure(func(s *server.Server) error {
 		// 获取nonce进行签名
-		s.Route.POST("/v1/sign-msg", getSignMsg)
+		s.Route.POST("/v1/sign-msg", auth, getSignMsg)
 		return nil
 	})
 }

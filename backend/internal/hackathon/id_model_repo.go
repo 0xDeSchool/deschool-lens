@@ -8,9 +8,10 @@ import (
 type PlatformType int
 
 const (
-	BoothPlatform    = 0
-	DeSchoolPlatform = 1
-	LensPlatform     = 2
+	BoothPlatform        = 0
+	DeSchoolPlatform     = 1
+	LensPlatform         = 2
+	CyberConnectPlatform = 3
 )
 
 type Id struct {
@@ -27,4 +28,6 @@ type IdRepository interface {
 	CheckExistsByAddrBaseAddrAndPltfm(ctx context.Context, address string, baseAddr string, platform PlatformType) bool
 	GetListByBaseAddr(ctx context.Context, baseAddr string) []Id
 	GetTen(ctx context.Context) []Id
+
+	CheckAddrs(ctx context.Context, addrs []string) []string
 }

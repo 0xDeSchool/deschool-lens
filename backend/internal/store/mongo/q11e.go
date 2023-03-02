@@ -48,3 +48,10 @@ func (r *MongoQ11eRepository) CheckAndGetExistsByAddr(ctx context.Context, addre
 
 	return true, &result
 }
+
+func (r *MongoQ11eRepository) GetManyByAddress(ctx context.Context, address []string) []hackathon.Q11e {
+	filter := bson.D{
+		{Key: "address", Value: bson.D{{Key: "$in", Value: address}}},
+	}
+	return r.Find(ctx, filter)
+}

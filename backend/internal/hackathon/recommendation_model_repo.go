@@ -1,6 +1,7 @@
 package hackathon
 
 import (
+	"context"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/ddd"
 	"time"
 )
@@ -15,4 +16,6 @@ type UserRecommendation struct {
 
 type UserRecommendationRepository interface {
 	ddd.RepositoryBase[UserRecommendation]
+
+	GetUsers(ctx context.Context, addr string) []string
 }

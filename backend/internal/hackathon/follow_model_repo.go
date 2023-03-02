@@ -2,8 +2,6 @@ package hackathon
 
 import (
 	"context"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-
 	"github.com/0xdeschool/deschool-lens/backend/pkg/ddd"
 )
 
@@ -19,7 +17,7 @@ type FollowRepository interface {
 	GetListByFilter(ctx context.Context, addr string, key string) []Follow
 	DeleteByToAndFrom(ctx context.Context, fromAddr string, toAddr string) bool
 
-	GetFollowingUsers(ctx context.Context, addr string) []primitive.ObjectID
+	GetFollowingUsers(ctx context.Context, addr string) []string
 }
 
 type FollowerList struct {

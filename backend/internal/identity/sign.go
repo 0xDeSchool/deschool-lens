@@ -34,23 +34,23 @@ const (
 
 var store = cache.Create(10 * time.Minute)
 
-func CreateSignMessage(address common.Address, t SignType, data map[string]string) string {
+func CreateSignMessage(address common.Address, t SignType) string {
 	uuid, err := uuid.NewUUID()
 	errx.CheckError(err)
 	nonce := uuid.String()
-	signMsg := msg(nonce, t, data)
+	signMsg := msg(nonce, t, map[string]string{})
 	cache.SetString(store, string(t)+":"+address.Hex(), signMsg)
 	return signMsg
 }
 
-func VerifySignMessage(address common.Address, sign string, t SignType) bool {
+func VerifySignMessage(address common.Address, sign string, signType SignType, t WalletType) bool {
 	hexAddr := address.Hex()
 	nonce, ok := cache.GetString(store, hexAddr)
 	if ok {
 		cache.Delete(store, hexAddr)
 	}
-	message := msg(nonce, t, nil)
-	return verifySig(address, sign, message, MetaMask)
+	message := msg(nonce, signType, map[string]string{})
+	return verifySig(address, sign, message, t)
 }
 
 func verifySig(from common.Address, sigHex, signMessage string, t WalletType) bool {
@@ -94,7 +94,12 @@ func verifySigUniPass(addr common.Address, msg string, sig string) bool {
 }
 
 func msg(nonce string, t SignType, data map[string]string) string {
-	return "Booth is kindly requesting to Sign in securely, with nonce: " + nonce + ". Sign and login now, begin your journey to Booth!"
+	if t == SignTypeLogin {
+		return "Booth is kindly requesting to Sign in securely, with nonce: " + nonce + ". Sign and login now, begin your journey to Booth!"
+	} else if t == SignTypeLink {
+		return "Booth is kindly requesting to link your account securely, with nonce: " + nonce + ". Sign and link now, begin your journey to Booth!"
+	}
+	return ""
 }
 
 func signCacheKey() {

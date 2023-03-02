@@ -10,6 +10,7 @@ type User struct {
 	ddd.WithExtraEntity     `bson:",inline"`
 	Address                 string          `bson:"address"`
 	UserName                string          `bson:"userName"`
+	NickName                string          `bson:"nickName"`
 	Avatar                  string          `bson:"avatar"`
 	Bio                     string          `bson:"bio"`
 	Platforms               []*UserPlatform `bson:"-"`

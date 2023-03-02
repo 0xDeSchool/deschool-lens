@@ -17,4 +17,5 @@ type Repository interface {
 	ddd.RepositoryBase[Interest]
 
 	DeleteBy(ctx context.Context, address, targetId, targetType string) int
+	CheckMany(ctx context.Context, address []string, targetId, targetType string) []string
 }

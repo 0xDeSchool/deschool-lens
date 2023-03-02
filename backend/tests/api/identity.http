@@ -1,0 +1,6 @@
+### link
+POST  {{host}}/v1/identity/link
+
+{
+labels:["web3"]
+}
