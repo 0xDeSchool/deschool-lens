@@ -90,7 +90,7 @@ const ResumeBlock = (input: ResumeBlockInput) => {
         <Button
           type="dashed"
           className="w-full my-8"
-          onClick={() => handleCreateCard(blockType, dataArr === undefined ? 0 : dataArr.length + 1)}
+          onClick={() => handleCreateCard(blockType)}
         >
           +
         </Button>

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import Button from 'antd/es/button'
 import message from 'antd/es/message'
 import dayjs from 'dayjs'
+import { v4 as uuid } from 'uuid'
 import ReactLoading from 'react-loading'
 import Modal from 'antd/es/modal'
 import { useParams } from 'react-router-dom'
@@ -18,6 +19,7 @@ import { randomConfetti } from './utils/confetti'
 import {getVisitCase, VisitType} from '../utils/visitCase'
 import useCyberConnect from '~/hooks/useCyberConnect'
 import Congradulations from './components/congradulations'
+
 
 export const STANDARD_RESUME_DATA: ResumeData = {
   career: [
@@ -35,8 +37,7 @@ export const STANDARD_RESUME_DATA: ResumeData = {
         },
       ],
       blockType: BlockType.CareerBlockType,
-      order: 1,
-      id: 0,
+      id: uuid(),
     },
   ],
   edu: [
@@ -54,8 +55,7 @@ export const STANDARD_RESUME_DATA: ResumeData = {
         },
       ],
       blockType: BlockType.EduBlockType,
-      order: 1,
-      id: 0,
+      id: uuid(),
     },
   ],
 }
@@ -142,7 +142,6 @@ const Resume = () => {
   const handleEditOrCreateCardSave = async (newData: ResumeCardData) => {
     let dataIndex: number | undefined
     const bt = newData.blockType
-    const { order } = newData
 
     let newResumeData: ResumeData | undefined
     // 场景一：创造卡片
@@ -206,7 +205,6 @@ const Resume = () => {
       endTime: undefined,
       proofs: [],
       blockType: bt,
-      order,
       id: newData.id,
     }
     await setCardData(emptyCardData)
@@ -226,24 +224,24 @@ const Resume = () => {
   // 如果删除了某个 order，那么后面的 order 就会变成前面的 order，可能会有 order 重复的情况
 
   // 删除经历 - 确认
-  const handleDeleteCard = (bt: BlockType, index: number) => {
+  const handleDeleteCard = (bt: BlockType, id: string) => {
     const newResumeData: ResumeData  = { edu: [], career: [] }
     if (bt === BlockType.CareerBlockType && resumeData?.career !== undefined) {
-      newResumeData.career = resumeData?.career?.filter((_, i) => i !== index)
+      newResumeData.career = resumeData?.career?.filter(item => item.id !== id)
     } else if (bt === BlockType.EduBlockType && resumeData?.edu !== undefined) {
-      newResumeData.edu = resumeData?.edu?.filter((_, i) => i !== index)
+      newResumeData.edu = resumeData?.edu?.filter(item => item.id !== id)
     }
     setResumeData(newResumeData)
   }
 
   // 开始编辑卡片
-  const handleEditCard = (bt: BlockType, index: number) => {
+  const handleEditCard = (bt: BlockType, id: string) => {
     let card: ResumeCardData | undefined
 
     if (bt === BlockType.CareerBlockType && resumeData?.career !== undefined) {
-      card = resumeData?.career[index]
+      card = resumeData?.career?.find(item => item.id === id)
     } else if (bt === BlockType.EduBlockType && resumeData?.edu !== undefined) {
-      card = resumeData?.edu[index]
+      card = resumeData?.edu?.find(item => item.id === id)
     }
     if(!card) {
       return
@@ -253,7 +251,7 @@ const Resume = () => {
   }
 
   // 开始创建卡片
-  const handleCreateCard = (bt: BlockType, id: number) => {
+  const handleCreateCard = (bt: BlockType) => {
     const emptyCardData: ResumeCardData = {
       title: '',
       description: '',
@@ -261,8 +259,7 @@ const Resume = () => {
       endTime: undefined,
       proofs: undefined,
       blockType: bt,
-      order: id,
-      id,
+      id: uuid(),
     }
     setCardData(emptyCardData)
     setIsCreateCard(true)
