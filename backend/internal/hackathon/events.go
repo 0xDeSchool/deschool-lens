@@ -176,15 +176,16 @@ func RecommendCourses(ctx context.Context, labels []string) []*CourseDetail {
 		PageAndSort: *x.PageLimit(3),
 		Labels:      labels,
 	})
-	resp, err := http.Post(url, "application/json", bytes.NewBuffer(body))
-	if err != nil {
-		log.Warn("request recommend course error", err)
-	}
-	defer resp.Body.Close()
-
 	result := ddd.PagedItems[*CourseDetail]{
 		Items: make([]*CourseDetail, 0),
 	}
+	resp, err := http.Post(url, "application/json", bytes.NewBuffer(body))
+	if err != nil {
+		log.Warn("request recommend course error", err)
+		return result.Items
+	}
+
+	defer resp.Body.Close()
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		log.Warn("decode recommend course error", err)
 	}
