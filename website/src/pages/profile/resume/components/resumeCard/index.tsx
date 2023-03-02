@@ -47,7 +47,7 @@ const ResumeCard = (input: ResumeCardInput) => {
   }
 
   return (
-    <div className="pt-4 px-4 hover:bg-gray-50 rounded-md">
+    <div className="pt-4 px-4 hover:bg-gray-50 rounded-md w-full">
       {/* Title */}
       <div className="flex justify-between items-center">
         <div className="font-bold my-2 text-lg">{data.title}</div>
@@ -63,11 +63,10 @@ const ResumeCard = (input: ResumeCardInput) => {
       <div className="mt-1">{data.description}</div>
 
       {/* SBTs Title */}
-      <div className="font-bold mt-8 mb-2">Proofs of Commitments</div>
-
+      {data.proofs && data.proofs.length > 0 && <div className="font-bold mt-8 mb-2">Proofs of Commitments</div>}
       {/* Proofs of Work */}
       <div className="flex justify-between">
-        <div className="flex flex-wrap">
+        <div className="flex flex-wrap flex-1">
           {data.proofs &&
             data.proofs.map(item => (
               <div key={`sbt-${item.address}-${item.tokenId}`} className="w-[110px] mr-2 relative">

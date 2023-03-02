@@ -22,6 +22,7 @@ import Congradulations from './components/congradulations'
 export const STANDARD_RESUME_DATA: ResumeData = {
   career: [
     {
+      id: '0',
       title: 'Booth Product Experiencer',
       description:
         "I experienced Booth's novel product, which is the LinkedIn of the Web3 world, which can provide people with authentic and credible work and education experience SBT as resume proof. Through Booth, we link to better and more real Web3 workers. I have fully experienced this product and made valuable suggestions",
@@ -40,6 +41,7 @@ export const STANDARD_RESUME_DATA: ResumeData = {
   ],
   edu: [
     {
+      id: '0',
       title: 'Booth & DeSchool Product Research',
       description:
         'I learned the knowledge of Web3 products, and successfully logged into the Booth product by linking Metamask and lens. This is an important educational experience for me. I learned the basic usage of Web3 products, so I have a credible skill certification when I look for a Web3 job or communicate with people in DAO in the future.',
@@ -67,7 +69,7 @@ const Resume = () => {
   const [isEditResume, setIsEditResume] = useState(false)
   const [isCreateCard, setIsCreateCard] = useState(false)
   const [isEditCard, setIsEditCard] = useState(false)
-  const [resumeData, setResumeData] = useState<ResumeData | undefined>()
+  const [resumeData, setResumeData] = useState<ResumeData>()
   const [cardData, setCardData] = useState<ResumeCardData | undefined>()
   const [loading, setLoading] = useState(true)
   const [putting, setPutting] = useState(false)
@@ -484,7 +486,7 @@ const Resume = () => {
           {/* 职业板块数据 */}
           <ResumeBlock
             blockType={BlockType.CareerBlockType}
-            dataArr={resumeData?.career}
+            dataArr={resumeData?.career || []}
             handleEditCard={handleEditCard}
             handleDeleteCard={handleDeleteCard}
             handleCreateCard={handleCreateCard}
@@ -494,7 +496,7 @@ const Resume = () => {
           {/* 教育板块数据 */}
           <ResumeBlock
             blockType={BlockType.EduBlockType}
-            dataArr={resumeData?.edu}
+            dataArr={resumeData?.edu || []}
             handleEditCard={handleEditCard}
             handleDeleteCard={handleDeleteCard}
             isEditResume={isEditResume}
