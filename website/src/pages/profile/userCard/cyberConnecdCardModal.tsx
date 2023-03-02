@@ -11,11 +11,11 @@ import { Link } from 'react-router-dom'
 import type { CyberProfile } from '~/lib/types/app'
 import LensAvatar from './avatar'
 import { useLazyQuery } from '@apollo/client'
-import { GET_FOLLOWER_BY_HANDLE } from '~/api/cc/graphql/GetFollowersByHandle'
 
 import useFollow from '~/hooks/useCyberConnectFollow'
 import useUnFollow from '~/hooks/useCyberConnectUnfollow'
 import { GET_FOLLOWING_LIST_BY_ADDRESS_EVM } from '~/api/cc/graphql/GetFollowingListByAddressEVM'
+import { GET_FOLLOWER_LIST_BY_HANDLE } from '~/api/cc/graphql/GetFollowersListByHandle'
 
 const FollowersModal = (props: {
   routeAddress: string
@@ -31,10 +31,11 @@ const FollowersModal = (props: {
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
   const [getFollowingByAddressEVM] = useLazyQuery(GET_FOLLOWING_LIST_BY_ADDRESS_EVM)
-  const [getFollowingByHandle] = useLazyQuery(GET_FOLLOWER_BY_HANDLE)
+  const [getFollowingByHandle] = useLazyQuery(GET_FOLLOWER_LIST_BY_HANDLE)
   const { follow } = useFollow();
   const { unFollow } = useUnFollow();
   const [isFollowLoaindg, setIsFollowLoading] = useState(false)
+  const [hasNextPage, setHasNextPage] = useState(false)
 
   // 获取用户的关注者
   const initUserFollowersInfo = async (handle: string, address: string) => {
@@ -42,6 +43,7 @@ const FollowersModal = (props: {
       variables: {
         handle,
         me: address,
+        first: 10,
       }
     })
     const primaryProfile = resp?.data?.profileByHandle
@@ -56,6 +58,8 @@ const FollowersModal = (props: {
       }
     })
     const followings = resp?.data?.address?.followings
+    const hasNextPage = followings?.pageInfo?.hasNextPage
+    setHasNextPage(hasNextPage)
     let edges = followings?.edges || []
     edges = edges.map((item: any) => {
       return {
@@ -185,7 +189,7 @@ const FollowersModal = (props: {
                   <ShowMoreLoading />
                 </div>
               )}
-              {follows?.length > 0 && (
+              {hasNextPage && (
                 <div className="text-center mt-10">
                   <button
                     type="button"
