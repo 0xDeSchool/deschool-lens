@@ -17,9 +17,14 @@ export const GET_FOLLOWER_LIST_BY_HANDLE = gql`
             profile {
               id
               handle
-              profileID
               avatar
               isFollowedByMe(me: $me)
+              metadataInfo {
+                bio
+                avatar
+                displayName
+                coverImage
+              }
             }
           }
         }

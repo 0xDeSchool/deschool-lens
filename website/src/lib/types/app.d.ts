@@ -315,6 +315,9 @@ export interface CyberProfile extends Profile {
   avatar?: string
   profileID?: number
   handleStr?: string
+  isFollowedByMe?: boolean
+  isFollowingMe?: boolean
+  address?: string
 }
 
 export interface ProfileExtend extends Profile {

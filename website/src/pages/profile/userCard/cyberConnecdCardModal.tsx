@@ -56,7 +56,13 @@ const FollowersModal = (props: {
     edges = edges.map((item: any) => {
       return {
         address: item.node.address.address,
-        ...item.node.profile,
+        avatar: item.node.profile.avatar,
+        handleStr: item.node.profile.handle,
+        handle: item.node.profile.handle.split('.cc')[0],
+        id: item.node.profile.id,
+        isFollowedByMe: item.node.profile.isFollowedByMe,
+        bio: item.node.profile.metadataInfo.bio,
+        displayName: item.node.profile.metadataInfo.displayName,
       }
     })
     setFollows(edges)
@@ -162,12 +168,12 @@ const FollowersModal = (props: {
           {follows && follows.length > 0 ? (
             <div className="w-full">
               {follows?.map(follow => (
-                <div key={follow?.id} className="relative border rounded-xl p-2 w-full frs-center">
+                <div key={`${follow?.id}-${follow?.address}`} className="relative border rounded-xl p-2 w-full frs-center">
                   <div className="relative w-60px h-60px">
                     <LensAvatar avatarUrl={follow?.avatar} size={60} wrapperClassName="fcc-center w-full" />
                   </div>
                   <div className="flex-1 fcs-center ml-2">
-                    <Link to={`/profile/${follow?.ownedBy}/resume`}>
+                    <Link to={`/profile/${follow?.address}/resume`}>
                       <h1>{follow?.name}</h1>
                     </Link>
                     <p>{follow?.bio}</p>
