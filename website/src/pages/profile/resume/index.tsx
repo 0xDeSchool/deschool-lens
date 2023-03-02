@@ -175,14 +175,14 @@ const Resume = () => {
       }
       // 职业类型
       if (bt === BlockType.CareerBlockType && newResumeData?.career !== undefined) {
-        dataIndex = newResumeData?.career.findIndex(item => item.blockType === bt && item.order === order)
+        dataIndex = newResumeData?.career.findIndex(item => item.blockType === bt && item.id === newData.id)
         if (dataIndex !== -1 && dataIndex !== undefined) {
           newResumeData.career[dataIndex] = newData
         }
       }
       // 教育类型
       else if (bt === BlockType.EduBlockType && newResumeData?.edu !== undefined) {
-        dataIndex = newResumeData?.edu.findIndex(item => item.blockType === bt && item.order === order)
+        dataIndex = newResumeData?.edu.findIndex(item => item.blockType === bt && item.id === newData.id)
         if (dataIndex !== -1 && dataIndex !== undefined) {
           newResumeData.edu[dataIndex] = newData
         }
