@@ -8,6 +8,7 @@ export interface ResumeBlockInput {
   handleDeleteCard: (bt: BlockType, order: number) => void
   isEditResume: boolean
   handleCreateCard: (bt: BlockType, order: number) => void
+  handleSortCard?: (bt: BlockType, list: ResumeCardData[]) => void
 }
 
 export interface ResumeCardInput {
@@ -40,6 +41,7 @@ export interface ResumeCardData {
   proofs: SbtInfo[] | undefined
   blockType: BlockType | undefined
   order: number
+  id: number
 }
 
 export interface SbtInfo {

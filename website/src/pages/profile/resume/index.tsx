@@ -22,7 +22,6 @@ import Congradulations from './components/congradulations'
 export const STANDARD_RESUME_DATA: ResumeData = {
   career: [
     {
-      id: '0',
       title: 'Booth Product Experiencer',
       description:
         "I experienced Booth's novel product, which is the LinkedIn of the Web3 world, which can provide people with authentic and credible work and education experience SBT as resume proof. Through Booth, we link to better and more real Web3 workers. I have fully experienced this product and made valuable suggestions",
@@ -37,11 +36,11 @@ export const STANDARD_RESUME_DATA: ResumeData = {
       ],
       blockType: BlockType.CareerBlockType,
       order: 1,
+      id: 0,
     },
   ],
   edu: [
     {
-      id: '0',
       title: 'Booth & DeSchool Product Research',
       description:
         'I learned the knowledge of Web3 products, and successfully logged into the Booth product by linking Metamask and lens. This is an important educational experience for me. I learned the basic usage of Web3 products, so I have a credible skill certification when I look for a Web3 job or communicate with people in DAO in the future.',
@@ -56,6 +55,7 @@ export const STANDARD_RESUME_DATA: ResumeData = {
       ],
       blockType: BlockType.EduBlockType,
       order: 1,
+      id: 0,
     },
   ],
 }
@@ -85,11 +85,16 @@ const Resume = () => {
   const [visitCase, setVisitCase] = useState<VisitType>(-1) // 0-自己访问自己 1-自己访问别人 -1-没登录访问自己
   const ccInstance = useCyberConnect()
 
-  // 把一条变成 Dayjs Obj
-  const convertStrToDayJsObj = (input: ResumeCardData) => {
-    input.startTime = dayjs(input.startTime)
-    input.endTime = dayjs(input.endTime)
-    return input
+  // 组装简历数据，添加id，转换时间格式
+  const convertResumeCardData = (input: ResumeCardData[]) => {
+    return input.map((item: ResumeCardData, index: number) => {
+      return {
+        ...item,
+        startTime: dayjs(item.startTime),
+        endTime: dayjs(item.endTime),
+        id: index,
+      }
+    })
   }
 
   // 重新把数据变成Obj
@@ -97,10 +102,10 @@ const Resume = () => {
     const obj = JSON.parse(input)
     // 转换格式
     if (obj.career !== undefined) {
-      obj.career = [...obj.career.map((item: ResumeCardData) => convertStrToDayJsObj(item))]
+      obj.career = [...convertResumeCardData(obj.career)]
     }
     if (obj.edu !== undefined) {
-      obj.edu = [...obj.edu.map((item: ResumeCardData) => convertStrToDayJsObj(item))]
+      obj.edu = [...convertResumeCardData(obj.edu)]
     }
     return obj
   }
@@ -118,9 +123,10 @@ const Resume = () => {
         setPutting(false)
       }
     } else {
-      // 深拷贝
+      // 深拷贝 // no 浅拷贝
       const prevStr = JSON.stringify(resumeData)
       const prevObj = covertCareerAndEdu(prevStr)
+
       setPrev(prevObj)
     }
     setIsEditResume(!isEditResume)
@@ -201,6 +207,7 @@ const Resume = () => {
       proofs: [],
       blockType: bt,
       order,
+      id: newData.id,
     }
     await setCardData(emptyCardData)
 
@@ -214,61 +221,31 @@ const Resume = () => {
     setIsEditCard(false)
   }
 
-  // 删除经历 - 确认
-  const handleDeleteCard = (bt: BlockType, order: number) => {
-    let prevArr: ResumeCardData[] | undefined
-    const newArr: ResumeCardData[] | undefined = []
-    const newResumeData: ResumeData | undefined = { edu: [], career: [] }
-    if (bt === BlockType.CareerBlockType) {
-      prevArr = resumeData?.career
-    } else if (bt === BlockType.EduBlockType) {
-      prevArr = resumeData?.edu
-    } else {
-      return
-    }
-    if (prevArr === undefined || resumeData === undefined) {
-      return
-    }
+  // 编辑 & 删除
+  // 不能通过 order 来判断，因为 order 是从 arr.length + 1 计算从而得到的
+  // 如果删除了某个 order，那么后面的 order 就会变成前面的 order，可能会有 order 重复的情况
 
-    // 写麻了，用 index 来算吧
-    const theIndex = order - 1
-    for (let i = 0; i <= theIndex - 1; i++) {
-      newArr[i] = prevArr[i]
-    }
-    for (let i = theIndex; i < prevArr.length - 1; i++) {
-      newArr[i] = prevArr[i + 1]
-      const temp = newArr[i].order
-      if (newArr[i] && temp !== undefined) {
-        newArr[i].order = temp - 1
-      }
-    }
-    if (bt === BlockType.CareerBlockType) {
-      newResumeData.edu = resumeData?.edu
-      newResumeData.career = newArr
-    } else if (bt === BlockType.EduBlockType) {
-      newResumeData.edu = newArr
-      newResumeData.career = resumeData?.career
-    } else {
-      return
+  // 删除经历 - 确认
+  const handleDeleteCard = (bt: BlockType, index: number) => {
+    const newResumeData: ResumeData  = { edu: [], career: [] }
+    if (bt === BlockType.CareerBlockType && resumeData?.career !== undefined) {
+      newResumeData.career = resumeData?.career?.filter((_, i) => i !== index)
+    } else if (bt === BlockType.EduBlockType && resumeData?.edu !== undefined) {
+      newResumeData.edu = resumeData?.edu?.filter((_, i) => i !== index)
     }
     setResumeData(newResumeData)
   }
 
   // 开始编辑卡片
-  const handleEditCard = (bt: BlockType, order: number) => {
+  const handleEditCard = (bt: BlockType, index: number) => {
     let card: ResumeCardData | undefined
-    let arr: ResumeCardData[] | undefined
+
     if (bt === BlockType.CareerBlockType && resumeData?.career !== undefined) {
-      arr = resumeData?.career.filter(item => item.blockType === bt && item.order === order)
+      card = resumeData?.career[index]
     } else if (bt === BlockType.EduBlockType && resumeData?.edu !== undefined) {
-      arr = resumeData?.edu.filter(item => item.blockType === bt && item.order === order)
-    } else {
-      return
+      card = resumeData?.edu[index]
     }
-    if (arr?.length === 1) {
-      // TO-ASK 这里为啥会有一个分号
-      ;[card] = arr
-    } else {
+    if(!card) {
       return
     }
     setCardData(card)
@@ -276,7 +253,7 @@ const Resume = () => {
   }
 
   // 开始创建卡片
-  const handleCreateCard = (bt: BlockType, order: number) => {
+  const handleCreateCard = (bt: BlockType, id: number) => {
     const emptyCardData: ResumeCardData = {
       title: '',
       description: '',
@@ -284,11 +261,21 @@ const Resume = () => {
       endTime: undefined,
       proofs: undefined,
       blockType: bt,
-      order,
+      order: id,
+      id,
     }
     setCardData(emptyCardData)
     setIsCreateCard(true)
     setIsEditCard(true)
+  }
+
+  // 排序
+  const handleSortCard = (bt: BlockType, list: ResumeCardData[]) => {
+    if (bt === BlockType.CareerBlockType && resumeData?.career !== undefined) {
+      setResumeData({ career: list, edu: resumeData.edu })
+    } else if (bt === BlockType.EduBlockType && resumeData?.edu !== undefined) {
+      setResumeData({ career: resumeData.career, edu: list })
+    }
   }
 
   // 获取当前用户的简历
@@ -490,6 +477,7 @@ const Resume = () => {
             handleEditCard={handleEditCard}
             handleDeleteCard={handleDeleteCard}
             handleCreateCard={handleCreateCard}
+            handleSortCard={handleSortCard}
             isEditResume={isEditResume}
           />
 
@@ -499,8 +487,9 @@ const Resume = () => {
             dataArr={resumeData?.edu || []}
             handleEditCard={handleEditCard}
             handleDeleteCard={handleDeleteCard}
-            isEditResume={isEditResume}
             handleCreateCard={handleCreateCard}
+            handleSortCard={handleSortCard}
+            isEditResume={isEditResume}
           />
 
           {/* 一段经历编辑器 */}
