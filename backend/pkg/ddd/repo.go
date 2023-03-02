@@ -17,7 +17,7 @@ type RepositoryBase[TEntity any] interface {
 	Set(ctx context.Context, id primitive.ObjectID, data *TEntity) int
 	GetMany(ctx context.Context, ids []primitive.ObjectID) []TEntity
 	Insert(ctx context.Context, entity *TEntity) primitive.ObjectID
-	// ignoreErr: 是否忽略批量插入时的错误, 一般为false, 当导入时忽略重复key的时候可以设为true
+	// InsertMany ignoreErr: 是否忽略批量插入时的错误, 一般为false, 当导入时忽略重复key的时候可以设为true
 	InsertMany(ctx context.Context, entitis []TEntity, ignoreErr bool) []primitive.ObjectID
 	Exists(ctx context.Context, id primitive.ObjectID) bool
 	Update(ctx context.Context, id primitive.ObjectID, entity *TEntity) int

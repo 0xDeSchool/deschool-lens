@@ -214,3 +214,10 @@ func followDeleteHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, &Result{Success: result})
 
 }
+
+func filterEvents(ctx *gin.Context) {
+	var input hackathon.EventInput
+	errx.CheckError(ctx.BindJSON(&input))
+	result := hackathon.MatchEvents(ctx, input)
+	ctx.JSON(http.StatusOK, result)
+}

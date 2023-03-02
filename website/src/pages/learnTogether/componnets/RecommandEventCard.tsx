@@ -1,6 +1,8 @@
 import Avatar from 'antd/es/avatar'
 import Button from 'antd/es/button'
 import dayjs from 'dayjs'
+import { interestEvent } from '~/api/booth/event'
+import { getUserContext, useAccount } from '~/context/account'
 import AvatarList from './AvatarList'
 import Tags from './Tags'
 
@@ -12,9 +14,14 @@ const RecommandEventCard: React.FC<RecommandEventCardProps> = (props) => {
   const { info } = props
   const count = 10
   const avatarList = ['', '', '']
+  const account = getUserContext()
 
-  const handleIterested = () => {
+  const handleIterested = async () => {
     // TODO record user interested event
+    await interestEvent({
+      targetId: info.id,
+      address: account.address,
+    })
     window.open(`https://link3.to/e/${info.id}`)
   }
 

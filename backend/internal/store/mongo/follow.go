@@ -2,6 +2,7 @@ package mongo
 
 import (
 	"context"
+	"github.com/0xdeschool/deschool-lens/backend/pkg/utils/linq"
 
 	"github.com/0xdeschool/deschool-lens/backend/internal/hackathon"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
@@ -64,4 +65,16 @@ func (r *MongoFollowRepository) DeleteByToAndFrom(ctx context.Context, fromAddr 
 	}}
 	r.Collection(ctx).Col().DeleteOne(ctx, filter)
 	return true
+}
+
+func (r *MongoFollowRepository) GetFollowingUsers(ctx context.Context, addr string) []string {
+	// 查询条件
+	filter := bson.D{{
+		Key:   "fromAddr",
+		Value: addr,
+	}}
+	data := r.Find(ctx, filter)
+	return linq.Map(data, func(i *hackathon.Follow) string {
+		return i.ToAddr
+	})
 }

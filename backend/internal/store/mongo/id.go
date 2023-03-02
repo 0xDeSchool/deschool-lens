@@ -2,6 +2,7 @@ package mongo
 
 import (
 	"context"
+	"github.com/0xdeschool/deschool-lens/backend/pkg/utils/linq"
 
 	"github.com/0xdeschool/deschool-lens/backend/internal/hackathon"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
@@ -70,4 +71,15 @@ func (r *MongoIdRepository) GetTen(ctx context.Context) []hackathon.Id {
 	filter := bson.D{{}}
 	opts := options.Find().SetSort(bson.D{{Key: "createdAt", Value: -1}}).SetLimit(25)
 	return r.Find(ctx, filter, opts)
+}
+
+func (r *MongoIdRepository) CheckAddrs(ctx context.Context, addrs []string) []string {
+	// 查询条件
+	filter := bson.D{{
+		Key:   "address",
+		Value: bson.D{{Key: "$in", Value: addrs}},
+	}}
+	opts := options.Find().SetProjection(bson.D{{Key: "address", Value: 1}})
+	ids := r.Find(ctx, filter, opts)
+	return linq.Map(ids, func(i *hackathon.Id) string { return i.Address })
 }

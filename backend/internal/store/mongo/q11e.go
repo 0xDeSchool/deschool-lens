@@ -2,6 +2,7 @@ package mongo
 
 import (
 	"context"
+	"github.com/ethereum/go-ethereum/common"
 
 	"github.com/0xdeschool/deschool-lens/backend/internal/hackathon"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
@@ -25,7 +26,7 @@ func NewMongoQ11eRepository(c *di.Container) *hackathon.Q11eRepository {
 
 func (r *MongoQ11eRepository) GetByAddress(ctx context.Context, address string) *hackathon.Q11e {
 	filter := bson.D{
-		{Key: "address", Value: address},
+		{Key: "address", Value: common.HexToAddress(address).Hex()},
 	}
 	return r.FindOne(ctx, filter)
 }
@@ -47,4 +48,11 @@ func (r *MongoQ11eRepository) CheckAndGetExistsByAddr(ctx context.Context, addre
 	}
 
 	return true, &result
+}
+
+func (r *MongoQ11eRepository) GetManyByAddress(ctx context.Context, address []string) []hackathon.Q11e {
+	filter := bson.D{
+		{Key: "address", Value: bson.D{{Key: "$in", Value: address}}},
+	}
+	return r.Find(ctx, filter)
 }

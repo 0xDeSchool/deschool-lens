@@ -1,7 +1,7 @@
 name: BuildAndDeploy-stg
 on:
   push:
-    branches: [stg]
+    branches: [feat/cc]
     paths-ignore:
       - "website/**"
       - "infra/**"
@@ -33,7 +33,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: caesarlynch/booth:stg
+          tags: caesarlynch/booth-cc:stg
 
       - name: Remote SSH Commands
         uses: fifsky/ssh-action@v0.0.6

@@ -6,4 +6,5 @@ type HackathonOptions struct {
 	PolygonNetwork string
 	InfuraApiKey   string
 	MoralisKey     string
+	DeschoolUrl    string
 }

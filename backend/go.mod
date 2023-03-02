@@ -3,11 +3,13 @@ module github.com/0xdeschool/deschool-lens/backend
 go 1.19
 
 require (
+	github.com/allegro/bigcache/v3 v3.1.0
 	github.com/appleboy/gin-jwt/v2 v2.9.1
 	github.com/ethereum/go-ethereum v1.10.26
 	github.com/gin-gonic/gin v1.8.2
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/golang-jwt/jwt/v4 v4.4.3
+	github.com/google/uuid v1.2.0
 	github.com/ipfs/go-ipfs-api v0.3.0
 	github.com/ipfs/go-ipfs-http-client v0.4.0
 	github.com/metachris/eth-go-bindings v0.5.0
@@ -36,7 +38,6 @@ require (
 	github.com/goccy/go-json v0.10.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
-	github.com/google/uuid v1.2.0 // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
