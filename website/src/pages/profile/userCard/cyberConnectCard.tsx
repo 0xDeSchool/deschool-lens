@@ -11,7 +11,7 @@ import LensAvatar from './avatar'
 import SwitchIdentity from './switchIdentity'
 import useFollow from '~/hooks/useCyberConnectFollow'
 import useUnFollow from '~/hooks/useCyberConnectUnfollow'
-import { GET_FOLLOWING_BY_HANDLE } from '~/api/cc/graphql/GetFollowingsByHandle'
+import { GET_FOLLOWER_BY_HANDLE } from '~/api/cc/graphql/GetFollowersByHandle'
 import { useLazyQuery } from '@apollo/client'
 import { GET_FOLLOWING_BY_ADDRESS_EVM } from '~/api/cc/graphql/GetFollowingsByAddressEVM'
 import { PRIMARY_PROFILE } from '~/api/cc/graphql'
@@ -34,7 +34,7 @@ const CyberCard = (props: CyberCardProps) => {
   const [modal, setModal] = useState<{ type: 'followers' | 'following'; visible: boolean }>({ type: 'followers', visible: false })
   const [currentUser, setCurrentUser] = useState<CyberProfile | null>()
   const [updateTrigger, setUpdateTrigger] = useState(0) // 此页面局部刷新
-  const [getFollowingByHandle] = useLazyQuery(GET_FOLLOWING_BY_HANDLE)
+  const [getFollowingByHandle] = useLazyQuery(GET_FOLLOWER_BY_HANDLE)
   const [getFollowingByAddressEVM] = useLazyQuery(GET_FOLLOWING_BY_ADDRESS_EVM)
   const [getPrimaryProfile] = useLazyQuery(PRIMARY_PROFILE);
   const { t } = useTranslation()

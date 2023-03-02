@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom'
 import type { CyberProfile } from '~/lib/types/app'
 import LensAvatar from './avatar'
 import { useLazyQuery } from '@apollo/client'
-import { GET_FOLLOWING_BY_HANDLE } from '~/api/cc/graphql/GetFollowingsByHandle'
+import { GET_FOLLOWER_BY_HANDLE } from '~/api/cc/graphql/GetFollowersByHandle'
 
 import useFollow from '~/hooks/useCyberConnectFollow'
 import useUnFollow from '~/hooks/useCyberConnectUnfollow'
@@ -31,7 +31,7 @@ const FollowersModal = (props: {
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
   const [getFollowingByAddressEVM] = useLazyQuery(GET_FOLLOWING_LIST_BY_ADDRESS_EVM)
-  const [getFollowingByHandle] = useLazyQuery(GET_FOLLOWING_BY_HANDLE)
+  const [getFollowingByHandle] = useLazyQuery(GET_FOLLOWER_BY_HANDLE)
   const { follow } = useFollow();
   const { unFollow } = useUnFollow();
   const [isFollowLoaindg, setIsFollowLoading] = useState(false)
