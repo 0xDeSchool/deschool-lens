@@ -9,9 +9,10 @@ import { useAccount } from '~/context/account'
 import DeschoolCard from './deschoolCard'
 import LensCard from './lensCard'
 import CyberConnectCard from './cyberConnectCard'
+import { VisitType } from '../utils/visitCase'
 
 type UserCardProps = {
-  visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
+  visitCase: VisitType
   routeAddress: string | undefined // 父组件希望展示的地址，如果为空则展示登录者自己信息
 }
 
@@ -19,17 +20,6 @@ const UserCard = (props: UserCardProps) => {
   const { visitCase, routeAddress } = props
   const { lensProfile, cyberProfile, deschoolProfile } = useAccount()
   const [profileType, setProfileType] = useState('cyber') // lens, deschool, cyber
-
-  // 登录UserCard跟随变化
-  // useEffect(() => {
-  //   if (!lensProfile) {
-  //     if (deschoolProfile) {
-  //       setProfileType('deschool')
-  //     }
-  //   } else {
-  //     setProfileType('lens')
-  //   }
-  // }, [lensProfile])
 
   useEffect(() => {
     if (!cyberProfile) {

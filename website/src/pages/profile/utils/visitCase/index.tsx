@@ -1,14 +1,14 @@
 import { getUserContext } from '~/context/account'
 
-export type VisiteType = 0 | 1 | -1
+export type VisitType = 0 | 1 | -1
 
 /**
  * @description 初始化登录场景，区分自己访问自己或自己访问别人或者别人访问
  * @param routeAddress string | undefined | null
  * @return primaryCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人 -1-没登录访问自己
  */
-export function getVisitCase(routeAddress: string | undefined | null): VisiteType {
-  let visitCase: VisiteType = -1
+export function getVisitCase(routeAddress: string | undefined | null): VisitType {
+  let visitCase: VisitType = -1
   const cacheLensAddress = getUserContext().lensToken?.address
   const cacheCyberAddress = getUserContext().cyberToken?.address
   const cacheDeschoolAddress = getUserContext().deschoolProfile?.address
