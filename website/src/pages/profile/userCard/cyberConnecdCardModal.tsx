@@ -17,6 +17,8 @@ import useUnFollow from '~/hooks/useCyberConnectUnfollow'
 import { GET_FOLLOWING_LIST_BY_ADDRESS_EVM } from '~/api/cc/graphql/GetFollowingListByAddressEVM'
 import { GET_FOLLOWER_LIST_BY_HANDLE } from '~/api/cc/graphql/GetFollowersListByHandle'
 
+const PADE_SIZE = 10
+let page = 1
 const FollowersModal = (props: {
   routeAddress: string
   profileId: string | undefined
@@ -26,7 +28,7 @@ const FollowersModal = (props: {
 }) => {
   const { routeAddress, type, visible, closeModal } = props
   const { t } = useTranslation()
-  const { cyberToken } = useAccount()
+  const { cyberToken, cyberProfile } = useAccount()
   const [follows, setFollows] = useState([] as Array<CyberProfile | null>)
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
@@ -43,11 +45,21 @@ const FollowersModal = (props: {
       variables: {
         handle,
         me: address,
-        first: 10,
+        first: page * PADE_SIZE,
       }
     })
-    const primaryProfile = resp?.data?.profileByHandle
-    console.log('primaryProfile', primaryProfile)
+    const followers = resp?.data?.profileByHandle?.followers
+    const hasNextPage = followers?.pageInfo?.hasNextPage
+    setHasNextPage(hasNextPage)
+    console.log('followers', followers)
+    let edges = followers?.edges || []
+    edges = edges.map((item: any) => {
+      return {
+        address: item.node.address.address,
+        ...item.node.profile,
+      }
+    })
+    setFollows(edges)
   }
 
   // 获取用户的关注的人
@@ -74,7 +86,7 @@ const FollowersModal = (props: {
     setLoading(true)
     try {
       if (type === 'followers') {
-        initUserFollowersInfo(routeAddress!, cyberToken?.address!)
+        initUserFollowersInfo(cyberProfile?.handle, cyberToken?.address!)
       } else {
         initUserFollowingsInfo(routeAddress!)
       }
@@ -93,6 +105,7 @@ const FollowersModal = (props: {
 
   const handleAddMore = async () => {
     setLoadingMore(true)
+    page += 1
     try {
       await initFollowRelationship()
     } catch (error: any) {

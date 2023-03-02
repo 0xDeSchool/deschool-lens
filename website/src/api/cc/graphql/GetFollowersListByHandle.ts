@@ -19,6 +19,7 @@ export const GET_FOLLOWER_LIST_BY_HANDLE = gql`
               handle
               profileID
               avatar
+              isFollowedByMe(me: $me)
             }
           }
         }
