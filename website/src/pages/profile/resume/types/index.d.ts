@@ -3,7 +3,7 @@ import type { BlockType } from '../enum'
 
 export interface ResumeBlockInput {
   blockType: BlockType
-  dataArr: ResumeCardData[] | undefined
+  dataArr: ResumeCardData[]
   handleEditCard: (BlockType, number) => void
   handleDeleteCard: (bt: BlockType, order: number) => void
   isEditResume: boolean
@@ -39,7 +39,7 @@ export interface ResumeCardData {
   endTime: Dayjs | undefined
   proofs: SbtInfo[] | undefined
   blockType: BlockType | undefined
-  order: number | undefined
+  order: number
 }
 
 export interface SbtInfo {
