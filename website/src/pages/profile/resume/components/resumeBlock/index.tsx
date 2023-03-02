@@ -55,16 +55,14 @@ const ResumeBlock = (input: ResumeBlockInput) => {
           </span>
         )}
         <div className="w-2" />
-        <div>
-          <ResumeCard
-            key={propsItem.id}
-            isEditResume={isEditResume}
-            handleEditCard={handleEditCard}
-            handleDeleteCard={handleDeleteCard}
-            blockType={blockType}
-            data={propsItem}
-          />
-        </div>
+        <ResumeCard
+          key={propsItem.id}
+          isEditResume={isEditResume}
+          handleEditCard={handleEditCard}
+          handleDeleteCard={handleDeleteCard}
+          blockType={blockType}
+          data={propsItem}
+        />
       </div>
     )
   }
