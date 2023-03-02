@@ -62,46 +62,49 @@ const ResumeCard = (input: ResumeCardInput) => {
       {/* Descriptions */}
       <div className="mt-1">{data.description}</div>
 
-      {/* SBTs Title */}
-      <div className="font-bold mt-8 mb-2">Proofs of Commitments</div>
-
-      {/* Proofs of Work */}
-      <div className="flex justify-between">
-        <div className="flex flex-wrap">
-          {data.proofs &&
-            data.proofs.map(item => (
-              <div key={`sbt-${item.address}-${item.tokenId}`} className="w-[110px] mr-2 relative">
-                <div
-                  className="hover:cursor-pointer p-1 border border-white hover:border-#6525FF"
-                  onClick={() => navigate(`/sbtIntro/${item.address}/${item.tokenId}`)}
-                >
-                  <Image width={100} height={100} src={item.img} fallback={fallbackImage} preview={false} />
-                  <div style={{ position: 'absolute', bottom: '0px', right: '0px' }}>
-                    <VerifiedIcon style={{ color: blockType === BlockType.CareerBlockType ? '#009411' : '#266DE0', fontSize: 22 }} />
+      {data.proofs && data.proofs.length > 0 &&
+        <>
+          {/* SBTs Title */}
+          <div className="font-bold mt-8 mb-2">Proofs of Commitments</div>
+          {/* Proofs of Work */}
+          <div className="flex justify-between">
+            <div className="flex flex-wrap">
+              {data.proofs &&
+                data.proofs.map(item => (
+                  <div key={`sbt-${item.address}-${item.tokenId}`} className="w-[110px] mr-2 relative">
+                    <div
+                      className="hover:cursor-pointer p-1 border border-white hover:border-#6525FF"
+                      onClick={() => navigate(`/sbtIntro/${item.address}/${item.tokenId}`)}
+                    >
+                      <Image width={100} height={100} src={item.img} fallback={fallbackImage} preview={false} />
+                      <div style={{ position: 'absolute', bottom: '0px', right: '0px' }}>
+                        <VerifiedIcon style={{ color: blockType === BlockType.CareerBlockType ? '#009411' : '#266DE0', fontSize: 22 }} />
+                      </div>
+                    </div>
                   </div>
-                </div>
+                ))}
+            </div>
+            {/* 删除本 Card Icon */}
+            <div className="flex flex-col justify-end">
+              <div className="w-90px flex justify-between">
+                {isEditResume && (
+                  <EditOutlined
+                    onClick={() => handleEditCard(data.blockType, data.order)}
+                    className="text-blue-4 hover:text-blue-6! w-40px h-40px hover:rounded-full hover:bg-blue-2 hover:border hover:border-blue-3 frc-center"
+                  />
+                )}
+                {isEditResume && (
+                  <DeleteOutlined
+                    color="red"
+                    onClick={showDeleteConfirm}
+                    className="text-red-4 hover:text-red-6! w-40px h-40px hover:rounded-full hover:bg-red-2 hover:border hover:border-red-3 frc-center"
+                  />
+                )}
               </div>
-            ))}
-        </div>
-        {/* 删除本 Card Icon */}
-        <div className="flex flex-col justify-end">
-          <div className="w-90px flex justify-between">
-            {isEditResume && (
-              <EditOutlined
-                onClick={() => handleEditCard(data.blockType, data.order)}
-                className="text-blue-4 hover:text-blue-6! w-40px h-40px hover:rounded-full hover:bg-blue-2 hover:border hover:border-blue-3 frc-center"
-              />
-            )}
-            {isEditResume && (
-              <DeleteOutlined
-                color="red"
-                onClick={showDeleteConfirm}
-                className="text-red-4 hover:text-red-6! w-40px h-40px hover:rounded-full hover:bg-red-2 hover:border hover:border-red-3 frc-center"
-              />
-            )}
+            </div>
           </div>
-        </div>
-      </div>
+        </>
+      }
 
       {/* Divider */}
       <Divider />
