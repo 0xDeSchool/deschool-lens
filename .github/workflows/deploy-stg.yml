@@ -1,7 +1,7 @@
 name: BuildAndDeploy-stg
 on:
   push:
-    branches: [cc]
+    branches: [feat/cc]
     paths-ignore:
       - "website/**"
       - "infra/**"
