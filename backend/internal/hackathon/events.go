@@ -1,15 +1,17 @@
 package hackathon
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/0xdeschool/deschool-lens/backend/internal/interest"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/ddd"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
-	"github.com/0xdeschool/deschool-lens/backend/pkg/ginx"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/log"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/utils/linq"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/x"
+	"net/http"
 	"strings"
 	"time"
 )
@@ -33,7 +35,7 @@ type EventMatchedItem struct {
 	Interested  []string        `json:"interested"`
 	Matched     []string        `json:"matchedUsers"`
 	Following   []string        `json:"followingUsers"`
-	Courses     []*CourseDetail `json:"course"`
+	Courses     []*CourseDetail `json:"courses"`
 	Registrants []string        `json:"registrants"`
 }
 
@@ -127,7 +129,7 @@ func MatchEvents(ctx context.Context, input EventInput) []*EventMatchedItem {
 			item.Matched = linq.Map(addrs, func(i **interest.Interest) string { return (*i).Address })
 		}
 
-		//item.Courses = RecommendCourses(ctx, e.Labels)
+		item.Courses = RecommendCourses(ctx, e.Labels)
 		//item.Registrants = filterUsers(ctx, e.Id, input.Users)
 		item.IsEnabled = item.IsMatched()
 		result = append(result, item)
@@ -167,18 +169,25 @@ type courseBody struct {
 //}
 
 func RecommendCourses(ctx context.Context, labels []string) []*CourseDetail {
-	c := di.Get[ginx.RequestClient]()
 	opts := di.Get[HackathonOptions]()
+
+	url := fmt.Sprintf("%s/api/courses/recommends", opts.DeschoolUrl)
+	body, _ := json.Marshal(&courseBody{
+		PageAndSort: *x.PageLimit(3),
+		Labels:      labels,
+	})
 	result := ddd.PagedItems[*CourseDetail]{
 		Items: make([]*CourseDetail, 0),
 	}
-	url := fmt.Sprintf("%s/api/courses/recommends", opts.DeschoolUrl)
-	err := c.PostObj(url, &courseBody{
-		PageAndSort: *x.PageLimit(3),
-		Labels:      labels,
-	}, &result)
+	resp, err := http.Post(url, "application/json", bytes.NewBuffer(body))
 	if err != nil {
 		log.Warn("request recommend course error", err)
+		return result.Items
+	}
+
+	defer resp.Body.Close()
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		log.Warn("decode recommend course error", err)
 	}
 	return result.Items
 }
