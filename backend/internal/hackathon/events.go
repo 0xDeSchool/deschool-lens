@@ -33,7 +33,7 @@ type EventMatchedItem struct {
 	Interested  []string        `json:"interested"`
 	Matched     []string        `json:"matchedUsers"`
 	Following   []string        `json:"followingUsers"`
-	Courses     []*CourseDetail `json:"course"`
+	Courses     []*CourseDetail `json:"courses"`
 	Registrants []string        `json:"registrants"`
 }
 
@@ -127,7 +127,7 @@ func MatchEvents(ctx context.Context, input EventInput) []*EventMatchedItem {
 			item.Matched = linq.Map(addrs, func(i **interest.Interest) string { return (*i).Address })
 		}
 
-		//item.Courses = RecommendCourses(ctx, e.Labels)
+		item.Courses = RecommendCourses(ctx, e.Labels)
 		//item.Registrants = filterUsers(ctx, e.Id, input.Users)
 		item.IsEnabled = item.IsMatched()
 		result = append(result, item)
