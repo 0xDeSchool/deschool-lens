@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { v4 as uuid } from 'uuid'
 import Modal from 'antd/es/modal'
 import Form from 'antd/es/form'
 import Input from 'antd/es/input'
@@ -124,7 +125,7 @@ const CardEditor = (input: CardEditorInput) => {
       endTime: dayjs(form.getFieldValue('etime')),
       proofs,
       blockType: originalData?.blockType,
-      order: originalData?.order,
+      id: originalData?.id || uuid(),
     }
     handleOk(newCard)
   }

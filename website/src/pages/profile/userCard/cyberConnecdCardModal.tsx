@@ -20,7 +20,7 @@ import { GET_FOLLOWER_LIST_BY_HANDLE } from '~/api/cc/graphql/GetFollowersListBy
 const PADE_SIZE = 10
 let page = 1
 const FollowersModal = (props: {
-  routeAddress: string
+  routeAddress: string | undefined
   profileId: string | undefined
   type: 'followers' | 'following'
   visible: boolean

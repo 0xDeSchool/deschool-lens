@@ -39,8 +39,8 @@ const ResumeCard = (input: ResumeCardInput) => {
       okType: 'danger',
       cancelText: 'Cancel',
       onOk() {
-        if (data.order !== undefined) {
-          handleDeleteCard(blockType, data.order)
+        if (data.id !== undefined) {
+          handleDeleteCard(blockType, data.id)
         }
       },
     })
@@ -87,7 +87,7 @@ const ResumeCard = (input: ResumeCardInput) => {
           <div className="w-90px flex justify-between">
             {isEditResume && (
               <EditOutlined
-                onClick={() => handleEditCard(data.blockType, data.order)}
+                onClick={() => handleEditCard(data.blockType, data.id)}
                 className="text-blue-4 hover:text-blue-6! w-40px h-40px hover:rounded-full hover:bg-blue-2 hover:border hover:border-blue-3 frc-center"
               />
             )}

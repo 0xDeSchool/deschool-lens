@@ -17,6 +17,7 @@ import { GET_FOLLOWING_BY_ADDRESS_EVM } from '~/api/cc/graphql/GetFollowingsByAd
 import { PRIMARY_PROFILE } from '~/api/cc/graphql'
 import { ICyberFollowers, ICyberFollowings } from '~/lib/types/cyberConnect'
 import message from 'antd/es/message'
+import CreateCyberConnectProfile from './createCCProfile'
 
 type CyberCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
@@ -29,7 +30,7 @@ type CyberCardProps = {
 // 0-自己访问自己 1-自己访问别人
 const CyberCard = (props: CyberCardProps) => {
   const { visible, visitCase, routeAddress, setProfileType, profileType } = props
-  const { cyberToken, cyberProfile } = useAccount()
+  const { cyberToken, cyberProfile, deschoolProfile } = useAccount()
   const [loading, setLoading] = useState(false)
   const [modal, setModal] = useState<{ type: 'followers' | 'following'; visible: boolean }>({ type: 'followers', visible: false })
   const [currentUser, setCurrentUser] = useState<CyberProfile | null>()
@@ -180,26 +181,15 @@ const CyberCard = (props: CyberCardProps) => {
     <div className={`w-full pb-1 shadow-md rounded-xl ${loading || !visible ? 'hidden' : ''}`}>
       <div className="relative w-full frc-center">
         <SwitchIdentity profileType={profileType} setProfileType={setProfileType} />
-        {currentUser?.coverUrl ? (
-          <Image
-            preview={false}
-            src={currentUser.coverUrl}
-            fallback={fallbackImage}
-            alt="cover"
-            className="h-60! object-cover! object-center! rounded-t-xl"
-            crossOrigin="anonymous"
-          />
-        ) : (
-          <Image
-            preview={false}
-            src="https://deschool.s3.amazonaws.com/booth/Booth-logos.jpeg"
-            fallback={fallbackImage}
-            alt="cover"
-            className="h-60! object-cover! object-center! rounded-t-xl"
-            wrapperClassName="w-full"
-            crossOrigin="anonymous"
-          />
-        )}
+        <Image
+          preview={false}
+          src="https://deschool.s3.amazonaws.com/booth/Booth-logos.jpeg"
+          fallback={fallbackImage}
+          alt="cover"
+          className="h-60! object-cover! object-center! rounded-t-xl"
+          wrapperClassName="w-full"
+          crossOrigin="anonymous"
+        />
         <LensAvatar avatarUrl={currentUser?.avatar} />
       </div>
       {/* 处理数据为空的情况 */}
@@ -238,12 +228,15 @@ const CyberCard = (props: CyberCardProps) => {
           {currentUser?.bio || visitCase === 0 ? '' : "The user hasn't given a bio on CyberConnect for self yet :)"}
         </p>
       ) : (
-        <p className="m-10 text-xl three-line-wrap">
-          Please get a CyberConnect handle to enable all Booth profile functions. You can grab one at:
-          <a href="https://opensea.io/collection/cyberconnect" className="block underline">
-            https://opensea.io/collection/cyberconnect
-          </a>
-        </p>
+        <>
+         {!cyberProfile?.handle && deschoolProfile?.address && <CreateCyberConnectProfile />}
+          <p className="m-10 text-xl three-line-wrap">
+            Please get a CyberConnect handle to enable all Booth profile functions. You can grab one at:
+            <a href="https://opensea.io/collection/cyberconnect" className="block underline">
+              https://opensea.io/collection/cyberconnect
+            </a>
+          </p>
+        </>
       )}
       {routeAddress && routeAddress !== cyberToken?.address && (
         <div className="m-10 text-right">
