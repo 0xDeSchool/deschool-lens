@@ -17,6 +17,7 @@ import { GET_FOLLOWING_BY_ADDRESS_EVM } from '~/api/cc/graphql/GetFollowingsByAd
 import { PRIMARY_PROFILE } from '~/api/cc/graphql'
 import { ICyberFollowers, ICyberFollowings } from '~/lib/types/cyberConnect'
 import message from 'antd/es/message'
+import CreateCyberConnectProfile from './createCCProfile'
 
 type CyberCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
@@ -227,12 +228,15 @@ const CyberCard = (props: CyberCardProps) => {
           {currentUser?.bio || visitCase === 0 ? '' : "The user hasn't given a bio on CyberConnect for self yet :)"}
         </p>
       ) : (
-        <p className="m-10 text-xl three-line-wrap">
-          Please get a CyberConnect handle to enable all Booth profile functions. You can grab one at:
-          <a href="https://opensea.io/collection/cyberconnect" className="block underline">
-            https://opensea.io/collection/cyberconnect
-          </a>
-        </p>
+        <>
+         {cyberToken?.address && <CreateCyberConnectProfile address={cyberToken?.address || ''}/>}
+          <p className="m-10 text-xl three-line-wrap">
+            Please get a CyberConnect handle to enable all Booth profile functions. You can grab one at:
+            <a href="https://opensea.io/collection/cyberconnect" className="block underline">
+              https://opensea.io/collection/cyberconnect
+            </a>
+          </p>
+        </>
       )}
       {routeAddress && routeAddress !== cyberToken?.address && (
         <div className="m-10 text-right">
