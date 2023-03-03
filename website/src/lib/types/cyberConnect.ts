@@ -1,28 +1,3 @@
-import { Web3Provider } from "@ethersproject/providers";
-
-export interface IAuthContext {
-	address: string | undefined;
-	accessToken: string | undefined;
-	primaryProfile: IPrimaryProfileCard | undefined;
-	profileCount: number;
-	postCount: number;
-	posts: IPostCard[];
-	profiles: IAccountCard[];
-	indexingProfiles: IAccountCard[];
-	indexingPosts: IPostCard[];
-	setAddress: (address: string | undefined) => void;
-	setAccessToken: (accessToken: string | undefined) => void;
-	setPrimaryProfile: (primaryProfile: IPrimaryProfileCard | undefined) => void;
-	setProfileCount: (profileCount: number) => void;
-	setPostCount: (postCount: number) => void;
-	setPosts: (posts: IPostCard[]) => void;
-	setProfiles: (profiles: IAccountCard[]) => void;
-	setIndexingProfiles: (indexingProfiles: IAccountCard[]) => void;
-	setIndexingPosts: (indexingPosts: IPostCard[]) => void;
-	connectWallet: () => Promise<Web3Provider>;
-	checkNetwork: (provider: Web3Provider) => Promise<void>;
-}
-
 export interface IModalContext {
 	modal: boolean;
 	modalType: string | null;

@@ -180,26 +180,15 @@ const CyberCard = (props: CyberCardProps) => {
     <div className={`w-full pb-1 shadow-md rounded-xl ${loading || !visible ? 'hidden' : ''}`}>
       <div className="relative w-full frc-center">
         <SwitchIdentity profileType={profileType} setProfileType={setProfileType} />
-        {currentUser?.coverUrl ? (
-          <Image
-            preview={false}
-            src={currentUser.coverUrl}
-            fallback={fallbackImage}
-            alt="cover"
-            className="h-60! object-cover! object-center! rounded-t-xl"
-            crossOrigin="anonymous"
-          />
-        ) : (
-          <Image
-            preview={false}
-            src="https://deschool.s3.amazonaws.com/booth/Booth-logos.jpeg"
-            fallback={fallbackImage}
-            alt="cover"
-            className="h-60! object-cover! object-center! rounded-t-xl"
-            wrapperClassName="w-full"
-            crossOrigin="anonymous"
-          />
-        )}
+        <Image
+          preview={false}
+          src="https://deschool.s3.amazonaws.com/booth/Booth-logos.jpeg"
+          fallback={fallbackImage}
+          alt="cover"
+          className="h-60! object-cover! object-center! rounded-t-xl"
+          wrapperClassName="w-full"
+          crossOrigin="anonymous"
+        />
         <LensAvatar avatarUrl={currentUser?.avatar} />
       </div>
       {/* 处理数据为空的情况 */}
