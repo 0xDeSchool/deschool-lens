@@ -88,12 +88,7 @@ resource "aws_security_group" "sg_booth_prd" {
   }
 
   ingress {
-    from_port = -1
-    to_port   = -1
-    protocol  = "icmp"
-  }
-
-  ingress {
+    description = "tcp"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
@@ -101,6 +96,7 @@ resource "aws_security_group" "sg_booth_prd" {
   }
 
   egress {
+    description      = "all egress"
     from_port        = 0
     to_port          = 0
     protocol         = -1
