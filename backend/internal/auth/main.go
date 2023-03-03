@@ -28,7 +28,7 @@ func AddAuth(builder *server.ServerBuiler) {
 	}
 	utils.ViperBind("JWT", opts)
 	di.TryAddValue(opts)
-	ginx.AddJwt(builder, "/v1", func(mid *jwt.GinJWTMiddleware) {
+	ginx.AddJwt(builder, "/api", func(mid *jwt.GinJWTMiddleware) {
 		mid.Key = []byte(opts.Key)
 		mid.Realm = opts.Realm
 		mid.IdentityKey = identityKey
@@ -46,7 +46,7 @@ func configureRoutes(builder *server.ServerBuiler) {
 	auth := ginx.AuthHandlerFunc(builder)
 	builder.Configure(func(s *server.Server) error {
 		// 获取nonce进行签名
-		s.Route.POST("/v1/sign-msg", auth, getSignMsg)
+		s.Route.POST("/api/sign-msg", auth, getSignMsg)
 		return nil
 	})
 }

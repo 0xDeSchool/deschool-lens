@@ -5,12 +5,12 @@ import (
 	"time"
 )
 
-type UserPlatformType string
+type UserPlatformType int
 
 const (
-	PlatformLens         UserPlatformType = "lens"
-	PlatformCyberConnect UserPlatformType = "cc"
-	PlatformDeSchool     UserPlatformType = "deschool"
+	PlatformDeSchool     UserPlatformType = 1
+	PlatformLens         UserPlatformType = 2
+	PlatformCyberConnect UserPlatformType = 3
 )
 
 type User struct {
@@ -18,7 +18,7 @@ type User struct {
 	ddd.WithExtraEntity     `bson:",inline"`
 	Address                 string          `bson:"address"`
 	UserName                string          `bson:"userName"`
-	NickName                string          `bson:"nickName"`
+	DisplayName             string          `bson:"displayName"`
 	Avatar                  string          `bson:"avatar"`
 	Bio                     string          `bson:"bio"`
 	Platforms               []*UserPlatform `bson:"-"`

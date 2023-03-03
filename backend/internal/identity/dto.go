@@ -27,11 +27,11 @@ type UnlinkPlatformInput struct {
 }
 
 type UserInfo struct {
-	Address   string      `json:"address"`
-	NickName  string      `json:"nickName"`
-	Avatar    string      `json:"avatar"`
-	Bio       string      `json:"bio"`
-	Platforms []*Platform `json:"platforms"`
+	Address     string      `json:"address"`
+	DisplayName string      `json:"displayName"`
+	Avatar      string      `json:"avatar"`
+	Bio         string      `json:"bio"`
+	Platforms   []*Platform `json:"platforms"`
 }
 
 type Platform struct {
@@ -50,10 +50,10 @@ func NewPlatform(p *UserPlatform) *Platform {
 
 func NewUserInfo(user *User) *UserInfo {
 	return &UserInfo{
-		Address:  user.Address,
-		NickName: user.NickName,
-		Avatar:   user.Avatar,
-		Bio:      user.Bio,
+		Address:     user.Address,
+		DisplayName: user.DisplayName,
+		Avatar:      user.Avatar,
+		Bio:         user.Bio,
 		Platforms: linq.Map(user.Platforms, func(p **UserPlatform) *Platform {
 			return NewPlatform(*p)
 		}),
@@ -61,14 +61,14 @@ func NewUserInfo(user *User) *UserInfo {
 }
 
 type UserUpdateInput struct {
-	NickName *string `json:"nickName"`
-	Avatar   *string `json:"avatar"`
-	Bio      *string `json:"bio"`
+	DisplayName *string `json:"displayName"`
+	Avatar      *string `json:"avatar"`
+	Bio         *string `json:"bio"`
 }
 
 func (input *UserUpdateInput) ToEntity(u *User) {
-	if input.NickName != nil {
-		u.NickName = *input.NickName
+	if input.DisplayName != nil {
+		u.DisplayName = *input.DisplayName
 	}
 	if input.Avatar != nil {
 		u.Avatar = *input.Avatar
