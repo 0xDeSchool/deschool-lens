@@ -6,6 +6,7 @@ require (
 	github.com/allegro/bigcache/v3 v3.1.0
 	github.com/appleboy/gin-jwt/v2 v2.9.1
 	github.com/ethereum/go-ethereum v1.10.26
+	github.com/gin-contrib/logger v0.2.5
 	github.com/gin-gonic/gin v1.8.2
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/golang-jwt/jwt/v4 v4.4.3

@@ -5,6 +5,8 @@ import (
 	"github.com/0xdeschool/deschool-lens/backend/internal/identity"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/db/mongodb"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
+	"github.com/0xdeschool/deschool-lens/backend/pkg/utils/linq"
+	"github.com/ethereum/go-ethereum/common"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -19,8 +21,8 @@ func NewMongoUserRepository(c *di.Container) *identity.UserRepository {
 	return &repo
 }
 
-func (m *MongoUserRepository) Find(ctx context.Context, address string) *identity.User {
-	filter := bson.D{{"address", address}}
+func (m *MongoUserRepository) Find(ctx context.Context, address common.Address) *identity.User {
+	filter := bson.D{{"address", address.Hex()}}
 	users := m.MongoRepositoryBase.Find(ctx, filter)
 	if len(users) == 0 {
 		return nil
@@ -28,8 +30,9 @@ func (m *MongoUserRepository) Find(ctx context.Context, address string) *identit
 	return &users[0]
 }
 
-func (m *MongoUserRepository) GetMany(ctx context.Context, addresses []string) []identity.User {
-	filter := bson.D{{"address", bson.D{{"$in", addresses}}}}
+func (m *MongoUserRepository) GetManyByAddr(ctx context.Context, addresses []common.Address) []identity.User {
+	addrs := linq.Map(addresses, func(addr *common.Address) string { return addr.Hex() })
+	filter := bson.D{{"address", bson.D{{"$in", addrs}}}}
 	return m.MongoRepositoryBase.Find(ctx, filter)
 }
 
@@ -37,16 +40,16 @@ func (m *MongoUserRepository) LinkPlatform(ctx context.Context, p *identity.User
 	m.userPlatforms(ctx).Insert(ctx, p)
 }
 
-func (m *MongoUserRepository) UnlinkPlatform(ctx context.Context, address string, handle string, platform string) {
+func (m *MongoUserRepository) UnlinkPlatform(ctx context.Context, address common.Address, handle string, platform string) {
 	filter := bson.D{
-		{"address", address},
+		{"address", address.Hex()},
 		{"handle", handle},
 		{"platform", platform}}
 	m.userPlatforms(ctx).Col().DeleteMany(ctx, filter)
 }
 
-func (m *MongoUserRepository) GetPlatforms(ctx context.Context, address string) []identity.UserPlatform {
-	filter := bson.D{{"address", address}}
+func (m *MongoUserRepository) GetPlatforms(ctx context.Context, address common.Address) []identity.UserPlatform {
+	filter := bson.D{{"address", address.Hex()}}
 	return m.userPlatforms(ctx).Find(ctx, filter)
 }
 

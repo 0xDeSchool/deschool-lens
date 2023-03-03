@@ -5,6 +5,14 @@ import (
 	"time"
 )
 
+type UserPlatformType string
+
+const (
+	PlatformLens         UserPlatformType = "lens"
+	PlatformCyberConnect UserPlatformType = "cc"
+	PlatformDeSchool     UserPlatformType = "deschool"
+)
+
 type User struct {
 	ddd.FullAuditEntityBase `bson:",inline"`
 	ddd.WithExtraEntity     `bson:",inline"`
@@ -19,10 +27,11 @@ type User struct {
 type UserPlatform struct {
 	ddd.AuditEntityBase `bson:",inline"`
 	ddd.WithExtraEntity `bson:",inline"`
-	Address             string    `bson:"address"`
-	Handle              string    `bson:"handle"`   // 对应平台的用户标识
-	Platform            string    `bson:"platform"` // 平台唯一标识，如 lens, cc(CyberConnect), deschool
-	VerifiedAt          time.Time `bson:"verifiedAt"`
+	UserId              string           `bson:"userId"`   // 对应用户的唯一标识
+	Address             string           `bson:"address"`  // 使用平台的地址
+	Handle              string           `bson:"handle"`   // 对应平台的用户标识
+	Platform            UserPlatformType `bson:"platform"` // 平台唯一标识，如 lens, cc(CyberConnect), deschool
+	VerifiedAt          time.Time        `bson:"verifiedAt"`
 }
 
 type SignNonce struct {
