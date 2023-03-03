@@ -18,15 +18,18 @@ type UserManager struct {
 	Repo UserRepository
 }
 
+func (m *UserManager) Find(ctx context.Context, address string) *User {
+	return m.Repo.Find(ctx, common.HexToAddress(address))
+}
+
 func (m *UserManager) Login(ctx context.Context, address common.Address, signHex string, t WalletType) *User {
 	if !VerifySignMessage(address, signHex, SignTypeLogin, t) {
 		ginx.PanicUnAuthenticated("verify sign failed")
 	}
-	hexAddr := address.Hex()
-	user := m.Repo.Find(ctx, hexAddr)
+	user := m.Repo.Find(ctx, address)
 	if user == nil {
 		user = &User{
-			Address: hexAddr,
+			Address: address.Hex(),
 		}
 		m.Repo.Insert(ctx, user)
 	}
@@ -40,4 +43,12 @@ func (m *UserManager) Link(ctx context.Context, link *UserPlatform) {
 	//}
 	link.VerifiedAt = time.Now()
 	m.Repo.LinkPlatform(ctx, link)
+}
+
+func (m *UserManager) Unlink(ctx context.Context, platform, address string, handle string) {
+	m.Repo.UnlinkPlatform(ctx, common.HexToAddress(address), platform, handle)
+}
+
+func (m *UserManager) Update(ctx context.Context, info *User) {
+	m.Repo.Update(ctx, info.ID, info)
 }

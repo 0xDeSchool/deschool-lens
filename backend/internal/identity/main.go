@@ -5,7 +5,7 @@ import (
 	"github.com/0xdeschool/deschool-lens/backend/pkg/server"
 )
 
-func IdentityModule(sb *server.ServerBuiler) {
+func Module(sb *server.ServerBuiler) {
 	ab := sb.App
 	ab.ConfigureServices(func() error {
 		di.AddTransient(NewUserManager)

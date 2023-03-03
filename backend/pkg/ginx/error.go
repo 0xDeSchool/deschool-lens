@@ -46,7 +46,7 @@ func (eh *ErrorHandlers) Add(h ErrorHandFunc) {
 }
 
 // request panic error handler
-func ErorrMiddleware(c *gin.Context) {
+func ErrorMiddleware(c *gin.Context) {
 	handlers := &ErrorHandlers{}
 	c.Set(ErrHandlersKey, handlers)
 	defer func() {

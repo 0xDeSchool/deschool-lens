@@ -19,12 +19,12 @@ var addressKey = "address"
 var nameKey = "userName"
 
 type LoginResult struct {
-	Code     int    `json:"code"`
-	JwtToken string `json:"jwtToken"`
-	Expire   string `json:"expire"`
-	UserName string `json:"username"`
-	Avatar   string `json:"avatar"`
-	Address  string `json:"address"`
+	Code     int       `json:"code"`
+	JwtToken string    `json:"jwtToken"`
+	Expire   time.Time `json:"expire"`
+	UserName string    `json:"username"`
+	Avatar   string    `json:"avatar"`
+	Address  string    `json:"address"`
 }
 
 type LogoutResult struct {
@@ -38,6 +38,7 @@ func NewCurrentUserInfo(user *identity.User) *ginx.CurrentUserInfo {
 		UserName: user.UserName,
 		Address:  user.Address,
 		Avatar:   user.Avatar,
+		//Platforms: user.Platforms,
 	}
 }
 
@@ -121,7 +122,7 @@ func jwtLoginResponse(c *gin.Context, code int, token string, expire time.Time) 
 	result := &LoginResult{
 		Code:     code,
 		JwtToken: token,
-		Expire:   expire.Local().Format(time.RFC3339),
+		Expire:   expire,
 		Address:  user.Address,
 		UserName: user.UserName,
 		Avatar:   user.Avatar,
