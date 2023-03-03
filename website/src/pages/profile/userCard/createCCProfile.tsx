@@ -1,30 +1,33 @@
 import Button from 'antd/es/button';
+import message from 'antd/es/message';
 import Input from 'antd/es/input';
 import { useState } from 'react';
 import { useAccount } from '~/context/account';
-import message from 'antd/es/message';
 import { ccContractHub } from '~/api/cc/contract';
 import { PRIMARY_PROFILE } from '~/api/cc/graphql';
 import { useLazyQuery } from '@apollo/client';
 
 const CreateCyberConnectProfile: React.FC = () => {
-  const { deschoolProfile, setCyberProfile } = useAccount();
-  const [handle, setHandle] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
-  const [getPrimaryProfile] = useLazyQuery(PRIMARY_PROFILE);
-
+  const { deschoolProfile, setCyberProfile } = useAccount()
+  const [handle, setHandle] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false)
+  const [getPrimaryProfile] = useLazyQuery(PRIMARY_PROFILE)
   // 检查handle是否合法
   const checkHandle = () => {
     if (!handle) {
       message.warning('Please input handle')
       return false
     }
-    if (handle.length < 4) {
-      message.warning('Handle must be at least 4 characters')
+    if (handle.length < 1) {
+      message.warning('Handle must be at least 1 characters')
       return false
     }
-    if (handle.length > 32) {
-      message.warning('Handle must be at most 32 characters')
+    if (handle.length > 20) {
+      message.warning('Handle must be at most 20 characters')
+      return false
+    }
+    if (!/^[a-z0-9_]+$/.test(handle)) {
+      message.warning('Handle can only contain lowercase letters, numbers, and underscores')
       return false
     }
     return true
@@ -116,7 +119,7 @@ const CreateCyberConnectProfile: React.FC = () => {
         placeholder='@handle'
         bordered={false}
         maxLength={20}
-        minLength={4}
+        minLength={1}
         onChange={(e) => setHandle(e.target.value)}/>
       <Button type="primary" loading={loading} onClick={() => handleMint()}>MINT ON BSC</Button>
     </div>
