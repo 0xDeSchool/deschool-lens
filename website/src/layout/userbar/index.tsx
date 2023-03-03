@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next'
 import { MenuOutlined } from '@ant-design/icons'
 import type { MenuProps } from 'antd'
 import Dropdown from 'antd/es/dropdown'
-import { ArrowDownIcon } from '~/components/icon'
 import Drawer from 'antd/es/drawer'
 import message from 'antd/es/message'
 import IconLens from '~/assets/icons/lens.svg'
@@ -15,11 +14,11 @@ import IconCyberConnect from '~/assets/icons/cyberconnect.svg'
 import Deschool from '~/assets/icons/deschool.svg'
 import { getUserContext, useAccount } from '~/context/account'
 import { useLayout } from '~/context/layout'
-import { changeLanguage, getLanguage } from '~/utils/language'
 import './userbar.css'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { getShortAddress } from '~/utils/format'
 import Logo from '../logo'
+import SwitchLanguage from './SwitchLanguage'
 
 const UserBar = () => {
   const { currentWidth,
@@ -27,7 +26,7 @@ const UserBar = () => {
     setConnectDeschoolBoardVisible,
     setCyberConnectBoardVisible,
    } = useLayout()
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const [visible, setVisible] = useState(false) // 控制抽屉是否显示
   const [activeNav, setActiveNav] = useState('/landing') // 当前激活的路由
   const [isShowDeschoolUserMenu, setDeschoolUserMenu] = useState(false)
@@ -156,7 +155,7 @@ const UserBar = () => {
   }
 
   const updateNavStatus = () => {
-    if (location.pathname.startsWith('/plaza')) {
+    if (location.pathname.includes('/plaza')) {
       setActiveNav('/plaza')
     } else if (location.pathname.includes('/landing')) {
       setActiveNav('/landing')
@@ -170,17 +169,6 @@ const UserBar = () => {
   useEffect(() => {
     updateNavStatus()
   }, [location])
-
-  const handleChange = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault()
-    if (i18n.language === 'en_US') {
-      changeLanguage('zh_CN')
-      i18n.changeLanguage('zh_CN')
-    } else {
-      changeLanguage('en_US')
-      i18n.changeLanguage('en_US')
-    }
-  }
 
   // 用于自适应展示导航抽屉
   const showDrawer = () => {
@@ -226,17 +214,7 @@ const UserBar = () => {
                   <NavLink to="/landing">
                     <Logo />
                   </NavLink>
-                  <div className="h-full flex flex-row items-center ml-4 cursor-pointer text-2xl text-black">
-                    <span
-                      className="mr-1 font-ArchivoNarrow min-w-[60px]"
-                      onClick={e => {
-                        handleChange(e)
-                      }}
-                    >
-                      {getLanguage() === 'zh_CN' ? '中文' : 'EN'}
-                    </span>
-                    <ArrowDownIcon style={{ width: '16px', height: '16px', color: '#000000' }} className="mr-1" />
-                  </div>
+                  <SwitchLanguage />
                 </div>
                 <div
                   className={`mt-8 relative flex-1 flex ${
@@ -282,7 +260,7 @@ const UserBar = () => {
           </div>
         )}
         {/* lens & deschool connect */}
-        <div className="flex flex-row items-center justify-end">
+        <div className="flex flex-row items-center justify-end mr-4">
           <Dropdown menu={{ items: cyberConnectItems }} placement="bottom" trigger={['click']} open={isShowCyberConnectUserMenu}>
             <span
               className="frc-center bg-black rounded-xl px-4 mr-4 cursor-pointer"
@@ -339,17 +317,7 @@ const UserBar = () => {
           </Dropdown>
         </div>
         {/* language switch */}
-        <div className="frc-center ml-4 cursor-pointer">
-          <span
-            className="font-ArchivoNarrow text-black"
-            onClick={e => {
-              handleChange(e)
-            }}
-          >
-            {getLanguage() === 'zh_CN' ? '中文' : 'EN'}
-          </span>
-          <ArrowDownIcon style={{ width: '16px', height: '16px', color: '#000000' }} />
-        </div>
+        <SwitchLanguage/>
       </div>
     </div>
   )
