@@ -17,7 +17,7 @@ import { getUserContext, useAccount } from '~/context/account'
 import { useLayout } from '~/context/layout'
 import { changeLanguage, getLanguage } from '~/utils/language'
 import './userbar.css'
-import { NavLink, useLocation } from 'react-router-dom'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { getShortAddress } from '~/utils/format'
 import Logo from '../logo'
 
@@ -35,6 +35,7 @@ const UserBar = () => {
   const [isShowCyberConnectUserMenu, setCyberConnectUserMenu] = useState(false)
   const location = useLocation()
   const { lensProfile, lensToken, cyberToken, cyberProfile, deschoolProfile } = useAccount()
+  const navigate = useNavigate()
 
   const navs = [
     {
@@ -200,7 +201,7 @@ const UserBar = () => {
   }
 
   return (
-    <div className="select-none fixed z-4 w-full bg-#ffffff80" style={{ backdropFilter: 'blur(12px)' }}>
+    <div className="select-none fixed z-4 w-full bg-#FFFFFF8A border-b-1px border-#1818180F" style={{ backdropFilter: 'blur(12px)' }}>
       <div className="flex flex-row items-center justify-between w-auto leading-8 py-4 px-6 xl:px-8 text-xl">
         {/* logo */}
         <div style={{ width: '174px', height: '26px', lineHeight: '32px' }}>
@@ -246,7 +247,7 @@ const UserBar = () => {
                     <span
                       key={index.toString() + nav.name}
                       className={`cursor-pointer text-2xl text-black font-ArchivoNarrow mr-10 ${currentWidth <= 768 ? 'mt-4' : ''} ${
-                        activeNav === nav.path ? 'border-b-2 border-#000000 hover:border-#00000088' : ''
+                        activeNav === nav.path ? 'nav-button-active text-#774FF8' : 'nav-button-normal border-white text-#181818D9'
                       }`}
                     >
                       <NavLink to={nav.path}>{nav.name}</NavLink>
@@ -260,19 +261,20 @@ const UserBar = () => {
           <div className="flex-1 relative frc-between mr-8 col-span-6 h-8 leading-8 text-black">
             <div className="frc-center space-x-5">
               {navs.map((nav, index) => (
-                <span
+                <div
                   key={index.toString() + nav.name}
-                  className={`cursor-pointer text-2xl font-ArchivoNarrow text-black ${
-                    activeNav === nav.path ? 'border-b-2 border-#000000 hover:border-#00000088' : ''
+                  className={`cursor-pointer text-2xl font-ArchivoNarrow ${
+                    activeNav === nav.path ? 'nav-button-active text-#774FF8' : 'nav-button-normal border-white text-#181818D9'
                   }`}
+                  onClick={() => navigate(nav.path)}
                 >
-                  <NavLink to={nav.path}>{nav.name}</NavLink>
-                </span>
+                  {nav.name}
+                </div>
               ))}
             </div>
             <span
               className={`cursor-pointer uppercase text-2xl font-ArchivoNarrow text-black ${
-                activeNav === '/profile/resume' ? 'border-b-2 border-#000000 hover:border-#00000088' : ''
+                activeNav === '/profile/resume' ? 'nav-button-active text-#774FF8' : 'nav-button-normal border-white text-#181818D9'
               }`}
             >
               <NavLink to="/profile/resume">{t('profile.resume')}</NavLink>
