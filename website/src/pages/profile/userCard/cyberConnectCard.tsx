@@ -30,7 +30,7 @@ type CyberCardProps = {
 // 0-自己访问自己 1-自己访问别人
 const CyberCard = (props: CyberCardProps) => {
   const { visible, visitCase, routeAddress, setProfileType, profileType } = props
-  const { cyberToken, cyberProfile } = useAccount()
+  const { cyberToken, cyberProfile, deschoolProfile } = useAccount()
   const [loading, setLoading] = useState(false)
   const [modal, setModal] = useState<{ type: 'followers' | 'following'; visible: boolean }>({ type: 'followers', visible: false })
   const [currentUser, setCurrentUser] = useState<CyberProfile | null>()
@@ -229,7 +229,7 @@ const CyberCard = (props: CyberCardProps) => {
         </p>
       ) : (
         <>
-         {cyberToken?.address && <CreateCyberConnectProfile address={cyberToken?.address || ''}/>}
+         {!cyberProfile?.handle && deschoolProfile?.address && <CreateCyberConnectProfile />}
           <p className="m-10 text-xl three-line-wrap">
             Please get a CyberConnect handle to enable all Booth profile functions. You can grab one at:
             <a href="https://opensea.io/collection/cyberconnect" className="block underline">
