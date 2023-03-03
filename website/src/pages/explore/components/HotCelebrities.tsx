@@ -150,7 +150,7 @@ const HotCelebrities = (props: { searchWord: string }) => {
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 m-auto">
             {celebrities && celebrities.length > 0 ? (
               celebrities.map(celebrity => (
-                <CelebrityCard key={celebrity.deschool.address || celebrity.lens.handle} celebrity={celebrity} />
+                <CelebrityCard key={celebrity.deschool?.address || celebrity.lens?.handle} celebrity={celebrity} />
               ))
             ) : (
               <Empty />

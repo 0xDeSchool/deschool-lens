@@ -45,29 +45,31 @@ pnpm install
 ```js
 server: {
   host: 'localhost',
-  proxy: {
-    '/apiDevelopment': {
-      target: 'http://dev.node-api.deschool.app:8001',
-      secure: false,
-      ws: true,
-      changeOrigin: true,
-      rewrite: pathApi => pathApi.replace(/^\/apiDevelopment/, '/api'),
-    },
-    '/apiStaging': {
-      target: 'http://stg.node-api.deschool.app:8000',
-      secure: false,
-      ws: true,
-      changeOrigin: true,
-      rewrite: pathApi => pathApi.replace(/^\/apiStaging/, '/api'),
-    },
-    '/apiProduction': {
-      target: 'http://node-api.deschool.app',
-      secure: false,
-      ws: true,
-      changeOrigin: true,
-      rewrite: pathApi => pathApi.replace(/^\/apiProduction/, '/api'),
-    },
-  },
+    proxy: {
+        // 省略deschool接口代理配置 ...
+        // 以下为booth不同环境下的接口配置
+        '/goapiBoothLocal': {
+          target: 'http://localhost:9000',
+          secure: false,
+          ws: true,
+          changeOrigin: true,
+          rewrite: pathGoapi => pathGoapi.replace(/^\/goapiBoothLocal/, '/api'),
+        },
+        '/goapiBoothStg': {
+          target: 'http://ec2-54-90-108-215.compute-1.amazonaws.com:80',
+          secure: false,
+          ws: true,
+          changeOrigin: true,
+          rewrite: pathGoapi => pathGoapi.replace(/^\/goapiBoothStg/, '/api'),
+        },
+        '/goapiBoothPrd': {
+          target: 'http://ec2-54-211-102-5.compute-1.amazonaws.com:80',
+          secure: false,
+          ws: true,
+          changeOrigin: true,
+          rewrite: pathGoapi => pathGoapi.replace(/^\/goapiBoothPrd/, '/api'),
+        },
+      },
 },
 ```
 
@@ -161,9 +163,9 @@ pnpm run dev:prd
 ## 目前项目进度
 
 - [-] Init Layout and tools
-- [ ] Connect By Lens API + connect from Deschool  
-- [ ] Resume Page
-- [ ] Profile Page of Follow Following 
-- [ ] Landing Page
-- [ ] Explore Page
-- [ ] SBT Detail Page
+- [-] Connect By Lens API + connect from Deschool  
+- [-] Resume Page
+- [-] Profile Page of Follow Following 
+- [-] Landing Page
+- [-] Explore Page
+- [-] SBT Detail Page
