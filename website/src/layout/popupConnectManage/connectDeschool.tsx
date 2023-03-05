@@ -9,7 +9,7 @@ import UnipassLogo from '~/assets/logos/unipass.svg'
 import MetaMaskImage from '~/assets/logos/mask.png'
 import type { WalletConfig } from '~/wallet'
 import { createProvider, getWallet, WalletType } from '~/wallet'
-import { useAccount } from '~/context/account'
+import { getUserContext, useAccount } from '~/context/account'
 import { PlatformType, postVerifiedIdentity } from '~/api/booth/booth'
 import DeschoolLogoDark from '~/assets/logos/logo-main.png'
 import IconDeschool from '~/assets/icons/deschool.svg'
@@ -107,6 +107,15 @@ const ConnectDeschoolBoard: FC = () => {
     }
   }
 
+    // 退出 Deschool 登录
+  const handleDisconect = () => {
+    try {
+      getUserContext().disconnectFromDeschool()
+    } catch (error: any) {
+      message.error(error?.message ? error.message : '退出登录失败')
+    }
+  }
+
   return (
     <div className="fcc-between w-full min-h-360px p-4 rounded-lg shadow">
       <div className='fcs-start w-full'>
@@ -121,46 +130,63 @@ const ConnectDeschoolBoard: FC = () => {
         </div>}
       </div>
       <div className='fcc-center w-full'>
-        <div className="frc-center w-full">
-        <Button
-          onClick={e => {
-            e.preventDefault()
-            handleConect(WalletType.MetaMask)
-          }}
-          className="w-full h-12 border border-solid border-#6525FF bg-white hover:border-#6525FF66 hover:bg-#6525FF22"
-          disabled={loading}
-        >
-          <div className="text-#6525FF text-[16px] w-full frc-between">
-            <div className="frc-start">
-              <span className='mr-2'>MetaMask</span>
-              {loading && (
-                <LoadingOutlined color="#6525FF"/>
-              )}
-            </div>
-            <img alt="mask" src={MetaMaskImage} style={{ width: '25px', height: '25px' }} />
+        {!deschoolProfile ?
+        <>
+          <div className="frc-center w-full">
+            <Button
+              onClick={e => {
+                e.preventDefault()
+                handleConect(WalletType.MetaMask)
+              }}
+              className="w-full h-12 border border-solid border-#6525FF bg-white hover:border-#6525FF66 hover:bg-#6525FF22"
+              disabled={loading}
+            >
+              <div className="text-#6525FF text-[16px] w-full frc-between">
+                <div className="frc-start">
+                  <span className='mr-2'>MetaMask</span>
+                  {loading && (
+                    <LoadingOutlined color="#6525FF"/>
+                  )}
+                </div>
+                <img alt="mask" src={MetaMaskImage} style={{ width: '25px', height: '25px' }} />
+              </div>
+            </Button>
           </div>
-        </Button>
-        </div>
-        <div className="frc-center w-full mt-4">
+          <div className="frc-center w-full mt-4">
+            <Button
+              onClick={e => {
+                e.preventDefault()
+                handleConect(WalletType.UniPass)
+              }}
+              className="w-full h-12 border border-solid border-#6525FF bg-white hover:border-#6525FF66 hover:bg-#6525FF22"
+              disabled={loadingUniPass}
+            >
+              <div className="text-#6525FF text-[16px] w-full frc-between">
+                <div className="frc-start">
+                  <span className='mr-2'>UniPass</span>
+                  {loadingUniPass && (
+                    <LoadingOutlined color="#6525FF"/>
+                  )}
+                </div>
+                <img alt="mask" src={UnipassLogo} style={{ width: '25px', height: '25px' }} />
+              </div>
+            </Button>
+          </div>
+        </>:
+        <div className="flex flex-row w-full items-center justify-center">
           <Button
             onClick={e => {
               e.preventDefault()
-              handleConect(WalletType.UniPass)
+              handleDisconect()
             }}
             className="w-full h-12 border border-solid border-#6525FF bg-white hover:border-#6525FF66 hover:bg-#6525FF22"
-            disabled={loadingUniPass}
+            disabled={loading}
           >
-            <div className="text-#6525FF text-[16px] w-full frc-between">
-              <div className="frc-start">
-                <span className='mr-2'>UniPass</span>
-                {loadingUniPass && (
-                  <LoadingOutlined color="#6525FF"/>
-                )}
-              </div>
-              <img alt="mask" src={UnipassLogo} style={{ width: '25px', height: '25px' }} />
+            <div className="text-#6525FF text-[16px] w-full frc-center">
+              DISCONNECT
             </div>
           </Button>
-        </div>
+        </div>}
       </div>
     </div>
   )

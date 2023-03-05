@@ -161,7 +161,7 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
   }
 
   // 退出 Lens 登录
-  const handleDisonnect = async () => {
+  const handleDisconect = async () => {
     try {
       getUserContext().disconnectFromLens()
     } catch (error: any) {
@@ -193,7 +193,7 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
         <Button
           onClick={e => {
             e.preventDefault()
-            lensProfile ? handleDisonnect() : handleConnect()
+            lensProfile ? handleDisconect() : handleConnect()
           }}
           className="w-full h-12 border border-solid border-#6525FF bg-white hover:border-#6525FF66 hover:bg-#6525FF22"
           disabled={loading}
