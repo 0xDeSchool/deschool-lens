@@ -49,6 +49,8 @@ const UserBar = () => {
       setActiveNav('/profile/match')
     } else if (location.pathname.includes('/learntogether')) {
       setActiveNav('/learntogether')
+    } else if (location.pathname.includes('/profile/resume')) {
+      setActiveNav('/profile/resume')
     } else {
       const s = location.pathname.split('/')
       setActiveNav(`/${s[3]}`)
@@ -133,11 +135,12 @@ const UserBar = () => {
               ))}
             </div>
             <span
-              className={`cursor-pointer uppercase text-2xl font-ArchivoNarrow text-black ${
+              className={`cursor-pointer uppercase text-2xl font-ArchivoNarrow ${
                 activeNav === '/profile/resume' ? 'nav-button-active text-#774FF8' : 'nav-button-normal border-white text-#181818D9'
               }`}
+              onClick={() => navigate('/profile/resume')}
             >
-              <NavLink to="/profile/resume">{t('profile.resume')}</NavLink>
+              {t('profile.resume')}
             </span>
           </div>
         )}
