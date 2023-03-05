@@ -12,7 +12,9 @@ import { createProvider, getWallet, WalletType } from '~/wallet'
 import { useAccount } from '~/context/account'
 import { PlatformType, postVerifiedIdentity } from '~/api/booth/booth'
 import DeschoolLogoDark from '~/assets/logos/logo-main.png'
+import IconDeschool from '~/assets/icons/deschool.svg'
 import Button from 'antd/es/button'
+import { getShortAddress } from '~/utils/format'
 
 const ConnectDeschoolBoard: FC = () => {
   const { setDescoolProfile, deschoolProfile } = useAccount()
@@ -107,10 +109,16 @@ const ConnectDeschoolBoard: FC = () => {
 
   return (
     <div className="fcc-between w-full min-h-360px p-4 rounded-lg shadow">
-      <div className='frc-start w-full'>
-        <div className="rounded-2 px-2 py-2 frc-center">
+      <div className='fcs-start w-full'>
+        <div className="rounded-2 px-2 py-2 frc-start">
           <img src={DeschoolLogoDark} alt="lens" width={160} height={24}/>
         </div>
+        {deschoolProfile && <div className="frc-start mt-4">
+          <div className="bg-#774ff8 rounded-50% w-28px h-28px frc-center">
+            <img src={IconDeschool} alt="cyberconnect" width={20} height={20} />
+          </div>
+          <span className='ml-2'>{deschoolProfile.username && deschoolProfile.username === deschoolProfile.address ? getShortAddress(deschoolProfile.address) : deschoolProfile.username}</span>
+        </div>}
       </div>
       <div className='fcc-center w-full'>
         <div className="frc-center w-full">

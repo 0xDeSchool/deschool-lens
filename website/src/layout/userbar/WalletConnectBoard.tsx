@@ -15,7 +15,6 @@ import Button from 'antd/es/button/button'
 import { RightOutlined } from '@ant-design/icons'
 import PopupConnectManage from '../popupConnectManage'
 import Modal from 'antd/es/modal'
-import { type } from 'os'
 
 const WalletConnectBoard1 = () => {
   const { t } = useTranslation()

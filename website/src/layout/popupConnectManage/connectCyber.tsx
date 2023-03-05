@@ -28,20 +28,12 @@ interface ConnectBoardProps {
 
 const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
   const { connectTrigger } = props
-  const { cyberConnectBoardVisible, setCyberConnectBoardVisible } = useLayout()
   const [loading, setLoading] = useState(false)
-  const [tempAddress, setTempAddress] = useState<string | undefined>()
   const { t } = useTranslation()
-  const { setCyberToken, setCyberProfile } = useAccount()
+  const { cyberProfile, setCyberToken, setCyberProfile } = useAccount()
   const [loginGetMessage] = useMutation(LOGIN_GET_MESSAGE);
   const [loginVerify] = useMutation(LOGIN_VERIFY);
   const [getPrimaryProfile] = useLazyQuery(PRIMARY_PROFILE);
-
-  useEffect(() => {
-    if (cyberConnectBoardVisible === false) {
-      setLoading(false)
-    }
-  }, [cyberConnectBoardVisible])
 
   /**
    * @description 连接失败的异常处理
@@ -54,7 +46,6 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
     } else {
       message.error(err?.toString() || err)
     }
-    setCyberConnectBoardVisible(false)
   }
 
   // 对传入的challenge信息签名并返回签名结果
@@ -69,7 +60,6 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
     // 如果当前库中已经保存过登录记录则不需要重新签名登录
     const roles = getUserContext().getLoginRoles()
     if (roles.includes(RoleType.UserOfCyber)) {
-      setCyberConnectBoardVisible(false)
       return
     }
     try {
@@ -156,7 +146,6 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
         message.error(String(error))
       }
     } finally {
-      setCyberConnectBoardVisible(false)
       if (isReload) window.location.reload()
     }
   }
@@ -174,7 +163,6 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
       const provider = createProvider(config)
       await getWallet().setProvider(WalletType.MetaMask, provider)
       const address = await getWallet().getAddress()
-      setTempAddress(address)
       if (address) {
         await handleLoginByAddress(address)
       } else {
@@ -187,6 +175,16 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
     }
   }
 
+
+  // 退出 CyberConnect 登录
+  const handleDisconnect = async () => {
+    try {
+      getUserContext().disconnectFromCyberConnect()
+    } catch (error: any) {
+      message.error(error?.message ? error.message : '退出登录失败')
+    }
+  }
+
   useEffect(() => {
     if (connectTrigger) {
       handleLoginByAddress(connectTrigger, true)
@@ -195,21 +193,27 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
 
   return (
     <div className="fcc-between w-full min-h-360px p-4 rounded-lg shadow">
-      <div className='frc-start w-full'>
-        <div className="bg-black rounded-2 px-2 py-2 frc-center">
+      <div className='fcs-start w-full'>
+        <div className="bg-black rounded-2 px-2 py-2 frc-start">
           <img src={IconCyberConnectLogo} alt="cyberconnect" />
         </div>
+        {cyberProfile && <div className="frc-start mt-4">
+          <div className="bg-black rounded-50% w-28px h-28px frc-center">
+            <img src={IconCyberConnect} alt="cyberconnect" width={20} height={20} />
+          </div>
+          <span className='ml-2'>{cyberProfile.handleStr}</span>
+        </div>}
       </div>
       <div className="flex flex-row w-full items-center justify-center">
         <Button
           onClick={e => {
             e.preventDefault()
-            handleConnect()
+            cyberProfile ? handleDisconnect() : handleConnect()
           }}
           className="w-full h-12 border border-solid border-#6525FF bg-white hover:border-#6525FF66 hover:bg-#6525FF22"
           disabled={loading}
         >
-          <div className="text-#6525FF text-[16px] w-full frc-between">
+          {!cyberProfile ? (<div className="text-#6525FF text-[16px] w-full frc-between">
             <div className="frc-start">
               <span className='mr-2'>CONNECT</span>
               {loading && (
@@ -217,7 +221,10 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
               )}
             </div>
             <img alt="mask" src={MetaMaskImage} style={{ width: '25px', height: '25px' }} />
-          </div>
+          </div>) :
+          (<div className="text-#6525FF text-[16px] w-full frc-center">
+            DISCONNECT
+          </div>)}
         </Button>
       </div>
     </div>
