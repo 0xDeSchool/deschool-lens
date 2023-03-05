@@ -11,15 +11,13 @@ import type { WalletConfig } from '~/wallet'
 import { createProvider, getWallet, WalletType } from '~/wallet'
 import { useAccount } from '~/context/account'
 import { PlatformType, postVerifiedIdentity } from '~/api/booth/booth'
+import DeschoolLogoDark from '~/assets/logos/logo-main.png'
+import Button from 'antd/es/button'
 
 const ConnectDeschoolBoard: FC = () => {
   const { setDescoolProfile, deschoolProfile } = useAccount()
   const [loading, setLoading] = useState(false)
   const [loadingUniPass, setLoadingUniPass] = useState(false)
-  const [tempAddressObj, setTempAddressObj] = useState<{ type: WalletType; address: string | undefined | null }>({
-    type: WalletType.None,
-    address: deschoolProfile?.address ? deschoolProfile?.address : undefined,
-  })
   // MetaMask or UniPass
   const { t } = useTranslation()
 
@@ -74,7 +72,6 @@ const ConnectDeschoolBoard: FC = () => {
       message.error(t('signMessageError'))
       throw error
     } finally {
-      setTempAddressObj({ type: WalletType.None, address: null })
     }
   }
 
@@ -83,10 +80,6 @@ const ConnectDeschoolBoard: FC = () => {
    * @returns
    */
   const handleConect = async (type: WalletType) => {
-    if (tempAddressObj.address) {
-      handleLoginByAddress(tempAddressObj.address)
-      return
-    }
     if (loadingUniPass || loading) return
     if (type === WalletType.MetaMask) {
       setLoading(true)
@@ -99,10 +92,7 @@ const ConnectDeschoolBoard: FC = () => {
       await getWallet().setProvider(type, provider)
       const address = await getWallet().getAddress()
       if (address) {
-        setTempAddressObj({
-          type,
-          address,
-        })
+        handleLoginByAddress(address)
       }
     } catch (err: any) {
       handleFailToConnect(err)
@@ -116,60 +106,53 @@ const ConnectDeschoolBoard: FC = () => {
   }
 
   return (
-    <div className="fcc-center w-full p-4 rounded-lg shadow">
-      <div className="flex flex-row w-full items-center justify-center">
-        {tempAddressObj.type === WalletType.MetaMask || tempAddressObj.type === WalletType.None && (
-          <button
-            onClick={e => {
-              e.preventDefault()
-              handleConect(WalletType.MetaMask)
-            }}
-            type="button"
-            className="flex flex-col items-center justify-between dark:bg-#1a253b cursor-pointer w-full p-3 mb-2 rounded-md border border-solid border-#6525FF bg-white hover:border-#6525FF66 hover:bg-#6525FF22"
-            disabled={loading}
-            style={{ cursor: `${loading ? 'not-allowed' : ''}` }}
-          >
-            <div className="mb-0 text-#6525FF text-[16px] w-full frc-between">
-              <div className="flex">
-                <span>{tempAddressObj.type === WalletType.MetaMask ? `${t('SIGN TO LOGIN')}` : 'MetaMask'}</span>
-                {loading && (
-                  <div className="loading ml-2 frc-center">
-                    <LoadingOutlined color="#6525FF" style={{ width: 20, height: 20, fontSize: 20 }} />
-                  </div>
-                )}
-              </div>
-              <img alt="mask" src={MetaMaskImage} style={{ width: '25px', height: '25px' }} />
-            </div>
-            {tempAddressObj.type === WalletType.MetaMask && <div className="mt-2 text-sm text-black">{tempAddressObj.address}</div>}
-          </button>
-        )}
+    <div className="fcc-between w-full min-h-360px p-4 rounded-lg shadow">
+      <div className='frc-start w-full'>
+        <div className="rounded-2 px-2 py-2 frc-center">
+          <img src={DeschoolLogoDark} alt="lens" width={160} height={24}/>
+        </div>
       </div>
-      <div className="flex flex-row w-full items-center justify-center mt-4">
-        {tempAddressObj.type === WalletType.UniPass || tempAddressObj.type === WalletType.None && (
-          <button
+      <div className='fcc-center w-full'>
+        <div className="frc-center w-full">
+        <Button
+          onClick={e => {
+            e.preventDefault()
+            handleConect(WalletType.MetaMask)
+          }}
+          className="w-full h-12 border border-solid border-#6525FF bg-white hover:border-#6525FF66 hover:bg-#6525FF22"
+          disabled={loading}
+        >
+          <div className="text-#6525FF text-[16px] w-full frc-between">
+            <div className="frc-start">
+              <span className='mr-2'>MetaMask</span>
+              {loading && (
+                <LoadingOutlined color="#6525FF"/>
+              )}
+            </div>
+            <img alt="mask" src={MetaMaskImage} style={{ width: '25px', height: '25px' }} />
+          </div>
+        </Button>
+        </div>
+        <div className="frc-center w-full mt-4">
+          <Button
             onClick={e => {
               e.preventDefault()
               handleConect(WalletType.UniPass)
             }}
-            type="button"
-            className="flex flex-col items-center justify-between dark:bg-#1a253b cursor-pointer w-full p-3 mb-2 rounded-md border border-solid border-#6525FF bg-white hover:border-#6525FF66 hover:bg-#6525FF22"
+            className="w-full h-12 border border-solid border-#6525FF bg-white hover:border-#6525FF66 hover:bg-#6525FF22"
             disabled={loadingUniPass}
-            style={{ cursor: `${loadingUniPass ? 'not-allowed' : ''}` }}
           >
-            <div className="mb-0 text-#6525FF text-[16px] w-full frc-between">
-              <div className="flex">
-                <span>{tempAddressObj.type === WalletType.UniPass ? `${t('SIGN TO LOGIN')}` : 'UniPass'}</span>
+            <div className="text-#6525FF text-[16px] w-full frc-between">
+              <div className="frc-start">
+                <span className='mr-2'>UniPass</span>
                 {loadingUniPass && (
-                  <div className="loading ml-2 frc-center">
-                    <LoadingOutlined color="#6525FF" style={{ width: 20, height: 20, fontSize: 20 }} />
-                  </div>
+                  <LoadingOutlined color="#6525FF"/>
                 )}
               </div>
-              <img alt="unipass wallet" src={UnipassLogo} style={{ width: '22px', height: '22px' }} />
+              <img alt="mask" src={UnipassLogo} style={{ width: '25px', height: '25px' }} />
             </div>
-            {tempAddressObj.type === WalletType.UniPass && <div className="mt-2 text-sm text-black">{tempAddressObj.address}</div>}
-          </button>
-        )}
+          </Button>
+        </div>
       </div>
     </div>
   )

@@ -14,6 +14,8 @@ import { createProvider, getWallet, WalletType } from '~/wallet'
 import { fetchUserDefaultProfile } from '~/hooks/profile'
 import { authenticate, generateChallenge } from '~/api/lens/authentication/login'
 import { postVerifiedIdentity, PlatformType } from '~/api/booth/booth'
+import IconLens from '~/assets/icons/lens.svg'
+import Button from 'antd/es/button'
 
 interface ConnectBoardProps {
   wallectConfig?: WalletConfig
@@ -167,31 +169,32 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
   }, [connectTrigger])
 
   return (
-    <div className="fcc-center w-full p-4 rounded-lg shadow">
+    <div className="fcc-between w-full min-h-360px p-4 rounded-lg shadow">
+      <div className='frc-start w-full'>
+        <div className="bg-#abfe2c rounded-2 px-2 py-2 frc-center">
+          <img src={IconLens} alt="lens" width={20} height={20} />
+          <span className='ml-1 text-#00501E'>LENS</span>
+        </div>
+      </div>
       <div className="flex flex-row w-full items-center justify-center">
-        <button
+        <Button
           onClick={e => {
             e.preventDefault()
             handleConnect()
           }}
-          type="button"
-          className="flex flex-col items-center justify-between dark:bg-#1a253b cursor-pointer w-full p-3 mb-2 rounded-md border border-solid border-#6525FF bg-white hover:border-#6525FF66 hover:bg-#6525FF22"
+          className="w-full h-12 border border-solid border-#6525FF bg-white hover:border-#6525FF66 hover:bg-#6525FF22"
           disabled={loading}
-          style={{ cursor: `${loading ? 'not-allowed' : ''}` }}
         >
-          <div className="mb-0 text-#6525FF text-[16px] w-full frc-between">
-            <div className="flex">
-              <span>{t('SIGN TO LOGIN BY LENS')}</span>
+          <div className="text-#6525FF text-[16px] w-full frc-between">
+            <div className="frc-start">
+              <span className='mr-2'>CONNECT</span>
               {loading && (
-                <div className="loading ml-2 frc-center">
-                  <LoadingOutlined color="#6525FF" style={{ width: 20, height: 20, fontSize: 20 }} />
-                </div>
+                <LoadingOutlined color="#6525FF"/>
               )}
             </div>
             <img alt="mask" src={MetaMaskImage} style={{ width: '25px', height: '25px' }} />
           </div>
-          <div className="mt-2 text-sm text-black">{tempAddress}</div>
-        </button>
+        </Button>
       </div>
     </div>
   )

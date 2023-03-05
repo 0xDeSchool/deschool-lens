@@ -12,21 +12,21 @@ const PopupConnectManage = () => {
 
   return (
     <div>
-      {userProfile?.length > 0 && <div className='h-80vh frc-start gap-2 cursor-pointer'>
-        <Avatar size={24} alt="user avatar" src={userProfile[0].avatar} />
-        <div className="font-ArchivoNarrow text-xl ml-2">
-          {userProfile[0].username}
+      <div className='frc-start gap-4 px-8 pt-24'>
+        <Avatar size={24} alt="user avatar" src={userProfile.length > 0 && userProfile[0]?.avatar} />
+        <div className="font-ArchivoNarrow text-xl">
+          {userProfile.length > 0 ? userProfile[0]?.username : '--'}
         </div>
-        <Button onClick={() => setEditing(true)}>Edit</Button>
-      </div>}
-      <div className='frc-center gap-4'>
-        <div className='item-connect'>
+        {userProfile?.length > 0 && <Button onClick={() => setEditing(true)}>Edit</Button>}
+      </div>
+      <div className='frc-center gap-8 px-8 pt-8 pb-24'>
+        <div className='item-connect flex-1'>
           <ConnectDeschool />
         </div>
-        <div className='item-connect'>
+        <div className='item-connect flex-1'>
           <ConnectCyberBoard />
         </div>
-        <div className='item-connect'>
+        <div className='item-connect flex-1'>
           <ConnectLensBoard />
         </div>
       </div>
