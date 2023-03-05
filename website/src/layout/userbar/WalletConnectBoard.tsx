@@ -2,7 +2,7 @@ import Dropdown from 'antd/es/dropdown'
 import { MenuProps } from 'antd/es/menu'
 import Popover from 'antd/es/Popover'
 import message from 'antd/es/message'
-import { useState } from 'react'
+import { ReactElement, useState } from 'react'
 import { getUserContext, useAccount } from '~/context/account'
 import { useLayout } from '~/context/layout'
 import IconCyberConnect from '~/assets/icons/cyberConnect.svg'
@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next'
 import Avatar from 'antd/es/avatar'
 import Button from 'antd/es/button/button'
 import { RightOutlined } from '@ant-design/icons'
+import PopupConnectManage from '../popupConnectManage'
 
 const WalletConnectBoard1 = () => {
   const { t } = useTranslation()
@@ -243,23 +244,31 @@ const PopoverAccountInfo = () => {
 const WalletConnectBoard = () => {
   const { t } = useTranslation()
   const { userProfile } = useAccount()
+  const [showPopover, setShowPopover] = useState(false)
+  const onClick = (e: any) => {
+    e.preventDefault()
+    setShowPopover(true)
+  }
   return (
+    <>
+     {!userProfile?.length && <button
+      type="button"
+      className="mx-auto text-white text-center text-xl whitespace-nowrap font-ArchivoNarrow min-w-100px w-200px h-48px bg-primary hover:bg-accent"
+      onClick={(e) => onClick(e)}
+    >
+      <div className="mx-3 py-2">{t('Connect Wallet')}</div>
+    </button>}
+    {userProfile?.length > 0 &&
     <Popover placement="bottomRight" content={<PopoverAccountInfo />} trigger="click">
-      <div>
-        {!userProfile && <button
-          type="button"
-          className="mx-auto text-white text-center text-xl whitespace-nowrap font-ArchivoNarrow min-w-100px w-200px h-48px bg-primary hover:bg-accent"
-        >
-          <div className="mx-3 py-2">{t('Connect Wallet')}</div>
-        </button>}
-        {userProfile?.length > 0 && <div className='frc-center cursor-pointer'>
-          <Avatar size={24} alt="user avatar" src={userProfile[0].avatar} />
-          <div className="font-ArchivoNarrow text-xl ml-2">
-            {userProfile[0].username}
-          </div>
-        </div>}
+      <div className='frc-center cursor-pointer'>
+        <Avatar size={24} alt="user avatar" src={userProfile[0].avatar} />
+        <div className="font-ArchivoNarrow text-xl ml-2">
+          {userProfile[0].username}
+        </div>
       </div>
-    </Popover>
+    </Popover>}
+    {showPopover && <PopupConnectManage /> }
+    </>
   )
 }
 
