@@ -45,6 +45,10 @@ const UserBar = () => {
       setActiveNav('/plaza')
     } else if (location.pathname.includes('/landing')) {
       setActiveNav('/landing')
+    } else if (location.pathname.includes('/profile/match')) {
+      setActiveNav('/profile/match')
+    } else if (location.pathname.includes('/learntogether')) {
+      setActiveNav('/learntogether')
     } else {
       const s = location.pathname.split('/')
       setActiveNav(`/${s[3]}`)
