@@ -16,8 +16,8 @@ func identityController(sb *server.ServerBuiler) {
 		group := s.Route.Group("api/identity")
 		group.POST("link", auth, linkPlatform)
 		group.DELETE("link", auth, unlinkPlatform)
-		group.PUT(":addr", auth, updateUserInfo)
-		group.GET(":addr", getUserInfo)
+		group.PUT("", auth, updateUserInfo)
+		group.GET("", getUserInfo)
 		return nil
 	})
 }
@@ -41,7 +41,17 @@ func updateUserInfo(ctx *gin.Context) {
 
 func getUserInfo(ctx *gin.Context) {
 	um := *di.Get[UserRepository]()
-	addr := ginx.Path(ctx, "addr")
+	addr := ctx.Query("addr")
+	if addr == "" {
+		currentUser := ginx.CurrentUser(ctx)
+		if !currentUser.Authenticated() {
+			ginx.PanicUnAuthenticated("addr is required")
+		}
+		addr = currentUser.Address
+	}
+	if !common.IsHexAddress(addr) {
+		ginx.PanicValidatition("invalid address")
+	}
 	u := um.Find(ctx, common.HexToAddress(addr))
 	if u == nil {
 		ginx.PanicNotFound("user not found")
@@ -72,5 +82,5 @@ func linkPlatform(ctx *gin.Context) {
 	data.Address = currentUser.Address
 	um := di.Get[UserManager]()
 	um.Link(ctx, data)
-	ctx.JSON(http.StatusOK, data)
+	ctx.JSON(http.StatusOK, struct{}{})
 }

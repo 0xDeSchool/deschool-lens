@@ -16,15 +16,15 @@ import (
 
 var identityKey = "id"
 var addressKey = "address"
-var nameKey = "userName"
+var nameKey = "nickName"
 
 type LoginResult struct {
-	Code     int       `json:"code"`
-	JwtToken string    `json:"jwtToken"`
-	Expire   time.Time `json:"expire"`
-	UserName string    `json:"username"`
-	Avatar   string    `json:"avatar"`
-	Address  string    `json:"address"`
+	Code        int       `json:"code"`
+	JwtToken    string    `json:"jwtToken"`
+	Expire      time.Time `json:"expire"`
+	DisplayName string    `json:"displayName"`
+	Avatar      string    `json:"avatar"`
+	Address     string    `json:"address"`
 }
 
 type LogoutResult struct {
@@ -34,11 +34,10 @@ type LogoutResult struct {
 
 func NewCurrentUserInfo(user *identity.User) *ginx.CurrentUserInfo {
 	return &ginx.CurrentUserInfo{
-		ID:       user.ID,
-		UserName: user.UserName,
-		Address:  user.Address,
-		Avatar:   user.Avatar,
-		//Platforms: user.Platforms,
+		ID:          user.ID,
+		DisplayName: user.DisplayName,
+		Address:     user.Address,
+		Avatar:      user.Avatar,
 	}
 }
 
@@ -47,7 +46,7 @@ func payloadFunc(data interface{}) jwt.MapClaims {
 		return jwt.MapClaims{
 			identityKey: v.ID.Hex(),
 			addressKey:  v.Address,
-			nameKey:     v.UserName,
+			nameKey:     v.DisplayName,
 		}
 	}
 	return jwt.MapClaims{}
@@ -72,7 +71,7 @@ func identityHandler(c *gin.Context) interface{} {
 		user.Address = addr.(string)
 	}
 	if name, ok := claims[nameKey]; ok {
-		user.UserName = name.(string)
+		user.DisplayName = name.(string)
 	}
 	c.Set("Login.User", user)
 	return user
@@ -120,12 +119,12 @@ func jwtLoginResponse(c *gin.Context, code int, token string, expire time.Time) 
 	}
 	user := v.(*ginx.CurrentUserInfo)
 	result := &LoginResult{
-		Code:     code,
-		JwtToken: token,
-		Expire:   expire,
-		Address:  user.Address,
-		UserName: user.UserName,
-		Avatar:   user.Avatar,
+		Code:        code,
+		JwtToken:    token,
+		Expire:      expire,
+		Address:     user.Address,
+		DisplayName: user.DisplayName,
+		Avatar:      user.Avatar,
 	}
 	c.JSON(http.StatusOK, result)
 }
