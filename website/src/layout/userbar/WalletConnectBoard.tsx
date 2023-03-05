@@ -14,6 +14,7 @@ import Avatar from 'antd/es/avatar'
 import Button from 'antd/es/button/button'
 import { RightOutlined } from '@ant-design/icons'
 import PopupConnectManage from '../popupConnectManage'
+import Modal from 'antd/es/modal'
 
 const WalletConnectBoard1 = () => {
   const { t } = useTranslation()
@@ -244,10 +245,10 @@ const PopoverAccountInfo = () => {
 const WalletConnectBoard = () => {
   const { t } = useTranslation()
   const { userProfile } = useAccount()
-  const [showPopover, setShowPopover] = useState(false)
+  const [open, setOpen] = useState(false)
   const onClick = (e: any) => {
     e.preventDefault()
-    setShowPopover(true)
+    setOpen(true)
   }
   return (
     <>
@@ -257,17 +258,33 @@ const WalletConnectBoard = () => {
       onClick={(e) => onClick(e)}
     >
       <div className="mx-3 py-2">{t('Connect Wallet')}</div>
-    </button>}
-    {userProfile?.length > 0 &&
-    <Popover placement="bottomRight" content={<PopoverAccountInfo />} trigger="click">
-      <div className='frc-center cursor-pointer'>
-        <Avatar size={24} alt="user avatar" src={userProfile[0].avatar} />
-        <div className="font-ArchivoNarrow text-xl ml-2">
-          {userProfile[0].username}
+      </button>}
+      {userProfile?.length > 0 &&
+      <Popover placement="bottomRight" content={<PopoverAccountInfo />} trigger="click">
+        <div className='frc-center cursor-pointer'>
+          <Avatar size={24} alt="user avatar" src={userProfile[0].avatar} />
+          <div className="font-ArchivoNarrow text-xl ml-2">
+            {userProfile[0].username}
+          </div>
         </div>
-      </div>
-    </Popover>}
-    {showPopover && <PopupConnectManage /> }
+      </Popover>}
+      <Modal
+        wrapClassName=""
+        open={open}
+        width='80%'
+        title={null}
+        footer={null}
+        closable={false}
+        centered
+        closeIcon={null}
+        style={{ height: '80vh' }}
+        onCancel={() => {
+          setOpen(false)
+        }}
+        destroyOnClose
+      >
+        <PopupConnectManage />
+      </Modal>
     </>
   )
 }

@@ -1,0 +1,178 @@
+import type { FC } from 'react'
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import message from 'antd/es/message'
+
+import { LoadingOutlined } from '@ant-design/icons'
+import { getNonceByUserAddress, postNonceSigByUserAddress } from '~/api/go/user'
+import UnipassLogo from '~/assets/logos/unipass.svg'
+import MetaMaskImage from '~/assets/logos/mask.png'
+import type { WalletConfig } from '~/wallet'
+import { createProvider, getWallet, WalletType } from '~/wallet'
+import { useAccount } from '~/context/account'
+import { PlatformType, postVerifiedIdentity } from '~/api/booth/booth'
+
+const ConnectDeschoolBoard: FC = () => {
+  const { setDescoolProfile, deschoolProfile } = useAccount()
+  const [loading, setLoading] = useState(false)
+  const [loadingUniPass, setLoadingUniPass] = useState(false)
+  const [tempAddressObj, setTempAddressObj] = useState<{ type: WalletType; address: string | undefined | null }>({
+    type: WalletType.None,
+    address: deschoolProfile?.address ? deschoolProfile?.address : undefined,
+  })
+  // MetaMask or UniPass
+  const { t } = useTranslation()
+
+  /**
+   * @description 连接失败的异常处理
+   * @param {}
+   * @returns {}
+   */
+  const handleFailToConnect = (err: any) => {
+    if (err?.code) {
+      message.error(t(`${err.code}`))
+    } else {
+      message.error(err?.toString() || err)
+    }
+  }
+
+  const signLoginMessage = async (nonce: string) => {
+    const FIX_FORMAT_MESSAGE = `DeSchool is kindly requesting to Sign in with ${
+      getWallet().type
+    } securely, with nonce: ${nonce}. Sign and login now, begin your journey to DeSchool!`
+    const signMessageReturn = await getWallet().signMessage(FIX_FORMAT_MESSAGE)
+    return signMessageReturn
+  }
+
+  // 调用deschool接口签名并登录
+  const handleLoginByAddress = async (address: string) => {
+    try {
+      const nonceRes: any = await getNonceByUserAddress({ address })
+      if (!nonceRes.success) {
+        throw nonceRes.error
+      }
+      const { nonce } = nonceRes
+      const loginSig = await signLoginMessage(nonce)
+
+      const validationRes: any = await postNonceSigByUserAddress({
+        walletType: getWallet().type!,
+        address,
+        sig: loginSig,
+      })
+      if (validationRes && validationRes.address && validationRes.jwtToken) {
+        setDescoolProfile({ ...validationRes })
+        // 不管是deschool还是lens登录后,均提交此地址的绑定信息给后台，后台判断是否是第一次来发 Deschool-Booth-Onboarding SBT
+        await postVerifiedIdentity({
+          address,
+          baseAddress: address,
+          platform: PlatformType.DESCHOOL,
+        })
+      } else {
+        setDescoolProfile(null)
+      }
+    } catch (error) {
+      message.error(t('signMessageError'))
+      throw error
+    } finally {
+      setTempAddressObj({ type: WalletType.None, address: null })
+    }
+  }
+
+  /**
+   * 选择并连接一个第三方钱包，如果连接以后就签名登录deshcool
+   * @returns
+   */
+  const handleConect = async (type: WalletType) => {
+    if (tempAddressObj.address) {
+      handleLoginByAddress(tempAddressObj.address)
+      return
+    }
+    if (loadingUniPass || loading) return
+    if (type === WalletType.MetaMask) {
+      setLoading(true)
+    } else {
+      setLoadingUniPass(true)
+    }
+    try {
+      const config: WalletConfig = { type }
+      const provider = createProvider(config)
+      await getWallet().setProvider(type, provider)
+      const address = await getWallet().getAddress()
+      if (address) {
+        setTempAddressObj({
+          type,
+          address,
+        })
+      }
+    } catch (err: any) {
+      handleFailToConnect(err)
+    } finally {
+      if (type === WalletType.MetaMask) {
+        setLoading(false)
+      } else {
+        setLoadingUniPass(false)
+      }
+    }
+  }
+
+  return (
+    <div className="fcc-center w-full p-4 rounded-lg shadow">
+      <div className="flex flex-row w-full items-center justify-center">
+        {tempAddressObj.type === WalletType.MetaMask || tempAddressObj.type === WalletType.None && (
+          <button
+            onClick={e => {
+              e.preventDefault()
+              handleConect(WalletType.MetaMask)
+            }}
+            type="button"
+            className="flex flex-col items-center justify-between dark:bg-#1a253b cursor-pointer w-full p-3 mb-2 rounded-md border border-solid border-#6525FF bg-white hover:border-#6525FF66 hover:bg-#6525FF22"
+            disabled={loading}
+            style={{ cursor: `${loading ? 'not-allowed' : ''}` }}
+          >
+            <div className="mb-0 text-#6525FF text-[16px] w-full frc-between">
+              <div className="flex">
+                <span>{tempAddressObj.type === WalletType.MetaMask ? `${t('SIGN TO LOGIN')}` : 'MetaMask'}</span>
+                {loading && (
+                  <div className="loading ml-2 frc-center">
+                    <LoadingOutlined color="#6525FF" style={{ width: 20, height: 20, fontSize: 20 }} />
+                  </div>
+                )}
+              </div>
+              <img alt="mask" src={MetaMaskImage} style={{ width: '25px', height: '25px' }} />
+            </div>
+            {tempAddressObj.type === WalletType.MetaMask && <div className="mt-2 text-sm text-black">{tempAddressObj.address}</div>}
+          </button>
+        )}
+      </div>
+      <div className="flex flex-row w-full items-center justify-center mt-4">
+        {tempAddressObj.type === WalletType.UniPass || tempAddressObj.type === WalletType.None && (
+          <button
+            onClick={e => {
+              e.preventDefault()
+              handleConect(WalletType.UniPass)
+            }}
+            type="button"
+            className="flex flex-col items-center justify-between dark:bg-#1a253b cursor-pointer w-full p-3 mb-2 rounded-md border border-solid border-#6525FF bg-white hover:border-#6525FF66 hover:bg-#6525FF22"
+            disabled={loadingUniPass}
+            style={{ cursor: `${loadingUniPass ? 'not-allowed' : ''}` }}
+          >
+            <div className="mb-0 text-#6525FF text-[16px] w-full frc-between">
+              <div className="flex">
+                <span>{tempAddressObj.type === WalletType.UniPass ? `${t('SIGN TO LOGIN')}` : 'UniPass'}</span>
+                {loadingUniPass && (
+                  <div className="loading ml-2 frc-center">
+                    <LoadingOutlined color="#6525FF" style={{ width: 20, height: 20, fontSize: 20 }} />
+                  </div>
+                )}
+              </div>
+              <img alt="unipass wallet" src={UnipassLogo} style={{ width: '22px', height: '22px' }} />
+            </div>
+            {tempAddressObj.type === WalletType.UniPass && <div className="mt-2 text-sm text-black">{tempAddressObj.address}</div>}
+          </button>
+        )}
+      </div>
+    </div>
+  )
+}
+
+export default ConnectDeschoolBoard
