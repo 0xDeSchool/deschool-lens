@@ -37,7 +37,6 @@ root.render(
             colorPrimaryText: '#6525FF',
             colorPrimaryTextActive: '#4a16d9',
             colorPrimaryTextHover: '#a855f7',
-            borderRadius: 0,
           },
           components: {
             Radio: {
