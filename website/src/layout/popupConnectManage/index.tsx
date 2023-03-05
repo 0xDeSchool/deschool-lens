@@ -13,7 +13,7 @@ const PopupConnectManage = () => {
   return (
     <div>
       <div className='frc-start gap-4 px-8 pt-24'>
-        <Avatar size={24} alt="user avatar" src={userProfile.length > 0 && userProfile[0]?.avatar} />
+        <Avatar size={32} alt="user avatar" src={userProfile.length > 0 && userProfile[0]?.avatar} />
         <div className="font-ArchivoNarrow text-xl">
           {userProfile.length > 0 ? userProfile[0]?.username : '--'}
         </div>

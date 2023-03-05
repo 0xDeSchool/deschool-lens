@@ -15,6 +15,7 @@ import Button from 'antd/es/button/button'
 import { RightOutlined } from '@ant-design/icons'
 import PopupConnectManage from '../popupConnectManage'
 import Modal from 'antd/es/modal'
+import { type } from 'os'
 
 const WalletConnectBoard1 = () => {
   const { t } = useTranslation()
@@ -195,7 +196,11 @@ const WalletConnectBoard1 = () => {
   )
 }
 
-const PopoverAccountInfo = () => {
+type PopoverAccountInfoProps = {
+  open: () => void
+}
+const PopoverAccountInfo: React.FC<PopoverAccountInfoProps> = (props) => {
+  const { open } = props
   const { lensProfile, cyberProfile, deschoolProfile, userProfile } = useAccount()
   return (
     <div className="bg-white rounded-2 px-2 py-3 fcc-start gap-4">
@@ -206,7 +211,7 @@ const PopoverAccountInfo = () => {
           </div>
           <span className='ml-2'>{userProfile[0].username}</span>
         </div>
-        <Button className='frc-center'>Expand<RightOutlined /></Button>
+        <Button className='frc-center' onClick={open}>Expand<RightOutlined /></Button>
       </div>}
       {lensProfile && <div className="w-full frc-between gap-8">
         <div className='frc-start'>
@@ -246,6 +251,7 @@ const WalletConnectBoard = () => {
   const { t } = useTranslation()
   const { userProfile } = useAccount()
   const [open, setOpen] = useState(false)
+  const [showPopover, setShowPopover] = useState(false)
   const onClick = (e: any) => {
     e.preventDefault()
     setOpen(true)
@@ -260,14 +266,22 @@ const WalletConnectBoard = () => {
       <div className="mx-3 py-2">{t('Connect Wallet')}</div>
       </button>}
       {userProfile?.length > 0 &&
-      <Popover placement="bottomRight" content={<PopoverAccountInfo />} trigger="click">
+      (<Popover
+        placement="bottomRight"
+        content={<PopoverAccountInfo open={() => {
+          setOpen(true)
+          setShowPopover(false)
+        }}/>}
+        open={showPopover}
+        onOpenChange={(e) => setShowPopover(e)}
+        trigger="click">
         <div className='frc-center cursor-pointer'>
           <Avatar size={24} alt="user avatar" src={userProfile[0].avatar} />
           <div className="font-ArchivoNarrow text-xl ml-2">
             {userProfile[0].username}
           </div>
         </div>
-      </Popover>}
+      </Popover>)}
       <Modal
         wrapClassName=""
         open={open}
