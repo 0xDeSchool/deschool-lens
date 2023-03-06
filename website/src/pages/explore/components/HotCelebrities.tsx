@@ -10,6 +10,7 @@ import { getOtherUsersProfile } from '~/api/go/account'
 import type { CelebrityType } from './CelebrityCard'
 import CelebrityCard from './CelebrityCard'
 import type { Creator, ProfileExtend } from '~/lib/types/app'
+import UserCardItem from './boothzNewUser/UserCardItem'
 
 const HotCelebrities = (props: { searchWord: string }) => {
   const { searchWord } = props
@@ -148,6 +149,11 @@ const HotCelebrities = (props: { searchWord: string }) => {
           </div>
         ) : (
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 m-auto">
+            {celebrities && celebrities.length > 0 && (
+              celebrities.map(celebrity => (
+                <UserCardItem key={celebrity.deschool?.address || celebrity.lens?.handle} celebrity={celebrity} />
+              ))
+            )}
             {celebrities && celebrities.length > 0 ? (
               celebrities.map(celebrity => (
                 <CelebrityCard key={celebrity.deschool?.address || celebrity.lens?.handle} celebrity={celebrity} />

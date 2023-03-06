@@ -118,7 +118,7 @@ const ConnectDeschoolBoard: FC = () => {
         </div>
         {deschoolProfile && <div className="frc-start mt-4">
           <div className="bg-#774ff8 rounded-50% w-28px h-28px frc-center">
-            <img src={IconDeschool} alt="cyberconnect" width={20} height={20} />
+            <img src={IconDeschool} alt="deschool" width={20} height={20} />
           </div>
           <span className='ml-2'>{deschoolProfile.username && deschoolProfile.username === deschoolProfile.address ? getShortAddress(deschoolProfile.address) : deschoolProfile.username}</span>
         </div>}
