@@ -15,7 +15,8 @@ import DeschoolLogoDark from '~/assets/logos/logo-main.png'
 import IconDeschool from '~/assets/icons/deschool.svg'
 import Button from 'antd/es/button'
 import { getShortAddress } from '~/utils/format'
-import { login } from '~/api/booth/account'
+import { getSignMessage, login } from '~/api/booth/account'
+import { SignMsgType } from '~/api/booth/types'
 
 const ConnectDeschoolBoard: FC = () => {
   const { setDescoolProfile, deschoolProfile } = useAccount()
@@ -38,23 +39,15 @@ const ConnectDeschoolBoard: FC = () => {
   }
 
   const signLoginMessage = async (nonce: string) => {
-    const FIX_FORMAT_MESSAGE = `DeSchool is kindly requesting to Sign in with ${
-      getWallet().type
-    } securely, with nonce: ${nonce}. Sign and login now, begin your journey to DeSchool!`
-    const signMessageReturn = await getWallet().signMessage(FIX_FORMAT_MESSAGE)
+    const signMessageReturn = await getWallet().signMessage(nonce)
     return signMessageReturn
   }
 
   // 调用deschool接口签名并登录
   const handleLoginByAddress = async (address: string) => {
     try {
-      const nonceRes: any = await getNonceByUserAddress({ address })
-      if (!nonceRes.success) {
-        throw nonceRes.error
-      }
-      const { nonce } = nonceRes
-      const loginSig = await signLoginMessage(nonce)
-
+      const nonceRes: any = await getSignMessage({ address, signType: SignMsgType.LOGIN })
+      const loginSig = await signLoginMessage(nonceRes?.message)
       const validationRes: any = await login({
         walletType: getWallet().type!,
         address,

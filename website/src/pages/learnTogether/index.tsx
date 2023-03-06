@@ -3,11 +3,16 @@ import useCCProfile from '~/hooks/useCCProfile';
 import RecommandEventCard from './componnets/RecommandEventCard';
 import RecommnadEventMatch from './componnets/RecommnadEventMatch';
 import ShowMoreLoading from '~/components/loading/showMore'
+import { useState } from 'react';
+import Button from 'antd/es/button';
+import { useNavigate } from 'react-router';
 
 const LearnTogether = () => {
   const { t } = useTranslation()
-  const {value, loading, hasNextPage, loadMore} = useCCProfile(1)
-
+  const navigate = useNavigate()
+  const {value, loading, hasNextPage, error, loadMore} = useCCProfile(1)
+  const [interest, setInterest] = useState([])
+  console.log('error', error)
   return (
     <div className="relative w-auto mx-10 py-10 3xl:w-full 3xl:mx-auto 3xl:max-w-1440px 4xl:max-w-1680px h-full overflow-auto scroll-hidden">
       <h1 className="text-xl font-Anton ml-8 mb-4">Upcoming events<span>based on your profile</span></h1>
@@ -36,6 +41,9 @@ const LearnTogether = () => {
           </button>
         </div>
       )}
+      <div className="text-center mt-10">
+        <Button type='primary' onClick={() => navigate('/profile/match')}>Setting Interest</Button>
+      </div>
     </div>
   )
 }

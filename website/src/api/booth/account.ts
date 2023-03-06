@@ -1,10 +1,8 @@
 import http from "./http";
 import { LinkPlatformRequest, LoginRequest, LoginResponse, LogoutResponse, SignMsgType, UpdateUserInfo, UserInfo } from "./types";
 
-export function getSignMessage(params: { signType: SignMsgType }): Promise<{ message: string }> {
-  return http.post('/sign-msg', {
-    params
-  })
+export function getSignMessage(params: { address: string, signType: SignMsgType }): Promise<{ message: string }> {
+  return http.post('/sign-msg', params)
 }
 
 export function login(request: LoginRequest): Promise<LoginResponse> {

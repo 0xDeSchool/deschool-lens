@@ -133,12 +133,10 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
       userInfo.handleStr = userInfo?.handle
       userInfo.handle = userInfo?.handle?.split('.cc')[0]
       setCyberProfile(userInfo)
-
       // 关联平台
       const result = await linkPlatform({
         handle: userInfo?.handle,
         platform: PlatformType.CYBERCONNECT,
-        signHex: signature,
       })
       console.log('linkPlatform', result)
     } catch (error: any) {

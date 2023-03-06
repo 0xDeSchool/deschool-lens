@@ -54,7 +54,7 @@ export interface LinkPlatformRequest {
   platform: PlatformType
   // 当前签名的钱包类型
   walletType?: string
-  signHex: string
+  signHex?: string
   data?: { [key: string]: string }  // 附加数据
 }
 
