@@ -4,9 +4,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import message from 'antd/es/message'
 import LoadingOutlined from '@ant-design/icons/LoadingOutlined'
-import { RoleType } from '~/lib/enum'
 
-import { getUserContext } from '~/context/account'
 import type { WalletConfig } from '~/wallet'
 import { createProvider, getWallet, WalletType } from '~/wallet'
 import { LOGIN_GET_MESSAGE, LOGIN_VERIFY, PRIMARY_PROFILE } from '~/api/cc/graphql'
@@ -56,8 +54,7 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
   // 通过 cyberconnect 签名登录
   const handleLoginByAddress = async (address: string, isReload?: boolean) => {
     // 如果当前库中已经保存过登录记录则不需要重新签名登录
-    const roles = getUserContext().getLoginRoles()
-    if (roles.includes(RoleType.UserOfCyber)) {
+    if (ccProfile) {
       return
     }
     try {
@@ -178,7 +175,8 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
   // 退出 CyberConnect 登录
   const handleDisconnect = async () => {
     try {
-      getUserContext().disconnectFromCyberConnect()
+      await getUserManager()?.unLinkPlatform(ccProfile?.handle, PlatformType.CYBERCONNECT)
+      await getUserManager().tryAutoLogin()
     } catch (error: any) {
       message.error(error?.message ? error.message : '退出登录失败')
     }
