@@ -12,12 +12,13 @@ import (
 
 func identityController(sb *server.ServerBuiler) {
 	auth := ginx.AuthHandlerFunc(sb)
+	altAuth := ginx.OptionalAuthHandlerFunc(sb)
 	sb.Configure(func(s *server.Server) error {
 		group := s.Route.Group("api/identity")
 		group.POST("link", auth, linkPlatform)
 		group.DELETE("link", auth, unlinkPlatform)
 		group.PUT("", auth, updateUserInfo)
-		group.GET("", getUserInfo)
+		group.GET("", altAuth, getUserInfo)
 		return nil
 	})
 }
@@ -45,7 +46,7 @@ func getUserInfo(ctx *gin.Context) {
 	if addr == "" {
 		currentUser := ginx.CurrentUser(ctx)
 		if !currentUser.Authenticated() {
-			ginx.PanicUnAuthenticated("addr is required")
+			ginx.PanicValidatition("addr is required")
 		}
 		addr = currentUser.Address
 	}

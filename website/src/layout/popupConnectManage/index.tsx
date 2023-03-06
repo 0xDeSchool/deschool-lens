@@ -1,14 +1,12 @@
 import Avatar from 'antd/es/avatar'
-import Button from 'antd/es/button'
-import { useState } from 'react'
-import { useAccount } from '~/context/account'
 import ConnectLensBoard from './connectLens'
 import ConnectCyberBoard from './connectCyber'
 import ConnectDeschool from './connectDeschool'
 import UpdateUsername from './updateUserInfo'
+import { useAccount } from '~/account'
 
 const PopupConnectManage = () => {
-  const { userProfile } = useAccount()
+  const user = useAccount()
 
   return (
     <div>
@@ -16,8 +14,8 @@ const PopupConnectManage = () => {
         Booth
       </div>
       <div className='frc-start gap-1 px-8 pt-24'>
-        <Avatar size={32} alt="user avatar" src={userProfile.length > 0 && userProfile[0]?.avatar} />
-        <UpdateUsername defaultUsername={userProfile.length > 0 ? userProfile[0]?.username : ''}/>
+        <Avatar size={32} alt="user avatar" src={user && user.avatar} />
+        <UpdateUsername defaultUsername={user?.formateName() ?? ''} />
       </div>
       <div className='frc-center gap-8 px-8 pt-8 pb-24'>
         <div className='item-connect flex-1'>

@@ -2,8 +2,8 @@ import { useTranslation } from 'react-i18next'
 import Image from 'antd/es/image'
 import { useNavigate } from 'react-router'
 import { getShortAddress } from '~/utils/format'
-import { DEFAULT_AVATAR } from '~/context/account'
 import Jazzicon from 'react-jazzicon/dist/Jazzicon'
+import { DEFAULT_AVATAR } from '~/account'
 
 export type CelebrityType = {
   deschool: {

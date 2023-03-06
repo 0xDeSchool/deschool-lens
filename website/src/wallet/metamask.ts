@@ -12,7 +12,7 @@ import * as binanceTestnetChain from '~/assets/chain_binance_testnet.json'
 import type { TransactionMessage, WalletConfig, WalletProvider } from './wallet'
 
 export class MetaMaskProvider implements WalletProvider {
-  private config: WalletConfig
+  config: WalletConfig
 
   private signer: ethers.providers.JsonRpcSigner
 
