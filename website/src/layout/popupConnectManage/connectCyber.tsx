@@ -16,6 +16,7 @@ import { PlatformType } from '~/api/booth/booth'
 import { linkPlatform } from '~/api/booth/account'
 import { useAccount } from '~/account/context'
 import { getUserManager } from '~/account';
+import { CloseOutlined } from '@ant-design/icons'
 
 const DOMAIN = 'test.com'
 interface ConnectBoardProps {
@@ -126,6 +127,7 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
         handle: userInfo?.handle,
         platform: PlatformType.CYBERCONNECT,
         data: {
+          id: userInfo?.id,
           accessToken: accessToken,
         }
       })

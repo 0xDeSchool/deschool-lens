@@ -107,6 +107,7 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
           handle: userInfo?.handle,
           platform: PlatformType.CYBERCONNECT,
           data: {
+            id: userInfo?.id,
             accessToken: authenticatedResult.accessToken,
             refreshToken: authenticatedResult.refreshToken,
           }
