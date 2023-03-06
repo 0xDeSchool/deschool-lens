@@ -320,12 +320,10 @@ const Resume = () => {
   const handlePublish = async () => {
     try {
       setLoadingLens(true)
-      const resumeAddress = user?.address
       const resumeDataStr = JSON.stringify(resumeData)
-      // const resumeDataStr = JSON.stringify(STANDARD_RESUME_DATA)
       const lensProfileId = lensProfile?.data?.id
-      if (lensProfileId && resumeAddress && resumeDataStr) {
-        const txhash = await createPost(lensProfileId, resumeAddress, resumeDataStr)
+      if (lensProfileId && user?.address && resumeDataStr) {
+        const txhash = await createPost(lensProfileId, user?.address, resumeDataStr)
         if (txhash) {
           setPublishType('Lens')
           setStep(1)
