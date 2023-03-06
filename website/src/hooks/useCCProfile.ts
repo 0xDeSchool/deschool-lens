@@ -51,8 +51,8 @@ const useCCProfile = (defaultPage: number) => {
         const filteredCourseList = await fetchCourseByEvents(list)
         const events: MatchedEvent[] = []
 
-        // 将推荐的课程和推荐的事件合并
-        if (filteredCourseList.length > 0) {
+        // 将推荐的课程和推荐的事件合并， 如果有对应的推荐课程，就将推荐课程的信息合并到推荐事件中
+        if (filteredCourseList.length > 0 && filteredCourseList.some((item: any) => item?.isEnabled)) {
           for (let i = 0; i < list.length; i++) {
             if (filteredCourseList[i]?.isEnabled) {
               events.push({ ...list[i], ...filteredCourseList[i] })

@@ -3,39 +3,14 @@ import useCCProfile from '~/hooks/useCCProfile';
 import RecommandEventCard from './componnets/RecommandEventCard';
 import RecommnadEventMatch from './componnets/RecommnadEventMatch';
 import ShowMoreLoading from '~/components/loading/showMore'
-import { useEffect, useState } from 'react';
 import Button from 'antd/es/button';
-import { getQ11e } from '~/api/booth/booth';
-import { useAccount } from '~/context/account';
 import { useNavigate, NavLink } from 'react-router-dom';
 
 const LearnTogether = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const {value, loading, hasNextPage, error, defaultRecommandEvent, loadMore} = useCCProfile(1)
-  const [interest, setInterest] = useState<string[]>([])
-  const { deschoolProfile } = useAccount()
-  const [loadingInterest, setLoadingInterest] = useState(false)
+  const {value, loading, hasNextPage, defaultRecommandEvent, loadMore} = useCCProfile(1)
 
-  console.log('defaultRecommandEvent', defaultRecommandEvent)
-
-  // 获取用户的兴趣
-  const fetchUserInterest = async () => {
-    if (deschoolProfile?.address) {
-      try {
-        setLoadingInterest(true)
-        const result = await getQ11e(deschoolProfile?.address)
-        const list = result?.interests.length ? result?.interests : []
-        setInterest(list)
-      } finally {
-        setLoadingInterest(false)
-      }
-    }
-  }
-
-  useEffect(() => {
-    fetchUserInterest()
-  }, [])
   return (
     <div className="relative w-auto mx-10 py-10 3xl:w-full 3xl:mx-auto 3xl:max-w-1440px 4xl:max-w-1680px h-full overflow-auto scroll-hidden">
       <h1 className="text-xl font-Anton ml-8 mb-4">Upcoming events<span className='ml-2 font-ArchivoNarrow'>based on your profile</span></h1>
