@@ -24,7 +24,7 @@ func (m *UserManager) Find(ctx context.Context, address string) *User {
 
 func (m *UserManager) Login(ctx context.Context, address common.Address, signHex string, t WalletType, platform *UserPlatform) *User {
 	if !VerifySignMessage(address, signHex, SignTypeLogin, t) {
-		ginx.PanicUnAuthenticated("verify sign failed")
+		ginx.PanicValidatition("verify sign failed")
 	}
 	ctx = ginx.WithScopedUnitWork(ctx)
 	user := m.Repo.Find(ctx, address)

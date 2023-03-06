@@ -3,16 +3,18 @@ package identity
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"github.com/0xdeschool/deschool-lens/backend/pkg/cache"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/errx"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/eth"
+	"github.com/0xdeschool/deschool-lens/backend/pkg/log"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/google/uuid"
-	"time"
 )
 
 type WalletType string
@@ -77,6 +79,7 @@ func verifySigDefault(addr common.Address, msg string, sig string) bool {
 
 	pubKey, err := crypto.SigToPub(signHash([]byte(msg)), sigData)
 	if err != nil {
+		log.Warn("verifySigDefault" + err.Error())
 		return false
 	}
 
