@@ -2,7 +2,7 @@ import Button from 'antd/es/button';
 import message from 'antd/es/message';
 import Input from 'antd/es/input';
 import { useState } from 'react';
-import { updateUserProfile } from '~/api/go/account';
+import { updateUserInfo } from '~/api/booth/account';
 
 type UpdateUsernameProps = {
   defaultUsername?: string;
@@ -31,8 +31,8 @@ const UpdateUsername: React.FC<UpdateUsernameProps> = (props) => {
 
     try {
       setLoading(true)
-      await updateUserProfile({
-        username: username,
+      await updateUserInfo({
+        displayName: username,
       })
     } catch (error: Error | unknown) {
       console.log('error', error)
