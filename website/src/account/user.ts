@@ -29,6 +29,14 @@ export class AccountInfo {
   formateName(): string | undefined {
     return this.displayName === this.address ? getShortAddress(this.address) : this.displayName
   }
+
+  ccProfile(): UserPlatform | undefined {
+    return this.platform(PlatformType.CYBERCONNECT)
+  }
+
+  lensProfile(): UserPlatform | undefined {
+    return this.platform(PlatformType.LENS)
+  }
 }
 
 export class UserManager {
