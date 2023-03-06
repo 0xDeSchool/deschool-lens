@@ -37,6 +37,10 @@ export class AccountInfo {
   lensProfile(): UserPlatform | undefined {
     return this.platform(PlatformType.LENS)
   }
+
+  deschoolProfile(): UserPlatform | undefined {
+    return this.platform(PlatformType.DESCHOOL)
+  }
 }
 
 export class UserManager {
