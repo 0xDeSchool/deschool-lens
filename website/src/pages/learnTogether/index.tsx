@@ -67,6 +67,7 @@ const LearnTogether = () => {
           <RecommnadEventMatch info={defaultRecommandEvent}/>
           <div className='absolute top-0 right-0 left-0 bottom-0 z-11 bg-gradient-to-t from-gray-300 rounded-2 cursor-not-allowed' />
         </div>
+        <p className="text-#666">To view your customized events recommendation, please complete your profile setup in Match</p>
         <div className="text-center mt-10">
           <Button type='primary' onClick={() => navigate('/profile/match')}>Setting Interest</Button>
         </div>
