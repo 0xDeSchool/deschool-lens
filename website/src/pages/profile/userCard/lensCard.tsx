@@ -18,14 +18,11 @@ import SwitchIdentity from './switchIdentity'
 type LensCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
   routeAddress: string | undefined // 父组件希望展示的地址，如果为空则展示登录者自己信息
-  visible: boolean
-  setProfileType: Dispatch<SetStateAction<string>>
-  profileType: string
 }
 
 // 0-自己访问自己 1-自己访问别人
 const LensCard = (props: LensCardProps) => {
-  const { visible, visitCase, routeAddress, setProfileType, profileType } = props
+  const { visitCase, routeAddress } = props
   const { lensToken, lensProfile } = useAccount()
   const [loading, setLoading] = useState(false)
   const [modal, setModal] = useState<{ type: 'followers' | 'following'; visible: boolean }>({ type: 'followers', visible: false })
@@ -145,31 +142,7 @@ const LensCard = (props: LensCardProps) => {
   }
 
   return (
-    <div className={`w-full pb-1 shadow-md rounded-xl ${loading || !visible ? 'hidden' : ''}`}>
-      <div className="relative w-full frc-center">
-        <SwitchIdentity profileType={profileType} setProfileType={setProfileType} />
-        {currentUser?.coverUrl ? (
-          <Image
-            preview={false}
-            src={currentUser.coverUrl}
-            fallback={fallbackImage}
-            alt="cover"
-            className="h-60! object-cover! object-center! rounded-t-xl"
-            crossOrigin="anonymous"
-          />
-        ) : (
-          <Image
-            preview={false}
-            src="https://deschool.s3.amazonaws.com/booth/Booth-logos.jpeg"
-            fallback={fallbackImage}
-            alt="cover"
-            className="h-60! object-cover! object-center! rounded-t-xl"
-            wrapperClassName="w-full"
-            crossOrigin="anonymous"
-          />
-        )}
-        <LensAvatar avatarUrl={currentUser?.avatarUrl} />
-      </div>
+    <div>
       {/* 处理数据为空的情况 */}
       <div className="mt-70px w-full px-6 pb-6 fcc-center font-ArchivoNarrow">
         <span className="text-xl">

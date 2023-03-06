@@ -2,13 +2,12 @@ import Divider from 'antd/es/divider'
 import { useEffect, useState } from 'react'
 import Button from 'antd/es/button'
 import message from 'antd/es/message'
+import Modal from 'antd/es/modal'
 import dayjs from 'dayjs'
 import { v4 as uuid } from 'uuid'
 import ReactLoading from 'react-loading'
-import Modal from 'antd/es/modal'
 import { useParams } from 'react-router-dom'
 import { getIdSbt, getResume, putResume } from '~/api/booth/booth'
-import { useAccount } from '~/context/account'
 import { createPost, pollAndIndexPost } from '~/api/lens/publication/post'
 import { getShortAddress } from '~/utils/format'
 import CardEditor from './components/cardEditor'
@@ -19,7 +18,7 @@ import { randomConfetti } from './utils/confetti'
 import {getVisitCase, VisitType} from '../utils/visitCase'
 import useCyberConnect from '~/hooks/useCyberConnect'
 import Congradulations from './components/congradulations'
-
+import { useAccount } from '~/account'
 
 export const STANDARD_RESUME_DATA: ResumeData = {
   career: [
@@ -64,7 +63,9 @@ type PublishType = 'CyberConnect' | 'Lens'
 
 const Resume = () => {
   const { address } = useParams()
-  const { lensProfile, lensToken, cyberProfile, cyberToken, deschoolProfile } = useAccount()
+  const user = useAccount()
+  const lensProfile = user?.lensProfile()
+  const ccProfile = user?.ccProfile()
 
   const [isEditResume, setIsEditResume] = useState(false)
   const [isCreateCard, setIsCreateCard] = useState(false)
@@ -115,11 +116,10 @@ const Resume = () => {
   // 进入简历编辑 or 保存查看状态
   const onClickEditResume = async () => {
     if (isEditResume) {
-      const myAddress = lensToken?.address || deschoolProfile?.address
-      if (myAddress) {
+      if (user?.address) {
         setPutting(true)
         const dataStr = JSON.stringify(resumeData)
-        await putResume({ address: myAddress, data: dataStr })
+        await putResume({ address: user?.address, data: dataStr })
         setPutting(false)
       }
     } else {
@@ -320,17 +320,16 @@ const Resume = () => {
   const handlePublish = async () => {
     try {
       setLoadingLens(true)
-      const resumeAddress = lensToken?.address || deschoolProfile?.address
       const resumeDataStr = JSON.stringify(resumeData)
-      // const resumeDataStr = JSON.stringify(STANDARD_RESUME_DATA)
-      if (lensProfile?.id && resumeAddress && resumeDataStr) {
-        const txhash = await createPost(lensProfile.id, resumeAddress, resumeDataStr)
+      const lensProfileId = lensProfile?.data?.id
+      if (lensProfileId && user?.address && resumeDataStr) {
+        const txhash = await createPost(lensProfileId, user?.address, resumeDataStr)
         if (txhash) {
           setPublishType('Lens')
           setStep(1)
           setTxHash(txhash)
           setCongratulateVisible(true)
-          await pollAndIndexPost(txhash, lensProfile.id)
+          await pollAndIndexPost(txhash, lensProfileId)
           setStep(2)
           randomConfetti()
         }
@@ -349,19 +348,17 @@ const Resume = () => {
   const handlePublishCyberConnect = async () => {
     try {
       setLoadingCyber(true)
-      const resumeAddress = cyberToken?.address || deschoolProfile?.address
       const resumeDataStr = JSON.stringify(resumeData)
-      if (cyberProfile?.id && resumeAddress && resumeDataStr) {
+      if (ccProfile?.handle && user?.address && resumeDataStr) {
         const txhash = await ccInstance.createPost({
-          title: `RESUME OF${cyberToken?.address}`,
+          title: `RESUME OF${user?.address}`,
           body: resumeDataStr
-        }, cyberProfile?.handle)
+        }, ccProfile?.handle)
         if (txhash) {
           setPublishType('CyberConnect')
           setStep(1)
           setTxHash(txhash)
           setCongratulateVisible(true)
-          // await pollAndIndexPost(txhash, cyberProfile.id)
           setStep(2)
           randomConfetti()
         }
@@ -381,7 +378,7 @@ const Resume = () => {
     let currentAddress: string | undefined | null = null
     if (primaryCase > -1) {
       // 0访问自己的地址，1访问他人地址（从路由拿）
-      currentAddress = primaryCase === 0 ? lensToken?.address || deschoolProfile?.address : address
+      currentAddress = primaryCase === 0 ? user?.address : address
       if (currentAddress) {
         await fetchUserResume(currentAddress)
         await fetchUserSbtList(currentAddress)
@@ -403,7 +400,7 @@ const Resume = () => {
     }
     setVisitCase(primaryCase)
     handlePrimaryCase(primaryCase)
-  }, [address, deschoolProfile, lensToken, cyberToken])
+  }, [address, user])
 
   return (
     <div className="bg-white p-8">
@@ -437,7 +434,7 @@ const Resume = () => {
               <Button
                 type="primary"
                 onClick={() => handlePublishCyberConnect()}
-                disabled={!cyberProfile}
+                disabled={!ccProfile}
                 loading={loadingCyber}
                 className="bg-black! text-white!"
               >
