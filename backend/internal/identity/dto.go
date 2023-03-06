@@ -57,8 +57,8 @@ func NewUserInfo(user *User) *UserInfo {
 		DisplayName: user.DisplayName,
 		Avatar:      user.Avatar,
 		Bio:         user.Bio,
-		Platforms: linq.Map(user.Platforms, func(p **UserPlatform) *Platform {
-			return NewPlatform(*p)
+		Platforms: linq.Map(user.Platforms, func(p *UserPlatform) *Platform {
+			return NewPlatform(p)
 		}),
 	}
 }

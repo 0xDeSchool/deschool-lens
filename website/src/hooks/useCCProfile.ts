@@ -1,8 +1,8 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useAccount } from '~/account';
 import { EventMatchedItem, filterEvents, FilterEventsRequest } from '~/api/booth/event';
 import { GET_RECOMENDED_EVENTS } from '~/api/cc/graphql/GetRecommand';
-import { getUserContext } from '~/context/account';
 
 const client = new ApolloClient({
   uri: 'ccProfile',
@@ -22,16 +22,18 @@ const useCCProfile = (defaultPage: number) => {
   const value = useMemo(() => recomendedEvents, [recomendedEvents])
   const [defaultRecommandEvent, setDefaultRecommandEvent] = useState<RecomendedEvents | null>()
 
+  const user = useAccount()
+
   useEffect(() => {
     // 根据推荐的事件，获取推荐的课程
     const fetchCourseByEvents = async (list: MatchedEvent[]): Promise<any[]> => {
       const events = list.map((item: RecomendedEvents) => ({id: item.id, labels: item.tags}))
-      if (!getUserContext()?.address) {
+      if (!user?.address) {
         return []
       }
       const request: FilterEventsRequest = {
         events,
-        address: getUserContext()?.address!,
+        address: user?.address!,
         users: [],
       }
       const filtered = await filterEvents(request)

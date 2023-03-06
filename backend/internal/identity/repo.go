@@ -2,6 +2,7 @@ package identity
 
 import (
 	"context"
+	"github.com/0xdeschool/deschool-lens/backend/pkg/x"
 	"github.com/ethereum/go-ethereum/common"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -16,4 +17,6 @@ type UserRepository interface {
 	Find(ctx context.Context, address common.Address) *User
 	GetManyByAddr(ctx context.Context, addresses []common.Address) []User
 	GetPlatforms(ctx context.Context, address common.Address) []UserPlatform
+
+	GetLatestUsers(ctx context.Context, p *x.PageAndSort) []User
 }
