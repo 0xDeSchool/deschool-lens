@@ -13,6 +13,9 @@ type LinkPlatformInput struct {
 }
 
 func (l *LinkPlatformInput) ToEntity() *UserPlatform {
+	if l == nil {
+		return nil
+	}
 	p := &UserPlatform{
 		Handle:   l.Handle,
 		Platform: l.Platform,

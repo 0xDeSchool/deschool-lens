@@ -10,9 +10,10 @@ import (
 )
 
 type LoginInput struct {
-	Address    string              `json:"address" binding:"required"`
-	Sig        string              `json:"sig" binding:"required"`
-	WalletType identity.WalletType `json:"walletType"`
+	Address    string                      `json:"address" binding:"required"`
+	Sig        string                      `json:"sig" binding:"required"`
+	WalletType identity.WalletType         `json:"walletType"`
+	Platform   *identity.LinkPlatformInput `json:"platform"`
 }
 
 type JWTOptions struct {

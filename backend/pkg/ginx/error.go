@@ -45,7 +45,7 @@ func (eh *ErrorHandlers) Add(h ErrorHandFunc) {
 	eh.handlers = append(eh.handlers, h)
 }
 
-// request panic error handler
+// ErrorMiddleware request panic error handler
 func ErrorMiddleware(c *gin.Context) {
 	handlers := &ErrorHandlers{}
 	c.Set(ErrHandlersKey, handlers)
