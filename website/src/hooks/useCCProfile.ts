@@ -1,6 +1,6 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { EventItem, EventMatchedItem, filterEvents } from '~/api/booth/event';
+import { EventMatchedItem, filterEvents, FilterEventsRequest } from '~/api/booth/event';
 import { GET_RECOMENDED_EVENTS } from '~/api/cc/graphql/GetRecommand';
 import { getUserContext } from '~/context/account';
 
@@ -23,6 +23,21 @@ const useCCProfile = (defaultPage: number) => {
   const [defaultRecommandEvent, setDefaultRecommandEvent] = useState<RecomendedEvents | null>()
 
   useEffect(() => {
+    // 根据推荐的事件，获取推荐的课程
+    const fetchCourseByEvents = async (list: MatchedEvent[]): Promise<any[]> => {
+      const events = list.map((item: RecomendedEvents) => ({id: item.id, labels: item.tags}))
+      if (!getUserContext()?.address) {
+        return []
+      }
+      const request: FilterEventsRequest = {
+        events,
+        address: getUserContext()?.address!,
+        users: [],
+      }
+      const filtered = await filterEvents(request)
+      return filtered?.length > 0 ? filtered : []
+    }
+    // 获取推荐的事件
     const initData = async () => {
       try {
         setLoading(true)
@@ -32,24 +47,20 @@ const useCCProfile = (defaultPage: number) => {
           }
         })
         const list: MatchedEvent[] = result?.data?.trendingEvents?.list ?? []
-        const request = {
-          events: list.map((e: RecomendedEvents) => ({ id: e.id, labels: e.tags })),
-          address: getUserContext().address,
-          users: [],
-        }
 
-        const filtered = await filterEvents(request)
-
+        const filteredCourseList = await fetchCourseByEvents(list)
         const events: MatchedEvent[] = []
 
-        for (let i = 0; i < list.length; i++) {
-          if (filtered[i]?.isEnabled) {
-            events.push({ ...list[i], ...filtered[i] })
+        // 将推荐的课程和推荐的事件合并， 如果有对应的推荐课程，就将推荐课程的信息合并到推荐事件中
+        if (filteredCourseList.length > 0 && filteredCourseList.some((item: any) => item?.isEnabled)) {
+          for (let i = 0; i < list.length; i++) {
+            if (filteredCourseList[i]?.isEnabled) {
+              events.push({ ...list[i], ...filteredCourseList[i] })
+            }
           }
         }
-
-        // 如果没有推荐的事件，就将第一个设置为默认的推荐事件
-        if (events.length === 0) {
+        // 如果没有推荐的课程，就将第一个设置为默认的推荐课程
+        else {
           setDefaultRecommandEvent(list[0])
         }
 
