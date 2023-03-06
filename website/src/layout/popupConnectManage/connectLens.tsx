@@ -17,7 +17,7 @@ import { postVerifiedIdentity, PlatformType } from '~/api/booth/booth'
 import IconLens from '~/assets/icons/lens.svg'
 import Button from 'antd/es/button'
 import { linkPlatform } from '~/api/booth/account'
-import { useAccount } from '~/account/context'
+import { getUserManager, useAccount } from '~/account/context'
 
 interface ConnectBoardProps {
   wallectConfig?: WalletConfig
@@ -153,6 +153,8 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
       const address = await getWallet().getAddress()
       if (address) {
         await handleLoginByAddress(address)
+        // 重新获取用户信息
+        await getUserManager().tryAutoLogin()
       } else {
         message.error("Can't get address info, please connect metamask first")
       }
