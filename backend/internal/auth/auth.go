@@ -1,13 +1,14 @@
 package auth
 
 import (
+	"net/http"
+	"time"
+
 	"github.com/0xdeschool/deschool-lens/backend/internal/identity"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/errx"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/ginx"
 	"github.com/ethereum/go-ethereum/common"
-	"net/http"
-	"time"
 
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
@@ -97,7 +98,7 @@ func jwtAuthenticate(c *gin.Context) (interface{}, error) {
 		ginx.PanicValidatition("invalid address")
 	}
 	addr := common.HexToAddress(input.Address)
-	user, err := authenticate(c, addr, input.Sig, input.WalletType)
+	user, err := authenticate(c, addr, input.Sig, input.WalletType, input.Platform)
 	if err != nil {
 		return nil, err
 	}
@@ -142,9 +143,10 @@ func jwtLogoutResponse(c *gin.Context, code int) {
 	})
 }
 
-func authenticate(c *gin.Context, address common.Address, sig string, t identity.WalletType) (*ginx.CurrentUserInfo, error) {
+func authenticate(c *gin.Context, address common.Address, sig string, t identity.WalletType, platform *identity.LinkPlatformInput) (*ginx.CurrentUserInfo, error) {
 	um := di.Get[identity.UserManager]()
-	user := um.Login(c, address, sig, t)
+	p := platform.ToEntity()
+	user := um.Login(c, address, sig, t, p)
 	userInfo := NewCurrentUserInfo(user)
 	return userInfo, nil
 }
@@ -157,11 +159,14 @@ func getSignMsg(ctx *gin.Context) {
 	var input SignMessageInput
 	err := ctx.BindJSON(&input)
 	errx.CheckError(err)
-	currentUser := ginx.CurrentUser(ctx)
-	if !currentUser.Authenticated() {
-		ginx.PanicUnAuthenticated("unauthenticated")
+	// currentUser := ginx.CurrentUser(ctx)
+	// if !currentUser.Authenticated() {
+	// 	ginx.PanicUnAuthenticated("unauthenticated")
+	// }
+	if !common.IsHexAddress(input.Address) {
+		ginx.PanicValidatition("invalid address")
 	}
-	addr := common.HexToAddress(currentUser.Address)
+	addr := common.HexToAddress(input.Address)
 	message := identity.CreateSignMessage(addr, input.SignType)
 	ctx.JSON(http.StatusOK, SingMessageOutput{
 		Message: message,

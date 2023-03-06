@@ -10,9 +10,10 @@ import (
 )
 
 type LoginInput struct {
-	Address    string              `json:"address" binding:"required"`
-	Sig        string              `json:"sig" binding:"required"`
-	WalletType identity.WalletType `json:"walletType"`
+	Address    string                      `json:"address" binding:"required"`
+	Sig        string                      `json:"sig" binding:"required"`
+	WalletType identity.WalletType         `json:"walletType"`
+	Platform   *identity.LinkPlatformInput `json:"platform"`
 }
 
 type JWTOptions struct {
@@ -43,7 +44,7 @@ func AddAuth(builder *server.ServerBuiler) {
 }
 
 func configureRoutes(builder *server.ServerBuiler) {
-	auth := ginx.AuthHandlerFunc(builder)
+	auth := ginx.OptionalAuthHandlerFunc(builder)
 	builder.Configure(func(s *server.Server) error {
 		// 获取nonce进行签名
 		s.Route.POST("/api/sign-msg", auth, getSignMsg)
