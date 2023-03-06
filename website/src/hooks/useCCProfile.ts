@@ -20,6 +20,7 @@ const useCCProfile = (defaultPage: number) => {
   const [page, setPage] = useState<number>(defaultPage);
   const [hasNextPage, setHasNextPage] = useState<boolean>(false);
   const value = useMemo(() => recomendedEvents, [recomendedEvents])
+  const [defaultRecommandEvent, setDefaultRecommandEvent] = useState<RecomendedEvents | null>()
 
   useEffect(() => {
     const initData = async () => {
@@ -47,6 +48,11 @@ const useCCProfile = (defaultPage: number) => {
           }
         }
 
+        // 如果没有推荐的事件，就将第一个设置为默认的推荐事件
+        if (events.length === 0) {
+          setDefaultRecommandEvent(list[0])
+        }
+
         setRecomendedEvents(events)
         setHasNextPage(result?.data?.trendingEvents?.pageInfo?.hasNextPage)
       } catch (error: Error | unknown) {
@@ -69,7 +75,7 @@ const useCCProfile = (defaultPage: number) => {
     }
   }, [page, hasNextPage])
 
-  return { loading, error, value, hasNextPage, loadMore }
+  return { loading, error, value, defaultRecommandEvent, hasNextPage, loadMore }
 }
 
 export default useCCProfile;

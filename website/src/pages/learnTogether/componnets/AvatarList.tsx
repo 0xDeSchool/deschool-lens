@@ -10,7 +10,7 @@ const AvatarList: React.FC<AvatarListProps> = (props) => {
   const { avatarList, size = 24, onClick } = props
   return (
     <div className="frc-start flex-0 translate-x-10px">
-      {avatarList.map((avatar: string, index: number) => {
+      {avatarList?.map((avatar: string, index: number) => {
         return (
           <Avatar
             key={`${index}-${avatar}`}
