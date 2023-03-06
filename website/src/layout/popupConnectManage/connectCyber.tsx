@@ -70,6 +70,29 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
       const userInfo = res?.data?.address?.wallet?.primaryProfile
       // 没handle,则 ccProfile为空
       // 有handle,更新default profile
+      if (!userInfo) {
+        message.info({
+          key: 'nohandle',
+          content: (
+            <p className="inline">
+              Visit
+              <a className="font-bold mx-2" href={import.meta.env.VITE_APP_CYBERCONNECT_CLAIM_SITE} target="_blank" rel="noreferrer noopener">
+                claiming site
+              </a>
+              to claim your profile now 🏃‍♂️
+              <CloseOutlined
+                size={12}
+                className="inline ml-2 hover:color-purple!"
+                onClick={() => {
+                  message.destroy('nohandle')
+                }}
+              />
+            </p>
+          ),
+          duration: 0,
+        })
+        return
+      }
       const messageResult = await loginGetMessage({
         variables: {
           input: {
