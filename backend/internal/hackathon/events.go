@@ -5,12 +5,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/0xdeschool/deschool-lens/backend/internal/identity"
 	"github.com/0xdeschool/deschool-lens/backend/internal/interest"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/ddd"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/log"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/utils/linq"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/x"
+	"github.com/ethereum/go-ethereum/common"
 	"net/http"
 	"strings"
 	"time"
@@ -29,54 +31,36 @@ type EventInput struct {
 	Users   []string     `json:"users"`
 }
 
+type UserItem struct {
+	Id          string `json:"id"`
+	DisplayName string `json:"displayName"`
+	Avatar      string `json:"avatar"`
+	Address     string `json:"address"`
+}
+
+type UserEventItem struct {
+	Users []UserItem `json:"users"`
+	Count int        `json:"count"`
+}
+
 type EventMatchedItem struct {
 	Id          string          `json:"id"`
 	IsEnabled   bool            `json:"isEnabled"`
 	Interested  []string        `json:"interested"`
-	Matched     []string        `json:"matchedUsers"`
-	Following   []string        `json:"followingUsers"`
+	Matched     *UserEventItem  `json:"matchedUsers"`
+	Following   *UserEventItem  `json:"followingUsers"`
 	Courses     []*CourseDetail `json:"courses"`
 	Registrants []string        `json:"registrants"`
-}
-
-type RecommendEventParams struct {
-	InterestedLabels    []string `json:"interestedLabels"`
-	MatchedInterested   []string `json:"matchedInterested"`
-	FollowingInterested []string `json:"followingInterested"`
-}
-
-func GetRecommendEventParams(ctx context.Context, addr string) *RecommendEventParams {
-	result := &RecommendEventParams{
-		InterestedLabels:    make([]string, 0),
-		MatchedInterested:   make([]string, 0),
-		FollowingInterested: make([]string, 0),
-	}
-	repo := *di.Get[Q11eRepository]()
-	data := repo.GetByAddress(ctx, addr)
-	if data != nil {
-		result.InterestedLabels = data.Interests
-	}
-	repo2 := *di.Get[interest.Repository]()
-
-	followRepo := *di.Get[FollowRepository]()
-	followingUsers := followRepo.GetFollowingUsers(ctx, addr)
-	users := repo2.GetManyByAddr(ctx, followingUsers, TargetTypeLink3Event)
-	for _, user := range users {
-		result.FollowingInterested = append(result.FollowingInterested, user.TargetId)
-	}
-	return result
 }
 
 func NewItem() *EventMatchedItem {
 	return &EventMatchedItem{
 		Interested: make([]string, 0),
-		Matched:    make([]string, 0),
-		Following:  make([]string, 0),
 	}
 }
 
 func (e *EventMatchedItem) IsMatched() bool {
-	return len(e.Interested) > 0 || len(e.Matched) > 0 || len(e.Following) > 0
+	return len(e.Interested) > 0 || e.Matched != nil || e.Following != nil
 }
 
 type CourseDetail struct {
@@ -103,12 +87,12 @@ func MatchEvents(ctx context.Context, input EventInput) []*EventMatchedItem {
 	followRepo := *di.Get[FollowRepository]()
 	followingUsers := followRepo.GetFollowingUsers(ctx, input.Address)
 	followingData := insRepo.CheckMany(ctx, followingUsers, ids, TargetTypeLink3Event)
-	following := linq.GroupBy(followingData, func(i *interest.Interest) string { return i.TargetId })
+	following := getUserEventItems(ctx, followingData, 3)
 
 	matchRepo := *di.Get[UserRecommendationRepository]()
 	matchedUsers := matchRepo.GetUsers(ctx, input.Address)
 	matchedData := insRepo.CheckMany(ctx, matchedUsers, ids, TargetTypeLink3Event)
-	matched := linq.GroupBy(matchedData, func(i *interest.Interest) string { return i.TargetId })
+	matched := getUserEventItems(ctx, matchedData, 3)
 
 	result := make([]*EventMatchedItem, 0, len(input.Events))
 	for _, e := range input.Events {
@@ -121,12 +105,12 @@ func MatchEvents(ctx context.Context, input EventInput) []*EventMatchedItem {
 			}
 		}
 
-		if addrs, ok := following[e.Id]; ok {
-			item.Following = linq.Map(addrs, func(i **interest.Interest) string { return (*i).Address })
+		if _, ok := following[e.Id]; ok {
+			item.Following = following[e.Id]
 		}
 
-		if addrs, ok := matched[e.Id]; ok {
-			item.Matched = linq.Map(addrs, func(i **interest.Interest) string { return (*i).Address })
+		if _, ok := matched[e.Id]; ok {
+			item.Matched = matched[e.Id]
 		}
 
 		item.Courses = RecommendCourses(ctx, e.Labels)
@@ -190,4 +174,51 @@ func RecommendCourses(ctx context.Context, labels []string) []*CourseDetail {
 		log.Warn("decode recommend course error", err)
 	}
 	return result.Items
+}
+
+func getUserEventItems(ctx context.Context, data []interest.Interest, limit int) map[string]*UserEventItem {
+	result := make(map[string]*UserEventItem)
+	ids := linq.Map(data, func(i *interest.Interest) string { return i.Address })
+	users := includeUsers(ctx, ids)
+	for i := range data {
+		v := &data[i]
+		items, ok := result[v.TargetId]
+		if !ok {
+			items = &UserEventItem{
+				Users: make([]UserItem, 0),
+			}
+			result[v.TargetId] = items
+		}
+		if user, ok := users[v.Address]; ok {
+			if len(items.Users) < limit {
+				items.Users = append(items.Users, UserItem{
+					Id:          user.ID.Hex(),
+					Address:     user.Address,
+					DisplayName: user.DisplayName,
+					Avatar:      user.Avatar,
+				})
+			}
+			items.Count++
+		}
+	}
+	return result
+}
+
+func includeUsers(ctx context.Context, addrs ...[]string) map[string]*identity.User {
+	input := make([]common.Address, 0)
+	for _, addr := range addrs {
+		for _, a := range addr {
+			input = append(input, common.HexToAddress(a))
+		}
+	}
+	result := make(map[string]*identity.User)
+	if len(input) == 0 {
+		return result
+	}
+	repo := *di.Get[identity.UserRepository]()
+	users := repo.GetManyByAddr(ctx, input)
+	for i := range users {
+		result[users[i].Address] = &users[i]
+	}
+	return result
 }

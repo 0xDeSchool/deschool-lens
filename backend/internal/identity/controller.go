@@ -46,7 +46,6 @@ func updateUserInfo(ctx *gin.Context) {
 }
 
 func getUserInfo(ctx *gin.Context) {
-	um := *di.Get[UserRepository]()
 	addr := ctx.Query("addr")
 	if addr == "" {
 		currentUser := ginx.CurrentUser(ctx)
@@ -58,7 +57,8 @@ func getUserInfo(ctx *gin.Context) {
 	if !common.IsHexAddress(addr) {
 		ginx.PanicValidatition("invalid address")
 	}
-	u := um.Find(ctx, common.HexToAddress(addr))
+	um := di.Get[UserManager]()
+	u := um.Find(ctx, addr)
 	if u == nil {
 		ginx.PanicNotFound("user not found")
 	}

@@ -16,12 +16,12 @@ const (
 type User struct {
 	ddd.FullAuditEntityBase `bson:",inline"`
 	ddd.WithExtraEntity     `bson:",inline"`
-	Address                 string          `bson:"address"`
-	UserName                string          `bson:"userName"`
-	DisplayName             string          `bson:"displayName"`
-	Avatar                  string          `bson:"avatar"`
-	Bio                     string          `bson:"bio"`
-	Platforms               []*UserPlatform `bson:"-"`
+	Address                 string         `bson:"address"`
+	UserName                string         `bson:"userName"`
+	DisplayName             string         `bson:"displayName"`
+	Avatar                  string         `bson:"avatar"`
+	Bio                     string         `bson:"bio"`
+	Platforms               []UserPlatform `bson:"-"`
 }
 
 type UserPlatform struct {

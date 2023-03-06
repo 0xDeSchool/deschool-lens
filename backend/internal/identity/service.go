@@ -19,7 +19,13 @@ type UserManager struct {
 }
 
 func (m *UserManager) Find(ctx context.Context, address string) *User {
-	return m.Repo.Find(ctx, common.HexToAddress(address))
+	addr := common.HexToAddress(address)
+	u := m.Repo.Find(ctx, addr)
+	if u == nil {
+		ginx.PanicNotFound("user not found")
+	}
+	u.Platforms = m.Repo.GetPlatforms(ctx, addr)
+	return u
 }
 
 func (m *UserManager) Login(ctx context.Context, address common.Address, signHex string, t WalletType, platform *UserPlatform) *User {
