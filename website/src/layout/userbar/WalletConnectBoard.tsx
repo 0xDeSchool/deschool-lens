@@ -9,7 +9,7 @@ import Button from 'antd/es/button/button'
 import { RightOutlined } from '@ant-design/icons'
 import PopupConnectManage from '../popupConnectManage'
 import Modal from 'antd/es/modal'
-import { getUserManager, useAccount } from '~/account'
+import { DEFAULT_AVATAR, getUserManager, useAccount } from '~/account'
 import { PlatformType } from '~/api/booth/booth'
 
 type PopoverAccountInfoProps = {
@@ -25,7 +25,7 @@ const PopoverAccountInfo: React.FC<PopoverAccountInfoProps> = (props) => {
     <div className="bg-white rounded-2 px-2 py-3 fcc-start gap-4">
       {user && <div className="w-full frc-between gap-8">
         <div className='frc-start'>
-          <div className="bg-#abfe2c rounded-50% w-28px h-28px frc-center">
+          <div className="bg-#774ff8 rounded-50% w-28px h-28px frc-center">
             <img src={IconDeschool} alt="lens" width={20} height={20} />
           </div>
           <span className='ml-2'>{user.formateName()}</span>
@@ -39,7 +39,7 @@ const PopoverAccountInfo: React.FC<PopoverAccountInfoProps> = (props) => {
           </div>
           <span className='ml-2'>{lens.handle}</span>
         </div>
-        <div>+2</div>
+        <div>+1</div>
       </div>}
       {cc && <div className="w-full frc-between gap-8">
         <div className='frc-between'>
@@ -48,7 +48,7 @@ const PopoverAccountInfo: React.FC<PopoverAccountInfoProps> = (props) => {
           </div>
           <span className='ml-2'>{cc.handle}</span>
         </div>
-        <div>+2</div>
+        <div>+1</div>
       </div>}
       {deschool && <div className="w-full frc-between gap-8">
         <div className='frc-start'>
@@ -59,7 +59,7 @@ const PopoverAccountInfo: React.FC<PopoverAccountInfoProps> = (props) => {
             {deschool.displayName}
           </span>
         </div>
-        <div>+2</div>
+        <div>+1</div>
       </div>}
     </div>
   )
@@ -101,7 +101,7 @@ const WalletConnectBoard = () => {
           onOpenChange={(e) => setShowPopover(e)}
           trigger="click">
           <div className='frc-center cursor-pointer'>
-            <Avatar size={24} alt="user avatar" src={user.avatar} />
+            <Avatar size={24} alt="user avatar" src={user.avatar || DEFAULT_AVATAR} />
             <div className="font-ArchivoNarrow text-xl ml-2">
               {user.formateName()}
             </div>

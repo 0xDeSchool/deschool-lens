@@ -55,14 +55,17 @@ const UpdateUsername: React.FC<UpdateUsernameProps> = (props) => {
         value={username}
         style={{ width: '200px' }}
         allowClear
-        disabled={!edit || loading}
-        placeholder='Please input username'
+        disabled={disabled || !edit || loading}
+        placeholder={disabled ? 'Please login' : 'Please input username'}
         bordered={false}
         maxLength={30}
         minLength={1}
         onChange={(e) => setUsername(e.target.value)}/>
       <Button type="primary" size='small' loading={loading} disabled={disabled}
+        className="mr-2"
         onClick={() => handleToggle()}>{edit ? 'SAVE' : 'EDIT'}</Button>
+      {edit && <Button size='small' disabled={disabled}
+        onClick={() => setEdit(false)}>{'CANCEL'}</Button>}
     </div>
   );
 }
