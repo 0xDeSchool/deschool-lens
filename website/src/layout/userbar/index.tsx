@@ -2,7 +2,7 @@
  * @description: 顶部路由导航与用户信息栏
  * @author: fc
  */
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { MenuOutlined } from '@ant-design/icons'
 import Drawer from 'antd/es/drawer'

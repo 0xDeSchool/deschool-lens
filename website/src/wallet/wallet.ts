@@ -1,4 +1,5 @@
 // import type { ethers } from 'ethers'
+import { createProvider } from '.'
 import { MetaMaskProvider } from './metamask'
 import { UniPassProvider } from './unipass'
 
@@ -40,7 +41,7 @@ export class Wallet {
     this.provider = p
     await p.mount()
     this.type = type
-    localStorage.setItem('WallatType', type)
+    localStorage.setItem('booth:WalletType', JSON.stringify(p.config))
   }
 
   // async setSigner(s: ethers.Signer): Promise<void> {
@@ -54,14 +55,15 @@ export class Wallet {
     await this.provider?.unmount()
     this.provider = undefined
     this.type = WalletType.None
-    localStorage.removeItem('WallatType')
+    localStorage.removeItem('booth:WalletType')
   }
 
   protected getProvider(): WalletProvider {
-    if (!this.provider) {
+    const p = this.tryGetProvider()
+    if (!p) {
       throw new Error('not set wallet')
     }
-    return this.provider
+    return p
   }
 
   // protected tryGetSigner(): ethers.Signer | undefined {
@@ -69,8 +71,18 @@ export class Wallet {
   // }
 
   protected tryGetProvider(): WalletProvider | undefined {
+    if (this.provider === undefined) {
+      const wt = localStorage.getItem('booth:WalletType')
+      if (wt) {
+        const config = JSON.parse(wt)
+        const p = createProvider(config)
+        this.setProvider(config.type, p)
+        return p
+      }
+    }
     return this.provider
   }
+
 
   signMessage(msg: string): Promise<string> {
     return this.getProvider().signMessage(msg)
@@ -92,6 +104,8 @@ export class Wallet {
 }
 
 export interface WalletProvider {
+  config: WalletConfig
+
   getConnectAccount(): Promise<string | undefined>
   requestAccount(): Promise<string | undefined>
   signMessage(msg: string): Promise<string>

@@ -22,16 +22,20 @@ export interface UserPlatform {
   handle: string
   // 平台唯一标识，如 lens, cc(CyberConnect), deschool
   platform: PlatformType
+
+  displayName?: string
+
   // 附加数据
   data: { [key: string]: string }
 }
 
 export interface UserInfo {
+  id: string
   address: string
-  displayName: string
-  avatar: string
-  bio: string
-  platforms: UserPlatform[]
+  displayName?: string
+  avatar?: string
+  bio?: string
+  platforms?: UserPlatform[]
 }
 
 export interface UpdateUserInfo {
