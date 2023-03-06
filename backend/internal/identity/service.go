@@ -26,7 +26,6 @@ func (m *UserManager) Login(ctx context.Context, address common.Address, signHex
 	if !VerifySignMessage(address, signHex, SignTypeLogin, t) {
 		ginx.PanicValidatition("verify sign failed")
 	}
-	ctx = ginx.WithScopedUnitWork(ctx)
 	user := m.Repo.Find(ctx, address)
 	if user == nil {
 		user = &User{

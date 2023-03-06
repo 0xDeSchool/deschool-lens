@@ -39,7 +39,7 @@ func Create(lifeWindow time.Duration) Cache {
 }
 
 func SetString(cache Cache, key string, v string) {
-	cache.Set(key, []byte(v))
+	cache.Set(key, v)
 }
 
 func GetString(cache Cache, key string) (string, bool) {
