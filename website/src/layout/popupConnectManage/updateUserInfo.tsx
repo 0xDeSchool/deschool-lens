@@ -3,13 +3,15 @@ import message from 'antd/es/message';
 import Input from 'antd/es/input';
 import { useState } from 'react';
 import { updateUserInfo } from '~/api/booth/account';
+import { getUserManager } from '~/account';
 
 type UpdateUsernameProps = {
   defaultUsername?: string;
   disabled?: boolean;
+  change?: () => void;
 }
 const UpdateUsername: React.FC<UpdateUsernameProps> = (props) => {
-  const { defaultUsername, disabled } = props;
+  const { defaultUsername, disabled, change } = props;
   const [username, setUsername] = useState<string>(defaultUsername || '')
   const [loading, setLoading] = useState<boolean>(false)
   const [edit, setEdit] = useState<boolean>(false)
@@ -34,6 +36,10 @@ const UpdateUsername: React.FC<UpdateUsernameProps> = (props) => {
       await updateUserInfo({
         displayName: username,
       })
+      if (change) {
+        change()
+      }
+      getUserManager().tryAutoLogin()
     } catch (error: Error | unknown) {
       console.log('error', error)
       message.error('Something went wrong')

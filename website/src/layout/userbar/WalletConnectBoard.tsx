@@ -93,10 +93,14 @@ const WalletConnectBoard = () => {
       {user &&
         (<Popover
           placement="bottomRight"
-          content={<PopoverAccountInfo open={() => {
-            setOpen(true)
-            setShowPopover(false)
-          }} />}
+          content={
+            <PopoverAccountInfo
+              open={() => {
+                setOpen(true)
+                setShowPopover(false)
+              }
+            } />
+          }
           open={showPopover}
           onOpenChange={(e) => setShowPopover(e)}
           trigger="click">
