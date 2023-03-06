@@ -19,10 +19,9 @@ export function refreshToken(): Promise<void> {
   return http.post('/refresh-token', {})
 }
 
-export function getUserInfo(address: string): Promise<UserInfo> {
+export function getUserInfo(): Promise<UserInfo> {
   return http.get('/identity')
 }
-
 
 export function updateUserInfo(request: UpdateUserInfo): Promise<{}> {
   return http.put('/identity', request)

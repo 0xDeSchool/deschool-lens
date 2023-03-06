@@ -15,6 +15,7 @@ import DeschoolLogoDark from '~/assets/logos/logo-main.png'
 import IconDeschool from '~/assets/icons/deschool.svg'
 import Button from 'antd/es/button'
 import { getShortAddress } from '~/utils/format'
+import { login } from '~/api/booth/account'
 
 const ConnectDeschoolBoard: FC = () => {
   const { setDescoolProfile, deschoolProfile } = useAccount()
@@ -54,7 +55,7 @@ const ConnectDeschoolBoard: FC = () => {
       const { nonce } = nonceRes
       const loginSig = await signLoginMessage(nonce)
 
-      const validationRes: any = await postNonceSigByUserAddress({
+      const validationRes: any = await login({
         walletType: getWallet().type!,
         address,
         sig: loginSig,

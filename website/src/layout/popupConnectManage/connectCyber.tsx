@@ -8,17 +8,15 @@ import LoadingOutlined from '@ant-design/icons/LoadingOutlined'
 import { RoleType } from '~/lib/enum'
 
 import { getUserContext, useAccount } from '~/context/account'
-import { useLayout } from '~/context/layout'
 import type { WalletConfig } from '~/wallet'
 import { createProvider, getWallet, WalletType } from '~/wallet'
 import { LOGIN_GET_MESSAGE, LOGIN_VERIFY, PRIMARY_PROFILE } from '~/api/cc/graphql'
 import { useLazyQuery, useMutation } from '@apollo/client'
-import Avatar from 'antd/es/avatar'
 import IconCyberConnect from '~/assets/icons/cyberConnect.svg'
 import IconCyberConnectLogo from '~/assets/icons/cyberconnectLogo.svg'
-import IconDeschool from '~/assets/icons/deschool.svg'
-import IconLens from '~/assets/icons/lens.svg'
 import Button from 'antd/es/button'
+import { PlatformType } from '~/api/booth/booth'
+import { linkPlatform } from '~/api/booth/account'
 
 const DOMAIN = 'test.com'
 interface ConnectBoardProps {
@@ -124,17 +122,25 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
 
       const accessToken = accessTokenResult?.data?.loginVerify?.accessToken;
 
-      if (signature) {
-        setCyberToken({
-          address,
-          accessToken: accessToken,
-        })
-        // // 根据钱包地址查用户profile信息
-        // 需要在这里处理一下handle，因为cyber的handle是带有.cc的
-        userInfo.handleStr = userInfo?.handle
-        userInfo.handle = userInfo?.handle?.split('.cc')[0]
-        setCyberProfile(userInfo)
-      }
+      if (!signature) return
+
+      setCyberToken({
+        address,
+        accessToken: accessToken,
+      })
+      // // 根据钱包地址查用户profile信息
+      // 需要在这里处理一下handle，因为cyber的handle是带有.cc的
+      userInfo.handleStr = userInfo?.handle
+      userInfo.handle = userInfo?.handle?.split('.cc')[0]
+      setCyberProfile(userInfo)
+
+      // 关联平台
+      const result = await linkPlatform({
+        handle: userInfo?.handle,
+        platform: PlatformType.CYBERCONNECT,
+        signHex: signature,
+      })
+      console.log('linkPlatform', result)
     } catch (error: any) {
       if (error?.reason) {
         message.error(error.reason)

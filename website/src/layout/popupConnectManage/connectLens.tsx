@@ -16,6 +16,7 @@ import { authenticate, generateChallenge } from '~/api/lens/authentication/login
 import { postVerifiedIdentity, PlatformType } from '~/api/booth/booth'
 import IconLens from '~/assets/icons/lens.svg'
 import Button from 'antd/es/button'
+import { linkPlatform } from '~/api/booth/account'
 
 interface ConnectBoardProps {
   wallectConfig?: WalletConfig
@@ -103,21 +104,29 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
         // check signature
         const authenticatedResult = await authenticate({ address, signature })
 
-        if (signature) {
-          setLensToken({
-            address,
-            accessToken: authenticatedResult.accessToken,
-            refreshToken: authenticatedResult.refreshToken,
-          })
-          setLensProfile(userInfo)
-          // 不管是deschool还是lens登录后,均提交此地址的绑定信息给后台，后台判断是否是第一次来发 Deschool-Booth-Onboarding SBT
-          await postVerifiedIdentity({
-            address,
-            lensHandle: userInfo?.handle,
-            baseAddress: address,
-            platform: PlatformType.LENS,
-          })
-        }
+        if (!signature) return
+
+        setLensToken({
+          address,
+          accessToken: authenticatedResult.accessToken,
+          refreshToken: authenticatedResult.refreshToken,
+        })
+        setLensProfile(userInfo)
+        // 不管是deschool还是lens登录后,均提交此地址的绑定信息给后台，后台判断是否是第一次来发 Deschool-Booth-Onboarding SBT
+        await postVerifiedIdentity({
+          address,
+          lensHandle: userInfo?.handle,
+          baseAddress: address,
+          platform: PlatformType.LENS,
+        })
+
+        // 关联平台
+        const result = await linkPlatform({
+          handle: userInfo?.handle,
+          platform: PlatformType.CYBERCONNECT,
+          signHex: signature,
+        })
+        console.log('linkPlatform', result)
       }
     } catch (error: any) {
       if (error?.reason) {

@@ -9,6 +9,7 @@ export interface LoginRequest {
   address: string;
   sig: string;
   walletType?: string;
+  platform?: LinkPlatformRequest;
 }
 
 export interface LogoutResponse {
@@ -54,7 +55,7 @@ export interface LinkPlatformRequest {
   // 当前签名的钱包类型
   walletType?: string
   signHex: string
-  data: { [key: string]: string }  // 附加数据
+  data?: { [key: string]: string }  // 附加数据
 }
 
 export interface UnlinkPlatformRequest {
