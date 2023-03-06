@@ -175,7 +175,9 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
   // 退出 CyberConnect 登录
   const handleDisconnect = async () => {
     try {
-      await getUserManager()?.unLinkPlatform(ccProfile?.handle, PlatformType.CYBERCONNECT)
+      if (ccProfile?.handle) {
+        await getUserManager()?.unLinkPlatform(ccProfile?.handle, PlatformType.CYBERCONNECT)
+      }
       await getUserManager().tryAutoLogin()
     } catch (error: any) {
       message.error(error?.message ? error.message : '退出登录失败')
