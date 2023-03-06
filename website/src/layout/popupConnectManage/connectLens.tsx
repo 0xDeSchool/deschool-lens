@@ -7,7 +7,7 @@ import CloseOutlined from '@ant-design/icons/CloseOutlined'
 import LoadingOutlined from '@ant-design/icons/LoadingOutlined'
 import { RoleType } from '~/lib/enum'
 
-import { getUserContext, useAccount } from '~/context/account'
+import { getUserContext } from '~/context/account'
 import { useLayout } from '~/context/layout'
 import type { WalletConfig } from '~/wallet'
 import { createProvider, getWallet, WalletType } from '~/wallet'
@@ -17,6 +17,7 @@ import { postVerifiedIdentity, PlatformType } from '~/api/booth/booth'
 import IconLens from '~/assets/icons/lens.svg'
 import Button from 'antd/es/button'
 import { linkPlatform } from '~/api/booth/account'
+import { useAccount } from '~/account/context'
 
 interface ConnectBoardProps {
   wallectConfig?: WalletConfig
@@ -28,8 +29,7 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
   const { connectLensBoardVisible, setConnectLensBoardVisible } = useLayout()
   const [loading, setLoading] = useState(false)
   const { t } = useTranslation()
-  const { lensProfile, setLensToken, setLensProfile } = useAccount()
-
+  const lensProfile = useAccount()?.lensProfile()
   useEffect(() => {
     if (connectLensBoardVisible === false) {
       setLoading(false)
@@ -70,8 +70,6 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
       const userInfo = await fetchUserDefaultProfile(address)
       // 没handle,则lens profile为空
       if (!userInfo) {
-        setLensProfile(null)
-        setLensToken(null)
         message.info({
           key: 'nohandle',
           content: (
@@ -106,12 +104,6 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
 
         if (!signature) return
 
-        setLensToken({
-          address,
-          accessToken: authenticatedResult.accessToken,
-          refreshToken: authenticatedResult.refreshToken,
-        })
-        setLensProfile(userInfo)
         // 不管是deschool还是lens登录后,均提交此地址的绑定信息给后台，后台判断是否是第一次来发 Deschool-Booth-Onboarding SBT
         await postVerifiedIdentity({
           address,
@@ -121,12 +113,14 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
         })
 
         // 关联平台
-        const result = await linkPlatform({
+        await linkPlatform({
           handle: userInfo?.handle,
           platform: PlatformType.CYBERCONNECT,
-          signHex: signature,
+          data: {
+            accessToken: authenticatedResult.accessToken,
+            refreshToken: authenticatedResult.refreshToken,
+          }
         })
-        console.log('linkPlatform', result)
       }
     } catch (error: any) {
       if (error?.reason) {
