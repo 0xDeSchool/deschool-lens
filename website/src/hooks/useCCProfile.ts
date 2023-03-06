@@ -1,6 +1,6 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { EventMatchedItem, filterEvents } from '~/api/booth/event';
+import { EventItem, EventMatchedItem, filterEvents } from '~/api/booth/event';
 import { GET_RECOMENDED_EVENTS } from '~/api/cc/graphql/GetRecommand';
 import { getUserContext } from '~/context/account';
 
