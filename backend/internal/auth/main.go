@@ -44,7 +44,7 @@ func AddAuth(builder *server.ServerBuiler) {
 }
 
 func configureRoutes(builder *server.ServerBuiler) {
-	auth := ginx.AuthHandlerFunc(builder)
+	auth := ginx.OptionalAuthHandlerFunc(builder)
 	builder.Configure(func(s *server.Server) error {
 		// 获取nonce进行签名
 		s.Route.POST("/api/sign-msg", auth, getSignMsg)
