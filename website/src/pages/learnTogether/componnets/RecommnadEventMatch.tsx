@@ -21,20 +21,20 @@ const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
         <span>Based on your interests in Match on </span>
         <Tags tags={info.interested} />
       </div>}
-      <div className="frc-between mb-4">
+      {info.matchedUsers && <div className="frc-between mb-4">
         <span>Based on your match</span>
         <div className="frc-start">
-          <AvatarList avatarList={info.matchedUsers} />
+          <AvatarList avatarList={info.matchedUsers.users} />
           <span className="flex-1 whitespace-nowrap">xxx +{count} on Booth is also going</span>
         </div>
-      </div>
-      <div className="frc-between">
+      </div>}
+      {info.followingUsers && <div className="frc-between">
         <span>Based on your following</span>
         <div className="frc-start ">
-          <AvatarList avatarList={info.followingUsers} />
-          <span className="flex-1 whitespace-nowrap">xxx +{count} on Booth is also going</span>
+          <AvatarList avatarList={info.followingUsers.users} />
+          <span className="flex-1 whitespace-nowrap"> {info.followingUsers.count} on Booth is also going</span>
         </div>
-      </div>
+      </div>}
       <div className="divider w-full h-1px bg-gray-200 my-8" />
       <h1 className="text-xl font-500 font-Anton mb-8">Get prepared on deschool before the event</h1>
       {info.courses && <div className="frc-between gap-4">

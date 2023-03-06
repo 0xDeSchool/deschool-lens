@@ -12,11 +12,24 @@ export interface FilterEventsRequest {
   users: string[];
 }
 
+export interface EventUserItem {
+  id: string
+  name: string
+  avatar: string
+  address: string
+  displayName: string
+}
+
+export interface RecomendedUsers {
+  count: number
+  users: EventUserItem[]
+}
+
 export interface EventMatchedItem {
-  interested: string[] 
+  interested: string[]
   isEnabled: string[]
-  followingUsers: string[]
-  matchedUsers: string[]
+  followingUsers: RecomendedUsers
+  matchedUsers: RecomendedUsers
   courses: MatchedCourse[]
   registrants: string[]
 }
@@ -36,9 +49,9 @@ export function filterEvents(request: FilterEventsRequest): Promise<EventMatched
 export interface InterestEventRequest {
   address: string
   targetId: string
- 
+
 }
-export function interestEvent(request:InterestEventRequest){
+export function interestEvent(request: InterestEventRequest) {
   return http.post('/interest', {
     ...request,
     targetType: 'link3_event'

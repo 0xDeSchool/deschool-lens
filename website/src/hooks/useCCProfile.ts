@@ -80,7 +80,7 @@ const useCCProfile = (defaultPage: number) => {
       }
     }
     initData()
-  }, [page])
+  }, [page,user])
 
   const loadMore = useCallback(() => {
     if (hasNextPage) {

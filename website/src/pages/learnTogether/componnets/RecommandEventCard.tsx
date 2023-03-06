@@ -37,8 +37,8 @@ const RecommandEventCard: React.FC<RecommandEventCardProps> = (props) => {
         <div className="frc-between gap-4 mt-4">
           <Button onClick={() => handleIterested()}>I’m interested</Button>
           <div className="flex-1 frc-start ">
-            <AvatarList avatarList={avatarList} />
-            <span className="flex-1 whitespace-nowrap">xxx +{count} on Booth is also going</span>
+            <AvatarList avatarList={[]} />
+            <span className="flex-1 whitespace-nowrap">xxx +{info.registrantsCount} on Booth is also going</span>
           </div>
         </div>
       </div>

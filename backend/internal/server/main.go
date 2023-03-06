@@ -3,6 +3,7 @@ package server
 import (
 	"github.com/0xdeschool/deschool-lens/backend/internal/auth"
 	"github.com/0xdeschool/deschool-lens/backend/internal/identity"
+	"github.com/0xdeschool/deschool-lens/backend/internal/interest"
 	"github.com/0xdeschool/deschool-lens/backend/internal/server/http"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/app"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/errx"
@@ -22,6 +23,7 @@ func HttpServer(ab *app.AppBuilder) {
 	sb.Add(auth.AddAuth)
 	sb.Add(identity.Module)
 	sb.Add(http.Init)
+	sb.Add(interest.InterestModule)
 
 	// Run http server up
 	ab.OrderRun(LastRunOrder, func() error {
