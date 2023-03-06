@@ -1,7 +1,5 @@
-import type { Dispatch, SetStateAction } from 'react'
 import { useMemo, useEffect, useState } from 'react'
 
-import Jazzicon from 'react-jazzicon'
 import message from 'antd/es/message'
 import Skeleton from 'antd/es/skeleton'
 import { getShortAddress } from '~/utils/format'
@@ -11,21 +9,16 @@ import type { FollowRelationType } from '~/api/booth/follow';
 import { getFollowings, getFollowers, followUser, unfollowUser, checkfollowUser } from '~/api/booth/follow'
 import { getOtherUsersProfile } from '~/api/go/account'
 import type { DeschoolProfile, OtherDeschoolProfile } from '~/lib/types/app'
-import LensAvatar from './avatar'
-import SwitchIdentity from './switchIdentity'
 import DeschoolFollowersModal from './deschoolModal'
 
 type DeschoolCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
   routeAddress: string | undefined // 父组件希望展示的地址，如果为空则展示登录者自己信息
-  visible: boolean
-  setProfileType: Dispatch<SetStateAction<string>>
-  profileType: string
 }
 
 // 0-自己访问自己 1-自己访问别人
 const DeschoolCard = (props: DeschoolCardProps) => {
-  const { visible, visitCase, routeAddress, setProfileType, profileType } = props
+  const { visitCase, routeAddress } = props
   const { deschoolProfile } = useAccount()
   const [loading, setLoading] = useState(true)
   const [modal, setModal] = useState<{ type: 'followers' | 'following'; visible: boolean }>({ type: 'followers', visible: false })
@@ -156,20 +149,13 @@ const DeschoolCard = (props: DeschoolCardProps) => {
   )
 
   return (
-    <div className={`w-full pb-1 shadow-md rounded-xl ${!visible ? 'hidden' : ''}`}>
+    <div>
       {loading ? (
         <div className="h-400px fcc-center">
           <Skeleton />
         </div>
       ) : (
         <>
-          <div className="relative w-full frc-center">
-            <SwitchIdentity profileType={profileType} setProfileType={setProfileType} />
-            <div className="h-60 object-cover object-center rounded-t-xl overflow-hidden">
-              <Jazzicon paperStyles={{ borderRadius: '10px' }} diameter={400} seed={Math.floor(Math.random() * 30)} />
-            </div>
-            <LensAvatar avatarUrl={currentUser?.avatar} />
-          </div>
           {/* 处理数据为空的情况 */}
           <div className="mt-70px w-full px-6 pb-6 fcc-center font-ArchivoNarrow">
             <span className="text-center text-xl w-200px overflow-hidden text-ellipsis" title={computedUserName}>
