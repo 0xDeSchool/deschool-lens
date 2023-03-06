@@ -9,6 +9,7 @@ import (
 	"github.com/0xdeschool/deschool-lens/backend/pkg/x"
 	"github.com/ethereum/go-ethereum/common"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -39,19 +40,35 @@ func (m *MongoUserRepository) GetManyByAddr(ctx context.Context, addresses []com
 }
 
 func (m *MongoUserRepository) LinkPlatform(ctx context.Context, p *identity.UserPlatform) {
-	m.userPlatforms(ctx).Insert(ctx, p)
+	filter := bson.D{
+		{"userId", p.UserId},
+		{"address", p.Address},
+		{"handle", p.Handle},
+		{"platform", p.Platform},
+	}
+	m.userPlatforms(ctx).UpdateOne(ctx, filter, p, options.Update().SetUpsert(true))
 }
 
-func (m *MongoUserRepository) UnlinkPlatform(ctx context.Context, address common.Address, handle string, platform string) {
+func (m *MongoUserRepository) UnlinkPlatform(ctx context.Context, userId primitive.ObjectID, address common.Address, handle string, platform string) {
 	filter := bson.D{
+		{"userId", userId},
 		{"address", address.Hex()},
 		{"handle", handle},
-		{"platform", platform}}
+		{"platform", platform},
+	}
 	m.userPlatforms(ctx).Col().DeleteMany(ctx, filter)
 }
 
-func (m *MongoUserRepository) GetPlatforms(ctx context.Context, address common.Address) []identity.UserPlatform {
-	filter := bson.D{{"address", address.Hex()}}
+func (m *MongoUserRepository) GetManyPlatforms(ctx context.Context, userIds []primitive.ObjectID) []identity.UserPlatform {
+	if len(userIds) == 0 {
+		return []identity.UserPlatform{}
+	}
+	filter := bson.D{{"userId", bson.D{{"$in", userIds}}}}
+	return m.userPlatforms(ctx).Find(ctx, filter)
+}
+
+func (m *MongoUserRepository) GetPlatforms(ctx context.Context, userId primitive.ObjectID) []identity.UserPlatform {
+	filter := bson.D{{"userId", userId}}
 	return m.userPlatforms(ctx).Find(ctx, filter)
 }
 

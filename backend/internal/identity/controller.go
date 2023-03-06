@@ -47,8 +47,8 @@ func updateUserInfo(ctx *gin.Context) {
 
 func getUserInfo(ctx *gin.Context) {
 	addr := ctx.Query("addr")
+	currentUser := ginx.CurrentUser(ctx)
 	if addr == "" {
-		currentUser := ginx.CurrentUser(ctx)
 		if !currentUser.Authenticated() {
 			ginx.PanicValidatition("addr is required")
 		}
@@ -62,7 +62,7 @@ func getUserInfo(ctx *gin.Context) {
 	if u == nil {
 		ginx.PanicNotFound("user not found")
 	}
-	ctx.JSON(http.StatusOK, NewUserInfo(u))
+	ctx.JSON(http.StatusOK, NewUserInfo(u, currentUser.ID == u.ID))
 }
 
 func unlinkPlatform(ctx *gin.Context) {
@@ -73,7 +73,7 @@ func unlinkPlatform(ctx *gin.Context) {
 		ginx.PanicUnAuthenticated("unauthenticated")
 	}
 	um := di.Get[UserManager]()
-	um.Unlink(ctx, input.Platform, currentUser.Address, input.Handle)
+	um.Unlink(ctx, currentUser.ID, input.Platform, input.Address, input.Handle)
 	ctx.JSON(http.StatusOK, struct{}{})
 }
 
@@ -85,26 +85,27 @@ func linkPlatform(ctx *gin.Context) {
 		ginx.PanicUnAuthenticated("unauthenticated")
 	}
 	data := input.ToEntity()
-	data.Address = currentUser.Address
+	data.UserId = currentUser.ID
 	um := di.Get[UserManager]()
 	um.Link(ctx, data)
 	ctx.JSON(http.StatusOK, struct{}{})
 }
 
 func getUsers(ctx *gin.Context) {
-	um := *di.Get[UserRepository]()
+	um := *di.Get[UserManager]()
 	p := ginx.QueryPageAndSort(ctx)
 	if p.Sort == "" {
 		p.Sort = "-createdAt"
 	}
 	p.PageSize += 1
-	users := um.GetLatestUsers(ctx, p)
+	users := um.Repo.GetLatestUsers(ctx, p)
 	hasNext := len(users) >= int(p.PageSize)
 	if hasNext {
 		users = users[:p.PageSize-1]
 	}
+	um.ManyIncludePlatforms(ctx, users)
 	items := linq.Map(users, func(u *User) *UserInfo {
-		return NewUserInfo(u)
+		return NewUserInfo(u, false)
 	})
 	ctx.JSON(http.StatusOK, ddd.NewPagedItems(items, hasNext))
 }

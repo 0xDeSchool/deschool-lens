@@ -39,7 +39,6 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
     } else {
       message.error(err?.toString() || err)
     }
-    setConnectLensBoardVisible(false)
   }
 
   // 对传入的challenge信息签名并返回签名结果
@@ -110,7 +109,8 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
             id: userInfo?.id,
             accessToken: authenticatedResult.accessToken,
             refreshToken: authenticatedResult.refreshToken,
-          }
+          },
+          address: address,
         })
       }
     } catch (error: any) {
@@ -201,14 +201,14 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
             <div className="frc-start">
               <span className='mr-2'>CONNECT</span>
               {loading && (
-                <LoadingOutlined color="#6525FF"/>
+                <LoadingOutlined color="#6525FF" />
               )}
             </div>
             <img alt="mask" src={MetaMaskImage} style={{ width: '25px', height: '25px' }} />
           </div>) :
-          (<div className="text-#6525FF text-[16px] w-full frc-center">
-            DISCONNECT
-          </div>)}
+            (<div className="text-#6525FF text-[16px] w-full frc-center">
+              DISCONNECT
+            </div>)}
         </Button>
       </div>
     </div>
