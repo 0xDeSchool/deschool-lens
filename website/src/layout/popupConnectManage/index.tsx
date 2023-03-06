@@ -5,22 +5,19 @@ import { useAccount } from '~/context/account'
 import ConnectLensBoard from './connectLens'
 import ConnectCyberBoard from './connectCyber'
 import ConnectDeschool from './connectDeschool'
+import UpdateUsername from './updateUserInfo'
 
 const PopupConnectManage = () => {
   const { userProfile } = useAccount()
-  const [editing, setEditing] = useState(false)
 
   return (
     <div>
       <div className='text-xl'>
         Booth
       </div>
-      <div className='frc-start gap-4 px-8 pt-24'>
+      <div className='frc-start gap-1 px-8 pt-24'>
         <Avatar size={32} alt="user avatar" src={userProfile.length > 0 && userProfile[0]?.avatar} />
-        <div className="font-ArchivoNarrow text-xl">
-          {userProfile.length > 0 ? userProfile[0]?.username : '--'}
-        </div>
-        {userProfile?.length > 0 && <Button onClick={() => setEditing(true)}>Edit</Button>}
+        <UpdateUsername defaultUsername={userProfile.length > 0 ? userProfile[0]?.username : ''}/>
       </div>
       <div className='frc-center gap-8 px-8 pt-8 pb-24'>
         <div className='item-connect flex-1'>

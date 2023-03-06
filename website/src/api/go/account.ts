@@ -46,3 +46,14 @@ export async function getUserSBTs(address?: string) {
 export async function getUserNfts(cursor: string, limit: number) {
   return http.get(`/account/my-nft?cursor=${cursor}&limit=${limit}`)
 }
+
+
+/**
+ * @method updateUserProfile
+ * @description 更新用户信息
+ * @param {Object} { userId:string, avatar: string, username: string }
+ * @returns {Object}  Promise
+ */
+export async function updateUserProfile(params: { avatar?: string; username?: string; bio?: string; contacts?: SocialLink[] }) {
+  return http.put(`/account/my-profile`, params)
+}

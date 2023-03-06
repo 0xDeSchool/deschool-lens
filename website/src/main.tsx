@@ -42,6 +42,9 @@ root.render(
             Radio: {
               colorPrimary: '#6525FF',
             },
+            Input: {
+              borderRadius: 0,
+            }
           },
         }}
       >
