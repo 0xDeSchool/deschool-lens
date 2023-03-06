@@ -119,7 +119,7 @@ export class UserManager {
   }
 
   async unLinkPlatform(handle: string, type: PlatformType) {
-    unlinkPlatform({ handle, platform: type })
+    await unlinkPlatform({ handle, platform: type })
   }
 
   disconnect(): void {

@@ -5,10 +5,7 @@ import { useTranslation } from 'react-i18next'
 import message from 'antd/es/message'
 import CloseOutlined from '@ant-design/icons/CloseOutlined'
 import LoadingOutlined from '@ant-design/icons/LoadingOutlined'
-import { RoleType } from '~/lib/enum'
 
-import { getUserContext } from '~/context/account'
-import { useLayout } from '~/context/layout'
 import type { WalletConfig } from '~/wallet'
 import { createProvider, getWallet, WalletType } from '~/wallet'
 import { fetchUserDefaultProfile } from '~/hooks/profile'
@@ -26,15 +23,10 @@ interface ConnectBoardProps {
 
 const ConnectLensBoard: FC<ConnectBoardProps> = props => {
   const { connectTrigger } = props
-  const { connectLensBoardVisible, setConnectLensBoardVisible } = useLayout()
   const [loading, setLoading] = useState(false)
   const { t } = useTranslation()
-  const lensProfile = useAccount()?.lensProfile()
-  useEffect(() => {
-    if (connectLensBoardVisible === false) {
-      setLoading(false)
-    }
-  }, [connectLensBoardVisible])
+  const user = useAccount()
+  const lensProfile = user?.lensProfile()
 
   /**
    * @description 连接失败的异常处理
@@ -60,9 +52,7 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
   // 通过len签名登录
   const handleLoginByAddress = async (address: string, isReload?: boolean) => {
     // 如果当前库中已经保存过登录记录则不需要重新签名登录
-    const roles = getUserContext().getLoginRoles()
-    if (roles.includes(RoleType.UserOfLens)) {
-      setConnectLensBoardVisible(false)
+    if (lensProfile) {
       return
     }
     try {
@@ -133,7 +123,6 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
         message.error(String(error))
       }
     } finally {
-      setConnectLensBoardVisible(false)
       if (isReload) window.location.reload()
     }
   }
@@ -168,7 +157,11 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
   // 退出 Lens 登录
   const handleDisconect = async () => {
     try {
-      getUserContext().disconnectFromLens()
+      if (lensProfile?.handle) {
+        getUserManager()?.unLinkPlatform(lensProfile?.handle, PlatformType.LENS)
+        // 重新获取用户信息
+        await getUserManager().tryAutoLogin()
+      }
     } catch (error: any) {
       message.error(error?.message ? error.message : '退出登录失败')
     }
