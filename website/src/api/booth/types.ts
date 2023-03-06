@@ -39,9 +39,9 @@ export interface UserInfo {
 }
 
 export interface UpdateUserInfo {
-  displayName: string
-  avatar: string
-  bio: string
+  displayName?: string
+  avatar?: string
+  bio?: string
 }
 
 export interface LoginResponse {
