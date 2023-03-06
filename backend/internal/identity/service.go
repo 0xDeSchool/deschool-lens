@@ -29,7 +29,8 @@ func (m *UserManager) Login(ctx context.Context, address common.Address, signHex
 	user := m.Repo.Find(ctx, address)
 	if user == nil {
 		user = &User{
-			Address: address.Hex(),
+			Address:     address.Hex(),
+			DisplayName: address.Hex(),
 		}
 		id := m.Repo.Insert(ctx, user)
 		if platform != nil {
