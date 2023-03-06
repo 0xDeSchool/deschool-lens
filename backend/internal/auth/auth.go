@@ -163,7 +163,7 @@ func getSignMsg(ctx *gin.Context) {
 	// if !currentUser.Authenticated() {
 	// 	ginx.PanicUnAuthenticated("unauthenticated")
 	// }
-	if common.IsHexAddress(input.Address) {
+	if !common.IsHexAddress(input.Address) {
 		ginx.PanicValidatition("invalid address")
 	}
 	addr := common.HexToAddress(input.Address)
