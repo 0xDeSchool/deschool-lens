@@ -6,8 +6,10 @@ import (
 	"github.com/0xdeschool/deschool-lens/backend/pkg/db/mongodb"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/utils/linq"
+	"github.com/0xdeschool/deschool-lens/backend/pkg/x"
 	"github.com/ethereum/go-ethereum/common"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type MongoUserRepository struct {
@@ -51,6 +53,12 @@ func (m *MongoUserRepository) UnlinkPlatform(ctx context.Context, address common
 func (m *MongoUserRepository) GetPlatforms(ctx context.Context, address common.Address) []identity.UserPlatform {
 	filter := bson.D{{"address", address.Hex()}}
 	return m.userPlatforms(ctx).Find(ctx, filter)
+}
+
+func (m *MongoUserRepository) GetLatestUsers(ctx context.Context, p *x.PageAndSort) []identity.User {
+	sort := m.ParseSort(p)
+	opts := options.Find().SetSort(sort).SetLimit(p.Limit()).SetSkip(p.Skip())
+	return m.MongoRepositoryBase.Find(ctx, bson.D{}, opts)
 }
 
 func (m *MongoUserRepository) userPlatforms(ctx context.Context) *mongodb.Collection[identity.UserPlatform] {

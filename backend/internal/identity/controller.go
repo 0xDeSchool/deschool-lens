@@ -1,10 +1,12 @@
 package identity
 
 import (
+	"github.com/0xdeschool/deschool-lens/backend/pkg/ddd"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/errx"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/ginx"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/server"
+	"github.com/0xdeschool/deschool-lens/backend/pkg/utils/linq"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -19,6 +21,9 @@ func identityController(sb *server.ServerBuiler) {
 		group.DELETE("link", auth, unlinkPlatform)
 		group.PUT("", auth, updateUserInfo)
 		group.GET("", altAuth, getUserInfo)
+
+		userGroup := s.Route.Group("api/users")
+		userGroup.GET("", getUsers)
 		return nil
 	})
 }
@@ -84,4 +89,22 @@ func linkPlatform(ctx *gin.Context) {
 	um := di.Get[UserManager]()
 	um.Link(ctx, data)
 	ctx.JSON(http.StatusOK, struct{}{})
+}
+
+func getUsers(ctx *gin.Context) {
+	um := *di.Get[UserRepository]()
+	p := ginx.QueryPageAndSort(ctx)
+	if p.Sort == "" {
+		p.Sort = "-createdAt"
+	}
+	p.PageSize += 1
+	users := um.GetLatestUsers(ctx, p)
+	hasNext := len(users) >= int(p.PageSize)
+	if hasNext {
+		users = users[:p.PageSize-1]
+	}
+	items := linq.Map(users, func(u *User) *UserInfo {
+		return NewUserInfo(u)
+	})
+	ctx.JSON(http.StatusOK, ddd.NewPagedItems(items, hasNext))
 }
