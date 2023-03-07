@@ -41,7 +41,7 @@ const UserCard = (props: UserCardProps) => {
     else {
       setVisitCase(1)
     }
-  }, [routeAddress, user?.address])
+  }, [routeAddress, user])
 
   return (
     <div className="w-full pb-1 shadow-md rounded-xl">

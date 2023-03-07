@@ -105,7 +105,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
         visible: false,
       })
     }
-  }, [updateTrigger, routeAddress, user])
+  }, [updateTrigger,visitCase, user])
 
   const handleJumpFollowers = (num: number | undefined) => {
     if (num && num > 0) {
@@ -146,7 +146,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
   if (loading) {
     return (
       <div className="h-400px fcc-center">
-        <Skeleton active/>
+        <Skeleton active />
       </div>
     )
   }

@@ -96,7 +96,7 @@ const LensCard = (props: LensCardProps) => {
         visible: false,
       })
     }
-  }, [visitCase, routeAddress, updateTrigger, user?.address])
+  }, [visitCase, updateTrigger, user?.address])
 
   const handleJumpFollowers = (num: number | undefined) => {
     if (num && num > 0) {
