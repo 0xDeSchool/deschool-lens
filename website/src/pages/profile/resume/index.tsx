@@ -405,16 +405,9 @@ const Resume = () => {
       <div className="flex justify-between">
         <div className="text-2xl font-bold font-ArchivoNarrow">
           RESUME
-          {lensProfile?.handle && (
             <span className="ml-1">
-              OF <span className="ml-1 text-gray-5">{lensProfile ? `@${lensProfile.handle}` : ''}</span>
+              OF <span className="ml-1 text-gray-5">{user?.displayName}</span>
             </span>
-          )}
-          {!lensProfile?.handle && userAddr && (
-            <span className="ml-1">
-              OF <span className="ml-1 text-gray-5">{getShortAddress(userAddr).toUpperCase()}</span>
-            </span>
-          )}
         </div>
         <div className="flex">
           {visitCase === 0 && !isEditResume && (
