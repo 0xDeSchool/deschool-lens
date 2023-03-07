@@ -26,7 +26,7 @@ const UserInfoDeschool: React.FC<UserInfoDeschoolProps> = (props) => {
       return
     }
     setLoading(true)
-    await followUser(user?.id, id)
+    await followUser(id, user?.id)
     setLoading(false)
     message.success(`success following ${address}`)
   }
@@ -37,7 +37,7 @@ const UserInfoDeschool: React.FC<UserInfoDeschoolProps> = (props) => {
       return
     }
     setLoading(true)
-    await unfollowUser(user?.id, id)
+    await unfollowUser(id, user?.id)
     setLoading(false)
     message.success(`success unfollow ${address}`)
   }

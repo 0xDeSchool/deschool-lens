@@ -132,14 +132,14 @@ const DeschoolCard = (props: DeschoolCardProps) => {
   }
 
   const handleFollow = async (user: UserInfo) => {
-    await followUser(user.address, user?.address!)
-    message.success(`success following ${user.address}`)
+    await followUser(user.id, currentUser?.id!)
+    message.success(`success following ${currentUser?.address}`)
     setUpdateTrigger(new Date().getTime())
   }
 
   const handleUnFollow = async (user: UserInfo) => {
-    await unfollowUser(user.address, user?.address!)
-    message.success(`success unfollow ${user?.address}`)
+    await unfollowUser(user.id, currentUser?.id!)
+    message.success(`success unfollow ${currentUser?.address}`)
     setUpdateTrigger(new Date().getTime())
   }
 

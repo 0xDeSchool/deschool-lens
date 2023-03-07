@@ -2,8 +2,8 @@ import http from '~/api/booth/http'
 
 /**
  * @description deschool follow user
- * @param toAddr string
- * @param fromAddr string
+ * @param toUser id string
+ * @param fromUser id string
  * @returns
  */
 export async function followUser(toUser: string, fromUser: string): Promise<any> {
