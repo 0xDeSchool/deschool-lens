@@ -45,13 +45,14 @@ type UserEventItem struct {
 }
 
 type EventMatchedItem struct {
-	Id          string          `json:"id"`
-	IsEnabled   bool            `json:"isEnabled"`
-	Interested  []string        `json:"interested"`
-	Matched     *UserEventItem  `json:"matchedUsers"`
-	Following   *UserEventItem  `json:"followingUsers"`
-	Courses     []*CourseDetail `json:"courses"`
-	Registrants []string        `json:"registrants"`
+	Id            string          `json:"id"`
+	IsEnabled     bool            `json:"isEnabled"`
+	Interested    []string        `json:"interested"`
+	Matched       *UserEventItem  `json:"matchedUsers"`
+	Following     *UserEventItem  `json:"followingUsers"`
+	Courses       []*CourseDetail `json:"courses"`
+	Registrants   *UserEventItem  `json:"registrants"`
+	HasInterested bool            `json:"hasInterested"`
 }
 
 func NewItem() *EventMatchedItem {
@@ -86,6 +87,12 @@ func MatchEvents(ctx context.Context, input EventInput) []*EventMatchedItem {
 	ids := linq.Map(input.Events, func(e **EventItem) string { return (*e).Id })
 	insRepo := *di.Get[interest.Repository]()
 
+	interestedData := insRepo.CheckMany(ctx, []primitive.ObjectID{userId}, ids, TargetTypeLink3Event)
+	interested := linq.ToMap(interestedData, func(e *interest.Interest) string { return e.TargetId })
+
+	usersData := insRepo.GetUsers(ctx, ids, TargetTypeLink3Event)
+	users := getUserEventItems(ctx, usersData, 3)
+
 	followRepo := *di.Get[FollowRepository]()
 	followingUsers := followRepo.GetFollowingUsers(ctx, userId)
 	followingData := insRepo.CheckMany(ctx, followingUsers, ids, TargetTypeLink3Event)
@@ -115,9 +122,13 @@ func MatchEvents(ctx context.Context, input EventInput) []*EventMatchedItem {
 			item.Matched = matched[e.Id]
 		}
 
+		if _, ok := users[e.Id]; ok {
+			item.Registrants = users[e.Id]
+		}
+
 		item.Courses = RecommendCourses(ctx, e.Labels)
-		//item.Registrants = filterUsers(ctx, e.Id, input.Users)
 		item.IsEnabled = item.IsMatched()
+		item.HasInterested = interested[e.Id] != nil
 		result = append(result, item)
 	}
 	return result

@@ -30,6 +30,6 @@ func createInterest(ctx *gin.Context) {
 	entity := input.ToEntity()
 	entity.CreatedAt = time.Now()
 	repo := *di.Get[Repository]()
-	id := repo.Insert(ctx, entity)
-	ginx.EntityCreated(ctx, id.Hex())
+	count := repo.SetInterest(ctx, entity)
+	ginx.EntityUpdated(ctx, count)
 }
