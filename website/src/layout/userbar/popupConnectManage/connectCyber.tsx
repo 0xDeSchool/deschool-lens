@@ -9,7 +9,6 @@ import type { WalletConfig } from '~/wallet'
 import { createProvider, getWallet, WalletType } from '~/wallet'
 import { LOGIN_GET_MESSAGE, LOGIN_VERIFY, PRIMARY_PROFILE } from '~/api/cc/graphql'
 import { useLazyQuery, useMutation } from '@apollo/client'
-import IconCyberConnect from '~/assets/icons/cyberConnect.svg'
 import IconCyberConnectLogo from '~/assets/icons/cyberconnectLogo.svg'
 import Button from 'antd/es/button'
 import { PlatformType } from '~/api/booth/booth'
@@ -18,6 +17,7 @@ import { useAccount } from '~/account/context'
 import { getUserManager } from '~/account';
 import { CloseOutlined, LogoutOutlined } from '@ant-design/icons'
 import type { UserPlatform } from '~/api/booth/types'
+import { CyberConnectIcon } from '~/components/icon'
 
 const DOMAIN = 'test.com'
 interface ConnectBoardProps {
@@ -205,7 +205,7 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
           <div key={ccProfile.handle} className='frc-between mt-4'>
             <div className="frc-start">
               <div className="bg-black rounded-50% w-28px h-28px frc-center">
-                <img src={IconCyberConnect} alt="cyberconnect" width={20} height={20} />
+                <CyberConnectIcon alt="cyberconnect" width={20} height={20} />
               </div>
               <span className='ml-2'>{ccProfile.handle}</span>
             </div>

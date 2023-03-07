@@ -2,7 +2,7 @@ import { t } from 'i18next'
 import type { Dispatch, SetStateAction } from 'react'
 import Deschool from '~/assets/icons/deschool.svg'
 import Lens from '~/assets/icons/lens.svg'
-import IconCyberConnect from '~/assets/icons/cyberConnect.svg'
+import { CyberConnectIcon } from '~/components/icon'
 
 const SwitchIdentity = (props: { setProfileType: Dispatch<SetStateAction<string>>; profileType: string }) => {
   const { setProfileType, profileType } = props
@@ -35,7 +35,7 @@ const SwitchIdentity = (props: { setProfileType: Dispatch<SetStateAction<string>
           setProfileType('cyber')
         }}
       >
-        <img src={IconCyberConnect} alt="cyberconnect" className="w-20px h-20px" />
+        <CyberConnectIcon alt="cyberconnect" className="w-20px h-20px" />
         <button
           type="button"
           className={`text-white text-14px leading-32px ml-2 font-ArchivoNarrow ${profileType === 'cyber' ? '' : 'hidden'}`}
