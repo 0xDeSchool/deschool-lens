@@ -3,17 +3,18 @@ import type { BlockType } from '../enum'
 
 export interface ResumeBlockInput {
   blockType: BlockType
-  dataArr: ResumeCardData[] | undefined
+  dataArr: ResumeCardData[]
   handleEditCard: (BlockType, number) => void
-  handleDeleteCard: (bt: BlockType, order: number) => void
+  handleDeleteCard: (BlockType, string) => void
   isEditResume: boolean
-  handleCreateCard: (bt: BlockType, order: number) => void
+  handleCreateCard: (BlockType) => void
+  handleSortCard?: (bt: BlockType, list: ResumeCardData[]) => void
 }
 
 export interface ResumeCardInput {
   isEditResume: boolean
-  handleEditCard: (BlockType, number) => void
-  handleDeleteCard: (bt: BlockType, order: number) => void
+  handleEditCard: (BlockType, string) => void
+  handleDeleteCard: (BlockType, string) => void
   blockType: BlockType
   data: ResumeCardData
 }
@@ -39,7 +40,7 @@ export interface ResumeCardData {
   endTime: Dayjs | undefined
   proofs: SbtInfo[] | undefined
   blockType: BlockType | undefined
-  order: number | undefined
+  id: string
 }
 
 export interface SbtInfo {

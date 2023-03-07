@@ -11,14 +11,18 @@ import { useTranslation } from 'react-i18next'
 import Tooltip from 'antd/es/tooltip'
 import type { q11eParam } from '~/api/booth/booth'
 import { getQ11e, putQ11e } from '~/api/booth/booth'
-import { useAccount } from '~/context/account'
 import Suggest from './suggested'
 import { randomConfetti } from '../resume/utils/confetti'
+import { useAccount } from '~/account'
 
 const InterestTag = [
   {
     value: 'defi',
     label: 'DeFi',
+  },
+  {
+    value: 'web3',
+    label: 'Web3',
   },
   {
     value: 'dao',
@@ -74,17 +78,16 @@ const MatchConfig = () => {
   const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
   const { t } = useTranslation()
-  const { lensToken, deschoolProfile } = useAccount()
   const [open, setOpen] = useState(false)
   const [fired, setFired] = useState(false)
 
   const loadInitialValues = async () => {
-    const address = lensToken?.address || deschoolProfile?.address
-    if (!address) {
+    const user = useAccount()
+    if (!user) {
       return
     }
     try {
-      const result = await getQ11e(address)
+      const result = await getQ11e(user.id)
       if (!result) {
         return
       }
@@ -100,6 +103,8 @@ const MatchConfig = () => {
   }, [])
 
   const handleSubmmit = async () => {
+    const user = useAccount()
+    let address = user?.address
     try {
       setLoading(true)
       // 判断表单是否通过验证
@@ -107,23 +112,16 @@ const MatchConfig = () => {
       if (validResult?.errors) {
         return false
       }
-
-      // 检查地址
-      let address = lensToken?.address || deschoolProfile?.address
-      if (!address) {
-        const dscAddr = deschoolProfile?.address
-        if (!dscAddr) {
-          setLoading(false)
-          message.error('Not log in yet. Cannot get address from both Lens and DeSchool, please login and try again')
-          return false
-        }
-        address = dscAddr
+      if (!user) {
+        setLoading(false)
+        message.error('Not log in yet. Cannot get address from both Lens and DeSchool, please login and try again')
+        return false
       }
 
       // 最后请求
       const values = await form.getFieldsValue()
       const params: q11eParam = {
-        address,
+        userId: user.id,
         goals: values.goals,
         interests: values.interests,
         pref1: '[]', // values.pref1,

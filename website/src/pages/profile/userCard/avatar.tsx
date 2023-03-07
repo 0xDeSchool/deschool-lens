@@ -1,5 +1,5 @@
-import { DEFAULT_AVATAR } from '~/context/account'
 import Image from 'antd/es/image'
+import { DEFAULT_AVATAR } from '~/account';
 
 const LensAvatar = (props: { wrapperClassName?: string; avatarUrl?: string; size?: number }) => {
   const { wrapperClassName, avatarUrl, size } = props

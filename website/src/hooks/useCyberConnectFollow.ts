@@ -16,21 +16,19 @@ function useFollow() {
       toggleIsLoading(true);
       const error = await cc
         .follow(address, handle)
-        .catch((error: any) => {
-          return error;
-        })
+        .catch((error: any) => error)
         .finally(() => toggleIsLoading(false));
 
       if (!error || error.message === "ALREADY_DONE") {
         return { isSuccess: true };
-      } else {
+      } 
         return {
           isError: true,
           message: "Network busy. Please try again later.",
         };
-      }
+      
     },
-    [cc]
+    [cc],
   );
 
   return useMemo(
@@ -38,7 +36,7 @@ function useFollow() {
       isLoading,
       follow,
     }),
-    [isLoading, follow]
+    [isLoading, follow],
   );
 }
 

@@ -1,13 +1,14 @@
 package auth
 
 import (
+	"net/http"
+	"time"
+
 	"github.com/0xdeschool/deschool-lens/backend/internal/identity"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/errx"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/ginx"
 	"github.com/ethereum/go-ethereum/common"
-	"net/http"
-	"time"
 
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
@@ -16,15 +17,15 @@ import (
 
 var identityKey = "id"
 var addressKey = "address"
-var nameKey = "userName"
+var nameKey = "nickName"
 
 type LoginResult struct {
-	Code     int    `json:"code"`
-	JwtToken string `json:"jwtToken"`
-	Expire   string `json:"expire"`
-	UserName string `json:"username"`
-	Avatar   string `json:"avatar"`
-	Address  string `json:"address"`
+	Code        int       `json:"code"`
+	JwtToken    string    `json:"jwtToken"`
+	Expire      time.Time `json:"expire"`
+	DisplayName string    `json:"displayName"`
+	Avatar      string    `json:"avatar"`
+	Address     string    `json:"address"`
 }
 
 type LogoutResult struct {
@@ -34,10 +35,10 @@ type LogoutResult struct {
 
 func NewCurrentUserInfo(user *identity.User) *ginx.CurrentUserInfo {
 	return &ginx.CurrentUserInfo{
-		ID:       user.ID,
-		UserName: user.UserName,
-		Address:  user.Address,
-		Avatar:   user.Avatar,
+		ID:          user.ID,
+		DisplayName: user.DisplayName,
+		Address:     user.Address,
+		Avatar:      user.Avatar,
 	}
 }
 
@@ -46,7 +47,7 @@ func payloadFunc(data interface{}) jwt.MapClaims {
 		return jwt.MapClaims{
 			identityKey: v.ID.Hex(),
 			addressKey:  v.Address,
-			nameKey:     v.UserName,
+			nameKey:     v.DisplayName,
 		}
 	}
 	return jwt.MapClaims{}
@@ -71,7 +72,7 @@ func identityHandler(c *gin.Context) interface{} {
 		user.Address = addr.(string)
 	}
 	if name, ok := claims[nameKey]; ok {
-		user.UserName = name.(string)
+		user.DisplayName = name.(string)
 	}
 	c.Set("Login.User", user)
 	return user
@@ -97,7 +98,7 @@ func jwtAuthenticate(c *gin.Context) (interface{}, error) {
 		ginx.PanicValidatition("invalid address")
 	}
 	addr := common.HexToAddress(input.Address)
-	user, err := authenticate(c, addr, input.Sig, input.WalletType)
+	user, err := authenticate(c, addr, input.Sig, input.WalletType, input.Platform)
 	if err != nil {
 		return nil, err
 	}
@@ -119,12 +120,12 @@ func jwtLoginResponse(c *gin.Context, code int, token string, expire time.Time) 
 	}
 	user := v.(*ginx.CurrentUserInfo)
 	result := &LoginResult{
-		Code:     code,
-		JwtToken: token,
-		Expire:   expire.Local().Format(time.RFC3339),
-		Address:  user.Address,
-		UserName: user.UserName,
-		Avatar:   user.Avatar,
+		Code:        code,
+		JwtToken:    token,
+		Expire:      expire,
+		Address:     user.Address,
+		DisplayName: user.DisplayName,
+		Avatar:      user.Avatar,
 	}
 	c.JSON(http.StatusOK, result)
 }
@@ -142,9 +143,10 @@ func jwtLogoutResponse(c *gin.Context, code int) {
 	})
 }
 
-func authenticate(c *gin.Context, address common.Address, sig string, t identity.WalletType) (*ginx.CurrentUserInfo, error) {
+func authenticate(c *gin.Context, address common.Address, sig string, t identity.WalletType, platform *identity.LinkPlatformInput) (*ginx.CurrentUserInfo, error) {
 	um := di.Get[identity.UserManager]()
-	user := um.Login(c, address, sig, t)
+	p := platform.ToEntity()
+	user := um.Login(c, address, sig, t, p)
 	userInfo := NewCurrentUserInfo(user)
 	return userInfo, nil
 }
@@ -157,11 +159,14 @@ func getSignMsg(ctx *gin.Context) {
 	var input SignMessageInput
 	err := ctx.BindJSON(&input)
 	errx.CheckError(err)
-	currentUser := ginx.CurrentUser(ctx)
-	if !currentUser.Authenticated() {
-		ginx.PanicUnAuthenticated("unauthenticated")
+	// currentUser := ginx.CurrentUser(ctx)
+	// if !currentUser.Authenticated() {
+	// 	ginx.PanicUnAuthenticated("unauthenticated")
+	// }
+	if !common.IsHexAddress(input.Address) {
+		ginx.PanicValidatition("invalid address")
 	}
-	addr := common.HexToAddress(currentUser.Address)
+	addr := common.HexToAddress(input.Address)
 	message := identity.CreateSignMessage(addr, input.SignType)
 	ctx.JSON(http.StatusOK, SingMessageOutput{
 		Message: message,

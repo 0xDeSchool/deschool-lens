@@ -1,6 +1,11 @@
 package http
 
 import (
+	"github.com/0xdeschool/deschool-lens/backend/internal/identity"
+	"github.com/0xdeschool/deschool-lens/backend/pkg/db/mongodb"
+	"github.com/0xdeschool/deschool-lens/backend/pkg/ddd"
+	"github.com/0xdeschool/deschool-lens/backend/pkg/utils/linq"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
 	"strconv"
 
@@ -97,17 +102,15 @@ func q11ePutHandler(ctx *gin.Context) {
 
 func recommendationGetHandler(ctx *gin.Context) {
 	hm := *di.Get[hackathon.HackathonManager]()
-	address := ctx.Query("address")
-	address = eth.NormalizeAddress(address)
-	result := hm.RunRecommendations(ctx, address)
+	userId := ctx.Query("userId")
+	result := hm.RunRecommendations(ctx, mongodb.IDFromHex(userId))
 	ctx.JSON(http.StatusOK, result)
 }
 
 func q11eGetHandler(ctx *gin.Context) {
 	hm := *di.Get[hackathon.HackathonManager]()
-	address := ctx.Query("address")
-	address = eth.NormalizeAddress(address)
-	result := hm.GetQ11e(ctx, address)
+	userId := ctx.Query("userId")
+	result := hm.GetQ11e(ctx, mongodb.IDFromHex(userId))
 	ctx.JSON(http.StatusOK, result)
 }
 
@@ -128,19 +131,17 @@ func testSbtPostHandler(ctx *gin.Context) {
 
 func followGetHandler(ctx *gin.Context) {
 	type followInput struct {
-		ToAddr   string `json:"toAddr"`
-		FromAddr string `json:"fromAddr"`
+		ToUser   string `json:"toUser"`
+		FromUser string `json:"fromUser"`
 	}
 	var input followInput
 
-	input.FromAddr = ctx.Query("fromAddr")
-	input.ToAddr = ctx.Query("toAddr")
-	input.FromAddr = eth.NormalizeAddress(input.FromAddr)
-	input.ToAddr = eth.NormalizeAddress(input.ToAddr)
+	input.FromUser = ctx.Query("fromUser")
+	input.ToUser = ctx.Query("toUser")
 	hm := *di.Get[hackathon.HackathonManager]()
 
-	result := hm.CheckFollowExists(ctx, input.FromAddr, input.ToAddr)
-	result2 := hm.CheckFollowExists(ctx, input.ToAddr, input.FromAddr)
+	result := hm.CheckFollowExists(ctx, mongodb.IDFromHex(input.FromUser), mongodb.IDFromHex(input.ToUser))
+	result2 := hm.CheckFollowExists(ctx, mongodb.IDFromHex(input.ToUser), mongodb.IDFromHex(input.FromUser))
 	type Result struct {
 		FromFollowedTo bool `json:"fromFollowedTo"`
 		ToFollowedFrom bool `json:"ToFollowedFrom"`
@@ -150,16 +151,14 @@ func followGetHandler(ctx *gin.Context) {
 
 func followPostHandler(ctx *gin.Context) {
 	type followInput struct {
-		ToAddr   string `json:"toAddr"`
-		FromAddr string `json:"fromAddr"`
+		ToUser   string `json:"toUser"`
+		FromUser string `json:"fromUser"`
 	}
 	var input followInput
 	errx.CheckError(ctx.BindJSON(&input))
-	input.FromAddr = eth.NormalizeAddress(input.FromAddr)
-	input.ToAddr = eth.NormalizeAddress(input.ToAddr)
 	hm := *di.Get[hackathon.HackathonManager]()
 
-	result := hm.InsertFollow(ctx, input.FromAddr, input.ToAddr)
+	result := hm.InsertFollow(ctx, mongodb.IDFromHex(input.FromUser), mongodb.IDFromHex(input.ToUser))
 	type Result struct {
 		Success bool `json:"success"`
 	}
@@ -167,47 +166,37 @@ func followPostHandler(ctx *gin.Context) {
 }
 
 func followingGetHandler(ctx *gin.Context) {
-	addr := ctx.Query("addr")
-	addr = eth.NormalizeAddress(addr)
+	userId := ctx.Query("userId")
 
-	vistorAddr := ctx.Query("visitorAddress")
-	if vistorAddr != "" && vistorAddr != "undefined" {
-		vistorAddr = eth.NormalizeAddress(vistorAddr)
-	} else {
-		vistorAddr = addr
+	visitorUserId := ctx.Query("visitorUserId")
+	if visitorUserId == "" || visitorUserId == "undefined" {
+		visitorUserId = userId
 	}
-
 	hm := *di.Get[hackathon.HackathonManager]()
-	result := hm.GetFollowing(ctx, addr, vistorAddr)
+	result := hm.GetFollowing(ctx, mongodb.IDFromHex(userId), mongodb.IDFromHex(visitorUserId))
 	ctx.JSON(http.StatusOK, result)
 }
 
 func followerGetHandler(ctx *gin.Context) {
-	addr := ctx.Query("addr")
-	addr = eth.NormalizeAddress(addr)
-
-	vistorAddr := ctx.Query("visitorAddress")
-	if vistorAddr != "" && vistorAddr != "undefined" {
-		vistorAddr = eth.NormalizeAddress(vistorAddr)
-	} else {
-		vistorAddr = addr
+	userId := ctx.Query("userId")
+	visitorUserId := ctx.Query("visitorUserId")
+	if visitorUserId == "" || visitorUserId == "undefined" {
+		visitorUserId = userId
 	}
 	hm := *di.Get[hackathon.HackathonManager]()
-	result := hm.GetFollower(ctx, addr, vistorAddr)
+	result := hm.GetFollower(ctx, mongodb.IDFromHex(userId), mongodb.IDFromHex(visitorUserId))
 	ctx.JSON(http.StatusOK, result)
 }
 
 func followDeleteHandler(ctx *gin.Context) {
 	type followInput struct {
-		ToAddr   string `json:"toAddr"`
-		FromAddr string `json:"fromAddr"`
+		ToUser   string `json:"toUser"`
+		FromUser string `json:"fromUser"`
 	}
 	var input followInput
 	errx.CheckError(ctx.BindJSON(&input))
-	input.FromAddr = eth.NormalizeAddress(input.FromAddr)
-	input.ToAddr = eth.NormalizeAddress(input.ToAddr)
 	hm := *di.Get[hackathon.HackathonManager]()
-	result := hm.DeleteFollow(ctx, input.FromAddr, input.ToAddr)
+	result := hm.DeleteFollow(ctx, mongodb.IDFromHex(input.FromUser), mongodb.IDFromHex(input.ToUser))
 	type Result struct {
 		Success bool `json:"success"`
 	}
@@ -220,4 +209,51 @@ func filterEvents(ctx *gin.Context) {
 	errx.CheckError(ctx.BindJSON(&input))
 	result := hackathon.MatchEvents(ctx, input)
 	ctx.JSON(http.StatusOK, result)
+}
+
+func getUsers(ctx *gin.Context) {
+	um := *di.Get[identity.UserManager]()
+	var users []identity.User
+	userId := ctx.Query("userId")
+	hasNext := false
+	if userId != "" {
+		u := um.Repo.Get(ctx, mongodb.IDFromHex(userId))
+		users = append(users, *u)
+	} else {
+		p := ginx.QueryPageAndSort(ctx)
+		if p.Sort == "" {
+			p.Sort = "-createdAt"
+		}
+		p.PageSize += 1
+		users = um.Repo.GetLatestUsers(ctx, p)
+		hasNext = len(users) >= int(p.PageSize)
+		if hasNext {
+			users = users[:p.PageSize-1]
+		}
+	}
+
+	um.ManyIncludePlatforms(ctx, users)
+
+	userIds := linq.Map(users, func(u *identity.User) primitive.ObjectID { return u.ID })
+	currentUser := ginx.CurrentUser(ctx)
+	if currentUser.Authenticated() {
+		userIds = append(userIds, currentUser.ID)
+	}
+	fRepo := *di.Get[hackathon.FollowRepository]()
+	followers := fRepo.GetFollowerCount(ctx, userIds)
+	following := fRepo.GetFollowingCount(ctx, userIds)
+	followingUsers := make(map[primitive.ObjectID]bool)
+	if currentUser.Authenticated() {
+		followingUsers = fRepo.CheckIsFollowing(ctx, currentUser.ID, userIds)
+	}
+	items := make([]*UserItem, 0, len(users))
+	for i := range users {
+		u := &users[i]
+		item := NewUserItem(u)
+		item.FollowerCount = followers[u.ID]
+		item.FollowingCount = following[u.ID]
+		item.IsFollowing = followingUsers[u.ID]
+		items = append(items, item)
+	}
+	ctx.JSON(http.StatusOK, ddd.NewPagedItems(items, hasNext))
 }

@@ -4,7 +4,8 @@ import { useMemo, useEffect, useState, useContext, createContext } from 'react'
 
 // import { getWallet } from '~/wallet'
 import { RoleType } from '~/lib/enum'
-import type { AccountContextProps, DeschoolProfile, ProfileExtend, LensTokenInfo, CyberProfile, CyberTokenInfo } from '~/lib/types/app'
+import { getShortAddress } from '~/utils/format'
+import type { AccountContextProps, DeschoolProfile, ProfileExtend, LensTokenInfo, CyberProfile, CyberTokenInfo, UserProfile } from '~/lib/types/app'
 
 export const DEFAULT_AVATAR = 'https://s3.us-east-1.amazonaws.com/deschool/Avatars/avatar_def.png'
 export const DEFAULT_AVATAR_NAME = 'avatar_def.png'
@@ -16,9 +17,11 @@ export class UserContext {
 
   lensToken: LensTokenInfo | null
 
-  cyberProfile: any | null
+  cyberProfile: CyberProfile | null
 
-  cyberToken: any | null
+  cyberToken: CyberTokenInfo | null
+
+  userProfile: ProfileExtend | DeschoolProfile | CyberProfile | null
 
   setLensProfile: Dispatch<SetStateAction<ProfileExtend | null>>
 
@@ -30,17 +33,21 @@ export class UserContext {
 
   setCyberProfile: Dispatch<SetStateAction<CyberProfile | null>>
 
+  setUserProfile: Dispatch<SetStateAction<UserProfile[]>>
+
   constructor(accountMemo: AccountContextProps) {
     this.lensProfile = accountMemo.lensProfile
     this.deschoolProfile = accountMemo.deschoolProfile
     this.lensToken = accountMemo.lensToken
     this.cyberProfile = accountMemo.cyberProfile
     this.cyberToken = accountMemo.cyberToken
+    this.userProfile = accountMemo.deschoolProfile
     this.setLensProfile = accountMemo.setLensProfile
     this.setDescoolProfile = accountMemo.setDescoolProfile
     this.setLensToken = accountMemo.setLensToken
     this.setCyberToken = accountMemo.setCyberToken
     this.setCyberProfile = accountMemo.setCyberProfile
+    this.setUserProfile = accountMemo.setUserProfile
   }
 
   // 断开lens的连接
@@ -86,6 +93,18 @@ export class UserContext {
     }
     return roles
   }
+
+  get address() {
+    if (this.cyberToken){
+      return this.cyberToken.address
+    }
+    if (this.lensToken) {
+      return this.lensToken.address
+    }
+    if (this.deschoolProfile) {
+      return this.deschoolProfile.address
+    }
+  }
 }
 
 export const AccountContext = createContext<AccountContextProps>({
@@ -94,11 +113,13 @@ export const AccountContext = createContext<AccountContextProps>({
   lensToken: null,
   cyberProfile: null,
   cyberToken: null,
+  userProfile: null,
   setLensProfile: () => {},
   setDescoolProfile: () => {},
   setLensToken: () => {},
   setCyberProfile: () => {},
   setCyberToken: () => {},
+  setUserProfile: () => {},
 })
 
 const getStorage = (type: string) => {
@@ -116,11 +137,13 @@ let userContext: UserContext = new UserContext({
   lensToken: null,
   cyberProfile: null,
   cyberToken: null,
+  userProfile: null,
   setLensProfile: () => {},
   setDescoolProfile: () => {},
   setLensToken: () => {},
   setCyberProfile: () => {},
   setCyberToken: () => {},
+  setUserProfile: () => {},
 })
 
 export const AccountContextProvider = ({ children }: { children: ReactElement }) => {
@@ -129,6 +152,7 @@ export const AccountContextProvider = ({ children }: { children: ReactElement })
   const [lensToken, setLensToken] = useState<LensTokenInfo | null>(getStorage('lensToken'))
   const [cyberProfile, setCyberProfile] = useState<CyberProfile | null>(getStorage('cyberProfile'))
   const [cyberToken, setCyberToken] = useState<CyberTokenInfo | null>(getStorage('cyberToken'))
+  const [userProfile, setUserProfile] = useState<UserProfile[]>([])
 
   const accountMemo = useMemo(
     () => ({
@@ -137,17 +161,62 @@ export const AccountContextProvider = ({ children }: { children: ReactElement })
       lensToken,
       cyberProfile,
       cyberToken,
+      userProfile,
       setLensProfile,
       setDescoolProfile,
       setLensToken,
       setCyberProfile,
       setCyberToken,
+      setUserProfile,
     }),
-    [lensProfile, deschoolProfile, lensToken, cyberProfile, cyberToken],
+    [lensProfile, deschoolProfile, lensToken, cyberProfile, cyberToken, userProfile],
   )
+
+  const addUserProfile = (profile: UserProfile) => {
+    const newProfile = userProfile.filter((item) => item.type !== profile.type)
+    newProfile.push(profile)
+    setUserProfile(newProfile)
+  }
+
+  const removeUserProfile = (type: string) => {
+    const newProfile = userProfile.filter((item) => item.type !== type)
+    setUserProfile(newProfile)
+  }
+
+  useEffect(() => {
+    if (lensProfile && lensToken) {
+      addUserProfile({
+        type: 'lens',
+        address: lensToken?.address || '',
+        username: lensProfile.handle,
+        avatar: lensProfile.avatarUrl,
+      })
+    } else {
+      removeUserProfile('lens')
+    }
+  }, [lensProfile, lensToken])
+
+  useEffect(() => {
+    if (cyberProfile && cyberToken) {
+      addUserProfile({
+        type: 'cyber',
+        address: cyberToken?.address || '',
+        username: cyberProfile.handle,
+        avatar: cyberProfile.avatar,
+      })
+    } else {
+      removeUserProfile('cyber')
+    }
+  }, [cyberProfile, cyberToken])
 
   useEffect(() => {
     if (lensProfile) {
+      addUserProfile({
+        type: 'lens',
+        address: lensToken?.address || '',
+        username: lensProfile.handle,
+        avatar: lensProfile.avatarUrl,
+      })
       localStorage.setItem('lensProfile', JSON.stringify(lensProfile))
     } else {
       localStorage.removeItem('lensProfile')
@@ -156,8 +225,15 @@ export const AccountContextProvider = ({ children }: { children: ReactElement })
 
   useEffect(() => {
     if (deschoolProfile) {
+      addUserProfile({
+        type: 'deschool',
+        address: deschoolProfile?.address || '',
+        username: deschoolProfile.username && deschoolProfile.username === deschoolProfile.address ? getShortAddress(deschoolProfile.address) : deschoolProfile.username,
+        avatar: deschoolProfile.avatar,
+      })
       localStorage.setItem('deschoolProfile', JSON.stringify(deschoolProfile))
     } else {
+      removeUserProfile('deschool')
       localStorage.removeItem('deschoolProfile')
     }
   }, [deschoolProfile])
@@ -187,8 +263,8 @@ export const AccountContextProvider = ({ children }: { children: ReactElement })
   }, [cyberToken])
 
   userContext = new UserContext({
-    lensProfile, deschoolProfile, lensToken, cyberProfile, cyberToken,
-    setLensProfile, setDescoolProfile, setLensToken, setCyberProfile, setCyberToken
+    lensProfile, deschoolProfile, lensToken, cyberProfile, cyberToken, userProfile,
+    setLensProfile, setDescoolProfile, setLensToken, setCyberProfile, setCyberToken, setUserProfile,
   })
 
   return <AccountContext.Provider value={accountMemo}>{children}</AccountContext.Provider>

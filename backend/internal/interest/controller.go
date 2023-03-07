@@ -1,6 +1,7 @@
 package interest
 
 import (
+	"github.com/0xdeschool/deschool-lens/backend/pkg/db/mongodb"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/errx"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/ginx"
@@ -10,8 +11,8 @@ import (
 )
 
 func httpApi(s *server.Server) {
-	s.G.POST("/api/interest", createInterest)
-	s.G.DELETE("/api/interest", cancelInterest)
+	s.Route.POST("/api/interest", createInterest)
+	s.Route.DELETE("/api/interest", cancelInterest)
 
 }
 
@@ -19,7 +20,7 @@ func cancelInterest(ctx *gin.Context) {
 	var input CreateInput
 	errx.CheckError(ctx.BindJSON(&input))
 	repo := *di.Get[Repository]()
-	count := repo.DeleteBy(ctx, input.Address, input.TargetId, input.TargetType)
+	count := repo.DeleteBy(ctx, mongodb.IDFromHex(input.UserId), input.TargetId, input.TargetType)
 	ginx.EntityUpdated(ctx, count)
 }
 

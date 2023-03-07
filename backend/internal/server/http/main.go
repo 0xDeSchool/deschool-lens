@@ -35,7 +35,7 @@ func HackathonApi(sb *server.ServerBuiler) {
 
 	// 在 Server 中添加 Hackathon 模块的各个 Route
 	sb.Configure(func(s *server.Server) error {
-		baseRoute := s.Route
+		baseRoute := s.Route.Group("/api")
 
 		// Stage 1 - 基础框架 + 身份
 		baseRoute.GET("/ping", pingHandler)
@@ -65,6 +65,8 @@ func HackathonApi(sb *server.ServerBuiler) {
 		baseRoute.DELETE("/follow", followDeleteHandler)
 
 		baseRoute.POST("/events", filterEvents)
+
+		baseRoute.GET("users", getUsers)
 		return nil
 	})
 }

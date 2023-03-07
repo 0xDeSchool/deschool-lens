@@ -4,3 +4,6 @@ POST  {{host}}/v1/identity/link
 {
 labels:["web3"]
 }
+
+###
+GET {{host}}/api/users

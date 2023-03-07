@@ -23,14 +23,14 @@ function useUnFollow() {
 
       if (!error || error.message === "ALREADY_DONE") {
         return { isSuccess: true };
-      } else {
+      } 
         return {
           isError: true,
           message: "Network busy. Please try again later.",
         };
-      }
+      
     },
-    [cc]
+    [cc],
   );
 
   return useMemo(
@@ -38,7 +38,7 @@ function useUnFollow() {
       isLoading,
       unFollow,
     }),
-    [isLoading, unFollow]
+    [isLoading, unFollow],
   );
 }
 

@@ -32,7 +32,7 @@
     "@aws-sdk/protocol-http": "^3.226.0",
     "@aws-sdk/smithy-client": "^3.234.0",
     "@aws-sdk/xhr-http-handler": "3.226.0",
-    "@cyberlab/cyberconnect-v2": "0.0.1-alpha.16",
+    "@cyberlab/cyberconnect-v2": "0.0.1-alpha.17",
     "@dforo3/metaforo-sdk": "0.4.12-beta",
     "@dnd-kit/core": "^6.0.6",
     "@dnd-kit/sortable": "^7.0.1",

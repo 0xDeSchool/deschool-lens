@@ -2,21 +2,23 @@ import Divider from 'antd/es/divider'
 import { useEffect, useState } from 'react'
 import Button from 'antd/es/button'
 import message from 'antd/es/message'
-import dayjs from 'dayjs'
-import ReactLoading from 'react-loading'
 import Modal from 'antd/es/modal'
+import dayjs from 'dayjs'
+import { v4 as uuid } from 'uuid'
+import ReactLoading from 'react-loading'
 import { useParams } from 'react-router-dom'
 import { getIdSbt, getResume, putResume } from '~/api/booth/booth'
-import { useAccount } from '~/context/account'
 import { createPost, pollAndIndexPost } from '~/api/lens/publication/post'
 import { getShortAddress } from '~/utils/format'
+import useCyberConnect from '~/hooks/useCyberConnect'
+import { useAccount } from '~/account'
 import CardEditor from './components/cardEditor'
 import ResumeBlock from './components/resumeBlock'
 import { BlockType } from './enum'
 import type { ResumeCardData, ResumeData, SbtInfo } from './types'
 import { randomConfetti } from './utils/confetti'
-import {getVisitCase, VisitType} from '../utils/visitCase'
-import useCyberConnect from '~/hooks/useCyberConnect'
+import type { VisitType } from '../utils/visitCase';
+import { getVisitCase } from '../utils/visitCase'
 import Congradulations from './components/congradulations'
 
 export const STANDARD_RESUME_DATA: ResumeData = {
@@ -35,7 +37,7 @@ export const STANDARD_RESUME_DATA: ResumeData = {
         },
       ],
       blockType: BlockType.CareerBlockType,
-      order: 1,
+      id: uuid(),
     },
   ],
   edu: [
@@ -53,7 +55,7 @@ export const STANDARD_RESUME_DATA: ResumeData = {
         },
       ],
       blockType: BlockType.EduBlockType,
-      order: 1,
+      id: uuid(),
     },
   ],
 }
@@ -62,12 +64,14 @@ type PublishType = 'CyberConnect' | 'Lens'
 
 const Resume = () => {
   const { address } = useParams()
-  const { lensProfile, lensToken, cyberProfile, cyberToken, deschoolProfile } = useAccount()
+  const user = useAccount()
+  const lensProfile = user?.lensProfile()
+  const ccProfile = user?.ccProfile()
 
   const [isEditResume, setIsEditResume] = useState(false)
   const [isCreateCard, setIsCreateCard] = useState(false)
   const [isEditCard, setIsEditCard] = useState(false)
-  const [resumeData, setResumeData] = useState<ResumeData | undefined>()
+  const [resumeData, setResumeData] = useState<ResumeData>()
   const [cardData, setCardData] = useState<ResumeCardData | undefined>()
   const [loading, setLoading] = useState(true)
   const [putting, setPutting] = useState(false)
@@ -83,22 +87,23 @@ const Resume = () => {
   const [visitCase, setVisitCase] = useState<VisitType>(-1) // 0-自己访问自己 1-自己访问别人 -1-没登录访问自己
   const ccInstance = useCyberConnect()
 
-  // 把一条变成 Dayjs Obj
-  const convertStrToDayJsObj = (input: ResumeCardData) => {
-    input.startTime = dayjs(input.startTime)
-    input.endTime = dayjs(input.endTime)
-    return input
-  }
+  // 组装简历数据，添加id，转换时间格式
+  const convertResumeCardData = (input: ResumeCardData[]) => input.map((item: ResumeCardData, index: number) => ({
+        ...item,
+        startTime: dayjs(item.startTime),
+        endTime: dayjs(item.endTime),
+        id: index,
+      }))
 
   // 重新把数据变成Obj
   const covertCareerAndEdu = (input: string) => {
     const obj = JSON.parse(input)
     // 转换格式
     if (obj.career !== undefined) {
-      obj.career = [...obj.career.map((item: ResumeCardData) => convertStrToDayJsObj(item))]
+      obj.career = [...convertResumeCardData(obj.career)]
     }
     if (obj.edu !== undefined) {
-      obj.edu = [...obj.edu.map((item: ResumeCardData) => convertStrToDayJsObj(item))]
+      obj.edu = [...convertResumeCardData(obj.edu)]
     }
     return obj
   }
@@ -108,17 +113,17 @@ const Resume = () => {
   // 进入简历编辑 or 保存查看状态
   const onClickEditResume = async () => {
     if (isEditResume) {
-      const myAddress = lensToken?.address || deschoolProfile?.address
-      if (myAddress) {
+      if (user?.address) {
         setPutting(true)
         const dataStr = JSON.stringify(resumeData)
-        await putResume({ address: myAddress, data: dataStr })
+        await putResume({ address: user?.address, data: dataStr })
         setPutting(false)
       }
     } else {
-      // 深拷贝
+      // 深拷贝 // no 浅拷贝
       const prevStr = JSON.stringify(resumeData)
       const prevObj = covertCareerAndEdu(prevStr)
+
       setPrev(prevObj)
     }
     setIsEditResume(!isEditResume)
@@ -134,7 +139,6 @@ const Resume = () => {
   const handleEditOrCreateCardSave = async (newData: ResumeCardData) => {
     let dataIndex: number | undefined
     const bt = newData.blockType
-    const { order } = newData
 
     let newResumeData: ResumeData | undefined
     // 场景一：创造卡片
@@ -168,14 +172,14 @@ const Resume = () => {
       }
       // 职业类型
       if (bt === BlockType.CareerBlockType && newResumeData?.career !== undefined) {
-        dataIndex = newResumeData?.career.findIndex(item => item.blockType === bt && item.order === order)
+        dataIndex = newResumeData?.career.findIndex(item => item.blockType === bt && item.id === newData.id)
         if (dataIndex !== -1 && dataIndex !== undefined) {
           newResumeData.career[dataIndex] = newData
         }
       }
       // 教育类型
       else if (bt === BlockType.EduBlockType && newResumeData?.edu !== undefined) {
-        dataIndex = newResumeData?.edu.findIndex(item => item.blockType === bt && item.order === order)
+        dataIndex = newResumeData?.edu.findIndex(item => item.blockType === bt && item.id === newData.id)
         if (dataIndex !== -1 && dataIndex !== undefined) {
           newResumeData.edu[dataIndex] = newData
         }
@@ -198,7 +202,7 @@ const Resume = () => {
       endTime: undefined,
       proofs: [],
       blockType: bt,
-      order,
+      id: newData.id,
     }
     await setCardData(emptyCardData)
 
@@ -212,61 +216,31 @@ const Resume = () => {
     setIsEditCard(false)
   }
 
-  // 删除经历 - 确认
-  const handleDeleteCard = (bt: BlockType, order: number) => {
-    let prevArr: ResumeCardData[] | undefined
-    const newArr: ResumeCardData[] | undefined = []
-    const newResumeData: ResumeData | undefined = { edu: [], career: [] }
-    if (bt === BlockType.CareerBlockType) {
-      prevArr = resumeData?.career
-    } else if (bt === BlockType.EduBlockType) {
-      prevArr = resumeData?.edu
-    } else {
-      return
-    }
-    if (prevArr === undefined || resumeData === undefined) {
-      return
-    }
+  // 编辑 & 删除
+  // 不能通过 order 来判断，因为 order 是从 arr.length + 1 计算从而得到的
+  // 如果删除了某个 order，那么后面的 order 就会变成前面的 order，可能会有 order 重复的情况
 
-    // 写麻了，用 index 来算吧
-    const theIndex = order - 1
-    for (let i = 0; i <= theIndex - 1; i++) {
-      newArr[i] = prevArr[i]
-    }
-    for (let i = theIndex; i < prevArr.length - 1; i++) {
-      newArr[i] = prevArr[i + 1]
-      const temp = newArr[i].order
-      if (newArr[i] && temp !== undefined) {
-        newArr[i].order = temp - 1
-      }
-    }
-    if (bt === BlockType.CareerBlockType) {
-      newResumeData.edu = resumeData?.edu
-      newResumeData.career = newArr
-    } else if (bt === BlockType.EduBlockType) {
-      newResumeData.edu = newArr
-      newResumeData.career = resumeData?.career
-    } else {
-      return
+  // 删除经历 - 确认
+  const handleDeleteCard = (bt: BlockType, id: string) => {
+    const newResumeData: ResumeData = { edu: [], career: [] }
+    if (bt === BlockType.CareerBlockType && resumeData?.career !== undefined) {
+      newResumeData.career = resumeData?.career?.filter(item => item.id !== id)
+    } else if (bt === BlockType.EduBlockType && resumeData?.edu !== undefined) {
+      newResumeData.edu = resumeData?.edu?.filter(item => item.id !== id)
     }
     setResumeData(newResumeData)
   }
 
   // 开始编辑卡片
-  const handleEditCard = (bt: BlockType, order: number) => {
+  const handleEditCard = (bt: BlockType, id: string) => {
     let card: ResumeCardData | undefined
-    let arr: ResumeCardData[] | undefined
+
     if (bt === BlockType.CareerBlockType && resumeData?.career !== undefined) {
-      arr = resumeData?.career.filter(item => item.blockType === bt && item.order === order)
+      card = resumeData?.career?.find(item => item.id === id)
     } else if (bt === BlockType.EduBlockType && resumeData?.edu !== undefined) {
-      arr = resumeData?.edu.filter(item => item.blockType === bt && item.order === order)
-    } else {
-      return
+      card = resumeData?.edu?.find(item => item.id === id)
     }
-    if (arr?.length === 1) {
-      // TO-ASK 这里为啥会有一个分号
-      ;[card] = arr
-    } else {
+    if (!card) {
       return
     }
     setCardData(card)
@@ -274,7 +248,7 @@ const Resume = () => {
   }
 
   // 开始创建卡片
-  const handleCreateCard = (bt: BlockType, order: number) => {
+  const handleCreateCard = (bt: BlockType) => {
     const emptyCardData: ResumeCardData = {
       title: '',
       description: '',
@@ -282,11 +256,20 @@ const Resume = () => {
       endTime: undefined,
       proofs: undefined,
       blockType: bt,
-      order,
+      id: uuid(),
     }
     setCardData(emptyCardData)
     setIsCreateCard(true)
     setIsEditCard(true)
+  }
+
+  // 排序
+  const handleSortCard = (bt: BlockType, list: ResumeCardData[]) => {
+    if (bt === BlockType.CareerBlockType && resumeData?.career !== undefined) {
+      setResumeData({ career: list, edu: resumeData.edu })
+    } else if (bt === BlockType.EduBlockType && resumeData?.edu !== undefined) {
+      setResumeData({ career: resumeData.career, edu: list })
+    }
   }
 
   // 获取当前用户的简历
@@ -334,17 +317,16 @@ const Resume = () => {
   const handlePublish = async () => {
     try {
       setLoadingLens(true)
-      const resumeAddress = lensToken?.address || deschoolProfile?.address
       const resumeDataStr = JSON.stringify(resumeData)
-      // const resumeDataStr = JSON.stringify(STANDARD_RESUME_DATA)
-      if (lensProfile?.id && resumeAddress && resumeDataStr) {
-        const txhash = await createPost(lensProfile.id, resumeAddress, resumeDataStr)
+      const lensProfileId = lensProfile?.data?.id
+      if (lensProfileId && user?.address && resumeDataStr) {
+        const txhash = await createPost(lensProfileId, user?.address, resumeDataStr)
         if (txhash) {
           setPublishType('Lens')
           setStep(1)
           setTxHash(txhash)
           setCongratulateVisible(true)
-          await pollAndIndexPost(txhash, lensProfile.id)
+          await pollAndIndexPost(txhash, lensProfileId)
           setStep(2)
           randomConfetti()
         }
@@ -363,19 +345,18 @@ const Resume = () => {
   const handlePublishCyberConnect = async () => {
     try {
       setLoadingCyber(true)
-      const resumeAddress = cyberToken?.address || deschoolProfile?.address
       const resumeDataStr = JSON.stringify(resumeData)
-      if (cyberProfile?.id && resumeAddress && resumeDataStr) {
+      if (ccProfile?.handle && user?.address && resumeDataStr) {
         const txhash = await ccInstance.createPost({
-          title: `RESUME OF${cyberToken?.address}`,
-          body: resumeDataStr
-        }, cyberProfile?.handle)
+          title: `RESUME OF${user?.address}`,
+          body: resumeDataStr,
+          author: ccProfile?.handle,
+        })
         if (txhash) {
           setPublishType('CyberConnect')
           setStep(1)
           setTxHash(txhash)
           setCongratulateVisible(true)
-          // await pollAndIndexPost(txhash, cyberProfile.id)
           setStep(2)
           randomConfetti()
         }
@@ -395,7 +376,7 @@ const Resume = () => {
     let currentAddress: string | undefined | null = null
     if (primaryCase > -1) {
       // 0访问自己的地址，1访问他人地址（从路由拿）
-      currentAddress = primaryCase === 0 ? lensToken?.address || deschoolProfile?.address : address
+      currentAddress = primaryCase === 0 ? user?.address : address
       if (currentAddress) {
         await fetchUserResume(currentAddress)
         await fetchUserSbtList(currentAddress)
@@ -413,11 +394,10 @@ const Resume = () => {
     // 初始化登录场景，区分自己访问自己或自己访问别人或者别人访问
     const primaryCase = getVisitCase(address)
     if (primaryCase === -1) {
-      message.warning('please login first')
     }
     setVisitCase(primaryCase)
     handlePrimaryCase(primaryCase)
-  }, [address, deschoolProfile, lensToken, cyberToken])
+  }, [address, user])
 
   return (
     <div className="bg-white p-8">
@@ -439,7 +419,7 @@ const Resume = () => {
         <div className="flex">
           {visitCase === 0 && !isEditResume && (
             <>
-              <Button
+              {user?.lensProfile() && <Button
                 type="primary"
                 onClick={() => handlePublish()}
                 disabled={!lensProfile}
@@ -447,16 +427,16 @@ const Resume = () => {
                 className="bg-#abfe2c! text-black! mr-2"
               >
                 {resumeData && step === 2 ? 'Published' : 'Publish On Lens'}
-              </Button>
-              <Button
+              </Button>}
+              {user?.ccProfile() && <Button
                 type="primary"
                 onClick={() => handlePublishCyberConnect()}
-                disabled={!cyberProfile}
+                disabled={!ccProfile}
                 loading={loadingCyber}
                 className="bg-black! text-white!"
               >
                 {resumeData && step === 2 ? 'Published' : 'Publish On CC'}
-              </Button>
+              </Button>}
             </>
           )}
 
@@ -484,21 +464,23 @@ const Resume = () => {
           {/* 职业板块数据 */}
           <ResumeBlock
             blockType={BlockType.CareerBlockType}
-            dataArr={resumeData?.career}
+            dataArr={resumeData?.career || []}
             handleEditCard={handleEditCard}
             handleDeleteCard={handleDeleteCard}
             handleCreateCard={handleCreateCard}
+            handleSortCard={handleSortCard}
             isEditResume={isEditResume}
           />
 
           {/* 教育板块数据 */}
           <ResumeBlock
             blockType={BlockType.EduBlockType}
-            dataArr={resumeData?.edu}
+            dataArr={resumeData?.edu || []}
             handleEditCard={handleEditCard}
             handleDeleteCard={handleDeleteCard}
-            isEditResume={isEditResume}
             handleCreateCard={handleCreateCard}
+            handleSortCard={handleSortCard}
+            isEditResume={isEditResume}
           />
 
           {/* 一段经历编辑器 */}
@@ -536,7 +518,7 @@ const Resume = () => {
             </p>
           </div>
         ) : (
-          <Congradulations txHash={txHash} type={PublishType}/>
+          <Congradulations txHash={txHash} type={PublishType} />
         )}
       </Modal>
     </div>

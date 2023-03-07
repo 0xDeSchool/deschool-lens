@@ -14,6 +14,7 @@ import { createProvider, getWallet, WalletType } from '~/wallet'
 import { postVerifiedIdentity, PlatformType } from '~/api/booth/booth'
 import { LOGIN_GET_MESSAGE, LOGIN_VERIFY, PRIMARY_PROFILE } from '~/api/cc/graphql'
 import { useLazyQuery, useMutation } from '@apollo/client'
+
 const DOMAIN = 'test.com'
 interface ConnectBoardProps {
   wallectConfig?: WalletConfig
@@ -121,7 +122,7 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
           input: {
             address,
             domain: DOMAIN,
-            signature: signature,
+            signature,
           },
         },
       })
@@ -131,7 +132,7 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
       if (signature) {
         setCyberToken({
           address,
-          accessToken: accessToken,
+          accessToken,
         })
         // // 根据钱包地址查用户profile信息
         // 需要在这里处理一下handle，因为cyber的handle是带有.cc的

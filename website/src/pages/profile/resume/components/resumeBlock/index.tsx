@@ -1,15 +1,71 @@
-import React from 'react'
 import Button from 'antd/es/button'
-import type { ResumeBlockInput, ResumeCardData } from '../../types'
-import { BlockType } from '../../enum'
+import { arrayMoveImmutable } from 'array-move'
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
+import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+import { MenuOutlined } from '@ant-design/icons'
 import ResumeCard from '../resumeCard'
+import { BlockType } from '../../enum'
+import type { ResumeBlockInput, ResumeCardData } from '../../types'
 
 const CAREER_TITLE = 'Career Experiences'
 const EDU_TITLE = 'Education Experiences'
 
 const ResumeBlock = (input: ResumeBlockInput) => {
-  const { handleEditCard, handleDeleteCard, isEditResume, dataArr, blockType, handleCreateCard } = input
-  // const [editContents, setEditContents] = useState({})
+  const { handleEditCard, handleDeleteCard, isEditResume, dataArr, handleSortCard, blockType, handleCreateCard } = input
+
+  // 拖拽组件
+  function SortableItem(propsItem: ResumeCardData) {
+    const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: propsItem?.id })
+
+    return (
+      <div
+        ref={setNodeRef}
+        style={{
+          transform: CSS.Transform.toString(transform),
+          transition,
+        }}
+        {...attributes}
+        className="flex flex-row justify-start items-center text-left text-xl px-2 bg-[#D9D9D933] mt-3 first:mt-0"
+      >
+        {/* 排序条件：编辑 & 数组 > 1 */}
+        {isEditResume && dataArr.length > 1 && (
+          <span {...listeners} className="mr-2 h-full frc-center">
+            <MenuOutlined style={{ cursor: 'grab', color: '#999' }} />
+          </span>
+        )}
+        <div className="w-2" />
+        <ResumeCard
+          key={propsItem.id}
+          isEditResume={isEditResume}
+          handleEditCard={() => handleEditCard(blockType, propsItem.id)}
+          handleDeleteCard={() => handleDeleteCard(blockType, propsItem.id)}
+          blockType={blockType}
+          data={propsItem}
+        />
+      </div>
+    )
+  }
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  )
+
+  async function handleDragEnd(event: any) {
+    const { active, over } = event
+    if (active.id !== over.id) {
+      const cachelist = dataArr.slice()
+      const oldIndex = dataArr.findIndex(item => item.id === active.id)
+      const newIndex = dataArr.findIndex(item => item.id === over.id)
+
+      const newData = arrayMoveImmutable(cachelist, oldIndex, newIndex).filter((el: any) => !!el)
+      handleSortCard && handleSortCard(blockType, newData)
+    }
+  }
+
   return (
     <div className="">
       {/* Header */}
@@ -21,23 +77,20 @@ const ResumeBlock = (input: ResumeBlockInput) => {
 
       {/* Resume Card Entires */}
       <div>
-        {dataArr?.map((item: ResumeCardData) => (
-          <ResumeCard
-            key={item.order}
-            isEditResume={isEditResume}
-            handleEditCard={handleEditCard}
-            handleDeleteCard={handleDeleteCard}
-            blockType={blockType}
-            data={item}
-          />
-        ))}
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext items={dataArr} id="order" strategy={verticalListSortingStrategy}>
+            {dataArr?.map((item: ResumeCardData) => (
+              <SortableItem key={`${item.id}`} {...item} />
+            ))}
+          </SortableContext>
+        </DndContext>
       </div>
       {/* 增加框 */}
       {isEditResume && (
         <Button
           type="dashed"
           className="w-full my-8"
-          onClick={() => handleCreateCard(blockType, dataArr === undefined ? 1 : dataArr.length + 1)}
+          onClick={() => handleCreateCard(blockType)}
         >
           +
         </Button>

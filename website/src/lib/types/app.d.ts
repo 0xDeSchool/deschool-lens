@@ -22,11 +22,13 @@ export interface AccountContextProps {
   cyberProfile: CyberProfile | null
   cyberToken: CyberTokenInfo | null
   deschoolProfile: DeschoolProfile | null
+  userProfile: UserProfile[] | null
   setLensProfile: Dispatch<SetStateAction<ProfileExtend | null>>
   setLensToken: Dispatch<SetStateAction<LensTokenInfo | null>>
   setDescoolProfile: Dispatch<SetStateAction<DeschoolProfile | null>>
   setCyberProfile: Dispatch<SetStateAction<CyberProfile | null>>
   setCyberToken: Dispatch<SetStateAction<CyberTokenInfo | null>>
+  setUserProfile: Dispatch<SetStateAction<UserProfile[]>>
 }
 
 export interface LayoutContextProps {
@@ -353,6 +355,13 @@ export interface OtherDeschoolProfile {
     totalFollowers: number
     totalFollowing: number
   }
+}
+
+export interface UserProfile {
+  type: 'cyber' | 'deschool' | 'lens'
+  address: string
+  username: string
+  avatar: string | undefined
 }
 
 export interface RecommendAddr {

@@ -1,5 +1,7 @@
 package linq
 
+import "strings"
+
 func Unique[TSource any](source []TSource, equals func(t1 TSource, t2 TSource) bool) []TSource {
 	newArr := make([]TSource, 0)
 	for i := 0; i < len(source); i++ {
@@ -246,10 +248,10 @@ func DistinctBy[TSource any, TKey comparable](source []TSource, keySelector func
 	return result
 }
 
-func ToSet[TSource comparable](source []TSource) map[TSource]struct{} {
-	result := make(map[TSource]struct{})
+func ToSet(source []string) map[string]struct{} {
+	result := make(map[string]struct{})
 	for i := range source {
-		result[source[i]] = struct{}{}
+		result[strings.ToLower(source[i])] = struct{}{}
 	}
 	return result
 }

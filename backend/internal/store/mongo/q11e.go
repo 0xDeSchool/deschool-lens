@@ -2,6 +2,7 @@ package mongo
 
 import (
 	"context"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"github.com/0xdeschool/deschool-lens/backend/internal/hackathon"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
@@ -23,18 +24,18 @@ func NewMongoQ11eRepository(c *di.Container) *hackathon.Q11eRepository {
 	return &repo
 }
 
-func (r *MongoQ11eRepository) GetByAddress(ctx context.Context, address string) *hackathon.Q11e {
+func (r *MongoQ11eRepository) GetByUserId(ctx context.Context, userId primitive.ObjectID) *hackathon.Q11e {
 	filter := bson.D{
-		{Key: "address", Value: address},
+		{Key: "userId", Value: userId},
 	}
 	return r.FindOne(ctx, filter)
 }
 
-func (r *MongoQ11eRepository) CheckAndGetExistsByAddr(ctx context.Context, address string) (bool, *hackathon.Q11e) {
+func (r *MongoQ11eRepository) CheckAndGetExistsByUser(ctx context.Context, userId primitive.ObjectID) (bool, *hackathon.Q11e) {
 	// 查询条件
 	filter := bson.D{{
-		Key:   "address",
-		Value: address,
+		Key:   "userId",
+		Value: userId,
 	}}
 	var result hackathon.Q11e
 	err := r.Collection(ctx).Col().FindOne(ctx, filter).Decode(&result)
@@ -49,9 +50,9 @@ func (r *MongoQ11eRepository) CheckAndGetExistsByAddr(ctx context.Context, addre
 	return true, &result
 }
 
-func (r *MongoQ11eRepository) GetManyByAddress(ctx context.Context, address []string) []hackathon.Q11e {
+func (r *MongoQ11eRepository) GetManyByUsers(ctx context.Context, userIds []primitive.ObjectID) []hackathon.Q11e {
 	filter := bson.D{
-		{Key: "address", Value: bson.D{{Key: "$in", Value: address}}},
+		{Key: "userId", Value: bson.D{{Key: "$in", Value: userIds}}},
 	}
 	return r.Find(ctx, filter)
 }

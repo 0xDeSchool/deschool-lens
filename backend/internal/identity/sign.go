@@ -3,16 +3,19 @@ package identity
 import (
 	"context"
 	"fmt"
+	"github.com/0xdeschool/deschool-lens/backend/pkg/ginx"
+	"time"
+
 	"github.com/0xdeschool/deschool-lens/backend/pkg/cache"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/errx"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/eth"
+	"github.com/0xdeschool/deschool-lens/backend/pkg/log"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/google/uuid"
-	"time"
 )
 
 type WalletType string
@@ -39,15 +42,18 @@ func CreateSignMessage(address common.Address, t SignType) string {
 	errx.CheckError(err)
 	nonce := uuid.String()
 	signMsg := msg(nonce, t, map[string]string{})
-	cache.SetString(store, string(t)+":"+address.Hex(), signMsg)
+	cache.SetString(store, string(t)+":"+address.Hex(), nonce)
 	return signMsg
 }
 
 func VerifySignMessage(address common.Address, sign string, signType SignType, t WalletType) bool {
 	hexAddr := address.Hex()
-	nonce, ok := cache.GetString(store, hexAddr)
+	k := string(signType) + ":" + hexAddr
+	nonce, ok := cache.GetString(store, k)
 	if ok {
-		cache.Delete(store, hexAddr)
+		cache.Delete(store, k)
+	} else {
+		ginx.PanicValidatition("sign message expired")
 	}
 	message := msg(nonce, signType, map[string]string{})
 	return verifySig(address, sign, message, t)
@@ -77,6 +83,7 @@ func verifySigDefault(addr common.Address, msg string, sig string) bool {
 
 	pubKey, err := crypto.SigToPub(signHash([]byte(msg)), sigData)
 	if err != nil {
+		log.Warn("verifySigDefault" + err.Error())
 		return false
 	}
 

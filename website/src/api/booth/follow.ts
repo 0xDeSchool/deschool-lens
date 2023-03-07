@@ -2,13 +2,13 @@ import http from '~/api/booth/http'
 
 /**
  * @description deschool follow user
- * @param toAddr string
- * @param fromAddr string
+ * @param toUser id string
+ * @param fromUser id string
  * @returns
  */
-export async function followUser(toAddr: string, fromAddr: string): Promise<any> {
+export async function followUser(toUser: string, fromUser: string): Promise<any> {
   try {
-    const result = await http.post(`/follow`, { toAddr, fromAddr })
+    const result = await http.post(`/follow`, { toUser, fromUser })
     return result
   } catch (err) {
     console.log(err)
@@ -22,9 +22,9 @@ export async function followUser(toAddr: string, fromAddr: string): Promise<any>
  * @param fromAddr string
  * @returns
  */
-export async function unfollowUser(toAddr: string, fromAddr: string): Promise<any> {
+export async function unfollowUser(toUser: string, fromUser: string): Promise<any> {
   try {
-    const result = await http.delete(`/follow`, { data: { toAddr, fromAddr } })
+    const result = await http.delete(`/follow`, { data: { toUser, fromUser } })
     return result
   } catch (err) {
     console.log(err)
@@ -40,9 +40,9 @@ export type FollowRelationType = { ToFollowedFrom: false; fromFollowedTo: false 
  * @param fromAddr string
  * @returns
  */
-export async function checkfollowUser(toAddr: string, fromAddr: string): Promise<FollowRelationType | any> {
+export async function checkfollowUser(toUser: string, fromUser: string): Promise<FollowRelationType | any> {
   try {
-    const result = await http.get(`/follow?toAddr=${toAddr}&fromAddr=${fromAddr}`)
+    const result = await http.get(`/follow?toUser=${toUser}&fromUser=${fromUser}`)
     return result
   } catch (err) {
     console.log(err)
@@ -52,13 +52,13 @@ export async function checkfollowUser(toAddr: string, fromAddr: string): Promise
 
 /**
  * @description 根据地址查询deschool的此地址下的Followings
- * @param address string
+ * @param userId string
  * @param visitorAddress string 如果传了值，就需要查followings与这个人的follow关系
  * @returns
  */
-export async function getFollowings(address: string, visitorAddress?: string): Promise<any> {
+export async function getFollowings(userId: string, visitorUserId?: string): Promise<any> {
   try {
-    const str = visitorAddress ? `/follow/following?addr=${address}&visitorAddress=${visitorAddress}` : `/follow/following?addr=${address}`
+    const str = visitorUserId ? `/follow/following?userId=${userId}&visitorUserId=${visitorUserId}` : `/follow/following?userId=${userId}`
     const result = await http.get(str)
     return result
   } catch (err) {
@@ -73,9 +73,9 @@ export async function getFollowings(address: string, visitorAddress?: string): P
  * @param visitorAddress string 如果传了值，就需要查followers与这个人的follow关系
  * @returns
  */
-export async function getFollowers(address: string, visitorAddress?: string): Promise<any> {
+export async function getFollowers(userId: string, visitorUserId?: string): Promise<any> {
   try {
-    const str = visitorAddress ? `/follow/follower?addr=${address}&visitorAddress=${visitorAddress}` : `/follow/follower?addr=${address}`
+    const str = visitorUserId ? `/follow/follower?userId=${userId}&visitorUserId=${visitorUserId}` : `/follow/follower?userId=${userId}`
     const result = await http.get(str)
     return result
   } catch (err) {
