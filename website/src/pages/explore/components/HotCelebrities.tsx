@@ -2,24 +2,18 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Star1 from '~/assets/images/star1.png'
 import Skeleton from 'antd/es/skeleton'
-import { getProfilesRequest } from '~/api/lens/profile/get-profiles'
 import Empty from 'antd/es/empty'
-import { getExtendProfile } from '~/hooks/profile'
-import { PlatformType, getBoothUsers } from '~/api/booth/booth'
-import { getOtherUsersProfile } from '~/api/go/account'
-import type { CelebrityType } from './CelebrityCard'
 import CelebrityCard from './CelebrityCard'
-import type { Creator, ProfileExtend } from '~/lib/types/app'
-import UserCardItem from './boothzNewUser/UserCardItem'
+import CelebrityCardNew from './CelebrityCardNew'
 import { getLatestUsers } from '~/api/booth'
-import { UserInfo } from '~/api/booth/types'
+import { NewUserInfo } from '~/api/booth/types'
 
 const HotCelebrities = (props: { searchWord: string }) => {
   const { searchWord } = props
   const { t } = useTranslation()
   const [loading, setLoading] = useState(true)
-  const [celebrities, setCelebrities] = useState([] as UserInfo[])
-  const [cacheCelebrities, setCacheCelebrities] = useState([] as UserInfo[])
+  const [celebrities, setCelebrities] = useState<NewUserInfo[]>([])
+  const [cacheCelebrities, setCacheCelebrities] = useState<NewUserInfo[]>([])
 
   const initSeries = async () => {
     setLoading(true)
@@ -45,6 +39,17 @@ const HotCelebrities = (props: { searchWord: string }) => {
       ),
     )
   }, [searchWord])
+
+
+  // 跳转到粉丝详情页
+  const handleFollowerDetail = (celebrity: NewUserInfo) => {
+    console.log('follower detail')
+  }
+
+  // T跳转到关注详情页
+  const hanldeFollowingDetail = (celebrity: NewUserInfo) => {
+    console.log('following detail')
+  }
 
   return (
     <div className="fcc-center mb-20">
@@ -73,18 +78,23 @@ const HotCelebrities = (props: { searchWord: string }) => {
           </div>
         ) : (
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 m-auto">
-            {/* {celebrities && celebrities.length > 0 && (
-              celebrities.map(celebrity => (
-                <UserCardItem key={celebrity.id} {...celebrities} />
-              ))
-            )} */}
             {celebrities && celebrities.length > 0 ? (
+              celebrities.map(celebrity => (
+                <CelebrityCardNew
+                  key={celebrity.id}
+                  {...celebrity}
+                  followerDetail={() => handleFollowerDetail(celebrity)}
+                  followingDetail={() => hanldeFollowingDetail(celebrity)}
+                />
+              ))
+            ) : <Empty />}
+            {/* {celebrities && celebrities.length > 0 ? (
               celebrities.map(celebrity => (
                 <CelebrityCard key={celebrity.id} celebrity={celebrity} />
               ))
             ) : (
               <Empty />
-            )}
+            )} */}
           </div>
         )}
       </div>
