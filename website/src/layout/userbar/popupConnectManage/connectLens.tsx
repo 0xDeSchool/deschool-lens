@@ -182,8 +182,8 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
           <img src={IconLens} alt="lens" width={20} height={20} />
           <span className='ml-1 text-#00501E'>LENS</span>
         </div>
-        {lensProfile && <div className='frc-between'>
-          <div className="frc-start mt-4">
+        {lensProfile && <div className='frc-between mt-4'>
+          <div className="frc-start">
             <div className="bg-#abfe2c rounded-50% w-28px h-28px frc-center">
               <img src={IconLens} alt="cyberconnect" width={20} height={20} />
             </div>

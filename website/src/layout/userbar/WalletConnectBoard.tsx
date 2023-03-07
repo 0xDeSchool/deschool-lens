@@ -8,6 +8,7 @@ import Modal from 'antd/es/modal'
 import { DEFAULT_AVATAR, getUserManager, useAccount } from '~/account'
 import PopupConnectManage from './popupConnectManage'
 import { CyberConnectIcon, DeschoolIcon, LensIcon } from '~/components/icon'
+import { getShortAddress } from '~/utils/format'
 
 type PopoverAccountInfoProps = {
   open: () => void
@@ -53,7 +54,7 @@ const PopoverAccountInfo: React.FC<PopoverAccountInfoProps> = (props) => {
             <DeschoolIcon style={{width: '20px', height: '20px'}} />
           </div>
           <span className='ml-2'>
-            {deschool.displayName}
+            {getShortAddress(deschool.address)}
           </span>
         </div>
         <div>+{user?.deschoolProfileList()?.length || 0}</div>
