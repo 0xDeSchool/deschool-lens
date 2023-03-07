@@ -12,7 +12,7 @@ func (hm *HackathonManager) PutQ11e(ctx context.Context, input Q11e) primitive.O
 }
 
 func (hm *HackathonManager) GetQ11e(ctx context.Context, userId primitive.ObjectID) *Q11e {
-	exists, result := hm.q11eRepo.CheckAndGetExistsByAddr(ctx, userId)
+	exists, result := hm.q11eRepo.CheckAndGetExistsByUser(ctx, userId)
 	if !exists {
 		return &Q11e{}
 	}

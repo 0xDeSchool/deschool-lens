@@ -28,12 +28,12 @@ const useCCProfile = (defaultPage: number) => {
     // 根据推荐的事件，获取推荐的课程
     const fetchCourseByEvents = async (list: MatchedEvent[]): Promise<any[]> => {
       const events = list.map((item: RecomendedEvents) => ({id: item.id, labels: item.tags}))
-      if (!user?.address) {
+      if (!user?.id) {
         return []
       }
       const request: FilterEventsRequest = {
         events,
-        address: user?.address!,
+        userId: user.id,
         users: [],
       }
       const filtered = await filterEvents(request)

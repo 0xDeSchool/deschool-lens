@@ -11,4 +11,5 @@ func BoothServer(builder *app.AppBuilder) {
 	builder.Use(pkg.PkgModule)
 	builder.Use(server.HttpServer)
 	builder.Use(mongo.MongoStore)
+	builder.Use(Scripts)
 }

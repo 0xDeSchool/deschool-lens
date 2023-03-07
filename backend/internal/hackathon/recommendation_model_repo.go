@@ -8,11 +8,15 @@ import (
 )
 
 type UserRecommendation struct {
-	UserId    primitive.ObjectID `bson:"userId"`
-	TargetId  primitive.ObjectID `bson:"targetId"`
-	Reasons   []string           `bson:"reasons"`
-	CreatedAt time.Time          `bson:"used"`
-	Score     int                `bson:"score"`
+	ddd.EntityBase `bson:",inline"`
+	UserId         primitive.ObjectID `bson:"userId"`
+	TargetId       primitive.ObjectID `bson:"targetId"`
+	Reasons        []string           `bson:"reasons"`
+	CreatedAt      time.Time          `bson:"used"`
+	Score          int                `bson:"score"`
+
+	FromAddr string `bson:"fromAddr"`
+	ToAddr   string `bson:"toAddr"`
 }
 
 type UserRecommendationRepository interface {

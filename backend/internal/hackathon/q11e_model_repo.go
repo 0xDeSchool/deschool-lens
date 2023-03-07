@@ -34,19 +34,22 @@ const (
 )
 
 type Q11e struct {
-	UserId    primitive.ObjectID `json:"userId"`
-	Goals     []string           `json:"goals"`
-	Interests []string           `json:"interests"`
-	Pref1     string             `json:"pref1"`
-	Pref2     string             `json:"pref2"`
-	Pref3     string             `json:"pref3"`
-	Mbti      int                `json:"mbti"`
+	ddd.EntityBase `bson:",inline"`
+	UserId         primitive.ObjectID `bson:"userId"`
+	Goals          []string           `bson:"goals"`
+	Interests      []string           `bson:"interests"`
+	Pref1          string             `bson:"pref1"`
+	Pref2          string             `bson:"pref2"`
+	Pref3          string             `bson:"pref3"`
+	Mbti           int                `bson:"mbti"`
+
+	Address string `json:"address"`
 }
 
 type Q11eRepository interface {
 	ddd.RepositoryBase[Q11e]
-	GetByAddress(ctx context.Context, userId primitive.ObjectID) *Q11e
-	CheckAndGetExistsByAddr(ctx context.Context, userId primitive.ObjectID) (bool, *Q11e)
+	GetByUserId(ctx context.Context, userId primitive.ObjectID) *Q11e
+	CheckAndGetExistsByUser(ctx context.Context, userId primitive.ObjectID) (bool, *Q11e)
 
-	GetManyByAddress(ctx context.Context, userIds []primitive.ObjectID) []Q11e
+	GetManyByUsers(ctx context.Context, userIds []primitive.ObjectID) []Q11e
 }

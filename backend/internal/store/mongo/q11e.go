@@ -24,14 +24,14 @@ func NewMongoQ11eRepository(c *di.Container) *hackathon.Q11eRepository {
 	return &repo
 }
 
-func (r *MongoQ11eRepository) GetByAddress(ctx context.Context, userId primitive.ObjectID) *hackathon.Q11e {
+func (r *MongoQ11eRepository) GetByUserId(ctx context.Context, userId primitive.ObjectID) *hackathon.Q11e {
 	filter := bson.D{
 		{Key: "userId", Value: userId},
 	}
 	return r.FindOne(ctx, filter)
 }
 
-func (r *MongoQ11eRepository) CheckAndGetExistsByAddr(ctx context.Context, userId primitive.ObjectID) (bool, *hackathon.Q11e) {
+func (r *MongoQ11eRepository) CheckAndGetExistsByUser(ctx context.Context, userId primitive.ObjectID) (bool, *hackathon.Q11e) {
 	// 查询条件
 	filter := bson.D{{
 		Key:   "userId",
@@ -50,7 +50,7 @@ func (r *MongoQ11eRepository) CheckAndGetExistsByAddr(ctx context.Context, userI
 	return true, &result
 }
 
-func (r *MongoQ11eRepository) GetManyByAddress(ctx context.Context, userIds []primitive.ObjectID) []hackathon.Q11e {
+func (r *MongoQ11eRepository) GetManyByUsers(ctx context.Context, userIds []primitive.ObjectID) []hackathon.Q11e {
 	filter := bson.D{
 		{Key: "userId", Value: bson.D{{Key: "$in", Value: userIds}}},
 	}
