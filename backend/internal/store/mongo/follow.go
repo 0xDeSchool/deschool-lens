@@ -29,7 +29,7 @@ func NewMongoFollowRepository(c *di.Container) *hackathon.FollowRepository {
 func (r *MongoFollowRepository) CheckExistsByToAndFromAddr(ctx context.Context, fromUser primitive.ObjectID, toUser primitive.ObjectID) bool {
 	// 查询条件
 	filter := bson.D{{
-		Key:   "formUser",
+		Key:   "fromUser",
 		Value: fromUser,
 	}, {
 		Key:   "toUser",
