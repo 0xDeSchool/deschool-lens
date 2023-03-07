@@ -119,7 +119,7 @@ const ConnectDeschoolBoard: FC = () => {
           <img src={DeschoolLogoDark} alt="lens" width={160} height={24} />
         </div>
         {user?.deschoolProfileList()?.map(deschoolProfile => (
-          <div className='frc-between mt-4'>
+          <div key={deschoolProfile.handle} className='frc-between mt-4'>
             <div className="frc-start">
               <div className="bg-#774ff8 rounded-50% w-28px h-28px frc-center">
                 <img src={IconDeschool} alt="deschool" width={20} height={20} />
