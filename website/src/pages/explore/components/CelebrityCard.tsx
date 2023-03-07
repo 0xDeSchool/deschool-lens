@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router'
 import { getShortAddress } from '~/utils/format'
 import Jazzicon from 'react-jazzicon/dist/Jazzicon'
 import { DEFAULT_AVATAR } from '~/account'
-import { platform, UserInfo } from '~/api/booth/types'
+import type { UserInfo } from '~/api/booth/types';
+import { platform } from '~/api/booth/types'
 import { PlatformType } from '~/api/booth/booth'
 
 export type CelebrityType = {

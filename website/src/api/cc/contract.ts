@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
 import CC_PROFILE_NFT from '~/api/abis/cc-profile-nft-contract.json';
+
 const CC_CONTRACT = import.meta.env.VITE_APP_CYBERCONNECT_PROFILE_CONTRACT
 
 export const ccContractHub = () => {

@@ -1,4 +1,4 @@
-import { PlatformType } from "./booth";
+import type { PlatformType } from "./booth";
 
 export enum SignMsgType {
   LOGIN = 'login',

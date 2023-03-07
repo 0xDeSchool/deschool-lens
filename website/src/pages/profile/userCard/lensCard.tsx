@@ -6,10 +6,10 @@ import { unfollowByProfileIdWithLens } from '~/api/lens/follow/unfollow'
 import { fetchUserDefaultProfile, getExtendProfile } from '~/hooks/profile'
 import { useTranslation } from 'react-i18next'
 import CloseOutlined from '@ant-design/icons/CloseOutlined'
-import FollowersModal from './modal'
 import { useAccount } from '~/account'
-import { UserPlatform } from '~/api/booth/types'
+import type { UserPlatform } from '~/api/booth/types'
 import { PlatformType } from '~/api/booth/booth'
+import FollowersModal from './modal'
 
 type LensCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
@@ -74,7 +74,7 @@ const LensCard = (props: LensCardProps) => {
         platform: PlatformType.LENS,
         data: {
           id: extendUserInfo?.id,
-        }
+        },
       })
       setIsFollowedByMe(extendUserInfo?.isFollowedByMe)
       setTotalFollowers(extendUserInfo?.stats?.totalFollowers || 0)

@@ -5,11 +5,11 @@ import Skeleton from 'antd/es/skeleton'
 import { useTranslation } from 'react-i18next'
 import type { FollowRelationType } from '~/api/booth/follow';
 import { getFollowings, getFollowers, followUser, unfollowUser, checkfollowUser } from '~/api/booth/follow'
-import DeschoolFollowersModal from './deschoolModal'
 import { useAccount } from '~/account'
-import { UserInfo } from '~/api/booth/types';
+import type { UserInfo } from '~/api/booth/types';
 import { getUserInfo } from '~/api/booth';
 import { getShortAddress } from '~/utils/format';
+import DeschoolFollowersModal from './deschoolModal'
 
 type DeschoolCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人

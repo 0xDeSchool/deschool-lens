@@ -48,12 +48,12 @@ export async function getUserNfts(cursor: string, limit: number) {
 }
 
 
-/**
- * @method updateUserProfile
- * @description 更新用户信息
- * @param {Object} { userId:string, avatar: string, username: string }
- * @returns {Object}  Promise
- */
-export async function updateUserProfile(params: { avatar?: string; username?: string; bio?: string; contacts?: SocialLink[] }) {
-  return http.put(`/account/my-profile`, params)
-}
+// /**
+//  * @method updateUserProfile
+//  * @description 更新用户信息
+//  * @param {Object} { userId:string, avatar: string, username: string }
+//  * @returns {Object}  Promise
+//  */
+// export async function updateUserProfile(params: { avatar?: string; username?: string; bio?: string; contacts?: SocialLink[] }) {
+//   return http.put(`/account/my-profile`, params)
+// }

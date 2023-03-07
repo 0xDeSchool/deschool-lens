@@ -10,15 +10,16 @@ import { useParams } from 'react-router-dom'
 import { getIdSbt, getResume, putResume } from '~/api/booth/booth'
 import { createPost, pollAndIndexPost } from '~/api/lens/publication/post'
 import { getShortAddress } from '~/utils/format'
+import useCyberConnect from '~/hooks/useCyberConnect'
+import { useAccount } from '~/account'
 import CardEditor from './components/cardEditor'
 import ResumeBlock from './components/resumeBlock'
 import { BlockType } from './enum'
 import type { ResumeCardData, ResumeData, SbtInfo } from './types'
 import { randomConfetti } from './utils/confetti'
-import { getVisitCase, VisitType } from '../utils/visitCase'
-import useCyberConnect from '~/hooks/useCyberConnect'
+import type { VisitType } from '../utils/visitCase';
+import { getVisitCase } from '../utils/visitCase'
 import Congradulations from './components/congradulations'
-import { useAccount } from '~/account'
 
 export const STANDARD_RESUME_DATA: ResumeData = {
   career: [
@@ -87,16 +88,12 @@ const Resume = () => {
   const ccInstance = useCyberConnect()
 
   // 组装简历数据，添加id，转换时间格式
-  const convertResumeCardData = (input: ResumeCardData[]) => {
-    return input.map((item: ResumeCardData, index: number) => {
-      return {
+  const convertResumeCardData = (input: ResumeCardData[]) => input.map((item: ResumeCardData, index: number) => ({
         ...item,
         startTime: dayjs(item.startTime),
         endTime: dayjs(item.endTime),
         id: index,
-      }
-    })
-  }
+      }))
 
   // 重新把数据变成Obj
   const covertCareerAndEdu = (input: string) => {
@@ -353,7 +350,7 @@ const Resume = () => {
         const txhash = await ccInstance.createPost({
           title: `RESUME OF${user?.address}`,
           body: resumeDataStr,
-          author: ccProfile?.handle
+          author: ccProfile?.handle,
         })
         if (txhash) {
           setPublishType('CyberConnect')

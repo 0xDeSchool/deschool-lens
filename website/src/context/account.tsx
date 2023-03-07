@@ -4,8 +4,8 @@ import { useMemo, useEffect, useState, useContext, createContext } from 'react'
 
 // import { getWallet } from '~/wallet'
 import { RoleType } from '~/lib/enum'
-import type { AccountContextProps, DeschoolProfile, ProfileExtend, LensTokenInfo, CyberProfile, CyberTokenInfo, UserProfile } from '~/lib/types/app'
 import { getShortAddress } from '~/utils/format'
+import type { AccountContextProps, DeschoolProfile, ProfileExtend, LensTokenInfo, CyberProfile, CyberTokenInfo, UserProfile } from '~/lib/types/app'
 
 export const DEFAULT_AVATAR = 'https://s3.us-east-1.amazonaws.com/deschool/Avatars/avatar_def.png'
 export const DEFAULT_AVATAR_NAME = 'avatar_def.png'
@@ -41,7 +41,7 @@ export class UserContext {
     this.lensToken = accountMemo.lensToken
     this.cyberProfile = accountMemo.cyberProfile
     this.cyberToken = accountMemo.cyberToken
-    this.userProfile = accountMemo.userProfile
+    this.userProfile = accountMemo.deschoolProfile
     this.setLensProfile = accountMemo.setLensProfile
     this.setDescoolProfile = accountMemo.setDescoolProfile
     this.setLensToken = accountMemo.setLensToken
@@ -215,6 +215,7 @@ export const AccountContextProvider = ({ children }: { children: ReactElement })
         type: 'lens',
         address: lensToken?.address || '',
         username: lensProfile.handle,
+        avatar: lensProfile.avatarUrl,
       })
       localStorage.setItem('lensProfile', JSON.stringify(lensProfile))
     } else {

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 let cyberConnectInstance: CyberConnect;
 
 const getCCInstance = (provider: any) => {
-  if (!!cyberConnectInstance) return cyberConnectInstance;
+  if (cyberConnectInstance) return cyberConnectInstance;
 
   if (!provider) return null;
 

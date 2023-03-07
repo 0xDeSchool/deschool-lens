@@ -17,7 +17,7 @@ import { linkPlatform } from '~/api/booth/account'
 import { useAccount } from '~/account/context'
 import { getUserManager } from '~/account';
 import { CloseOutlined, LogoutOutlined } from '@ant-design/icons'
-import { UserPlatform } from '~/api/booth/types'
+import type { UserPlatform } from '~/api/booth/types'
 
 const DOMAIN = 'test.com'
 interface ConnectBoardProps {
@@ -113,7 +113,7 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
           input: {
             address,
             domain: DOMAIN,
-            signature: signature,
+            signature,
           },
         },
       })
@@ -131,9 +131,9 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
         platform: PlatformType.CYBERCONNECT,
         data: {
           id: userInfo?.id,
-          accessToken: accessToken,
+          accessToken,
         },
-        address: address,
+        address,
       })
     } catch (error: any) {
       if (error?.reason) {
@@ -209,7 +209,7 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
               </div>
               <span className='ml-2'>{ccProfile.handle}</span>
             </div>
-            <Button type="primary" size='small' shape="circle" icon={<LogoutOutlined />} className="frc-center" onClick={() => handleDisconnect(ccProfile)}></Button>
+            <Button type="primary" size='small' shape="circle" icon={<LogoutOutlined />} className="frc-center" onClick={() => handleDisconnect(ccProfile)} />
           </div>
         ))}
       </div>

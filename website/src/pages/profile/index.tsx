@@ -5,10 +5,10 @@
  */
 import { useEffect } from 'react'
 import { Outlet, useLocation, useNavigate, useParams } from 'react-router'
-import UserCard from './userCard'
-import Verified from './resume/components/verified'
 import message from 'antd/es/message'
 import { useAccount } from '~/account/context'
+import UserCard from './userCard'
+import Verified from './resume/components/verified'
 
 const UserProfile = () => {
   const { address } = useParams()

@@ -1,11 +1,11 @@
 import Avatar from 'antd/es/avatar'
+import { DEFAULT_AVATAR, useAccount } from '~/account'
+import { CloseCircleOutlined } from '@ant-design/icons'
+import Button from 'antd/es/button'
 import ConnectLensBoard from './connectLens'
 import ConnectCyberBoard from './connectCyber'
 import ConnectDeschool from './connectDeschool'
 import UpdateUsername from './updateUserInfo'
-import { DEFAULT_AVATAR, useAccount } from '~/account'
-import { CloseCircleOutlined } from '@ant-design/icons'
-import Button from 'antd/es/button'
 
 type PopupConnectManageProps = {
   close: () => void
@@ -18,7 +18,7 @@ const PopupConnectManage: React.FC<PopupConnectManageProps> = (props) => {
     <div>
       <div className='text-xl frc-between'>
         <span>Booth</span>
-        <Button shape='circle' size='large' icon={<CloseCircleOutlined style={{color: '#999'}} />} className="frc-center" onClick={() => close()}></Button>
+        <Button shape='circle' size='large' icon={<CloseCircleOutlined style={{color: '#999'}} />} className="frc-center" onClick={() => close()} />
       </div>
       <div className='frc-start gap-1 px-8 pt-24'>
         <Avatar size={32} alt="user avatar" src={user && user.avatar || DEFAULT_AVATAR} />

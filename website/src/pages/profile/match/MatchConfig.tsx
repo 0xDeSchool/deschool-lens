@@ -11,9 +11,9 @@ import { useTranslation } from 'react-i18next'
 import Tooltip from 'antd/es/tooltip'
 import type { q11eParam } from '~/api/booth/booth'
 import { getQ11e, putQ11e } from '~/api/booth/booth'
-import { getUserContext } from '~/context/account'
 import Suggest from './suggested'
 import { randomConfetti } from '../resume/utils/confetti'
+import { useAccount } from '~/account'
 
 const InterestTag = [
   {
@@ -82,12 +82,12 @@ const MatchConfig = () => {
   const [fired, setFired] = useState(false)
 
   const loadInitialValues = async () => {
-    const address = getUserContext().address
-    if (!address) {
+    const user = useAccount()
+    if (!user) {
       return
     }
     try {
-      const result = await getQ11e(address)
+      const result = await getQ11e(user.id)
       if (!result) {
         return
       }
@@ -103,6 +103,8 @@ const MatchConfig = () => {
   }, [])
 
   const handleSubmmit = async () => {
+    const user = useAccount()
+    let address = user?.address
     try {
       setLoading(true)
       // 判断表单是否通过验证
@@ -110,23 +112,16 @@ const MatchConfig = () => {
       if (validResult?.errors) {
         return false
       }
-
-      // 检查地址
-      let address = getUserContext().address
-      if (!address) {
-        const dscAddr = getUserContext().address
-        if (!dscAddr) {
-          setLoading(false)
-          message.error('Not log in yet. Cannot get address from both Lens and DeSchool, please login and try again')
-          return false
-        }
-        address = dscAddr
+      if (!user) {
+        setLoading(false)
+        message.error('Not log in yet. Cannot get address from both Lens and DeSchool, please login and try again')
+        return false
       }
 
       // 最后请求
       const values = await form.getFieldsValue()
       const params: q11eParam = {
-        address,
+        userId: user.id,
         goals: values.goals,
         interests: values.interests,
         pref1: '[]', // values.pref1,
