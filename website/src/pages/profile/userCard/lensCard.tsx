@@ -1,19 +1,15 @@
-import type { Dispatch, SetStateAction } from 'react'
 import { useEffect, useState } from 'react'
-import Image from 'antd/es/image'
 import message from 'antd/es/message'
-import fallbackImage from '~/assets/images/fallbackImage'
 import { getShortAddress } from '~/utils/format'
 import { followByProfileIdWithLens } from '~/api/lens/follow/follow'
 import { unfollowByProfileIdWithLens } from '~/api/lens/follow/unfollow'
 import { fetchUserDefaultProfile, getExtendProfile } from '~/hooks/profile'
-import { useAccount } from '~/context/account'
 import { useTranslation } from 'react-i18next'
 import CloseOutlined from '@ant-design/icons/CloseOutlined'
 import FollowersModal from './modal'
-import type { ProfileExtend } from '~/lib/types/app'
-import LensAvatar from './avatar'
-import SwitchIdentity from './switchIdentity'
+import { useAccount } from '~/account'
+import { UserPlatform } from '~/api/booth/types'
+import { PlatformType } from '~/api/booth/booth'
 
 type LensCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
@@ -23,39 +19,60 @@ type LensCardProps = {
 // 0-自己访问自己 1-自己访问别人
 const LensCard = (props: LensCardProps) => {
   const { visitCase, routeAddress } = props
-  const { lensToken, lensProfile } = useAccount()
   const [loading, setLoading] = useState(false)
   const [modal, setModal] = useState<{ type: 'followers' | 'following'; visible: boolean }>({ type: 'followers', visible: false })
-  const [currentUser, setCurrentUser] = useState<ProfileExtend | null>()
+  const [currentUser, setCurrentUser] = useState<UserPlatform | null>()
   const [updateTrigger, setUpdateTrigger] = useState(0) // 此页面局部刷新
+  const [isFollowedByMe, setIsFollowedByMe] = useState(false) // 是否被我关注
+  const [totalFollowers, setTotalFollowers] = useState(0) // 粉丝数
+  const [totalFollowing, setTotalFollowing] = useState(0) // 关注数
   const { t } = useTranslation()
+  const user = useAccount()
+  const lensProfile = user?.lensProfile()
+
+  // 重置用户信息
+  const resetUserInfo = () => {
+    setCurrentUser(null)
+    setIsFollowedByMe(false)
+    setTotalFollowers(0)
+    setTotalFollowing(0)
+  }
 
   // 根据不同情况初始化用户信息
   const initUserInfo = async () => {
+    if (loading) return
     setLoading(true)
     try {
-      switch (visitCase) {
-        // 访问自己的空间
-        case 0:
-          setCurrentUser(lensProfile)
-          break
-        // 访问他人的空间
-        case 1: {
-          const userInfo = await fetchUserDefaultProfile(routeAddress!) // 此case下必不为空
-          // 此人没有handle，lens没数据
-          if (!userInfo) {
-            setCurrentUser({} as ProfileExtend)
-          }
-          // 此人有数据
-          else {
-            const extendUserInfo = getExtendProfile(userInfo)
-            setCurrentUser(extendUserInfo)
-          }
-          break
-        }
-        default:
-          break
+      // 每次展示都应该获取当前 address 下最新数据
+      let address = user?.address
+      if (visitCase === 1) {
+        address = routeAddress
       }
+      if (!address) {
+        resetUserInfo()
+        return
+      }
+      const userInfo = await fetchUserDefaultProfile(address!) // 此case下必不为空
+      // 此人没有handle，lens没数据
+      if (!userInfo) {
+        setCurrentUser({} as UserPlatform)
+        return
+      }
+      // 此人有数据
+      const extendUserInfo = getExtendProfile(userInfo)
+      // 根据最新用户信息结构更新当前用户信息
+      setCurrentUser({
+        handle: extendUserInfo?.handle,
+        address: address!,
+        displayName: extendUserInfo?.name,
+        platform: PlatformType.LENS,
+        data: {
+          id: extendUserInfo?.id,
+        }
+      })
+      setIsFollowedByMe(extendUserInfo?.isFollowedByMe)
+      setTotalFollowers(extendUserInfo?.stats?.totalFollowers || 0)
+      setTotalFollowing(extendUserInfo?.stats?.totalFollowing || 0)
     } finally {
       setLoading(false)
     }
@@ -73,7 +90,7 @@ const LensCard = (props: LensCardProps) => {
         visible: false,
       })
     }
-  }, [visitCase, routeAddress, updateTrigger, lensProfile])
+  }, [visitCase, routeAddress, updateTrigger, user?.address])
 
   const handleJumpFollowers = (num: number | undefined) => {
     if (num && num > 0) {
@@ -99,15 +116,15 @@ const LensCard = (props: LensCardProps) => {
     })
   }
 
-  const handleFollow = async (followUser: ProfileExtend | undefined | null) => {
+  const handleFollow = async (followUser: UserPlatform | undefined | null) => {
     // 有 lens handle
     if (lensProfile?.handle) {
-      const tx = await followByProfileIdWithLens(followUser?.id)
+      const tx = await followByProfileIdWithLens(followUser?.data?.id!)
       message.success(`success following ${followUser?.handle},tx is ${tx}`)
       setUpdateTrigger(new Date().getTime())
     }
     // 登录了lens 没有lens handle
-    else if (lensToken) {
+    else if (!lensProfile?.handle) {
       message.info({
         key: 'nohandle_lenscard',
         content: (
@@ -135,8 +152,8 @@ const LensCard = (props: LensCardProps) => {
     }
   }
 
-  const handleUnFollow = async (followUser: ProfileExtend | undefined | null) => {
-    const tx = await unfollowByProfileIdWithLens(followUser?.id)
+  const handleUnFollow = async (followUser: UserPlatform | undefined | null) => {
+    const tx = await unfollowByProfileIdWithLens(followUser?.data?.id!)
     message.success(`success unfollow ${followUser?.handle},tx is ${tx}`)
     setUpdateTrigger(new Date().getTime())
   }
@@ -146,37 +163,37 @@ const LensCard = (props: LensCardProps) => {
       {/* 处理数据为空的情况 */}
       <div className="mt-70px w-full px-6 pb-6 fcc-center font-ArchivoNarrow">
         <span className="text-xl">
-          {currentUser?.name || (routeAddress ? getShortAddress(routeAddress) : getShortAddress(lensToken?.address))}
+          {currentUser?.displayName || (routeAddress ? getShortAddress(routeAddress) : getShortAddress(user?.address))}
         </span>
         <span className="text-xl text-gray-5">{currentUser?.handle ? `@${currentUser?.handle}` : 'Lens Handle Not Found'}</span>
       </div>
       <div className="mx-10 frc-center flex-wrap">
         <a
           className={`${
-            currentUser?.stats?.totalFollowers && currentUser?.stats?.totalFollowers > 0 ? 'hover:underline hover:cursor-pointer' : ''
+            totalFollowers > 0 ? 'hover:underline hover:cursor-pointer' : ''
           } text-xl mr-4 `}
           onClick={() => {
-            handleJumpFollowers(currentUser?.stats?.totalFollowers)
+            handleJumpFollowers(totalFollowers)
           }}
         >
-          <span className="text-black">{currentUser?.stats?.totalFollowers || '-'} </span>
+          <span className="text-black">{totalFollowers || '-'} </span>
           <span className="text-gray-5 font-ArchivoNarrow">{t('profile.followers')}</span>
         </a>
         <a
           className={`${
-            currentUser?.stats?.totalFollowing && currentUser?.stats?.totalFollowing > 0 ? 'hover:underline hover:cursor-pointer' : ''
+            totalFollowing > 0 ? 'hover:underline hover:cursor-pointer' : ''
           } text-xl`}
           onClick={() => {
-            handleJumpFollowing(currentUser?.stats?.totalFollowing)
+            handleJumpFollowing(totalFollowing)
           }}
         >
-          <span className="text-black">{currentUser?.stats?.totalFollowing || '-'} </span>
+          <span className="text-black">{totalFollowing || '-'} </span>
           <span className="text-gray-5 font-ArchivoNarrow">{t('profile.following')}</span>
         </a>
       </div>
-      {lensProfile?.handle ? (
+      {currentUser?.handle ? (
         <p className="m-10 text-xl line-wrap three-line-wrap">
-          {currentUser?.bio || visitCase === 0 ? '' : "The user hasn't given a bio on Lens for self yet :)"}
+          {user?.bio || visitCase === 0 ? '' : "The user hasn't given a bio on Lens for self yet :)"}
         </p>
       ) : (
         <p className="m-10 text-xl three-line-wrap">
@@ -186,7 +203,7 @@ const LensCard = (props: LensCardProps) => {
           </a>
         </p>
       )}
-      {routeAddress && routeAddress !== lensToken?.address && (
+      {visitCase === 1 && (
         <div className="m-10 text-right">
           <button
             type="button"
@@ -197,20 +214,20 @@ const LensCard = (props: LensCardProps) => {
             } px-2 py-1`}
             disabled={!currentUser?.handle}
             onClick={() => {
-              if (currentUser?.isFollowedByMe) {
+              if (isFollowedByMe) {
                 handleUnFollow(currentUser)
               } else {
                 handleFollow(currentUser)
               }
             }}
           >
-            {currentUser?.isFollowedByMe ? t('UnFollow') : t('Follow')}
+            {isFollowedByMe ? t('UnFollow') : t('Follow')}
           </button>
         </div>
       )}
       <FollowersModal
         routeAddress={routeAddress}
-        profileId={currentUser?.id}
+        profileId={currentUser?.data?.id}
         type={modal.type}
         visible={modal.visible}
         closeModal={closeModal}
