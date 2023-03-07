@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { ccContractHub } from '~/api/cc/contract';
 import { PRIMARY_PROFILE } from '~/api/cc/graphql';
 import { useLazyQuery } from '@apollo/client';
-import { useAccount } from '~/account';
+import { getUserManager, useAccount } from '~/account';
 import { linkPlatform } from '~/api/booth';
 import { PlatformType } from '~/api/booth/booth';
 
@@ -74,8 +74,8 @@ const CreateCyberConnectProfile: React.FC = () => {
       // } else {
       // }
       message.error('Something went wrong')
-    } finally {
       setLoading(false)
+    } finally {
     }
   }
 
@@ -101,7 +101,6 @@ const CreateCyberConnectProfile: React.FC = () => {
     }
   }
 
-
   // 轮询获取 CyberConnect Profile, 如果获取到数据那么停止轮询
   const pollingGetCyberConnectProfile = async () => {
     const timer = setTimeout(async () => {
@@ -116,6 +115,8 @@ const CreateCyberConnectProfile: React.FC = () => {
           },
           address: user?.address!,
         })
+        setLoading(false)
+        await getUserManager().tryAutoLogin()
         clearTimeout(timer)
       } else {
         // if user info is not available, try again in 1.5 seconds

@@ -87,16 +87,23 @@ const UserInfoCyberConnect: React.FC<UserInfoCyberConnectProps> = (props) => {
       // 此人有数据
       setCurrentUser(userInfo)
       if (userInfo.handle) {
-        initUserFollowersInfo(userInfo.handle, address)
+        await refreshUserInfo(userInfo?.handle)
       }
     } finally {
       setLoading(false)
     }
   }
 
+  // 刷新页面
+  const refreshUserInfo = async (handle: string) => {
+    return Promise.all([
+      initUserFollowersInfo(handle, user?.address!),
+      initUserFollowingsInfo(user?.address!),
+    ])
+  }
+
   useEffect(() => {
     initUserInfo()
-    initUserFollowingsInfo(address)
   }, [address])
 
   const handleFollow = async () => {
@@ -105,9 +112,10 @@ const UserInfoCyberConnect: React.FC<UserInfoCyberConnectProps> = (props) => {
       return
     }
     setIsFollowLoading(true)
-    await follow(user?.address!, currentUser?.handle!)
+    await follow(currentUser?.handle!)
     setIsFollowLoading(false)
     // 关注成功后，刷新页面
+    await refreshUserInfo(currentUser?.handle!)
   };
 
   const handleUnfollow = async () => {
@@ -116,9 +124,10 @@ const UserInfoCyberConnect: React.FC<UserInfoCyberConnectProps> = (props) => {
       return
     }
     setIsFollowLoading(true)
-    await unFollow(user?.address!, currentUser?.handle!)
+    await unFollow(currentUser?.handle!)
     setIsFollowLoading(false)
     // 关注成功后，刷新页面
+    await refreshUserInfo(currentUser?.handle!)
   };
 
   const handleJumpProfile = () => {
@@ -178,7 +187,8 @@ const UserInfoCyberConnect: React.FC<UserInfoCyberConnectProps> = (props) => {
         {bio}
       </p>
       <div className='frc-between gap-8 mx-auto'>
-        <Button type='primary' className='mx-auto px-8' loading={isFollowLoaindg} disabled={!currentUser?.handle || isFollowLoaindg} onClick={!followersInfo?.isFollowedByMe ? handleFollow : handleUnfollow}>{!followersInfo?.isFollowedByMe ? 'Follow' : 'Unfollow'}</Button>
+        {/* disabled 用户自己、用户没有handle、正在调用关注中*/}
+        <Button type='primary' className='mx-auto px-8' loading={isFollowLoaindg} disabled={!currentUser?.handle || (address === user?.address) || isFollowLoaindg} onClick={!followersInfo?.isFollowedByMe ? handleFollow : handleUnfollow}>{!followersInfo?.isFollowedByMe ? 'Follow' : 'Unfollow'}</Button>
         <Button className='w-120px' onClick={handleJumpProfile}> {t('LearnMore')}</Button>
       </div>
     </>
