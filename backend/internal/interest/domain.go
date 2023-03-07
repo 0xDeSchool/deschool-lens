@@ -17,6 +17,7 @@ type Interest struct {
 type Repository interface {
 	ddd.RepositoryBase[Interest]
 
+	SetInterest(ctx context.Context, ins *Interest) int
 	GetManyByUsers(ctx context.Context, userIds []primitive.ObjectID, targetType string) []Interest
 	GetUsers(ctx context.Context, targetId []string, targetType string) []Interest
 

@@ -7,6 +7,7 @@ import (
 	"github.com/0xdeschool/deschool-lens/backend/pkg/errx"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 const InterestsCollectionName = "interests"
@@ -20,6 +21,16 @@ func NewMongoInterestRepository(c *di.Container) *interest.Repository {
 		MongoRepositoryBase: NewMongoRepositoryBase[interest.Interest](InterestsCollectionName),
 	}
 	return &repo
+}
+
+func (r *MongoInterestRepository) SetInterest(ctx context.Context, ins *interest.Interest) int {
+	filter := bson.D{
+		{"userId", ins.UserId},
+		{"targetId", ins.TargetId},
+		{"targetType", ins.TargetType},
+	}
+	opts := options.Update().SetUpsert(true)
+	return r.Collection(ctx).UpdateOne(ctx, filter, ins, opts)
 }
 
 func (r *MongoInterestRepository) DeleteBy(ctx context.Context, address primitive.ObjectID, targetId, targetType string) int {
@@ -42,7 +53,7 @@ func (r *MongoInterestRepository) GetManyByUsers(ctx context.Context, users []pr
 
 func (r *MongoInterestRepository) CheckMany(ctx context.Context, userIds []primitive.ObjectID, targetId []string, targetType string) []interest.Interest {
 	filter := bson.D{
-		{"userIds", bson.D{{"$in", userIds}}},
+		{"userId", bson.D{{"$in", userIds}}},
 		{"targetId", bson.D{{"$in", targetId}}},
 		{"targetType", targetType},
 	}

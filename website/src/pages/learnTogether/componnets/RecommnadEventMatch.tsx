@@ -1,5 +1,6 @@
 import Avatar from 'antd/es/avatar'
 import Button from 'antd/es/button'
+import { MatchedCourse } from '~/api/booth/event'
 import type { MatchedEvent } from '~/hooks/useCCProfile'
 import AvatarList from './AvatarList'
 import Tags from './Tags'
@@ -12,7 +13,9 @@ const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
   const { info } = props
   const count = 10
   const avatarList = ['', '', '']
-  const onStartLearning = () => { }
+  const onStartLearning = (c: MatchedCourse) => {
+    window.open(`https://deschool.app/origin/series/${c.seriesId}/learning?courseId=${c.id}`)
+  }
 
   return (
     <div className="flex-1 h-full">
@@ -42,7 +45,7 @@ const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
         <div className="h-120px fcs-between">
           <div className="text-2xl mb-2">{info.courses[0]?.title}</div>
           <div className="mb-1">{info.courses[0]?.description}</div>
-          <Button type="primary" onClick={() => onStartLearning()}>Start Learning</Button>
+          <Button type="primary" onClick={() => onStartLearning(info.courses[0])}>Start Learning</Button>
         </div>
         <div>right</div>
       </div>}
