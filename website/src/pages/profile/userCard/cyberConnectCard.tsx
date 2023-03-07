@@ -177,7 +177,7 @@ const CyberCard = (props: CyberCardProps) => {
   if (loading) {
     return (
       <div className="h-400px fcc-center">
-        <Skeleton />
+        <Skeleton active/>
       </div>
     )
   }

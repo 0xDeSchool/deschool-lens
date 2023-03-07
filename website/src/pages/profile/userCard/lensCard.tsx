@@ -167,7 +167,7 @@ const LensCard = (props: LensCardProps) => {
   if (loading) {
     return (
       <div className="h-400px fcc-center">
-        <Skeleton />
+        <Skeleton active/>
       </div>
     )
   }
