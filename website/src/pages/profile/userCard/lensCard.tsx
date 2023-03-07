@@ -10,6 +10,7 @@ import { useAccount } from '~/account'
 import type { UserPlatform } from '~/api/booth/types'
 import { PlatformType } from '~/api/booth/booth'
 import FollowersModal from './modal'
+import Skeleton from 'antd/es/skeleton'
 
 type LensCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
@@ -40,7 +41,6 @@ const LensCard = (props: LensCardProps) => {
 
   // 根据不同情况初始化用户信息
   const initUserInfo = async () => {
-    if (loading) return
     setLoading(true)
     try {
       // 每次展示都应该获取当前 address 下最新数据
@@ -162,6 +162,14 @@ const LensCard = (props: LensCardProps) => {
     const tx = await unfollowByProfileIdWithLens(followUser?.data?.id!)
     message.success(`success unfollow ${followUser?.handle},tx is ${tx}`)
     setUpdateTrigger(new Date().getTime())
+  }
+
+  if (loading) {
+    return (
+      <div className="h-400px fcc-center">
+        <Skeleton />
+      </div>
+    )
   }
 
   return (

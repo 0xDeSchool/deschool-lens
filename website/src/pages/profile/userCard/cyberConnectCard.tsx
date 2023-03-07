@@ -13,6 +13,7 @@ import { useAccount } from '~/account'
 import type { UserPlatform } from '~/api/booth/types'
 import CreateCyberConnectProfile from './createCCProfile'
 import FollowersModal from './cyberConnecdCardModal'
+import Skeleton from 'antd/es/skeleton'
 
 type CyberCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
@@ -101,7 +102,8 @@ const CyberCard = (props: CyberCardProps) => {
       }
       // 获取关注者信息
       if (currentUserHandle) {
-        initUserFollowersInfo(currentUserHandle, routeAddress || user?.address!)
+        await initUserFollowersInfo(currentUserHandle, routeAddress || user?.address!)
+        await initUserFollowingsInfo(routeAddress || user?.address!)
       }
     } finally {
       setLoading(false)
@@ -114,7 +116,6 @@ const CyberCard = (props: CyberCardProps) => {
 
   useEffect(() => {
     initUserInfo()
-    initUserFollowingsInfo(routeAddress || user?.address!)
     if (updateTrigger > 0) {
       setModal({
         type: 'followers',
@@ -172,6 +173,14 @@ const CyberCard = (props: CyberCardProps) => {
     // 关注成功后，刷新页面
     setUpdateTrigger(updateTrigger + 1)
   };
+
+  if (loading) {
+    return (
+      <div className="h-400px fcc-center">
+        <Skeleton />
+      </div>
+    )
+  }
 
   return (
     <div>

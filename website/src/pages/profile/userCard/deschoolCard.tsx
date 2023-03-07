@@ -19,7 +19,7 @@ type DeschoolCardProps = {
 // 0-自己访问自己 1-自己访问别人
 const DeschoolCard = (props: DeschoolCardProps) => {
   const { visitCase, routeAddress } = props
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [modal, setModal] = useState<{ type: 'followers' | 'following'; visible: boolean }>({ type: 'followers', visible: false })
   const [currentUser, setCurrentUser] = useState<UserInfo | null>(null)
   const [isFollowedByMe, setIsFollowedByMe] = useState<boolean>(false)
@@ -143,73 +143,72 @@ const DeschoolCard = (props: DeschoolCardProps) => {
     setUpdateTrigger(new Date().getTime())
   }
 
+  if (loading) {
+    return (
+      <div className="h-400px fcc-center">
+        <Skeleton />
+      </div>
+    )
+  }
+
   return (
-    <div>
-      {loading ? (
-        <div className="h-400px fcc-center">
-          <Skeleton />
+    <div className='mt-70px'>
+      {/* 处理数据为空的情况 */}
+      {currentUser && <div className="mt-70px w-full px-6 pb-6 fcc-center font-ArchivoNarrow">
+        <span className="text-center text-xl w-200px overflow-hidden text-ellipsis" title={currentUser?.displayName}>
+          {currentUser.displayName === currentUser.address ? getShortAddress(currentUser.address) : currentUser.displayName}
+        </span>
+      </div>}
+      <div className="mx-10 frc-center flex-wrap">
+        <a
+          className={`${followers?.length > 0 ? 'hover:underline hover:cursor-pointer' : ''
+            } text-xl mr-4 `}
+          onClick={() => {
+            handleJumpFollowers(followers?.length)
+          }}
+        >
+          <span className="text-black">{followers?.length || '-'} </span>
+          <span className="text-gray-5 font-ArchivoNarrow">{t('profile.followers')}</span>
+        </a>
+        <a
+          className={`${followings?.length > 0 ? 'hover:underline hover:cursor-pointer' : ''
+            } text-xl`}
+          onClick={() => {
+            handleJumpFollowing(followings?.length)
+          }}
+        >
+          <span className="text-black">{followings?.length || '-'} </span>
+          <span className="text-gray-5 font-ArchivoNarrow">{t('profile.following')}</span>
+        </a>
+      </div>
+      <p className="m-10 text-xl line-wrap three-line-wrap">
+        {currentUser?.bio || visitCase === 0 ? '' : "The user hasn't given a bio on Lens for self yet :)"}
+      </p>
+      {routeAddress && routeAddress !== user?.address && (
+        <div className="m-10 text-right">
+          <button
+            type="button"
+            className="purple-border-button px-2 py-1"
+            onClick={() => {
+              if (isFollowedByMe && currentUser) {
+                handleUnFollow(currentUser)
+              } else if (currentUser) {
+                handleFollow(currentUser)
+              }
+            }}
+          >
+            {isFollowedByMe ? t('UnFollow') : t('Follow')}
+          </button>
         </div>
-      ) : (
-        <>
-          {/* 处理数据为空的情况 */}
-          {currentUser && <div className="mt-70px w-full px-6 pb-6 fcc-center font-ArchivoNarrow">
-            <span className="text-center text-xl w-200px overflow-hidden text-ellipsis" title={currentUser?.displayName}>
-              {currentUser.displayName === currentUser.address ? getShortAddress(currentUser.address) : currentUser.displayName}
-            </span>
-            {/* <span className="text-xl text-gray-5">{currentUser?.displayName ? `${currentUser.displayName}` : ''}</span> */}
-          </div>}
-          <div className="mx-10 frc-center flex-wrap">
-            <a
-              className={`${followers?.length > 0 ? 'hover:underline hover:cursor-pointer' : ''
-                } text-xl mr-4 `}
-              onClick={() => {
-                handleJumpFollowers(followers?.length)
-              }}
-            >
-              <span className="text-black">{followers?.length || '-'} </span>
-              <span className="text-gray-5 font-ArchivoNarrow">{t('profile.followers')}</span>
-            </a>
-            <a
-              className={`${followings?.length > 0 ? 'hover:underline hover:cursor-pointer' : ''
-                } text-xl`}
-              onClick={() => {
-                handleJumpFollowing(followings?.length)
-              }}
-            >
-              <span className="text-black">{followings?.length || '-'} </span>
-              <span className="text-gray-5 font-ArchivoNarrow">{t('profile.following')}</span>
-            </a>
-          </div>
-          <p className="m-10 text-xl line-wrap three-line-wrap">
-            {currentUser?.bio || visitCase === 0 ? '' : "The user hasn't given a bio on Lens for self yet :)"}
-          </p>
-          {routeAddress && routeAddress !== user?.address && (
-            <div className="m-10 text-right">
-              <button
-                type="button"
-                className="purple-border-button px-2 py-1"
-                onClick={() => {
-                  if (isFollowedByMe && currentUser) {
-                    handleUnFollow(currentUser)
-                  } else if (currentUser) {
-                    handleFollow(currentUser)
-                  }
-                }}
-              >
-                {isFollowedByMe ? t('UnFollow') : t('Follow')}
-              </button>
-            </div>
-          )}
-          <DeschoolFollowersModal
-            type={modal.type}
-            visible={modal.visible}
-            closeModal={closeModal}
-            followings={followings}
-            followers={followers}
-            setUpdateTrigger={setUpdateTrigger}
-          />
-        </>
       )}
+      <DeschoolFollowersModal
+        type={modal.type}
+        visible={modal.visible}
+        closeModal={closeModal}
+        followings={followings}
+        followers={followers}
+        setUpdateTrigger={setUpdateTrigger}
+      />
     </div>
   )
 }
