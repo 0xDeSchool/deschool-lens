@@ -213,16 +213,25 @@ func filterEvents(ctx *gin.Context) {
 
 func getUsers(ctx *gin.Context) {
 	um := *di.Get[identity.UserManager]()
-	p := ginx.QueryPageAndSort(ctx)
-	if p.Sort == "" {
-		p.Sort = "-createdAt"
+	var users []identity.User
+	userId := ctx.Query("userId")
+	hasNext := false
+	if userId != "" {
+		u := um.Repo.Get(ctx, mongodb.IDFromHex(userId))
+		users = append(users, *u)
+	} else {
+		p := ginx.QueryPageAndSort(ctx)
+		if p.Sort == "" {
+			p.Sort = "-createdAt"
+		}
+		p.PageSize += 1
+		users = um.Repo.GetLatestUsers(ctx, p)
+		hasNext = len(users) >= int(p.PageSize)
+		if hasNext {
+			users = users[:p.PageSize-1]
+		}
 	}
-	p.PageSize += 1
-	users := um.Repo.GetLatestUsers(ctx, p)
-	hasNext := len(users) >= int(p.PageSize)
-	if hasNext {
-		users = users[:p.PageSize-1]
-	}
+
 	um.ManyIncludePlatforms(ctx, users)
 
 	userIds := linq.Map(users, func(u *identity.User) primitive.ObjectID { return u.ID })
