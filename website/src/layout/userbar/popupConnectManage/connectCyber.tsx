@@ -175,12 +175,10 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
     }
   }
 
-
   // 退出 CyberConnect 登录
   const handleDisconnect = async (ccProfile: UserPlatform) => {
     try {
       if (ccProfile?.handle) {
-        debugger
         await getUserManager().unLinkPlatform(ccProfile?.handle, ccProfile.address, PlatformType.CYBERCONNECT)
       }
       await getUserManager().tryAutoLogin()

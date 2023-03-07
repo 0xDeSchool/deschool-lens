@@ -82,7 +82,7 @@ const HotCelebrities = (props: { searchWord: string }) => {
               celebrities.map(celebrity => (
                 <CelebrityCardNew
                   key={celebrity.id}
-                  {...celebrity}
+                  userInfo={celebrity}
                   followerDetail={() => handleFollowerDetail(celebrity)}
                   followingDetail={() => hanldeFollowingDetail(celebrity)}
                 />

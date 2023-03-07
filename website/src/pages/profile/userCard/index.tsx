@@ -10,7 +10,7 @@ import LensCard from './lensCard'
 import CyberConnectCard from './cyberConnectCard'
 import { VisitType } from '../utils/visitCase'
 import { useAccount } from '~/account'
-import HeaderLayout from './headerLayout'
+import PlatformBoard from '~/components/platformBoard'
 import { PlatformType } from '~/api/booth/booth'
 import LensAvatar from './avatar'
 import fallbackImage from '~/assets/images/fallbackImage'
@@ -46,7 +46,7 @@ const UserCard = (props: UserCardProps) => {
   return (
     <div className={`w-full pb-1 shadow-md rounded-xl`}>
       <div className="relative w-full frc-center">
-        <div className='absolute z-1 top-2 left-2 right-2'><HeaderLayout change={setProfileType}/></div>
+        <div className='absolute z-1 top-2 left-2 right-2'><PlatformBoard change={setProfileType}/></div>
         {profileType !== PlatformType.DESCHOOL ? (<Image
           preview={false}
           src="https://deschool.s3.amazonaws.com/booth/Booth-logos.jpeg"
