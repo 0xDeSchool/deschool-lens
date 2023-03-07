@@ -5,7 +5,6 @@ import Skeleton from 'antd/es/skeleton'
 import Empty from 'antd/es/empty'
 import { getLatestUsers } from '~/api/booth'
 import type { NewUserInfo } from '~/api/booth/types'
-import CelebrityCard from './CelebrityCard'
 import CelebrityCardNew from './CelebrityCardNew'
 
 const HotCelebrities = (props: { searchWord: string }) => {
@@ -85,16 +84,10 @@ const HotCelebrities = (props: { searchWord: string }) => {
                   userInfo={celebrity}
                   followerDetail={() => handleFollowerDetail(celebrity)}
                   followingDetail={() => hanldeFollowingDetail(celebrity)}
+                  refresh={() => initSeries()}
                 />
               ))
             ) : <Empty />}
-            {/* {celebrities && celebrities.length > 0 ? (
-              celebrities.map(celebrity => (
-                <CelebrityCard key={celebrity.id} celebrity={celebrity} />
-              ))
-            ) : (
-              <Empty />
-            )} */}
           </div>
         )}
       </div>

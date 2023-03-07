@@ -5,6 +5,7 @@ import message from 'antd/es/message'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Jazzicon from 'react-jazzicon/dist/Jazzicon'
+import { useNavigate } from 'react-router'
 import { DEFAULT_AVATAR, useAccount } from '~/account'
 import { NewUserInfo } from '~/api/booth/types'
 import { followByProfileIdWithLens } from '~/api/lens/follow/follow'
@@ -20,8 +21,9 @@ type UserInfoLensProps = NewUserInfo & {
 }
 
 const UserInfoLens: React.FC<UserInfoLensProps> = (props) => {
-  const { avatar, address, displayName, bio, isFollowing, followerDetail, followingDetail } = props
+  const { avatar, address, displayName, bio, followerDetail, followingDetail } = props
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const [currentUser, setCurrentUser] = useState<ProfileExtend | null>(null)
   const [isFollowedByMe, setIsFollowedByMe] = useState(false) // 是否被我关注
   const [totalFollowers, setTotalFollowers] = useState(0) // 粉丝数
@@ -114,6 +116,11 @@ const UserInfoLens: React.FC<UserInfoLensProps> = (props) => {
     message.success(`success unfollow ${followUser?.handle},tx is ${tx}`)
   }
 
+  const handleJumpProfile = () => {
+    navigate(`/profile/${address}/resume`)
+  }
+
+
   if (loading) return <UserInfoSkeleton />
 
   return (
@@ -166,7 +173,10 @@ const UserInfoLens: React.FC<UserInfoLensProps> = (props) => {
       <p className="font-ArchivoNarrow text-#000000d8 text-16px leading-24px h-120px line-wrap three-line-wrap">
         {bio}
       </p>
-      <Button type='primary' className='mx-auto px-8' loading={isFollowLoading} disabled={isFollowLoading} onClick={!isFollowedByMe ? handleFollow : handleUnfollow}>{!isFollowedByMe ? 'Follow' : 'Unfollow'}</Button>
+      <div className='frc-between gap-8 mx-auto'>
+        <Button type='primary' className='mx-auto px-8' loading={isFollowLoading} disabled={isFollowLoading} onClick={!isFollowedByMe ? handleFollow : handleUnfollow}>{!isFollowedByMe ? 'Follow' : 'Unfollow'}</Button>
+        <Button className='w-120px' onClick={handleJumpProfile}> {t('LearnMore')}</Button>
+      </div>
     </>
   )
 }
