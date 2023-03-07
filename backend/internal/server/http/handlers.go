@@ -232,7 +232,7 @@ func getUsers(ctx *gin.Context) {
 	}
 	fRepo := *di.Get[hackathon.FollowRepository]()
 	followers := fRepo.GetFollowerCount(ctx, userIds)
-	following := fRepo.GetFollowerCount(ctx, userIds)
+	following := fRepo.GetFollowingCount(ctx, userIds)
 	followingUsers := make(map[primitive.ObjectID]bool)
 	if currentUser.Authenticated() {
 		followingUsers = fRepo.CheckIsFollowing(ctx, currentUser.ID, userIds)
