@@ -60,11 +60,17 @@ const LensCard = (props: LensCardProps) => {
       }
       // 此人有数据
       const extendUserInfo = getExtendProfile(userInfo)
+      // 默认展示地址缩写
+      let displayName = getShortAddress(address!)
+      // 如果是用户自己，则展示用户名
+      if (visitCase === 0) {
+          displayName = user?.displayName!
+      }
       // 根据最新用户信息结构更新当前用户信息
       setCurrentUser({
         handle: extendUserInfo?.handle,
         address: address!,
-        displayName: extendUserInfo?.name,
+        displayName,
         platform: PlatformType.LENS,
         data: {
           id: extendUserInfo?.id,
@@ -163,7 +169,7 @@ const LensCard = (props: LensCardProps) => {
       {/* 处理数据为空的情况 */}
       <div className="mt-70px w-full px-6 pb-6 fcc-center font-ArchivoNarrow">
         <span className="text-xl">
-          {currentUser?.displayName || (routeAddress ? getShortAddress(routeAddress) : getShortAddress(user?.address))}
+          {currentUser?.displayName}
         </span>
         <span className="text-xl text-gray-5">{currentUser?.handle ? `@${currentUser?.handle}` : 'Lens Handle Not Found'}</span>
       </div>

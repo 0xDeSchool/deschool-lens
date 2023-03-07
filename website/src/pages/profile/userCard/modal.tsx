@@ -99,8 +99,6 @@ const FollowersModal = (props: {
     message.success(`success following ${followUser?.handle},tx is ${tx}`)
   }
 
-  const role = getUserContext().getLoginRoles()
-
   return (
     <Modal
       title={t(type)}
@@ -139,7 +137,7 @@ const FollowersModal = (props: {
                     {/* 三、用户在看别人的 Following，啥事都不能做，没有按钮。如果别人和他的关注者双向关注则用文字显示出来 */}
                     {/* 四、用户在看别人的 Follower，啥事都不能做，没有按钮。如果别人和他的关注者双向关注则用文字显示出来 */}
                     {/* TODO */}
-                    {!role.includes(RoleType.UserOfLens) ? null : (
+                    {(
                       <button
                         type="button"
                         className="purple-border-button px-2 py-1"
