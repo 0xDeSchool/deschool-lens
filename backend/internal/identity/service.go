@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/ginx"
+	"github.com/0xdeschool/deschool-lens/backend/pkg/log"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/utils/linq"
 	"github.com/ethereum/go-ethereum/common"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -68,7 +69,8 @@ func (m *UserManager) Link(ctx context.Context, link *UserPlatform) {
 }
 
 func (m *UserManager) Unlink(ctx context.Context, userId primitive.ObjectID, platform UserPlatformType, address string, handle string) {
-	m.Repo.UnlinkPlatform(ctx, userId, common.HexToAddress(address), handle, platform)
+	count := m.Repo.UnlinkPlatform(ctx, userId, common.HexToAddress(address), handle, platform)
+	log.Infof("unlink platform", "count", count)
 }
 
 func (m *UserManager) Update(ctx context.Context, info *User) {

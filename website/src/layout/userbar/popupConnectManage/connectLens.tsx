@@ -160,7 +160,7 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
   const handleDisconnect = async () => {
     try {
       if (lensProfile?.handle) {
-        getUserManager()?.unLinkPlatform(lensProfile?.handle, PlatformType.LENS)
+        getUserManager()?.unLinkPlatform(lensProfile?.handle, lensProfile.address, PlatformType.LENS)
         // 重新获取用户信息
         await getUserManager().tryAutoLogin()
       }
@@ -196,7 +196,7 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
         <Button
           onClick={e => {
             e.preventDefault()
-            lensProfile ? handleDisconect() : handleConnect()
+            lensProfile ? handleDisconnect() : handleConnect()
           }}
           className="w-full h-12 border border-solid border-#6525FF bg-white hover:border-#6525FF66 hover:bg-#6525FF22"
           disabled={loading}

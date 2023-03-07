@@ -134,8 +134,8 @@ export class UserManager {
     this._user = user
   }
 
-  async unLinkPlatform(handle: string, type: PlatformType) {
-    await unlinkPlatform({ handle, platform: type })
+  async unLinkPlatform(handle: string, address: string, type: PlatformType) {
+    await unlinkPlatform({ handle, platform: type, address })
   }
 
   disconnect(): void {

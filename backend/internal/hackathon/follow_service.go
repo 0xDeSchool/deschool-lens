@@ -30,7 +30,7 @@ func (hm *HackathonManager) GetFollowing(ctx context.Context, userId primitive.O
 
 	result := hm.followRepo.GetListByFilter(ctx, userId, "fromUser")
 
-	var ret []FollowingList
+	var ret = make([]FollowingList, 0)
 	for _, item := range result {
 		ret = append(ret, FollowingList{
 			Following:            item.ToAddr,
@@ -46,7 +46,7 @@ func (hm *HackathonManager) GetFollower(ctx context.Context, userId primitive.Ob
 
 	result := hm.followRepo.GetListByFilter(ctx, userId, "toAddr")
 
-	var ret []FollowerList
+	var ret = make([]FollowerList, 0)
 	for _, item := range result {
 		ret = append(ret, FollowerList{
 			Follower:             item.FromAddr,

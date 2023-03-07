@@ -5,6 +5,7 @@ import (
 	"github.com/0xdeschool/deschool-lens/backend/internal/identity"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/db/mongodb"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
+	"github.com/0xdeschool/deschool-lens/backend/pkg/errx"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/utils/linq"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/x"
 	"github.com/ethereum/go-ethereum/common"
@@ -49,14 +50,16 @@ func (m *MongoUserRepository) LinkPlatform(ctx context.Context, p *identity.User
 	m.userPlatforms(ctx).UpdateOne(ctx, filter, p, options.Update().SetUpsert(true))
 }
 
-func (m *MongoUserRepository) UnlinkPlatform(ctx context.Context, userId primitive.ObjectID, address common.Address, handle string, platform identity.UserPlatformType) {
+func (m *MongoUserRepository) UnlinkPlatform(ctx context.Context, userId primitive.ObjectID, address common.Address, handle string, platform identity.UserPlatformType) int {
 	filter := bson.D{
 		{"userId", userId},
 		{"address", address.Hex()},
 		{"handle", handle},
 		{"platform", platform},
 	}
-	m.userPlatforms(ctx).Col().DeleteMany(ctx, filter)
+	result, err := m.userPlatforms(ctx).Col().DeleteMany(ctx, filter)
+	errx.CheckError(err)
+	return int(result.DeletedCount)
 }
 
 func (m *MongoUserRepository) GetManyPlatforms(ctx context.Context, userIds []primitive.ObjectID) []identity.UserPlatform {
