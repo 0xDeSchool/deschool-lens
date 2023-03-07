@@ -22,11 +22,16 @@ export interface UserPlatform {
   handle: string
   // 平台唯一标识，如 lens, cc(CyberConnect), deschool
   platform: PlatformType
-
+  address: string
   displayName?: string
 
   // 附加数据
   data: { [key: string]: string }
+}
+
+export interface PagedResult<T> {
+  hasNext: boolean
+  items: T[]
 }
 
 export interface UserInfo {
@@ -36,6 +41,13 @@ export interface UserInfo {
   avatar?: string
   bio?: string
   platforms?: UserPlatform[]
+}
+
+export function platform(u: UserInfo, t: PlatformType): UserPlatform | undefined {
+  if (u.platforms) {
+    return u.platforms.find(p => p.platform === t)
+  }
+  return undefined
 }
 
 export interface UpdateUserInfo {
@@ -56,6 +68,8 @@ export interface LinkPlatformRequest {
   handle: string
   // 平台唯一标识，如 lens, cc(CyberConnect), deschool
   platform: PlatformType
+  // 当前签名的钱包地址
+  address: string
   // 当前签名的钱包类型
   walletType?: string
   signHex?: string
@@ -68,3 +82,6 @@ export interface UnlinkPlatformRequest {
   // 平台唯一标识，如 lens, cc(CyberConnect), deschool
   platform: PlatformType
 }
+
+
+

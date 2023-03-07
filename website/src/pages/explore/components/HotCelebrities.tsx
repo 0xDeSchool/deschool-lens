@@ -11,95 +11,22 @@ import type { CelebrityType } from './CelebrityCard'
 import CelebrityCard from './CelebrityCard'
 import type { Creator, ProfileExtend } from '~/lib/types/app'
 import UserCardItem from './boothzNewUser/UserCardItem'
+import { getLatestUsers } from '~/api/booth'
+import { UserInfo } from '~/api/booth/types'
 
 const HotCelebrities = (props: { searchWord: string }) => {
   const { searchWord } = props
   const { t } = useTranslation()
   const [loading, setLoading] = useState(true)
-  const [celebrities, setCelebrities] = useState([] as CelebrityType[])
-  const [cacheCelebrities, setCacheCelebrities] = useState([] as CelebrityType[])
+  const [celebrities, setCelebrities] = useState([] as UserInfo[])
+  const [cacheCelebrities, setCacheCelebrities] = useState([] as UserInfo[])
 
   const initSeries = async () => {
     setLoading(true)
     try {
-      const response = await getBoothUsers()
-      if (!response || !Object.prototype.toString.call(response).includes('Array')) return
-
-      const baseAddressesArray = response.map(boothUser => boothUser.baseAddress)
-      const baseAddressesSet = new Set(baseAddressesArray)
-      const baseAddresses = Array.from(baseAddressesSet) // 去重后的地址
-
-      // 根据去重的地址整理展示的Celebrity List
-      const boothUsersArray = [] as CelebrityType[]
-      baseAddresses.forEach(baseAddress => {
-        // all results of an address
-        const results = response.filter(boothUser => boothUser.baseAddress === baseAddress)
-        const param = {} as CelebrityType
-        // TODO: 问题在于同一个地址，同一个lens,不同deschool身份的覆盖
-        results.forEach(user => {
-          if (user.platform === PlatformType.DESCHOOL) {
-            Object.assign(param, {
-              deschool: {
-                username: '',
-                address: user.baseAddress,
-                avatar: '',
-                bio: '',
-              },
-            })
-          } else if (user.platform === PlatformType.LENS) {
-            Object.assign(param, {
-              lens: {
-                name: '',
-                ownedBy: user.address,
-                avatarUrl: '',
-                handle: user.lensHandle,
-                bio: '',
-              },
-            })
-          }
-        })
-        if (JSON.stringify(param) !== '{}') boothUsersArray.push(param)
-      })
-
-      // 查所有 lens 用户信息
-      const lensUsers = boothUsersArray.filter(user => user.lens?.handle)
-      const lensUsersProfiles: any = await getProfilesRequest({
-        handles: lensUsers.map((lensUser: CelebrityType) => lensUser.lens.handle),
-      })
-      /* loop over profiles, create properly formatted ipfs image links */
-      const lensProfilesData: (ProfileExtend | null)[] = lensUsersProfiles?.items
-        ? lensUsersProfiles.items.map((profileInfo: any) => ({
-            ...getExtendProfile(profileInfo),
-          }))
-        : []
-
-      // 查所有 deschool 用户信息
-      const deschoolUsers = boothUsersArray.filter(user => user.deschool?.address)
-      const strArray = deschoolUsers.map((deschoolInfo: CelebrityType) => deschoolInfo.deschool?.address)
-      const deschoolProfilesData: (Creator | null)[] = await getOtherUsersProfile(strArray)
-
-      // 合并 lens 同地址
-      lensProfilesData.forEach(lensProfile => {
-        const index = boothUsersArray.findIndex(boothUser => boothUser.lens?.handle === lensProfile?.handle)
-        if (index > -1) {
-          boothUsersArray[index].lens.name = lensProfile?.name || ''
-          boothUsersArray[index].lens.avatarUrl = lensProfile?.avatarUrl || ''
-          boothUsersArray[index].lens.bio = lensProfile?.bio || ''
-        }
-      })
-
-      // 合并 deschool 同地址
-      deschoolProfilesData.forEach(deschoolProfile => {
-        const index = boothUsersArray.findIndex(boothUser => boothUser.deschool?.address === deschoolProfile?.address)
-        if (index > -1) {
-          boothUsersArray[index].deschool.username = deschoolProfile?.username || ''
-          boothUsersArray[index].deschool.avatar = deschoolProfile?.avatar || ''
-          boothUsersArray[index].deschool.bio = deschoolProfile?.bio || ''
-        }
-      })
-
-      setCelebrities(boothUsersArray)
-      setCacheCelebrities(boothUsersArray)
+      const response = await getLatestUsers(1, 9999999)
+      setCelebrities(response.items)
+      setCacheCelebrities(response.items)
     } finally {
       setLoading(false)
     }
@@ -113,11 +40,8 @@ const HotCelebrities = (props: { searchWord: string }) => {
     setCelebrities(
       cacheCelebrities.filter(
         c =>
-          c.lens?.handle?.includes(searchWord) ||
-          c.lens?.name?.includes(searchWord) ||
-          c.lens?.ownedBy?.includes(searchWord) ||
-          c.deschool?.address?.includes(searchWord) ||
-          c.deschool?.username?.includes(searchWord),
+          c.address.toLowerCase().includes(searchWord.toLowerCase()) ||
+          c.displayName?.toLowerCase().includes(searchWord.toLowerCase()),
       ),
     )
   }, [searchWord])
@@ -149,14 +73,14 @@ const HotCelebrities = (props: { searchWord: string }) => {
           </div>
         ) : (
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 m-auto">
-            {celebrities && celebrities.length > 0 && (
+            {/* {celebrities && celebrities.length > 0 && (
               celebrities.map(celebrity => (
-                <UserCardItem key={celebrity.deschool?.address || celebrity.lens?.handle} celebrity={celebrity} />
+                <UserCardItem key={celebrity.id} {...celebrities} />
               ))
-            )}
+            )} */}
             {celebrities && celebrities.length > 0 ? (
               celebrities.map(celebrity => (
-                <CelebrityCard key={celebrity.deschool?.address || celebrity.lens?.handle} celebrity={celebrity} />
+                <CelebrityCard key={celebrity.id} celebrity={celebrity} />
               ))
             ) : (
               <Empty />

@@ -14,9 +14,9 @@ type UserCardItemProps = {
   avatar: string,
   address: string,
   handle: string,
-  bio: string,
-  followerCount: number,
-  followingCount: number,
+  bio?: string,
+  followerCount?: number,
+  followingCount?: number,
   isFollowed: boolean,
   followerDetail: () => void,
   followingDetail: () => void,
@@ -35,24 +35,24 @@ const UserCardItem: React.FC<UserCardItemProps> = (props) => {
       {/* header */}
       <div className='frc-between w-full gap-1 mb-4'>
         <div
-          className={`cursor-pointer bg-black h-36px min-h-36px min-w-36px transition-all transition-500 ${active === 'cc' ? activeClass: normalClass}`}
+          className={`cursor-pointer bg-black h-36px min-h-36px min-w-36px transition-all transition-500 ${active === 'cc' ? activeClass : normalClass}`}
           onClick={() => setActive('cc')}
-          >
-          <img src={IconCyberConnect} alt="cyberconnect" width={24} height={24}/>
+        >
+          <img src={IconCyberConnect} alt="cyberconnect" width={24} height={24} />
           <div className={`ml-2 text-white text-18px font-ArchivoNarrow ${active === 'cc' ? 'block' : 'hidden'}`}>CyberConnect</div>
         </div>
         <div
-          className={`cursor-pointer bg-#abfe2c rounded-full h-36px min-h-36px min-w-36px transition-all transition-500 ${active === 'lens' ? activeClass: normalClass}`}
+          className={`cursor-pointer bg-#abfe2c rounded-full h-36px min-h-36px min-w-36px transition-all transition-500 ${active === 'lens' ? activeClass : normalClass}`}
           onClick={() => setActive('lens')}
-          >
-          <img src={IconLens} alt="lens" width={24} height={24}/>
+        >
+          <img src={IconLens} alt="lens" width={24} height={24} />
           <div className={`ml-2 text-#00501E text-18px font-ArchivoNarrow ${active === 'lens' ? 'block' : 'hidden'}`}>Lens</div>
         </div>
         <div
-          className={`cursor-pointer bg-#774ff8 rounded-full h-36px min-h-36px min-w-36px transition-all transition-500 ${active === 'deschool' ? activeClass: normalClass}`}
+          className={`cursor-pointer bg-#774ff8 rounded-full h-36px min-h-36px min-w-36px transition-all transition-500 ${active === 'deschool' ? activeClass : normalClass}`}
           onClick={() => setActive('deschool')}
-          >
-          <img src={IconDeschool} alt="deschool" width={24} height={24}/>
+        >
+          <img src={IconDeschool} alt="deschool" width={24} height={24} />
           <div className={`ml-2 text-white text-18px font-ArchivoNarrow ${active === 'deschool' ? 'block' : 'hidden'}`}>DeSchool</div>
         </div>
       </div>
@@ -92,9 +92,8 @@ const UserCardItem: React.FC<UserCardItemProps> = (props) => {
       {/* follows info */}
       <div className="mx-auto frc-center gap-4 flex-wrap">
         <a
-          className={`${
-            followerCount > 0 ? 'hover:underline hover:cursor-pointer' : ''
-          } text-xl`}
+          className={`${followerCount && followerCount > 0 ? 'hover:underline hover:cursor-pointer' : ''
+            } text-xl`}
           onClick={() => {
             followerDetail && followerDetail()
           }}
@@ -103,9 +102,8 @@ const UserCardItem: React.FC<UserCardItemProps> = (props) => {
           <span className="text-gray-5 font-ArchivoNarrow">{t('profile.followers')}</span>
         </a>
         <a
-          className={`${
-            followingCount > 0 ? 'hover:underline hover:cursor-pointer' : ''
-          } text-xl`}
+          className={`${followingCount && followingCount > 0 ? 'hover:underline hover:cursor-pointer' : ''
+            } text-xl`}
           onClick={() => {
             followingDetail && followingDetail()
           }}
