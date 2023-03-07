@@ -72,7 +72,6 @@ const CyberCard = (props: CyberCardProps) => {
     setLoading(true)
     let currentUserHandle = user?.ccProfile()?.handle
     try {
-      debugger
       switch (visitCase) {
         // 访问自己的空间
         case 0:
