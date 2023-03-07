@@ -98,10 +98,10 @@ const WalletConnectBoard = () => {
                 setOpen(true)
                 setShowPopover(false)
               }
-            } />
+              } />
           }
           open={showPopover}
-          onOpenChange={(e) => setShowPopover(e)}
+          onOpenChange={(e: any) => setShowPopover(e)}
           trigger="click">
           <div className='frc-center cursor-pointer'>
             <Avatar size={24} alt="user avatar" src={user.avatar || DEFAULT_AVATAR} />
@@ -125,7 +125,7 @@ const WalletConnectBoard = () => {
         }}
         destroyOnClose
       >
-        <PopupConnectManage close={() => setOpen(false)}/>
+        <PopupConnectManage close={() => setOpen(false)} />
       </Modal>
     </>
   )
