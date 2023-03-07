@@ -31,7 +31,7 @@ const UserInfoDeschool: React.FC<UserInfoDeschoolProps> = (props) => {
     message.success(`success following ${address}`)
   }
 
-  const handleUnFollow = async () => {
+  const handleUnfollow = async () => {
     if (!user?.id) {
       message.error('Please first login')
       return
@@ -92,7 +92,7 @@ const UserInfoDeschool: React.FC<UserInfoDeschoolProps> = (props) => {
       <p className="font-ArchivoNarrow text-#000000d8 text-16px leading-24px h-120px line-wrap three-line-wrap">
         {bio}
       </p>
-      <Button type='primary' className='mx-auto px-8' loading={loading} disabled={loading} onClick={!isFollowing ? handleFollow : handleUnFollow}>{!isFollowing ? 'Follow' : 'Unfollow'}</Button>
+      <Button type='primary' className='mx-auto px-8' loading={loading} disabled={loading} onClick={!isFollowing ? handleFollow : handleUnfollow}>{!isFollowing ? 'Follow' : 'Unfollow'}</Button>
     </>
   )
 }

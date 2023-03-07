@@ -21,7 +21,7 @@ type UserInfoCyberConnectProps = NewUserInfo & {
 }
 
 const UserInfoCyberConnect: React.FC<UserInfoCyberConnectProps> = (props) => {
-  const { avatar, address, displayName, bio, isFollowing, followerDetail, followingDetail } = props
+  const { avatar, address, displayName, bio, followerDetail, followingDetail } = props
   const { t } = useTranslation()
   const { follow } = useFollow();
   const { unFollow } = useUnFollow();
@@ -168,7 +168,7 @@ const UserInfoCyberConnect: React.FC<UserInfoCyberConnectProps> = (props) => {
       <p className="font-ArchivoNarrow text-#000000d8 text-16px leading-24px h-120px line-wrap three-line-wrap">
         {bio}
       </p>
-      <Button type='primary' className='mx-auto px-8' loading={isFollowLoaindg} disabled={!currentUser?.handle || isFollowLoaindg} onClick={!isFollowing ? handleFollow : handleUnfollow}>{!isFollowing ? 'Follow' : 'Unfollow'}</Button>
+      <Button type='primary' className='mx-auto px-8' loading={isFollowLoaindg} disabled={!currentUser?.handle || isFollowLoaindg} onClick={!followersInfo?.isFollowedByMe ? handleFollow : handleUnfollow}>{!followersInfo?.isFollowedByMe ? 'Follow' : 'Unfollow'}</Button>
     </>
   )
 }

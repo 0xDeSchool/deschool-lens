@@ -19,14 +19,14 @@ type LensCardProps = {
 // 0-自己访问自己 1-自己访问别人
 const LensCard = (props: LensCardProps) => {
   const { visitCase, routeAddress } = props
+  const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
   const [modal, setModal] = useState<{ type: 'followers' | 'following'; visible: boolean }>({ type: 'followers', visible: false })
-  const [currentUser, setCurrentUser] = useState<UserPlatform | null>()
   const [updateTrigger, setUpdateTrigger] = useState(0) // 此页面局部刷新
+  const [currentUser, setCurrentUser] = useState<UserPlatform | null>()
   const [isFollowedByMe, setIsFollowedByMe] = useState(false) // 是否被我关注
   const [totalFollowers, setTotalFollowers] = useState(0) // 粉丝数
   const [totalFollowing, setTotalFollowing] = useState(0) // 关注数
-  const { t } = useTranslation()
   const user = useAccount()
   const lensProfile = user?.lensProfile()
 
