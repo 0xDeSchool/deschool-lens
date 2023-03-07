@@ -126,7 +126,7 @@ const WalletConnectBoard = () => {
         }}
         destroyOnClose
       >
-        <PopupConnectManage />
+        <PopupConnectManage close={() => setOpen(false)}/>
       </Modal>
     </>
   )

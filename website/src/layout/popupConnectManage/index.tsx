@@ -4,14 +4,21 @@ import ConnectCyberBoard from './connectCyber'
 import ConnectDeschool from './connectDeschool'
 import UpdateUsername from './updateUserInfo'
 import { DEFAULT_AVATAR, useAccount } from '~/account'
+import { CloseCircleOutlined } from '@ant-design/icons'
+import Button from 'antd/es/button'
 
-const PopupConnectManage = () => {
+type PopupConnectManageProps = {
+  close: () => void
+}
+const PopupConnectManage: React.FC<PopupConnectManageProps> = (props) => {
+  const { close } = props
   const user = useAccount()
 
   return (
     <div>
-      <div className='text-xl'>
-        Booth
+      <div className='text-xl frc-between'>
+        <span>Booth</span>
+        <Button shape='circle' size='large' icon={<CloseCircleOutlined style={{color: '#999'}} />} className="frc-center" onClick={() => close()}></Button>
       </div>
       <div className='frc-start gap-1 px-8 pt-24'>
         <Avatar size={32} alt="user avatar" src={user && user.avatar || DEFAULT_AVATAR} />
