@@ -5,10 +5,11 @@ import Skeleton from 'antd/es/skeleton'
 import { useTranslation } from 'react-i18next'
 import type { FollowRelationType } from '~/api/booth/follow';
 import { getFollowings, getFollowers, followUser, unfollowUser, checkfollowUser } from '~/api/booth/follow'
-import { getOtherUsersProfile } from '~/api/go/account'
 import DeschoolFollowersModal from './deschoolModal'
 import { useAccount } from '~/account'
 import { UserInfo } from '~/api/booth/types';
+import { getUserInfo } from '~/api/booth';
+import { getShortAddress } from '~/utils/format';
 
 type DeschoolCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
@@ -35,12 +36,12 @@ const DeschoolCard = (props: DeschoolCardProps) => {
       switch (visitCase) {
         // 访问自己的空间
         case 0:
-          if (user?.address) {
-            const resFollowings = await getFollowings(user?.address)
+          if (user) {
+            const resFollowings = await getFollowings(user.id)
             if (resFollowings) {
               setFollowings(resFollowings)
             }
-            const resFollowers = await getFollowers(user?.address)
+            const resFollowers = await getFollowers(user.id)
             if (resFollowers) {
               setFollowers(resFollowers)
             }
@@ -49,31 +50,32 @@ const DeschoolCard = (props: DeschoolCardProps) => {
           break
         // 访问他人的空间
         case 1: {
-          // 我登录了
-          if (user?.address) {
-            const isFollowed: FollowRelationType | any = await checkfollowUser(routeAddress!, user?.address)
-            setIsFollowedByMe(isFollowed.fromFollowedTo || false) // 我A(from)=>他人B(to)
-          }
-          // 没登录
-          else {
-            setIsFollowedByMe(false)
-          }
-          const userInfo = await getOtherUsersProfile([routeAddress!]) // 此case下必不为空
-          if (userInfo && userInfo.length > 0 && userInfo[0]) {
+          const userInfo = await getUserInfo(routeAddress) // 此case下必不为空
+          if (userInfo) {
             setCurrentUser({
-              id: userInfo[0].id!,
-              address: userInfo[0]?.address,
-              avatar: userInfo[0]?.avatar,
-              bio: userInfo[0]?.bio,
-              displayName: userInfo[0]?.username,
+              id: userInfo.id,
+              address: userInfo.address,
+              avatar: userInfo.avatar,
+              bio: userInfo.bio,
+              displayName: userInfo.displayName,
             })
-            const resFollowings = await getFollowings(userInfo[0]?.address, user?.address)
+            const resFollowings = await getFollowings(userInfo.id, user?.id)
             if (resFollowings) {
               setFollowings(resFollowings)
             }
-            const resFollowers = await getFollowers(userInfo[0]?.address, user?.address)
+            const resFollowers = await getFollowers(userInfo.id, user?.id)
             if (resFollowers) {
               setFollowers(resFollowers)
+            }
+
+            // 我登录了
+            if (user) {
+              const isFollowed: FollowRelationType | any = await checkfollowUser(userInfo.id, user.id)
+              setIsFollowedByMe(isFollowed.fromFollowedTo || false) // 我A(from)=>他人B(to)
+            }
+            // 没登录
+            else {
+              setIsFollowedByMe(false)
             }
           }
 
@@ -150,17 +152,16 @@ const DeschoolCard = (props: DeschoolCardProps) => {
       ) : (
         <>
           {/* 处理数据为空的情况 */}
-          <div className="mt-70px w-full px-6 pb-6 fcc-center font-ArchivoNarrow">
-            <span className="text-center text-xl w-200px overflow-hidden text-ellipsis" title={user?.displayName}>
-              {user?.displayName}
+          {currentUser && <div className="mt-70px w-full px-6 pb-6 fcc-center font-ArchivoNarrow">
+            <span className="text-center text-xl w-200px overflow-hidden text-ellipsis" title={currentUser?.displayName}>
+              {currentUser.displayName === currentUser.address ? getShortAddress(currentUser.address) : currentUser.displayName}
             </span>
-            <span className="text-xl text-gray-5">{currentUser?.ensName ? `${currentUser?.ensName}` : ''}</span>
-          </div>
+            {/* <span className="text-xl text-gray-5">{currentUser?.displayName ? `${currentUser.displayName}` : ''}</span> */}
+          </div>}
           <div className="mx-10 frc-center flex-wrap">
             <a
-              className={`${
-                followers?.length > 0 ? 'hover:underline hover:cursor-pointer' : ''
-              } text-xl mr-4 `}
+              className={`${followers?.length > 0 ? 'hover:underline hover:cursor-pointer' : ''
+                } text-xl mr-4 `}
               onClick={() => {
                 handleJumpFollowers(followers?.length)
               }}
@@ -169,9 +170,8 @@ const DeschoolCard = (props: DeschoolCardProps) => {
               <span className="text-gray-5 font-ArchivoNarrow">{t('profile.followers')}</span>
             </a>
             <a
-              className={`${
-                followings?.length > 0 ? 'hover:underline hover:cursor-pointer' : ''
-              } text-xl`}
+              className={`${followings?.length > 0 ? 'hover:underline hover:cursor-pointer' : ''
+                } text-xl`}
               onClick={() => {
                 handleJumpFollowing(followings?.length)
               }}

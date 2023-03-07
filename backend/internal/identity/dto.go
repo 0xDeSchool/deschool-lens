@@ -2,6 +2,7 @@ package identity
 
 import (
 	"github.com/0xdeschool/deschool-lens/backend/pkg/utils/linq"
+	"github.com/ethereum/go-ethereum/common"
 )
 
 type LinkPlatformInput struct {
@@ -20,7 +21,7 @@ func (l *LinkPlatformInput) ToEntity() *UserPlatform {
 	p := &UserPlatform{
 		Handle:   l.Handle,
 		Platform: l.Platform,
-		Address:  l.Address,
+		Address:  common.HexToAddress(l.Address).Hex(),
 	}
 	p.Data = l.Data
 	return p
@@ -43,6 +44,7 @@ type UserInfo struct {
 
 type Platform struct {
 	Platform UserPlatformType  `json:"platform"`
+	Address  string            `json:"address"`
 	Handle   string            `json:"handle"`
 	Data     map[string]string `json:"data,omitempty"`
 }
@@ -51,6 +53,7 @@ func NewPlatform(p *UserPlatform, isSelf bool) *Platform {
 	data := &Platform{
 		Platform: p.Platform,
 		Handle:   p.Handle,
+		Address:  p.Address,
 	}
 	if isSelf {
 		data.Data = p.Data

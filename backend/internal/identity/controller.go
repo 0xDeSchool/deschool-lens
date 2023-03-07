@@ -1,12 +1,14 @@
 package identity
 
 import (
+	"github.com/0xdeschool/deschool-lens/backend/pkg/db/mongodb"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/errx"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/ginx"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/server"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
 )
 
@@ -42,7 +44,7 @@ func updateUserInfo(ctx *gin.Context) {
 }
 
 func getUserInfo(ctx *gin.Context) {
-	addr := ctx.Query("addr")
+	addr := ctx.Query("user")
 	currentUser := ginx.CurrentUser(ctx)
 	if addr == "" {
 		if !currentUser.Authenticated() {
@@ -50,11 +52,15 @@ func getUserInfo(ctx *gin.Context) {
 		}
 		addr = currentUser.Address
 	}
-	if !common.IsHexAddress(addr) {
-		ginx.PanicValidatition("invalid address")
-	}
 	um := di.Get[UserManager]()
-	u := um.Find(ctx, addr)
+	var u *User
+	if primitive.IsValidObjectID(addr) {
+		u = um.Repo.Get(ctx, mongodb.IDFromHex(addr))
+	} else if common.IsHexAddress(addr) {
+		u = um.Find(ctx, addr)
+	} else {
+		ginx.PanicValidatition("invalid user")
+	}
 	if u == nil {
 		ginx.PanicNotFound("user not found")
 	}

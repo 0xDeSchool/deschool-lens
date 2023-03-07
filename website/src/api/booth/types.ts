@@ -41,6 +41,9 @@ export interface UserInfo {
   avatar?: string
   bio?: string
   platforms?: UserPlatform[]
+  FollowingCount?: number
+  FollowerCount?: number
+  IsFollowing?: boolean
 }
 
 export function platform(u: UserInfo, t: PlatformType): UserPlatform | undefined {

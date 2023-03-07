@@ -58,7 +58,7 @@ export async function checkfollowUser(toUser: string, fromUser: string): Promise
  */
 export async function getFollowings(userId: string, visitorUserId?: string): Promise<any> {
   try {
-    const str = visitorUserId ? `/follow/following?userId=${userId}&visitorUserId=${visitorUserId}` : `/follow/following?addr=${userId}`
+    const str = visitorUserId ? `/follow/following?userId=${userId}&visitorUserId=${visitorUserId}` : `/follow/following?userId=${userId}`
     const result = await http.get(str)
     return result
   } catch (err) {
@@ -75,7 +75,7 @@ export async function getFollowings(userId: string, visitorUserId?: string): Pro
  */
 export async function getFollowers(userId: string, visitorUserId?: string): Promise<any> {
   try {
-    const str = visitorUserId ? `/follow/follower?addr=${userId}&visitorUserId=${visitorUserId}` : `/follow/follower?addr=${userId}`
+    const str = visitorUserId ? `/follow/follower?userId=${userId}&visitorUserId=${visitorUserId}` : `/follow/follower?userId=${userId}`
     const result = await http.get(str)
     return result
   } catch (err) {

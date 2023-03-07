@@ -62,10 +62,10 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
     try {
       // // 根据钱包地址查用户profile信息
       const res = await getPrimaryProfile({
-				variables: {
-					address,
-				},
-			});
+        variables: {
+          address,
+        },
+      });
       const userInfo = res?.data?.address?.wallet?.primaryProfile
       // 没handle,则 ccProfile为空
       // 有handle,更新default profile
@@ -180,7 +180,8 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
   const handleDisconnect = async (ccProfile: UserPlatform) => {
     try {
       if (ccProfile?.handle) {
-        await getUserManager()?.unLinkPlatform(ccProfile?.handle, PlatformType.CYBERCONNECT)
+        debugger
+        await getUserManager().unLinkPlatform(ccProfile?.handle, ccProfile.address, PlatformType.CYBERCONNECT)
       }
       await getUserManager().tryAutoLogin()
     } catch (error: any) {
@@ -221,15 +222,15 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
           className="w-full h-12 border border-solid border-#6525FF bg-white hover:border-#6525FF66 hover:bg-#6525FF22"
           disabled={loading}
         >
-        <div className="text-#6525FF text-[16px] w-full frc-between">
-          <div className="frc-start">
-            <span className='mr-2'>CONNECT</span>
-            {loading && (
-              <LoadingOutlined color="#6525FF"/>
-            )}
+          <div className="text-#6525FF text-[16px] w-full frc-between">
+            <div className="frc-start">
+              <span className='mr-2'>CONNECT</span>
+              {loading && (
+                <LoadingOutlined color="#6525FF" />
+              )}
+            </div>
+            <img alt="mask" src={MetaMaskImage} style={{ width: '25px', height: '25px' }} />
           </div>
-          <img alt="mask" src={MetaMaskImage} style={{ width: '25px', height: '25px' }} />
-        </div>
           {/* (<div className="text-#6525FF text-[16px] w-full frc-center">
             DISCONNECT
           </div>) */}
