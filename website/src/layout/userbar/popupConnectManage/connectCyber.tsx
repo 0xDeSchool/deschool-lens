@@ -17,6 +17,7 @@ import { linkPlatform } from '~/api/booth/account'
 import { useAccount } from '~/account/context'
 import { getUserManager } from '~/account';
 import { CloseOutlined, LogoutOutlined } from '@ant-design/icons'
+import { UserPlatform } from '~/api/booth/types'
 
 const DOMAIN = 'test.com'
 interface ConnectBoardProps {
@@ -31,7 +32,7 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
   const [loginGetMessage] = useMutation(LOGIN_GET_MESSAGE);
   const [loginVerify] = useMutation(LOGIN_VERIFY);
   const [getPrimaryProfile] = useLazyQuery(PRIMARY_PROFILE);
-  const ccProfile = useAccount()?.ccProfile()
+  const ccProfileList = useAccount()?.ccProfileList()
   /**
    * @description 连接失败的异常处理
    * @param {}
@@ -55,7 +56,7 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
   // 通过 cyberconnect 签名登录
   const handleLoginByAddress = async (address: string, isReload?: boolean) => {
     // 如果当前库中已经保存过登录记录则不需要重新签名登录
-    if (ccProfile) {
+    if (!ccProfileList?.length) {
       return
     }
     try {
@@ -176,7 +177,7 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
 
 
   // 退出 CyberConnect 登录
-  const handleDisconnect = async () => {
+  const handleDisconnect = async (ccProfile: UserPlatform) => {
     try {
       if (ccProfile?.handle) {
         await getUserManager()?.unLinkPlatform(ccProfile?.handle, PlatformType.CYBERCONNECT)
@@ -199,37 +200,39 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
         <div className="bg-black rounded-2 px-2 py-2 frc-start">
           <img src={IconCyberConnectLogo} alt="cyberconnect" />
         </div>
-        {ccProfile && <div className='frc-between mt-4'>
-          <div className="frc-start">
-            <div className="bg-black rounded-50% w-28px h-28px frc-center">
-              <img src={IconCyberConnect} alt="cyberconnect" width={20} height={20} />
+        {ccProfileList?.map(ccProfile => (
+          <div key={ccProfile.handle} className='frc-between mt-4'>
+            <div className="frc-start">
+              <div className="bg-black rounded-50% w-28px h-28px frc-center">
+                <img src={IconCyberConnect} alt="cyberconnect" width={20} height={20} />
+              </div>
+              <span className='ml-2'>{ccProfile.handle}</span>
             </div>
-            <span className='ml-2'>{ccProfile.handle}</span>
+            <Button type="primary" size='small' shape="circle" icon={<LogoutOutlined />} className="frc-center" onClick={() => handleDisconnect(ccProfile)}></Button>
           </div>
-          <Button type="primary" size='small' shape="circle" icon={<LogoutOutlined />} className="frc-center" onClick={handleDisconnect}></Button>
-        </div>}
+        ))}
       </div>
       <div className="flex flex-row w-full items-center justify-center">
         <Button
           onClick={e => {
             e.preventDefault()
-            ccProfile ? handleDisconnect() : handleConnect()
+            handleConnect()
           }}
           className="w-full h-12 border border-solid border-#6525FF bg-white hover:border-#6525FF66 hover:bg-#6525FF22"
           disabled={loading}
         >
-          {!ccProfile ? (<div className="text-#6525FF text-[16px] w-full frc-between">
-            <div className="frc-start">
-              <span className='mr-2'>CONNECT</span>
-              {loading && (
-                <LoadingOutlined color="#6525FF"/>
-              )}
-            </div>
-            <img alt="mask" src={MetaMaskImage} style={{ width: '25px', height: '25px' }} />
-          </div>) :
-          (<div className="text-#6525FF text-[16px] w-full frc-center">
+        <div className="text-#6525FF text-[16px] w-full frc-between">
+          <div className="frc-start">
+            <span className='mr-2'>CONNECT</span>
+            {loading && (
+              <LoadingOutlined color="#6525FF"/>
+            )}
+          </div>
+          <img alt="mask" src={MetaMaskImage} style={{ width: '25px', height: '25px' }} />
+        </div>
+          {/* (<div className="text-#6525FF text-[16px] w-full frc-center">
             DISCONNECT
-          </div>)}
+          </div>) */}
         </Button>
       </div>
     </div>
