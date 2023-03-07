@@ -105,7 +105,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
         visible: false,
       })
     }
-  }, [updateTrigger,visitCase, user])
+  }, [updateTrigger, visitCase, user])
 
   const handleJumpFollowers = (num: number | undefined) => {
     if (num && num > 0) {
@@ -186,7 +186,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
       </p>
       {routeAddress && routeAddress !== user?.address && (
         <div className="m-10 text-right">
-          <button
+          {user && <button
             type="button"
             className="purple-border-button px-2 py-1"
             onClick={() => {
@@ -198,7 +198,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
             }}
           >
             {isFollowedByMe ? t('UnFollow') : t('Follow')}
-          </button>
+          </button>}
         </div>
       )}
       <DeschoolFollowersModal

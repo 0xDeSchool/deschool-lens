@@ -1,16 +1,14 @@
-import { useState } from 'react'
 import message from 'antd/es/message'
 import Alert from 'antd/es/alert'
 import ConnectDeschoolBoard from '~/layout/connectDeschool'
 import { useLayout } from '~/context/layout'
-import { useAccount } from '~/context/account'
 import MatchConfig from './MatchConfig'
 import TalentRadar from './TalentRadar'
+import { useAccount } from '~/account'
 
 const Match = () => {
   const { connectDeschoolBoardVisible, setConnectDeschoolBoardVisible } = useLayout() // 控制请求面板显隐
-  const { deschoolProfile } = useAccount()
-  const [loginByDeschool] = useState(deschoolProfile?.jwtToken)
+  const user = useAccount()
 
   const handleConnectDeschool = async () => {
     if (connectDeschoolBoardVisible) {
@@ -36,7 +34,7 @@ const Match = () => {
         </div>
         <h1>You can gain perks by connecting existed addresses or learning courses from trusted providers:</h1>
         <div className="frc-center my-4">
-          {loginByDeschool ? (
+          {user ? (
             <button type="button" className="border border-gray rounded-xl bg-gray-3 text-gray-6 hover:cursor-not-allowed p-2 mr-4">
               <span>Verified by Deschool</span>
             </button>
