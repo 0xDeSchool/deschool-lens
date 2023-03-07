@@ -8,6 +8,7 @@ import { DEFAULT_AVATAR, useAccount } from '~/account'
 import { followUser, unfollowUser } from '~/api/booth/follow'
 import { NewUserInfo } from '~/api/booth/types'
 import { getShortAddress } from '~/utils/format'
+import UserInfoSkeleton from './UserInfoSkeleton'
 
 type UserInfoDeschoolProps = NewUserInfo & {
   followerDetail?: () => void,
@@ -31,7 +32,7 @@ const UserInfoDeschool: React.FC<UserInfoDeschoolProps> = (props) => {
     message.success(`success following ${address}`)
   }
 
-  const handleUnFollow = async () => {
+  const handleUnfollow = async () => {
     if (!user?.id) {
       message.error('Please first login')
       return
@@ -42,10 +43,12 @@ const UserInfoDeschool: React.FC<UserInfoDeschoolProps> = (props) => {
     message.success(`success unfollow ${address}`)
   }
 
+  if (loading) return <UserInfoSkeleton />
+
   return (
     <>
       <div className='mx-auto fcc-center mb-8'>
-        <div className="relative frc-center ml-24px mt-24px mb-4">
+        <div className="relative frc-center mt-24px mb-4">
           {avatar ? (
             <Image
               preview={false}
@@ -92,7 +95,7 @@ const UserInfoDeschool: React.FC<UserInfoDeschoolProps> = (props) => {
       <p className="font-ArchivoNarrow text-#000000d8 text-16px leading-24px h-120px line-wrap three-line-wrap">
         {bio}
       </p>
-      <Button type='primary' className='mx-auto px-8' loading={loading} disabled={loading} onClick={!isFollowing ? handleFollow : handleUnFollow}>{!isFollowing ? 'Follow' : 'Unfollow'}</Button>
+      <Button type='primary' className='mx-auto px-8' loading={loading} disabled={loading} onClick={!isFollowing ? handleFollow : handleUnfollow}>{!isFollowing ? 'Follow' : 'Unfollow'}</Button>
     </>
   )
 }
