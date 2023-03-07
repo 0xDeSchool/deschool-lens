@@ -32,7 +32,7 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
   const [loginGetMessage] = useMutation(LOGIN_GET_MESSAGE);
   const [loginVerify] = useMutation(LOGIN_VERIFY);
   const [getPrimaryProfile] = useLazyQuery(PRIMARY_PROFILE);
-  const ccProfileList = useAccount()?.ccProfileList()
+  const user = useAccount()
   /**
    * @description 连接失败的异常处理
    * @param {}
@@ -55,8 +55,10 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
 
   // 通过 cyberconnect 签名登录
   const handleLoginByAddress = async (address: string, isReload?: boolean) => {
+    debugger
+    const ccprofile = user?.ccProfileList(address)
     // 如果当前库中已经保存过登录记录则不需要重新签名登录
-    if (!ccProfileList?.length) {
+    if (ccprofile && ccprofile.length > 0) {
       return
     }
     try {
@@ -193,7 +195,7 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
     if (connectTrigger) {
       handleLoginByAddress(connectTrigger, true)
     }
-  }, [connectTrigger])
+  }, [connectTrigger, user])
 
   return (
     <div className="fcc-between w-full min-h-360px p-4 rounded-lg shadow">
@@ -201,7 +203,7 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
         <div className="bg-black rounded-2 px-2 py-2 frc-start">
           <img src={IconCyberConnectLogo} alt="cyberconnect" />
         </div>
-        {ccProfileList?.map(ccProfile => (
+        {user?.ccProfileList()?.map(ccProfile => (
           <div key={ccProfile.handle} className='frc-between mt-4'>
             <div className="frc-start">
               <div className="bg-black rounded-50% w-28px h-28px frc-center">

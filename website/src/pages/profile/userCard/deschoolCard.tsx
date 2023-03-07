@@ -105,7 +105,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
         visible: false,
       })
     }
-  }, [updateTrigger, routeAddress])
+  }, [updateTrigger, routeAddress, user])
 
   const handleJumpFollowers = (num: number | undefined) => {
     if (num && num > 0) {

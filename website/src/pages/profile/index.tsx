@@ -19,7 +19,6 @@ const UserProfile = () => {
   // 初始化登录场景，区分自己访问自己或自己访问别人或者别人访问
   const initCase = () => {
     if (!user) {
-      message.warning('please login first')
       return
     }
     if (address && user?.address && user?.address !== address) {
