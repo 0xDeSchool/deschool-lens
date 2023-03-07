@@ -1,9 +1,9 @@
 function arrayBuffer2Hex(buffer: ArrayBuffer) {
   return (
-    "0x" +
+    `0x${ 
     Array.prototype.map
-      .call(new Uint8Array(buffer), (x) => ("00" + x.toString(16)).slice(-2))
-      .join("")
+      .call(new Uint8Array(buffer), (x) => (`00${  x.toString(16)}`).slice(-2))
+      .join("")}`
   );
 }
 
@@ -16,7 +16,7 @@ function arrayBuffer2String(buffer: ArrayBuffer) {
 export async function generateSigningKey() {
   const algorithm = {
     name: "ECDSA",
-    namedCurve: "P-256"
+    namedCurve: "P-256",
   };
   const extractable = false;
   const keyUsages: KeyUsage[] = ["sign", "verify"];
@@ -24,7 +24,7 @@ export async function generateSigningKey() {
   const signingKey = await window.crypto.subtle.generateKey(
     algorithm,
     extractable,
-    keyUsages
+    keyUsages,
   );
 
   console.log("signingKey: ", signingKey);
@@ -35,7 +35,7 @@ export async function generateSigningKey() {
 export async function getPublicKey(signingKey: CryptoKeyPair) {
   const exported = await window.crypto.subtle.exportKey(
     "spki",
-    signingKey.publicKey
+    signingKey.publicKey,
   );
 
   return window.btoa(arrayBuffer2String(exported));
@@ -43,13 +43,13 @@ export async function getPublicKey(signingKey: CryptoKeyPair) {
 
 export async function signWithSigningKey(
   input: string,
-  signingKey: CryptoKeyPair
+  signingKey: CryptoKeyPair,
 ) {
   const algorithm = {
     name: "ECDSA",
     hash: {
-      name: "SHA-256"
-    }
+      name: "SHA-256",
+    },
   };
   const enc = new TextEncoder();
   const encodedMessage = enc.encode(input);
@@ -57,7 +57,7 @@ export async function signWithSigningKey(
   const signature = await window.crypto.subtle.sign(
     algorithm,
     signingKey.privateKey,
-    encodedMessage
+    encodedMessage,
   );
 
   return arrayBuffer2Hex(signature);

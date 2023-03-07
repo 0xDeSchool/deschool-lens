@@ -76,20 +76,7 @@ const CreateCyberConnectProfile: React.FC = () => {
     }
   }
 
-  // 轮询获取 CyberConnect Profile, 如果获取到数据那么停止轮询
-  const pollingGetCyberConnectProfile = async () => {
-    const timer = setTimeout(async () => {
-      const userInfo = await getCyberConnectProfile()
-      if (userInfo) {
-        // if user info is available, stop polling
-        clearTimeout(timer)
-      } else {
-        // if user info is not available, try again in 1.5 seconds
-        pollingGetCyberConnectProfile()
-      }
-    }, 1500)
-  }
-
+  
   // 获取 CyberConnect Profile
   const getCyberConnectProfile = async () => {
     try {
@@ -109,6 +96,21 @@ const CreateCyberConnectProfile: React.FC = () => {
     } finally {
       setLoading(false)
     }
+  }
+
+
+  // 轮询获取 CyberConnect Profile, 如果获取到数据那么停止轮询
+  const pollingGetCyberConnectProfile = async () => {
+    const timer = setTimeout(async () => {
+      const userInfo = await getCyberConnectProfile()
+      if (userInfo) {
+        // if user info is available, stop polling
+        clearTimeout(timer)
+      } else {
+        // if user info is not available, try again in 1.5 seconds
+        pollingGetCyberConnectProfile()
+      }
+    }, 1500)
   }
 
   return (

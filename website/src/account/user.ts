@@ -1,16 +1,22 @@
 import { getSignMessage, getUserInfo, login, unlinkPlatform } from "~/api/booth/account"
 import { PlatformType } from "~/api/booth/booth"
-import { SignMsgType, UserInfo, UserPlatform } from "~/api/booth/types"
+import type { UserInfo, UserPlatform } from "~/api/booth/types";
+import { SignMsgType } from "~/api/booth/types"
 import { getShortAddress } from "~/utils/format"
 import { getWallet } from "~/wallet"
 import { getCachedToken, removeToken, setToken } from "./token"
 
 export class AccountInfo {
   id: string
+
   address: string
+
   displayName?: string
+
   avatar?: string
+
   bio?: string
+
   platforms?: UserPlatform[]
 
   constructor(info: UserInfo) {
@@ -57,6 +63,7 @@ export class AccountInfo {
 
 export class UserManager {
   private setUser: React.Dispatch<React.SetStateAction<AccountInfo | null>>
+
   private _user: AccountInfo | null = null
 
   constructor(setAction: React.Dispatch<React.SetStateAction<AccountInfo | null>>) {

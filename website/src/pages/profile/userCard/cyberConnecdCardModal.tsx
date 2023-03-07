@@ -8,14 +8,14 @@ import ShowMoreLoading from '~/components/loading/showMore'
 import { RoleType } from '~/lib/enum'
 import { getUserContext, useAccount } from '~/context/account'
 import { Link } from 'react-router-dom'
-import type { CyberProfile } from '~/lib/types/app'
-import LensAvatar from './avatar'
 import { useLazyQuery } from '@apollo/client'
 
 import useFollow from '~/hooks/useCyberConnectFollow'
 import useUnFollow from '~/hooks/useCyberConnectUnfollow'
 import { GET_FOLLOWING_LIST_BY_ADDRESS_EVM } from '~/api/cc/graphql/GetFollowingListByAddressEVM'
 import { GET_FOLLOWER_LIST_BY_HANDLE } from '~/api/cc/graphql/GetFollowersListByHandle'
+import LensAvatar from './avatar'
+import type { CyberProfile } from '~/lib/types/app'
 
 const PADE_SIZE = 10
 let page = 1
@@ -45,15 +45,14 @@ const FollowersModal = (props: {
         handle,
         me: address,
         first: page * PADE_SIZE,
-      }
+      },
     })
     const followers = resp?.data?.profileByHandle?.followers
-    const hasNextPage = followers?.pageInfo?.hasNextPage
-    setHasNextPage(hasNextPage)
+    const hasNext = followers?.pageInfo?.hasNextPage
+    setHasNextPage(hasNext)
     console.log('followers', followers)
     let edges = followers?.edges || []
-    edges = edges.map((item: any) => {
-      return {
+    edges = edges.map((item: any) => ({
         address: item.node.address.address,
         avatar: item.node.profile.avatar,
         handleStr: item.node.profile.handle,
@@ -62,8 +61,7 @@ const FollowersModal = (props: {
         isFollowedByMe: item.node.profile.isFollowedByMe,
         bio: item.node.profile.metadataInfo.bio,
         displayName: item.node.profile.metadataInfo.displayName,
-      }
-    })
+      }))
     setFollows(edges)
   }
 
@@ -71,19 +69,17 @@ const FollowersModal = (props: {
   const initUserFollowingsInfo = async (address: string) => {
     const resp = await getFollowingByAddressEVM({
       variables: {
-        address
-      }
+        address,
+      },
     })
     const followings = resp?.data?.address?.followings
     const hasNextPage = followings?.pageInfo?.hasNextPage
     setHasNextPage(hasNextPage)
     let edges = followings?.edges || []
-    edges = edges.map((item: any) => {
-      return {
+    edges = edges.map((item: any) => ({
         address: item.node.address.address,
         ...item.node.profile,
-      }
-    })
+      }))
     setFollows(edges)
   }
 
@@ -166,16 +162,16 @@ const FollowersModal = (props: {
         <div className="fcc-start max-h-600px space-y-2 overflow-auto scroll-hidden">
           {follows && follows.length > 0 ? (
             <div className="w-full">
-              {follows?.map(follow => (
-                <div key={`${follow?.id}-${follow?.address}`} className="relative border rounded-xl p-2 w-full frs-center">
+              {follows?.map(f => (
+                <div key={`${f?.id}-${f?.address}`} className="relative border rounded-xl p-2 w-full frs-center">
                   <div className="relative w-60px h-60px">
-                    <LensAvatar avatarUrl={follow?.avatar} size={60} wrapperClassName="fcc-center w-full" />
+                    <LensAvatar avatarUrl={f?.avatar} size={60} wrapperClassName="fcc-center w-full" />
                   </div>
                   <div className="flex-1 fcs-center ml-2">
-                    <Link to={`/profile/${follow?.address}/resume`}>
-                      <h1>{follow?.name}</h1>
+                    <Link to={`/profile/${f?.address}/resume`}>
+                      <h1>{f?.name}</h1>
                     </Link>
-                    <p>{follow?.bio}</p>
+                    <p>{f?.bio}</p>
                   </div>
                   <div>
                     {/* 这里有多种情况： */}
@@ -189,14 +185,14 @@ const FollowersModal = (props: {
                         type="button"
                         className="purple-border-button px-2 py-1"
                         onClick={() => {
-                          if (follow?.isFollowedByMe) {
-                            handleUnfollow(follow?.handle)
+                          if (f?.isFollowedByMe) {
+                            handleUnfollow(f?.handle)
                           } else {
-                            handleFollow(follow?.handle)
+                            handleFollow(f?.handle)
                           }
                         }}
                       >
-                        {follow?.isFollowedByMe ? t('UnFollow') : t('Follow')}
+                        {f?.isFollowedByMe ? t('UnFollow') : t('Follow')}
                       </button>
                     )}
                   </div>

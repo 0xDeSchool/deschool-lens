@@ -1,5 +1,6 @@
 import { createRoot } from 'react-dom/client'
 import ConfigProvider from 'antd/es/config-provider'
+import { ApolloProvider } from '@apollo/client'
 import RouterObj from './router'
 import AllContextProvider from './context'
 import './styles/fonts.css'
@@ -9,7 +10,6 @@ import './styles/index.css'
 import 'antd/dist/reset.css'
 import './styles/custom.css'
 import './locales/i18n.ts'
-import { ApolloProvider } from '@apollo/client'
 import { apolloClient } from './api/cc/apollo'
 
 // import mockXHR from './mock'
@@ -44,7 +44,7 @@ root.render(
             },
             Input: {
               borderRadius: 0,
-            }
+            },
           },
         }}
       >

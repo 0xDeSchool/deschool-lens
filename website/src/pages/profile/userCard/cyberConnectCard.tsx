@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react'
 import { getShortAddress } from '~/utils/format'
 import { useTranslation } from 'react-i18next'
-import FollowersModal from './cyberConnecdCardModal'
 import useFollow from '~/hooks/useCyberConnectFollow'
 import useUnFollow from '~/hooks/useCyberConnectUnfollow'
 import { GET_FOLLOWER_BY_HANDLE } from '~/api/cc/graphql/GetFollowersByHandle'
 import { useLazyQuery } from '@apollo/client'
 import { GET_FOLLOWING_BY_ADDRESS_EVM } from '~/api/cc/graphql/GetFollowingsByAddressEVM'
 import { PRIMARY_PROFILE } from '~/api/cc/graphql'
-import { ICyberFollowers, ICyberFollowings } from '~/lib/types/cyberConnect'
+import type { ICyberFollowers, ICyberFollowings } from '~/lib/types/cyberConnect'
 import message from 'antd/es/message'
-import CreateCyberConnectProfile from './createCCProfile'
 import { useAccount } from '~/account'
-import { UserPlatform } from '~/api/booth/types'
+import type { UserPlatform } from '~/api/booth/types'
+import CreateCyberConnectProfile from './createCCProfile'
+import FollowersModal from './cyberConnecdCardModal'
 
 type CyberCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
@@ -44,7 +44,7 @@ const CyberCard = (props: CyberCardProps) => {
       variables: {
         handle,
         me: address,
-      }
+      },
     })
     const primaryProfile = resp?.data?.profileByHandle
     console.log('primaryProfile', primaryProfile)
@@ -58,11 +58,11 @@ const CyberCard = (props: CyberCardProps) => {
   const initUserFollowingsInfo = async (address: string) => {
     const resp = await getFollowingByAddressEVM({
       variables: {
-        address
-      }
+        address,
+      },
     })
     setFollowingsInfo({
-      followingCount: resp?.data?.address?.followingCount || 0
+      followingCount: resp?.data?.address?.followingCount || 0,
     })
   }
 
@@ -82,7 +82,7 @@ const CyberCard = (props: CyberCardProps) => {
           const res = await getPrimaryProfile({
             variables: {
               address: routeAddress,
-              me: user?.address
+              me: user?.address,
             },
           });
           const userInfo = res?.data?.address?.wallet?.primaryProfile

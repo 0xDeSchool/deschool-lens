@@ -1,12 +1,12 @@
 import Button from 'antd/es/button'
-import type { ResumeBlockInput, ResumeCardData } from '../../types'
-import { BlockType } from '../../enum'
-import ResumeCard from '../resumeCard'
 import { arrayMoveImmutable } from 'array-move'
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { MenuOutlined } from '@ant-design/icons'
+import ResumeCard from '../resumeCard'
+import { BlockType } from '../../enum'
+import type { ResumeBlockInput, ResumeCardData } from '../../types'
 
 const CAREER_TITLE = 'Career Experiences'
 const EDU_TITLE = 'Education Experiences'
@@ -79,8 +79,8 @@ const ResumeBlock = (input: ResumeBlockInput) => {
       <div>
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={dataArr} id="order" strategy={verticalListSortingStrategy}>
-            {dataArr?.map((item: ResumeCardData, index: number) => (
-              <SortableItem key={`${index}-${item.startTime}-${item.endTime}`} {...item} />
+            {dataArr?.map((item: ResumeCardData) => (
+              <SortableItem key={`${item.id}`} {...item} />
             ))}
           </SortableContext>
         </DndContext>

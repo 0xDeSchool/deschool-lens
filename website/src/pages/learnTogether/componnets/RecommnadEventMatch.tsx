@@ -1,6 +1,6 @@
 import Avatar from 'antd/es/avatar'
 import Button from 'antd/es/button'
-import { MatchedEvent } from '~/hooks/useCCProfile'
+import type { MatchedEvent } from '~/hooks/useCCProfile'
 import AvatarList from './AvatarList'
 import Tags from './Tags'
 

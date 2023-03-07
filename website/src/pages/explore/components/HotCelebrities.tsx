@@ -3,10 +3,10 @@ import { useTranslation } from 'react-i18next'
 import Star1 from '~/assets/images/star1.png'
 import Skeleton from 'antd/es/skeleton'
 import Empty from 'antd/es/empty'
+import { getLatestUsers } from '~/api/booth'
+import type { NewUserInfo } from '~/api/booth/types'
 import CelebrityCard from './CelebrityCard'
 import CelebrityCardNew from './CelebrityCardNew'
-import { getLatestUsers } from '~/api/booth'
-import { NewUserInfo } from '~/api/booth/types'
 
 const HotCelebrities = (props: { searchWord: string }) => {
   const { searchWord } = props

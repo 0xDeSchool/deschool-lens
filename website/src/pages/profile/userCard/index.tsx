@@ -5,17 +5,17 @@
  * @props
  */
 import { useEffect, useState } from 'react'
-import DeschoolCard from './deschoolCard'
-import LensCard from './lensCard'
-import CyberConnectCard from './cyberConnectCard'
-import { VisitType } from '../utils/visitCase'
 import { useAccount } from '~/account'
-import HeaderLayout from './headerLayout'
 import { PlatformType } from '~/api/booth/booth'
-import LensAvatar from './avatar'
 import fallbackImage from '~/assets/images/fallbackImage'
 import Image from 'antd/es/image'
 import Jazzicon from 'react-jazzicon'
+import DeschoolCard from './deschoolCard'
+import LensCard from './lensCard'
+import CyberConnectCard from './cyberConnectCard'
+import type { VisitType } from '../utils/visitCase'
+import HeaderLayout from './headerLayout'
+import LensAvatar from './avatar'
 
 type UserCardProps = {
   routeAddress: string | undefined // 父组件希望展示的地址，如果为空则展示登录者自己信息
@@ -44,7 +44,7 @@ const UserCard = (props: UserCardProps) => {
   }, [routeAddress, user?.address])
 
   return (
-    <div className={`w-full pb-1 shadow-md rounded-xl`}>
+    <div className="w-full pb-1 shadow-md rounded-xl">
       <div className="relative w-full frc-center">
         <div className='absolute z-1 top-2 left-2 right-2'><HeaderLayout change={setProfileType}/></div>
         {profileType !== PlatformType.DESCHOOL ? (<Image

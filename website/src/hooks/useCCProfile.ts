@@ -1,7 +1,8 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAccount } from '~/account';
-import { EventMatchedItem, filterEvents, FilterEventsRequest } from '~/api/booth/event';
+import type { EventMatchedItem, FilterEventsRequest } from '~/api/booth/event';
+import { filterEvents } from '~/api/booth/event';
 import { GET_RECOMENDED_EVENTS } from '~/api/cc/graphql/GetRecommand';
 
 const client = new ApolloClient({
@@ -20,7 +21,7 @@ const useCCProfile = (defaultPage: number) => {
   const [page, setPage] = useState<number>(defaultPage);
   const [hasNextPage, setHasNextPage] = useState<boolean>(false);
   const value = useMemo(() => recomendedEvents, [recomendedEvents])
-  const [defaultRecommandEvent, setDefaultRecommandEvent] = useState<RecomendedEvents | null>()
+  const [defaultRecommandEvent, setDefaultRecommandEvent] = useState<MatchedEvent | null>()
 
   const user = useAccount()
 
@@ -45,8 +46,8 @@ const useCCProfile = (defaultPage: number) => {
         setLoading(true)
         const result = await client.query({
           query: GET_RECOMENDED_EVENTS, variables: {
-            first: PAGE_SIZE * page
-          }
+            first: PAGE_SIZE * page,
+          },
         })
         const list: MatchedEvent[] = result?.data?.trendingEvents?.list ?? []
 

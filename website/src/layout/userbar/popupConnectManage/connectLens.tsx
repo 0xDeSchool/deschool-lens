@@ -111,7 +111,7 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
             accessToken: authenticatedResult.accessToken,
             refreshToken: authenticatedResult.refreshToken,
           },
-          address: address,
+          address,
         })
       }
     } catch (error: any) {
@@ -189,7 +189,7 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
             </div>
             <span className='ml-2'>{lensProfile.handle}</span>
           </div>
-          <Button type="primary" size='small' shape="circle" icon={<LogoutOutlined />} className="frc-center" onClick={handleDisconnect}></Button>
+          <Button type="primary" size='small' shape="circle" icon={<LogoutOutlined />} className="frc-center" onClick={handleDisconnect} />
         </div>}
       </div>
       <div className="flex flex-row w-full items-center justify-center">

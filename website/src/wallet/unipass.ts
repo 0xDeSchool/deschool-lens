@@ -2,10 +2,12 @@
 
 import { UniPassPopupSDK } from '@unipasswallet/popup-sdk'
 import { UniPassTheme } from '@unipasswallet/popup-types'
-import { TransactionMessage, WalletConfig, WalletProvider, WalletType } from './wallet'
+import type { TransactionMessage, WalletConfig, WalletProvider} from './wallet';
+import { WalletType } from './wallet'
 
 export class UniPassProvider implements WalletProvider {
   private wallet: any
+
   config: WalletConfig = { type: WalletType.UniPass }
 
   constructor() {

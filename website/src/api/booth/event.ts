@@ -54,6 +54,6 @@ export interface InterestEventRequest {
 export function interestEvent(request: InterestEventRequest) {
   return http.post('/interest', {
     ...request,
-    targetType: 'link3_event'
+    targetType: 'link3_event',
   })
 }

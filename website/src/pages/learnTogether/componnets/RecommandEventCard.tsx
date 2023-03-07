@@ -12,15 +12,13 @@ type RecommandEventCardProps = {
 
 const RecommandEventCard: React.FC<RecommandEventCardProps> = (props) => {
   const { info } = props
-  const count = 10
-  const avatarList = ['', '', '']
   const account = useAccount()
 
   const handleIterested = async () => {
     if (account) {
       await interestEvent({
         targetId: info.id,
-        address: account.address,
+        userId: account.id,
       })
     }
     window.open(`https://link3.to/e/${info.id}`)

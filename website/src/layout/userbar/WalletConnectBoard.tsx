@@ -7,9 +7,9 @@ import { useTranslation } from 'react-i18next'
 import Avatar from 'antd/es/avatar'
 import Button from 'antd/es/button/button'
 import { RightOutlined } from '@ant-design/icons'
-import PopupConnectManage from './popupConnectManage'
 import Modal from 'antd/es/modal'
 import { DEFAULT_AVATAR, getUserManager, useAccount } from '~/account'
+import PopupConnectManage from './popupConnectManage'
 
 type PopoverAccountInfoProps = {
   open: () => void

@@ -71,7 +71,7 @@ const UpdateUsername: React.FC<UpdateUsernameProps> = (props) => {
         className="mr-2"
         onClick={() => handleToggle()}>{edit ? 'SAVE' : 'EDIT'}</Button>
       {edit && <Button size='small' disabled={disabled}
-        onClick={() => setEdit(false)}>{'CANCEL'}</Button>}
+        onClick={() => setEdit(false)}>CANCEL</Button>}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { getUserManager, useAccount } from '~/account'
+import { getUserManager } from '~/account'
 
 export type VisitType = 0 | 1 | -1
 

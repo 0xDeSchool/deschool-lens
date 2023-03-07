@@ -9,7 +9,7 @@ import Image from 'antd/es/image'
 import Jazzicon from 'react-jazzicon/dist/Jazzicon'
 import { DEFAULT_AVATAR } from '~/context/account'
 import { getShortAddress } from '~/utils/format'
-import { UserInfo } from '~/api/booth/types'
+import type { UserInfo } from '~/api/booth/types'
 import { PlatformType } from '~/api/booth/booth'
 
 const normalClass = 'frc-center rounded-full w-36px'
