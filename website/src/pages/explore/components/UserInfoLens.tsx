@@ -29,7 +29,6 @@ const UserInfoLens: React.FC<UserInfoLensProps> = (props) => {
   const [isFollowLoading, setIsFollowLoading] = useState(false)
   const [loading, setLoading] = useState(false)
   const user = useAccount()
-  const lensProfile = user?.lensProfile()
 
   // 重置用户信息
   const resetUserInfo = () => {
@@ -71,11 +70,12 @@ const UserInfoLens: React.FC<UserInfoLensProps> = (props) => {
   const handleFollow = async () => {
     if (isFollowLoading) return
     // 有 lens handle
+    const lensProfile = user?.lensProfile()
     if (lensProfile?.handle) {
       setIsFollowLoading(true)
       const tx = await followByProfileIdWithLens(currentUser?.id!)
       setIsFollowLoading(false)
-      message.success(`success following ${followUser?.handle},tx is ${tx}`)
+      message.success(`success following ${currentUser?.handle},tx is ${tx}`)
     }
     // 登录了lens 没有lens handle
     else if (!lensProfile?.handle) {
@@ -109,9 +109,9 @@ const UserInfoLens: React.FC<UserInfoLensProps> = (props) => {
   const handleUnfollow = async () => {
     if (isFollowLoading) return
     setIsFollowLoading(true)
-    const tx = await unfollowByProfileIdWithLens(followUser?.data?.id!)
+    const tx = await unfollowByProfileIdWithLens(currentUser?.id)
     setIsFollowLoading(false)
-    message.success(`success unfollow ${followUser?.handle},tx is ${tx}`)
+    message.success(`success unfollow ${currentUser?.handle},tx is ${tx}`)
   }
 
   if (loading) return <UserInfoSkeleton />
