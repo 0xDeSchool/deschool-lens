@@ -64,6 +64,13 @@
   status = 200
   force = true
 
+
+  [[redirects]]
+  from = "/ccProfile/*"
+  to = "https://api.cyberconnect.dev/profile/:splat"
+  status = 200
+  force = true
+
 [[redirects]]
   from = "/mypinata/*"
   to = "https://deschool.mypinata.cloud/:splat"
