@@ -1,8 +1,5 @@
 import Popover from 'antd/es/popover'
 import { useEffect, useState } from 'react'
-import IconCyberConnect from '~/assets/icons/cyberConnect.svg'
-import IconDeschool from '~/assets/icons/deschool.svg'
-import IconLens from '~/assets/icons/lens.svg'
 import { useTranslation } from 'react-i18next'
 import Avatar from 'antd/es/avatar'
 import Button from 'antd/es/button/button'
@@ -10,6 +7,7 @@ import { RightOutlined } from '@ant-design/icons'
 import Modal from 'antd/es/modal'
 import { DEFAULT_AVATAR, getUserManager, useAccount } from '~/account'
 import PopupConnectManage from './popupConnectManage'
+import { CyberConnectIcon, DeschoolIcon, LensIcon } from '~/components/icon'
 
 type PopoverAccountInfoProps = {
   open: () => void
@@ -25,7 +23,7 @@ const PopoverAccountInfo: React.FC<PopoverAccountInfoProps> = (props) => {
       {user && <div className="w-full frc-between gap-8">
         <div className='frc-start'>
           <div className="bg-#774ff8 rounded-50% w-28px h-28px frc-center">
-            <img src={IconDeschool} alt="lens" width={20} height={20} />
+            <DeschoolIcon  alt="lens" width={20} height={20} />
           </div>
           <span className='ml-2'>{user.formateName()}</span>
         </div>
@@ -34,7 +32,7 @@ const PopoverAccountInfo: React.FC<PopoverAccountInfoProps> = (props) => {
       {lens && <div className="w-full frc-between gap-8">
         <div className='frc-start'>
           <div className="bg-#abfe2c rounded-50% w-28px h-28px frc-center">
-            <img src={IconLens} alt="lens" width={20} height={20} />
+            <LensIcon alt="lens" width={20} height={20} />
           </div>
           <span className='ml-2'>{lens.handle}</span>
         </div>
@@ -43,7 +41,7 @@ const PopoverAccountInfo: React.FC<PopoverAccountInfoProps> = (props) => {
       {cc && <div className="w-full frc-between gap-8">
         <div className='frc-between'>
           <div className="bg-black rounded-50% w-28px h-28px frc-center">
-            <img src={IconCyberConnect} alt="lens" width={20} height={20} />
+            <CyberConnectIcon  alt="lens" width={20} height={20} />
           </div>
           <span className='ml-2'>{cc.handle}</span>
         </div>
@@ -52,7 +50,7 @@ const PopoverAccountInfo: React.FC<PopoverAccountInfoProps> = (props) => {
       {deschool && <div className="w-full frc-between gap-8">
         <div className='frc-start'>
           <div className="bg-#774ff8 rounded-50% w-28px h-28px frc-center">
-            <img src={IconDeschool} alt="lens" width={20} height={20} />
+            <DeschoolIcon  alt="lens" width={20} height={20} />
           </div>
           <span className='ml-2'>
             {deschool.displayName}
