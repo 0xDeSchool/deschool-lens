@@ -174,7 +174,7 @@ const UserInfoLens: React.FC<UserInfoLensProps> = (props) => {
         {bio}
       </p>
       <div className='frc-between gap-8 mx-auto'>
-        <Button type='primary' className='mx-auto px-8' loading={isFollowLoading} disabled={isFollowLoading} onClick={!isFollowedByMe ? handleFollow : handleUnfollow}>{!isFollowedByMe ? 'Follow' : 'Unfollow'}</Button>
+        <Button type='primary' className='mx-auto px-8' loading={isFollowLoading} disabled={!currentUser?.id || isFollowLoading} onClick={!isFollowedByMe ? handleFollow : handleUnfollow}>{!isFollowedByMe ? 'Follow' : 'Unfollow'}</Button>
         <Button className='w-120px' onClick={handleJumpProfile}> {t('LearnMore')}</Button>
       </div>
     </>
