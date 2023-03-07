@@ -237,7 +237,7 @@ func getUsers(ctx *gin.Context) {
 	if currentUser.Authenticated() {
 		followingUsers = fRepo.CheckIsFollowing(ctx, currentUser.ID, userIds)
 	}
-	items := make([]*UserItem, len(users))
+	items := make([]*UserItem, 0, len(users))
 	for i := range users {
 		u := &users[i]
 		item := NewUserItem(u)

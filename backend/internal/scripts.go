@@ -21,10 +21,10 @@ var userRepo identity.UserRepository
 func runFix() {
 	ctx := context.Background()
 	userRepo = *di.Get[identity.UserRepository]()
-	//fixUsers(ctx)
+	fixUsers(ctx)
 	//fixFollow(ctx)
 	//fixMatch(ctx)
-	fixQ11E(ctx)
+	//fixQ11E(ctx)
 }
 
 func fixUsers(ctx context.Context) {
@@ -37,6 +37,8 @@ func fixUsers(ctx context.Context) {
 			Address: u.Address,
 		}
 		item.ID = u.ID
+		item.CreatorId = u.CreatorId
+		item.CreatedAt = u.CreatedAt
 		item.DisplayName = u.Address
 		users = append(users, item)
 	}
