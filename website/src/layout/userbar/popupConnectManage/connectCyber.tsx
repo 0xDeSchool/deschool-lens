@@ -55,7 +55,6 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
 
   // 通过 cyberconnect 签名登录
   const handleLoginByAddress = async (address: string, isReload?: boolean) => {
-    debugger
     const ccprofile = user?.ccProfileList(address)
     // 如果当前库中已经保存过登录记录则不需要重新签名登录
     if (ccprofile && ccprofile.length > 0) {
