@@ -1,8 +1,11 @@
 import Button from 'antd/es/button'
 import Image from 'antd/es/image'
+import message from 'antd/es/message'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Jazzicon from 'react-jazzicon/dist/Jazzicon'
-import { DEFAULT_AVATAR } from '~/account'
+import { DEFAULT_AVATAR, useAccount } from '~/account'
+import { followUser, unfollowUser } from '~/api/booth/follow'
 import { NewUserInfo } from '~/api/booth/types'
 import { getShortAddress } from '~/utils/format'
 
@@ -12,8 +15,32 @@ type UserInfoDeschoolProps = NewUserInfo & {
 }
 
 const UserInfoDeschool: React.FC<UserInfoDeschoolProps> = (props) => {
-  const { avatar, address, displayName, bio, isFollowing, followerCount, followingCount, followerDetail, followingDetail } = props
+  const { id, avatar, address, displayName, bio, isFollowing, followerCount, followingCount, followerDetail, followingDetail } = props
   const { t } = useTranslation()
+  const user = useAccount()
+  const [loading, setLoading] = useState(false)
+
+  const handleFollow = async () => {
+    if (!user?.id) {
+      message.error('Please first login')
+      return
+    }
+    setLoading(true)
+    await followUser(id, user?.id)
+    setLoading(false)
+    message.success(`success following ${address}`)
+  }
+
+  const handleUnFollow = async () => {
+    if (!user?.id) {
+      message.error('Please first login')
+      return
+    }
+    setLoading(true)
+    await unfollowUser(id, user?.id)
+    setLoading(false)
+    message.success(`success unfollow ${address}`)
+  }
 
   return (
     <>
@@ -65,7 +92,7 @@ const UserInfoDeschool: React.FC<UserInfoDeschoolProps> = (props) => {
       <p className="font-ArchivoNarrow text-#000000d8 text-16px leading-24px h-120px line-wrap three-line-wrap">
         {bio}
       </p>
-      <Button type='primary' className='mx-auto px-8'>{!isFollowing ? 'Follow' : 'Unfollow'}</Button>
+      <Button type='primary' className='mx-auto px-8' loading={loading} disabled={loading} onClick={!isFollowing ? handleFollow : handleUnFollow}>{!isFollowing ? 'Follow' : 'Unfollow'}</Button>
     </>
   )
 }

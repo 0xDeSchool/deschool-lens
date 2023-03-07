@@ -69,8 +69,7 @@ const WalletConnectBoard = () => {
   const user = useAccount()
   const [open, setOpen] = useState(false)
   const [showPopover, setShowPopover] = useState(false)
-  const onClick = (e: any) => {
-    e.preventDefault()
+  const onClick = () => {
     setOpen(true)
   }
 
@@ -85,7 +84,7 @@ const WalletConnectBoard = () => {
       {!user && <button
         type="button"
         className="mx-auto text-white text-center text-xl whitespace-nowrap font-ArchivoNarrow min-w-100px w-200px h-48px bg-primary hover:bg-accent"
-        onClick={(e) => onClick(e)}
+        onClick={() => onClick()}
       >
         <div className="mx-3 py-2">{t('Connect Wallet')}</div>
       </button>}
