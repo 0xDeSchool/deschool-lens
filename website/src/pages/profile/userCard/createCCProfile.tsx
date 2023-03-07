@@ -6,6 +6,8 @@ import { ccContractHub } from '~/api/cc/contract';
 import { PRIMARY_PROFILE } from '~/api/cc/graphql';
 import { useLazyQuery } from '@apollo/client';
 import { useAccount } from '~/account';
+import { linkPlatform } from '~/api/booth';
+import { PlatformType } from '~/api/booth/booth';
 
 const CreateCyberConnectProfile: React.FC = () => {
   const user = useAccount()
@@ -106,6 +108,14 @@ const CreateCyberConnectProfile: React.FC = () => {
       const userInfo = await getCyberConnectProfile()
       if (userInfo) {
         // if user info is available, stop polling
+        await linkPlatform({
+          handle: userInfo?.handle,
+          platform: PlatformType.CYBERCONNECT,
+          data: {
+            id: userInfo?.id,
+          },
+          address: user?.address!,
+        })
         clearTimeout(timer)
       } else {
         // if user info is not available, try again in 1.5 seconds
