@@ -30,6 +30,14 @@ const LensCard = (props: LensCardProps) => {
   const user = useAccount()
   const lensProfile = user?.lensProfile()
 
+  // 重置用户信息
+  const resetUserInfo = () => {
+    setCurrentUser(null)
+    setIsFollowedByMe(false)
+    setTotalFollowers(0)
+    setTotalFollowing(0)
+  }
+
   // 根据不同情况初始化用户信息
   const initUserInfo = async () => {
     if (loading) return
@@ -40,6 +48,10 @@ const LensCard = (props: LensCardProps) => {
       if (visitCase === 1) {
         address = routeAddress
       }
+      if (!address) {
+        resetUserInfo()
+        return
+      }
       const userInfo = await fetchUserDefaultProfile(address!) // 此case下必不为空
       // 此人没有handle，lens没数据
       if (!userInfo) {
@@ -48,8 +60,10 @@ const LensCard = (props: LensCardProps) => {
       }
       // 此人有数据
       const extendUserInfo = getExtendProfile(userInfo)
+      // 根据最新用户信息结构更新当前用户信息
       setCurrentUser({
         handle: extendUserInfo?.handle,
+        address: address!,
         displayName: extendUserInfo?.name,
         platform: PlatformType.LENS,
         data: {
