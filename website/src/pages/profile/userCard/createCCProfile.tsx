@@ -39,6 +39,7 @@ const CreateCyberConnectProfile: React.FC = () => {
       return
     }
     if (!user) {
+      message.warning('Please login first')
       return
     }
     try {
@@ -76,7 +77,7 @@ const CreateCyberConnectProfile: React.FC = () => {
     }
   }
 
-  
+
   // 获取 CyberConnect Profile
   const getCyberConnectProfile = async () => {
     try {
@@ -124,7 +125,7 @@ const CreateCyberConnectProfile: React.FC = () => {
         maxLength={20}
         minLength={1}
         onChange={(e) => setHandle(e.target.value)} />
-      <Button type="primary" loading={loading} onClick={() => handleMint()}>MINT ON BSC</Button>
+      <Button style={{borderTopLeftRadius: 0, borderBottomLeftRadius: 0}} type="primary" loading={loading} onClick={() => handleMint()}>MINT ON BSC</Button>
     </div>
   );
 }
