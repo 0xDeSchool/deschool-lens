@@ -69,8 +69,7 @@ const WalletConnectBoard = () => {
   const user = useAccount()
   const [open, setOpen] = useState(false)
   const [showPopover, setShowPopover] = useState(false)
-  const onClick = (e: any) => {
-    e.preventDefault()
+  const onClick = () => {
     setOpen(true)
   }
 
