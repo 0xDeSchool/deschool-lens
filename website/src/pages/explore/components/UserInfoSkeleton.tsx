@@ -21,9 +21,9 @@ const UserInfoDeschool= () => {
         <SkeletonButton active/>
         <SkeletonButton active/>
       </div>
-      <p className="font-ArchivoNarrow text-#000000d8 text-16px leading-24px h-120px frc-center w-full">
+      <div className="font-ArchivoNarrow text-#000000d8 text-16px leading-24px h-120px frc-center w-full">
         <SkeletonInput className='mx-auto w-full' active/>
-      </p>
+      </div>
       <SkeletonButton style={{width: '120px'}} className="mx-auto" active/>
     </>
   )
