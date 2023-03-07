@@ -1,6 +1,6 @@
 import Icon from '@ant-design/icons'
 import mirror from '~/assets/icons/mirror.png'
-import './index.less'
+import './index.css'
 
 export function NotFoundIcon(props: any) {
   return (
