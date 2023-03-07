@@ -21,7 +21,6 @@ const PADE_SIZE = 10
 let page = 1
 const FollowersModal = (props: {
   routeAddress: string | undefined
-  profileId: string | undefined
   type: 'followers' | 'following'
   visible: boolean
   closeModal: any
