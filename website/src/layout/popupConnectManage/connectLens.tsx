@@ -15,6 +15,7 @@ import IconLens from '~/assets/icons/lens.svg'
 import Button from 'antd/es/button'
 import { linkPlatform } from '~/api/booth/account'
 import { getUserManager, useAccount } from '~/account/context'
+import { LogoutOutlined } from '@ant-design/icons'
 
 interface ConnectBoardProps {
   wallectConfig?: WalletConfig
@@ -105,7 +106,7 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
         // 关联平台
         await linkPlatform({
           handle: userInfo?.handle,
-          platform: PlatformType.CYBERCONNECT,
+          platform: PlatformType.LENS,
           data: {
             id: userInfo?.id,
             accessToken: authenticatedResult.accessToken,
@@ -156,7 +157,7 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
   }
 
   // 退出 Lens 登录
-  const handleDisconect = async () => {
+  const handleDisconnect = async () => {
     try {
       if (lensProfile?.handle) {
         getUserManager()?.unLinkPlatform(lensProfile?.handle, PlatformType.LENS)
@@ -181,11 +182,14 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
           <img src={IconLens} alt="lens" width={20} height={20} />
           <span className='ml-1 text-#00501E'>LENS</span>
         </div>
-        {lensProfile && <div className="frc-start mt-4">
-          <div className="bg-black rounded-50% w-28px h-28px frc-center">
-            <img src={IconLens} alt="cyberconnect" width={20} height={20} />
+        {lensProfile && <div className='frc-between'>
+          <div className="frc-start mt-4">
+            <div className="bg-black rounded-50% w-28px h-28px frc-center">
+              <img src={IconLens} alt="cyberconnect" width={20} height={20} />
+            </div>
+            <span className='ml-2'>{lensProfile.handle}</span>
           </div>
-          <span className='ml-2'>{lensProfile.handle}</span>
+          <Button type="primary" size='small' shape="circle" icon={<LogoutOutlined />} className="frc-center" onClick={handleDisconnect}></Button>
         </div>}
       </div>
       <div className="flex flex-row w-full items-center justify-center">

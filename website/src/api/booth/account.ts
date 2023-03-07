@@ -30,7 +30,7 @@ export function linkPlatform(request: LinkPlatformRequest): Promise<{}> {
 }
 
 export function unlinkPlatform(request: LinkPlatformRequest): Promise<{}> {
-  return http.delete('/identity/link', request)
+  return http.delete('/identity/link', {data: request})
 }
 
 

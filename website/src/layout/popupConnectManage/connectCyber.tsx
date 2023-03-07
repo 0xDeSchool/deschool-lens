@@ -16,7 +16,7 @@ import { PlatformType } from '~/api/booth/booth'
 import { linkPlatform } from '~/api/booth/account'
 import { useAccount } from '~/account/context'
 import { getUserManager } from '~/account';
-import { CloseOutlined } from '@ant-design/icons'
+import { CloseOutlined, LogoutOutlined } from '@ant-design/icons'
 
 const DOMAIN = 'test.com'
 interface ConnectBoardProps {
@@ -198,11 +198,14 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
         <div className="bg-black rounded-2 px-2 py-2 frc-start">
           <img src={IconCyberConnectLogo} alt="cyberconnect" />
         </div>
-        {ccProfile && <div className="frc-start mt-4">
-          <div className="bg-black rounded-50% w-28px h-28px frc-center">
-            <img src={IconCyberConnect} alt="cyberconnect" width={20} height={20} />
+        {ccProfile && <div className='frc-between mt-4'>
+          <div className="frc-start">
+            <div className="bg-black rounded-50% w-28px h-28px frc-center">
+              <img src={IconCyberConnect} alt="cyberconnect" width={20} height={20} />
+            </div>
+            <span className='ml-2'>{ccProfile.handle}</span>
           </div>
-          <span className='ml-2'>{ccProfile.handle}</span>
+          <Button type="primary" size='small' shape="circle" icon={<LogoutOutlined />} className="frc-center" onClick={handleDisconnect}></Button>
         </div>}
       </div>
       <div className="flex flex-row w-full items-center justify-center">
