@@ -34,12 +34,24 @@ export class AccountInfo {
     return this.platform(PlatformType.CYBERCONNECT)
   }
 
+  ccProfileList(): UserPlatform[] | undefined {
+    return this.platforms?.filter(p => p.platform === PlatformType.CYBERCONNECT)
+  }
+
   lensProfile(): UserPlatform | undefined {
     return this.platform(PlatformType.LENS)
   }
 
+  lensProfileList(): UserPlatform[] | undefined {
+    return this.platforms?.filter(p => p.platform === PlatformType.LENS)
+  }
+
   deschoolProfile(): UserPlatform | undefined {
     return this.platform(PlatformType.DESCHOOL)
+  }
+
+  deschoolProfileList(): UserPlatform[] | undefined {
+    return this.platforms?.filter(p => p.platform === PlatformType.DESCHOOL)
   }
 }
 

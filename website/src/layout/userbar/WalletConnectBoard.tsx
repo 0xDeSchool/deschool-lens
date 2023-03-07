@@ -10,7 +10,6 @@ import { RightOutlined } from '@ant-design/icons'
 import PopupConnectManage from '../popupConnectManage'
 import Modal from 'antd/es/modal'
 import { DEFAULT_AVATAR, getUserManager, useAccount } from '~/account'
-import { PlatformType } from '~/api/booth/booth'
 
 type PopoverAccountInfoProps = {
   open: () => void
@@ -18,9 +17,9 @@ type PopoverAccountInfoProps = {
 const PopoverAccountInfo: React.FC<PopoverAccountInfoProps> = (props) => {
   const { open } = props
   const user = useAccount()
-  const lens = user?.platform(PlatformType.LENS)
-  const cc = user?.platform(PlatformType.CYBERCONNECT)
-  const deschool = user?.platform(PlatformType.DESCHOOL)
+  const lens = user?.lensProfile()
+  const cc = user?.ccProfile()
+  const deschool = user?.deschoolProfile()
   return (
     <div className="bg-white rounded-2 px-2 py-3 fcc-start gap-4">
       {user && <div className="w-full frc-between gap-8">
@@ -39,7 +38,7 @@ const PopoverAccountInfo: React.FC<PopoverAccountInfoProps> = (props) => {
           </div>
           <span className='ml-2'>{lens.handle}</span>
         </div>
-        <div>+1</div>
+        <div>+{user?.lensProfileList()?.length || 0}</div>
       </div>}
       {cc && <div className="w-full frc-between gap-8">
         <div className='frc-between'>
@@ -48,7 +47,7 @@ const PopoverAccountInfo: React.FC<PopoverAccountInfoProps> = (props) => {
           </div>
           <span className='ml-2'>{cc.handle}</span>
         </div>
-        <div>+1</div>
+        <div>+{user?.ccProfileList()?.length || 0}</div>
       </div>}
       {deschool && <div className="w-full frc-between gap-8">
         <div className='frc-start'>
@@ -59,7 +58,7 @@ const PopoverAccountInfo: React.FC<PopoverAccountInfoProps> = (props) => {
             {deschool.displayName}
           </span>
         </div>
-        <div>+1</div>
+        <div>+{user?.deschoolProfileList()?.length || 0}</div>
       </div>}
     </div>
   )
