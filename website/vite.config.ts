@@ -10,6 +10,7 @@ import vitePluginReactJsSupport from 'vite-plugin-react-js-support'
 import legacyPlugin from '@vitejs/plugin-legacy'
 import { visualizer } from 'rollup-plugin-visualizer'
 import Unocss from 'unocss/vite'
+import svgr from 'vite-plugin-svgr'
 
 export default defineConfig(({ mode }) => {
   process.env = { ...process.env, ...loadEnv(mode, process.cwd()) }
@@ -132,6 +133,9 @@ export default defineConfig(({ mode }) => {
       },
     },
     plugins: [
+      svgr({
+        svgrOptions: {},
+      }),
       Unocss(),
       react(),
       vitePluginReactJsSupport([], { jsxInject: true }),
@@ -152,3 +156,5 @@ export default defineConfig(({ mode }) => {
     },
   }
 })
+
+
