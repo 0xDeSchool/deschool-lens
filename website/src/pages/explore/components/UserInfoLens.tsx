@@ -12,6 +12,7 @@ import { unfollowByProfileIdWithLens } from '~/api/lens/follow/unfollow'
 import { fetchUserDefaultProfile, getExtendProfile } from '~/hooks/profile'
 import { ProfileExtend } from '~/lib/types/app'
 import { getShortAddress } from '~/utils/format'
+import UserInfoSkeleton from './UserInfoSkeleton'
 
 type UserInfoLensProps = NewUserInfo & {
   followerDetail?: () => void,
@@ -113,10 +114,12 @@ const UserInfoLens: React.FC<UserInfoLensProps> = (props) => {
     message.success(`success unfollow ${followUser?.handle},tx is ${tx}`)
   }
 
+  if (loading) return <UserInfoSkeleton />
+
   return (
     <>
       <div className='mx-auto fcc-center mb-8'>
-        <div className="relative frc-center ml-24px mt-24px mb-4">
+        <div className="relative frc-center mt-24px mb-4">
           {avatar ? (
             <Image
               preview={false}

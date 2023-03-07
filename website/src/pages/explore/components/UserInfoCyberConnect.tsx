@@ -14,6 +14,7 @@ import useFollow from '~/hooks/useCyberConnectFollow'
 import useUnFollow from '~/hooks/useCyberConnectUnfollow'
 import { ICyberFollowers, ICyberFollowings } from '~/lib/types/cyberConnect'
 import { getShortAddress } from '~/utils/format'
+import UserInfoSkeleton from './UserInfoSkeleton'
 
 type UserInfoCyberConnectProps = NewUserInfo & {
   followerDetail?: () => void,
@@ -118,10 +119,12 @@ const UserInfoCyberConnect: React.FC<UserInfoCyberConnectProps> = (props) => {
     // 关注成功后，刷新页面
   };
 
+  if (loading) return <UserInfoSkeleton />
+
   return (
     <>
       <div className='mx-auto fcc-center mb-8'>
-        <div className="relative frc-center ml-24px mt-24px mb-4">
+        <div className="relative frc-center mt-24px mb-4">
           {avatar ? (
             <Image
               preview={false}

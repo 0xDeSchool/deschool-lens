@@ -8,6 +8,7 @@ import { DEFAULT_AVATAR, useAccount } from '~/account'
 import { followUser, unfollowUser } from '~/api/booth/follow'
 import { NewUserInfo } from '~/api/booth/types'
 import { getShortAddress } from '~/utils/format'
+import UserInfoSkeleton from './UserInfoSkeleton'
 
 type UserInfoDeschoolProps = NewUserInfo & {
   followerDetail?: () => void,
@@ -42,10 +43,12 @@ const UserInfoDeschool: React.FC<UserInfoDeschoolProps> = (props) => {
     message.success(`success unfollow ${address}`)
   }
 
+  if (loading) return <UserInfoSkeleton />
+
   return (
     <>
       <div className='mx-auto fcc-center mb-8'>
-        <div className="relative frc-center ml-24px mt-24px mb-4">
+        <div className="relative frc-center mt-24px mb-4">
           {avatar ? (
             <Image
               preview={false}
