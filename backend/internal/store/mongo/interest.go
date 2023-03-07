@@ -48,3 +48,11 @@ func (r *MongoInterestRepository) CheckMany(ctx context.Context, userIds []primi
 	}
 	return r.Find(ctx, filter)
 }
+
+func (r *MongoInterestRepository) GetUsers(ctx context.Context, targetId []string, targetType string) []interest.Interest {
+	filter := bson.D{
+		{"targetId", bson.D{{"$in", targetId}}},
+		{"targetType", targetType},
+	}
+	return r.Find(ctx, filter)
+}

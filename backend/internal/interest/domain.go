@@ -18,6 +18,7 @@ type Repository interface {
 	ddd.RepositoryBase[Interest]
 
 	GetManyByUsers(ctx context.Context, userIds []primitive.ObjectID, targetType string) []Interest
+	GetUsers(ctx context.Context, targetId []string, targetType string) []Interest
 
 	DeleteBy(ctx context.Context, userId primitive.ObjectID, targetId, targetType string) int
 	CheckMany(ctx context.Context, userId []primitive.ObjectID, targetId []string, targetType string) []Interest
