@@ -6,7 +6,7 @@ function useUnFollow() {
   const cc = useCyberConnect();
 
   const unFollow = useCallback(
-    async (address: string, handle: string) => {
+    async (handle: string) => {
       if (!cc) {
         return {
           isError: true,
@@ -17,18 +17,18 @@ function useUnFollow() {
       toggleIsLoading(true);
 
       const error = await cc
-        .unfollow(address, handle)
+        .unfollow(handle)
         .catch((error: any) => error)
         .finally(() => toggleIsLoading(false));
 
       if (!error || error.message === "ALREADY_DONE") {
         return { isSuccess: true };
-      } 
+      }
         return {
           isError: true,
           message: "Network busy. Please try again later.",
         };
-      
+
     },
     [cc],
   );
