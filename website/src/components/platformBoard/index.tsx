@@ -4,16 +4,17 @@ import IconCyberConnect from '~/assets/icons/cyberConnect.svg'
 import IconDeschool from '~/assets/icons/deschool.svg'
 import IconLens from '~/assets/icons/lens.svg'
 
-type HeaderLayoutProps = {
+type PlatformBoardProps = {
+  defaultActive?: PlatformType,
   change: (type: PlatformType) => void
 }
 
 const normalClass = 'frc-center rounded-full w-36px'
 const activeClass = 'pl-12px frc-start w-full rounded-2'
 
-const HeaderLayout: React.FC<HeaderLayoutProps> = (props) => {
-  const { change } = props
-  const [active, setActive] = useState<PlatformType>(PlatformType.DESCHOOL)
+const PlatformBoard: React.FC<PlatformBoardProps> = (props) => {
+  const { change, defaultActive } = props
+  const [active, setActive] = useState<PlatformType>(defaultActive ? defaultActive : PlatformType.DESCHOOL)
 
   useEffect(() => {
     if (change) {
@@ -48,4 +49,4 @@ const HeaderLayout: React.FC<HeaderLayoutProps> = (props) => {
 )
 }
 
-export default HeaderLayout
+export default PlatformBoard
