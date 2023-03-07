@@ -1,6 +1,5 @@
 import http from "./http";
 import type { NewUserInfo, PagedResult} from "./types";
-import { UserInfo } from "./types";
 
 /**
  * 获取最新用户列表

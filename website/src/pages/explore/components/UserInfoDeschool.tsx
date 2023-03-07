@@ -1,9 +1,10 @@
 import Button from 'antd/es/button'
 import Image from 'antd/es/image'
 import message from 'antd/es/message'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Jazzicon from 'react-jazzicon/dist/Jazzicon'
+import { useNavigate } from 'react-router-dom'
 import { DEFAULT_AVATAR, useAccount } from '~/account'
 import { followUser, unfollowUser } from '~/api/booth/follow'
 import { NewUserInfo } from '~/api/booth/types'
@@ -13,22 +14,30 @@ import UserInfoSkeleton from './UserInfoSkeleton'
 type UserInfoDeschoolProps = NewUserInfo & {
   followerDetail?: () => void,
   followingDetail?: () => void,
+  refresh: () => void,
 }
 
 const UserInfoDeschool: React.FC<UserInfoDeschoolProps> = (props) => {
-  const { id, avatar, address, displayName, bio, isFollowing, followerCount, followingCount, followerDetail, followingDetail } = props
+  const { id, avatar, address, displayName, bio, isFollowing, followerCount, followingCount, followerDetail, followingDetail, refresh } = props
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const user = useAccount()
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [isFollowLoading, setIsFollowLoading] = useState(false)
+
+  useEffect(() => {
+    setLoading(false)
+  }, [address])
 
   const handleFollow = async () => {
     if (!user?.id) {
       message.error('Please first login')
       return
     }
-    setLoading(true)
+    setIsFollowLoading(true)
     await followUser(id, user?.id)
-    setLoading(false)
+    refresh()
+    setIsFollowLoading(false)
     message.success(`success following ${address}`)
   }
 
@@ -37,11 +46,17 @@ const UserInfoDeschool: React.FC<UserInfoDeschoolProps> = (props) => {
       message.error('Please first login')
       return
     }
-    setLoading(true)
+    setIsFollowLoading(true)
     await unfollowUser(id, user?.id)
-    setLoading(false)
+    if (refresh) refresh()
+    setIsFollowLoading(false)
     message.success(`success unfollow ${address}`)
   }
+
+  const handleJumpProfile = () => {
+    navigate(`/profile/${address}/resume`)
+  }
+
 
   if (loading) return <UserInfoSkeleton />
 
@@ -95,7 +110,10 @@ const UserInfoDeschool: React.FC<UserInfoDeschoolProps> = (props) => {
       <p className="font-ArchivoNarrow text-#000000d8 text-16px leading-24px h-120px line-wrap three-line-wrap">
         {bio}
       </p>
-      <Button type='primary' className='mx-auto px-8' loading={loading} disabled={loading} onClick={!isFollowing ? handleFollow : handleUnfollow}>{!isFollowing ? 'Follow' : 'Unfollow'}</Button>
+      <div className='frc-between gap-8 mx-auto'>
+        <Button type='primary' className='w-120px' loading={isFollowLoading} disabled={isFollowLoading} onClick={!isFollowing ? handleFollow : handleUnfollow}>{!isFollowing ? 'Follow' : 'Unfollow'}</Button>
+        <Button className='w-120px' onClick={handleJumpProfile}> {t('LearnMore')}</Button>
+      </div>
     </>
   )
 }

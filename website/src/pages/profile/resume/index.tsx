@@ -20,6 +20,8 @@ import { randomConfetti } from './utils/confetti'
 import type { VisitType } from '../utils/visitCase';
 import { getVisitCase } from '../utils/visitCase'
 import Congradulations from './components/congradulations'
+import { getUserInfo } from '~/api/booth'
+import { UserInfo } from '~/api/booth/types'
 
 export const STANDARD_RESUME_DATA: ResumeData = {
   career: [
@@ -81,7 +83,7 @@ const Resume = () => {
   const [step, setStep] = useState<1 | 2>(1)
   const [PublishType, setPublishType] = useState<PublishType>('Lens')
   const [txHash, setTxHash] = useState<string>('')
-  const [userAddr, setUserAddr] = useState<string>('')
+  const [currentUser, setCurrentUser] = useState<UserInfo | null>(null)
   const [loadingLens, setLoadingLens] = useState(false)
   const [loadingCyber, setLoadingCyber] = useState(false)
   const [visitCase, setVisitCase] = useState<VisitType>(-1) // 0-自己访问自己 1-自己访问别人 -1-没登录访问自己
@@ -371,6 +373,18 @@ const Resume = () => {
     }
   }
 
+  const fetchUserInfoByAddress = async () => {
+    if (!address) {
+      setCurrentUser(null)
+      return
+    }
+    const result = await getUserInfo(address)
+    if (result?.displayName === address) {
+      result.displayName = getShortAddress(address)
+    }
+    console.log('fetchUserInfoByAddress', result)
+  }
+
   // 处理不同场景下的resume初始化
   const handlePrimaryCase = async (primaryCase: 0 | 1 | -1) => {
     let currentAddress: string | undefined | null = null
@@ -380,7 +394,6 @@ const Resume = () => {
       if (currentAddress) {
         await fetchUserResume(currentAddress)
         await fetchUserSbtList(currentAddress)
-        setUserAddr(currentAddress)
       } else {
         message.warning(`handlePrimaryCase Warning: case:${primaryCase},currentAddress:${currentAddress} error`)
       }
@@ -393,8 +406,7 @@ const Resume = () => {
   useEffect(() => {
     // 初始化登录场景，区分自己访问自己或自己访问别人或者别人访问
     const primaryCase = getVisitCase(address)
-    if (primaryCase === -1) {
-    }
+    fetchUserInfoByAddress()
     setVisitCase(primaryCase)
     handlePrimaryCase(primaryCase)
   }, [address, user])
@@ -405,16 +417,9 @@ const Resume = () => {
       <div className="flex justify-between">
         <div className="text-2xl font-bold font-ArchivoNarrow">
           RESUME
-          {lensProfile?.handle && (
             <span className="ml-1">
-              OF <span className="ml-1 text-gray-5">{lensProfile ? `@${lensProfile.handle}` : ''}</span>
+              OF <span className="ml-1 text-gray-5">{currentUser?.displayName ||  user?.displayName}</span>
             </span>
-          )}
-          {!lensProfile?.handle && userAddr && (
-            <span className="ml-1">
-              OF <span className="ml-1 text-gray-5">{getShortAddress(userAddr).toUpperCase()}</span>
-            </span>
-          )}
         </div>
         <div className="flex">
           {visitCase === 0 && !isEditResume && (

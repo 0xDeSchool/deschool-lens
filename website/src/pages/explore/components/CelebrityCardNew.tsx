@@ -10,10 +10,11 @@ type CelebrityCardNewProps = {
   userInfo: NewUserInfo
   followerDetail?: () => void,
   followingDetail?: () => void,
+  refresh: () => void,
 }
 
 const CelebrityCardNew: React.FC<CelebrityCardNewProps> = (props) => {
-  const { userInfo, followerDetail, followingDetail } = props
+  const { userInfo, followerDetail, followingDetail, refresh } = props
   const [active, setActive] = useState<PlatformType>(PlatformType.DESCHOOL)
 
   return (
@@ -23,7 +24,7 @@ const CelebrityCardNew: React.FC<CelebrityCardNewProps> = (props) => {
       {/* user info */}
       {active === PlatformType.LENS && (<UserInfoLens {...userInfo} followerDetail={followerDetail} followingDetail={followingDetail}/>)}
       {active === PlatformType.CYBERCONNECT && (<UserInfoCyberConnect {...userInfo} followerDetail={followerDetail} followingDetail={followingDetail}/>)}
-      {active === PlatformType.DESCHOOL && (<UserInfoDeschool {...userInfo} followerDetail={followerDetail} followingDetail={followingDetail}/>)}
+      {active === PlatformType.DESCHOOL && (<UserInfoDeschool {...userInfo} followerDetail={followerDetail} followingDetail={followingDetail} refresh={refresh}/>)}
     </div>
   )
 }
