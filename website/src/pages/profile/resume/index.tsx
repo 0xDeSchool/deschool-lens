@@ -15,7 +15,7 @@ import ResumeBlock from './components/resumeBlock'
 import { BlockType } from './enum'
 import type { ResumeCardData, ResumeData, SbtInfo } from './types'
 import { randomConfetti } from './utils/confetti'
-import {getVisitCase, VisitType} from '../utils/visitCase'
+import { getVisitCase, VisitType } from '../utils/visitCase'
 import useCyberConnect from '~/hooks/useCyberConnect'
 import Congradulations from './components/congradulations'
 import { useAccount } from '~/account'
@@ -225,7 +225,7 @@ const Resume = () => {
 
   // 删除经历 - 确认
   const handleDeleteCard = (bt: BlockType, id: string) => {
-    const newResumeData: ResumeData  = { edu: [], career: [] }
+    const newResumeData: ResumeData = { edu: [], career: [] }
     if (bt === BlockType.CareerBlockType && resumeData?.career !== undefined) {
       newResumeData.career = resumeData?.career?.filter(item => item.id !== id)
     } else if (bt === BlockType.EduBlockType && resumeData?.edu !== undefined) {
@@ -243,7 +243,7 @@ const Resume = () => {
     } else if (bt === BlockType.EduBlockType && resumeData?.edu !== undefined) {
       card = resumeData?.edu?.find(item => item.id === id)
     }
-    if(!card) {
+    if (!card) {
       return
     }
     setCardData(card)
@@ -397,7 +397,6 @@ const Resume = () => {
     // 初始化登录场景，区分自己访问自己或自己访问别人或者别人访问
     const primaryCase = getVisitCase(address)
     if (primaryCase === -1) {
-      message.warning('please login first')
     }
     setVisitCase(primaryCase)
     handlePrimaryCase(primaryCase)
@@ -423,7 +422,7 @@ const Resume = () => {
         <div className="flex">
           {visitCase === 0 && !isEditResume && (
             <>
-              <Button
+              {user?.lensProfile() && <Button
                 type="primary"
                 onClick={() => handlePublish()}
                 disabled={!lensProfile}
@@ -431,8 +430,8 @@ const Resume = () => {
                 className="bg-#abfe2c! text-black! mr-2"
               >
                 {resumeData && step === 2 ? 'Published' : 'Publish On Lens'}
-              </Button>
-              <Button
+              </Button>}
+              {user?.ccProfile() && <Button
                 type="primary"
                 onClick={() => handlePublishCyberConnect()}
                 disabled={!ccProfile}
@@ -440,7 +439,7 @@ const Resume = () => {
                 className="bg-black! text-white!"
               >
                 {resumeData && step === 2 ? 'Published' : 'Publish On CC'}
-              </Button>
+              </Button>}
             </>
           )}
 
@@ -522,7 +521,7 @@ const Resume = () => {
             </p>
           </div>
         ) : (
-          <Congradulations txHash={txHash} type={PublishType}/>
+          <Congradulations txHash={txHash} type={PublishType} />
         )}
       </Modal>
     </div>

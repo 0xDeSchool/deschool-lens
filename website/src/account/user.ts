@@ -34,8 +34,8 @@ export class AccountInfo {
     return this.platform(PlatformType.CYBERCONNECT)
   }
 
-  ccProfileList(): UserPlatform[] | undefined {
-    return this.platforms?.filter(p => p.platform === PlatformType.CYBERCONNECT)
+  ccProfileList(addr?: string): UserPlatform[] | undefined {
+    return this.platforms?.filter(p => p.platform === PlatformType.CYBERCONNECT && !addr || p.address === addr)
   }
 
   lensProfile(): UserPlatform | undefined {
