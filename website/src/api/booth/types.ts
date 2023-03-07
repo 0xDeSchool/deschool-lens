@@ -46,6 +46,13 @@ export interface UserInfo {
   IsFollowing?: boolean
 }
 
+// 新用户信息
+export interface NewUserInfo extends UserInfo {
+  followerCount: number
+  followingCount: number
+  isFollowing: boolean
+}
+
 export function platform(u: UserInfo, t: PlatformType): UserPlatform | undefined {
   if (u.platforms) {
     return u.platforms.find(p => p.platform === t)

@@ -1,6 +1,6 @@
 import Avatar from 'antd/es/avatar'
 import Button from 'antd/es/button'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import IconCyberConnect from '~/assets/icons/cyberConnect.svg'
 import IconDeschool from '~/assets/icons/deschool.svg'
@@ -9,57 +9,65 @@ import Image from 'antd/es/image'
 import Jazzicon from 'react-jazzicon/dist/Jazzicon'
 import { DEFAULT_AVATAR } from '~/context/account'
 import { getShortAddress } from '~/utils/format'
+import { UserInfo } from '~/api/booth/types'
+import { PlatformType } from '~/api/booth/booth'
 
-type UserCardItemProps = {
-  avatar: string,
-  address: string,
-  handle: string,
-  bio?: string,
+const normalClass = 'frc-center rounded-full w-36px'
+const activeClass = 'pl-12px frc-start w-full rounded-2'
+
+type CelebrityCardNewProps = UserInfo & {
   followerCount?: number,
   followingCount?: number,
-  isFollowed: boolean,
-  followerDetail: () => void,
-  followingDetail: () => void,
+  isFollowing?: boolean,
+  followerDetail?: () => void,
+  followingDetail?: () => void,
 }
 
-const UserCardItem: React.FC<UserCardItemProps> = (props) => {
+const CelebrityCardNew: React.FC<CelebrityCardNewProps> = (props) => {
   const { t } = useTranslation()
-  const { avatar, address, handle, bio, isFollowed, followerCount, followingCount, followerDetail, followingDetail } = props
-  const [active, setActive] = useState<'cc' | 'lens' | 'deschool'>('deschool')
+  const { avatar, address, displayName, platforms, bio, isFollowing, followerCount, followingCount, followerDetail, followingDetail } = props
+  const [active, setActive] = useState<PlatformType>(PlatformType.DESCHOOL)
+  const [handle, setHandle] = useState<string>('')
 
-  const normalClass = 'frc-center rounded-full w-36px'
-  const activeClass = 'pl-12px frc-start w-full rounded-2'
+  useEffect(() => {
+    if (platforms?.length) {
+      const platform = platforms?.find(p => p.platform === active)
+      if (platform) {
+        setHandle(platform.handle || '')
+      }
+    }
+  }, [platforms, active])
 
   return (
-    <div className="fcs-center px-6 py-8 bg-white rounded-md shadow-md">
+    <div className="fcs-center px-6 py-8 bg-white rounded-md shadow-md w-375px">
       {/* header */}
       <div className='frc-between w-full gap-1 mb-4'>
         <div
-          className={`cursor-pointer bg-black h-36px min-h-36px min-w-36px transition-all transition-500 ${active === 'cc' ? activeClass : normalClass}`}
-          onClick={() => setActive('cc')}
+          className={`cursor-pointer bg-black h-36px min-h-36px min-w-36px transition-all transition-500 ${active === PlatformType.CYBERCONNECT ? activeClass : normalClass}`}
+          onClick={() => setActive(PlatformType.CYBERCONNECT)}
         >
           <img src={IconCyberConnect} alt="cyberconnect" width={24} height={24} />
-          <div className={`ml-2 text-white text-18px font-ArchivoNarrow ${active === 'cc' ? 'block' : 'hidden'}`}>CyberConnect</div>
+          <div className={`ml-2 text-white text-18px font-ArchivoNarrow ${active === PlatformType.CYBERCONNECT ? 'block' : 'hidden'}`}>CyberConnect</div>
         </div>
         <div
-          className={`cursor-pointer bg-#abfe2c rounded-full h-36px min-h-36px min-w-36px transition-all transition-500 ${active === 'lens' ? activeClass : normalClass}`}
-          onClick={() => setActive('lens')}
+          className={`cursor-pointer bg-#abfe2c rounded-full h-36px min-h-36px min-w-36px transition-all transition-500 ${active === PlatformType.LENS ? activeClass : normalClass}`}
+          onClick={() => setActive(PlatformType.LENS)}
         >
           <img src={IconLens} alt="lens" width={24} height={24} />
-          <div className={`ml-2 text-#00501E text-18px font-ArchivoNarrow ${active === 'lens' ? 'block' : 'hidden'}`}>Lens</div>
+          <div className={`ml-2 text-#00501E text-18px font-ArchivoNarrow ${active === PlatformType.LENS ? 'block' : 'hidden'}`}>Lens</div>
         </div>
         <div
-          className={`cursor-pointer bg-#774ff8 rounded-full h-36px min-h-36px min-w-36px transition-all transition-500 ${active === 'deschool' ? activeClass : normalClass}`}
-          onClick={() => setActive('deschool')}
+          className={`cursor-pointer bg-#774ff8 rounded-full h-36px min-h-36px min-w-36px transition-all transition-500 ${active === PlatformType.DESCHOOL ? activeClass : normalClass}`}
+          onClick={() => setActive(PlatformType.DESCHOOL)}
         >
           <img src={IconDeschool} alt="deschool" width={24} height={24} />
-          <div className={`ml-2 text-white text-18px font-ArchivoNarrow ${active === 'deschool' ? 'block' : 'hidden'}`}>DeSchool</div>
+          <div className={`ml-2 text-white text-18px font-ArchivoNarrow ${active === PlatformType.DESCHOOL ? 'block' : 'hidden'}`}>DeSchool</div>
         </div>
       </div>
       {/* content */}
       {/* user info */}
       <div className='mx-auto fcc-center mb-8'>
-        <div className="relative frc-center ml-24px mt-24px">
+        <div className="relative frc-center ml-24px mt-24px mb-4">
           {avatar ? (
             <Image
               preview={false}
@@ -77,20 +85,11 @@ const UserCardItem: React.FC<UserCardItemProps> = (props) => {
           </svg>
         </div>
         <h1 className="font-Anton text-black text-24px leading-32px h-32px line-wrap two-line-wrap">
-          {getShortAddress(address)}
+          {displayName === address ? getShortAddress(address) : displayName}
         </h1>
-        {handle ? (
-          <h2 className="leading-32px font-ArchivoNarrow from-brand-600 dark:from-brand-400 bg-gradient-to-r to-pink-600 bg-clip-text text-transparent dark:to-pink-400">
-            @{handle}
-          </h2>
-        ) : (
-          <h2 className="leading-32px font-ArchivoNarrow text-18px text-gray-6 leading-32px h-64px line-wrap two-line-wrap">
-            {address}
-          </h2>
-        )}
       </div>
       {/* follows info */}
-      <div className="mx-auto frc-center gap-4 flex-wrap">
+      <div className="mx-auto frc-center gap-8 flex-wrap">
         <a
           className={`${followerCount && followerCount > 0 ? 'hover:underline hover:cursor-pointer' : ''
             } text-xl`}
@@ -115,9 +114,9 @@ const UserCardItem: React.FC<UserCardItemProps> = (props) => {
       <p className="font-ArchivoNarrow text-#000000d8 text-16px leading-24px h-120px line-wrap three-line-wrap">
         {bio}
       </p>
-      <Button type='primary' className='mx-auto px-8'>{isFollowed ? 'Follow' : 'Unfollow'}</Button>
+      <Button type='primary' className='mx-auto px-8'>{!isFollowing ? 'Follow' : 'Unfollow'}</Button>
     </div>
   )
 }
 
-export default UserCardItem
+export default CelebrityCardNew
