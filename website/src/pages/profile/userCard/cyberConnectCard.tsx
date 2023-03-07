@@ -26,7 +26,6 @@ const CyberCard = (props: CyberCardProps) => {
   const [loading, setLoading] = useState(false)
   const [modal, setModal] = useState<{ type: 'followers' | 'following'; visible: boolean }>({ type: 'followers', visible: false })
   const user = useAccount()
-  const cyberProfile = user?.ccProfile()
   const [currentUser, setCurrentUser] = useState<UserPlatform | undefined>(user?.ccProfile())
   const [updateTrigger, setUpdateTrigger] = useState(0) // 此页面局部刷新
   const [getFollowingByHandle] = useLazyQuery(GET_FOLLOWER_BY_HANDLE)
@@ -36,8 +35,8 @@ const CyberCard = (props: CyberCardProps) => {
   const { follow } = useFollow();
   const { unFollow } = useUnFollow();
   const [isFollowLoaindg, setIsFollowLoading] = useState(false)
-  const [followersInfo, setFollowersInfo] = useState<ICyberFollowers>({followerCount:  0, isFollowedByMe: false})
-  const [followingsInfo, setFollowingsInfo] = useState<ICyberFollowings>({followingCount: 0})
+  const [followersInfo, setFollowersInfo] = useState<ICyberFollowers>({ followerCount: 0, isFollowedByMe: false })
+  const [followingsInfo, setFollowingsInfo] = useState<ICyberFollowings>({ followingCount: 0 })
 
   // 获取用户的关注者
   const initUserFollowersInfo = async (handle: string, address: string) => {
@@ -71,12 +70,13 @@ const CyberCard = (props: CyberCardProps) => {
   const initUserInfo = async () => {
     if (loading) return
     setLoading(true)
-    let currentUserHandle = cyberProfile?.handle
+    let currentUserHandle = user?.ccProfile()?.handle
     try {
+      debugger
       switch (visitCase) {
         // 访问自己的空间
         case 0:
-          setCurrentUser(cyberProfile)
+          setCurrentUser(user?.ccProfile())
           break
         // 访问他人的空间
         case 1: {
@@ -122,7 +122,7 @@ const CyberCard = (props: CyberCardProps) => {
         visible: false,
       })
     }
-  }, [visitCase, routeAddress, updateTrigger, user?.address!])
+  }, [visitCase, updateTrigger, user?.address!])
 
   const handleJumpFollowers = (num: number | undefined) => {
     if (num && num > 0) {
@@ -177,7 +177,7 @@ const CyberCard = (props: CyberCardProps) => {
   if (loading) {
     return (
       <div className="h-400px fcc-center">
-        <Skeleton active/>
+        <Skeleton active />
       </div>
     )
   }
@@ -187,15 +187,15 @@ const CyberCard = (props: CyberCardProps) => {
       {/* 处理数据为空的情况 */}
       <div className="mt-70px w-full px-6 pb-6 fcc-center font-ArchivoNarrow">
         <span className="text-xl">
-          {user?.displayName || (routeAddress ? getShortAddress(routeAddress) : getShortAddress(user?.address))}
+          {currentUser?.displayName || currentUser?.handle}
         </span>
-        <span className="text-xl text-gray-5">{currentUser?.handle ? `@${currentUser?.handle}` : 'CyberConnect Handle Not Found'}</span>
+        <span className="text-xl text-gray-5">
+          {currentUser?.handle ? `${currentUser.handle.startsWith('@') ? '' : '@'}${currentUser?.handle}` : 'CyberConnect Handle Not Found'}</span>
       </div>
       <div className="mx-10 frc-center flex-wrap">
         <a
-          className={`${
-            followersInfo.followerCount > 0 ? 'hover:underline hover:cursor-pointer' : ''
-          } text-xl mr-4 `}
+          className={`${followersInfo.followerCount > 0 ? 'hover:underline hover:cursor-pointer' : ''
+            } text-xl mr-4 `}
           onClick={() => {
             handleJumpFollowers(followersInfo.followerCount)
           }}
@@ -204,9 +204,8 @@ const CyberCard = (props: CyberCardProps) => {
           <span className="text-gray-5 font-ArchivoNarrow">{t('profile.followers')}</span>
         </a>
         <a
-          className={`${
-            followingsInfo?.followingCount > 0 ? 'hover:underline hover:cursor-pointer' : ''
-          } text-xl`}
+          className={`${followingsInfo?.followingCount > 0 ? 'hover:underline hover:cursor-pointer' : ''
+            } text-xl`}
           onClick={() => {
             handleJumpFollowing(followingsInfo?.followingCount)
           }}
@@ -215,13 +214,13 @@ const CyberCard = (props: CyberCardProps) => {
           <span className="text-gray-5 font-ArchivoNarrow">{t('profile.following')}</span>
         </a>
       </div>
-      {cyberProfile?.handle ? (
+      {currentUser?.handle ? (
         <p className="m-10 text-xl line-wrap three-line-wrap">
           {user?.bio || visitCase === 0 ? '' : "The user hasn't given a bio on CyberConnect for self yet :)"}
         </p>
       ) : (
         <>
-         {!cyberProfile?.handle && <CreateCyberConnectProfile />}
+          {!currentUser?.handle && <CreateCyberConnectProfile />}
           <p className="m-10 text-xl three-line-wrap">
             Please get a CyberConnect handle to enable all Booth profile functions. You can grab one at:
             <a href="https://opensea.io/collection/cyberconnect" className="block underline">
@@ -234,11 +233,10 @@ const CyberCard = (props: CyberCardProps) => {
         <div className="m-10 text-right">
           <button
             type="button"
-            className={`${
-              currentUser?.handle
-                ? 'purple-border-button'
-                : 'inline-flex items-center border border-gray rounded-xl bg-gray-3 text-gray-6 hover:cursor-not-allowed'
-            } px-2 py-1`}
+            className={`${currentUser?.handle
+              ? 'purple-border-button'
+              : 'inline-flex items-center border border-gray rounded-xl bg-gray-3 text-gray-6 hover:cursor-not-allowed'
+              } px-2 py-1`}
             disabled={!currentUser?.handle}
             onClick={() => {
               if (followersInfo?.isFollowedByMe) {
