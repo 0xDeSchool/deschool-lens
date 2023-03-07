@@ -23,7 +23,7 @@ const PopoverAccountInfo: React.FC<PopoverAccountInfoProps> = (props) => {
       {user && <div className="w-full frc-between gap-8">
         <div className='frc-start'>
           <div className="bg-#774ff8 rounded-50% w-28px h-28px frc-center">
-            <DeschoolIcon  alt="lens" width={20} height={20} />
+            <DeschoolIcon style={{width: '20px', height: '20px'}} />
           </div>
           <span className='ml-2'>{user.formateName()}</span>
         </div>
@@ -41,7 +41,7 @@ const PopoverAccountInfo: React.FC<PopoverAccountInfoProps> = (props) => {
       {cc && <div className="w-full frc-between gap-8">
         <div className='frc-between'>
           <div className="bg-black rounded-50% w-28px h-28px frc-center">
-            <CyberConnectIcon  alt="lens" width={20} height={20} />
+            <CyberConnectIcon style={{color: 'white'}} alt="cyberconnect" width={20} height={20} />
           </div>
           <span className='ml-2'>{cc.handle}</span>
         </div>
@@ -50,7 +50,7 @@ const PopoverAccountInfo: React.FC<PopoverAccountInfoProps> = (props) => {
       {deschool && <div className="w-full frc-between gap-8">
         <div className='frc-start'>
           <div className="bg-#774ff8 rounded-50% w-28px h-28px frc-center">
-            <DeschoolIcon  alt="lens" width={20} height={20} />
+            <DeschoolIcon style={{width: '20px', height: '20px'}} />
           </div>
           <span className='ml-2'>
             {deschool.displayName}
