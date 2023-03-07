@@ -49,7 +49,7 @@ func (m *MongoUserRepository) LinkPlatform(ctx context.Context, p *identity.User
 	m.userPlatforms(ctx).UpdateOne(ctx, filter, p, options.Update().SetUpsert(true))
 }
 
-func (m *MongoUserRepository) UnlinkPlatform(ctx context.Context, userId primitive.ObjectID, address common.Address, handle string, platform string) {
+func (m *MongoUserRepository) UnlinkPlatform(ctx context.Context, userId primitive.ObjectID, address common.Address, handle string, platform identity.UserPlatformType) {
 	filter := bson.D{
 		{"userId", userId},
 		{"address", address.Hex()},

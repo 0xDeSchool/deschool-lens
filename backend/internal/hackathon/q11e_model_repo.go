@@ -2,6 +2,7 @@ package hackathon
 
 import (
 	"context"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"github.com/0xdeschool/deschool-lens/backend/pkg/ddd"
 )
@@ -33,19 +34,19 @@ const (
 )
 
 type Q11e struct {
-	Address   string   `json:"address"`
-	Goals     []string `json:"goals"`
-	Interests []string `json:"interests"`
-	Pref1     string   `json:"pref1"`
-	Pref2     string   `json:"pref2"`
-	Pref3     string   `json:"pref3"`
-	Mbti      int      `json:"mbti"`
+	UserId    primitive.ObjectID `json:"userId"`
+	Goals     []string           `json:"goals"`
+	Interests []string           `json:"interests"`
+	Pref1     string             `json:"pref1"`
+	Pref2     string             `json:"pref2"`
+	Pref3     string             `json:"pref3"`
+	Mbti      int                `json:"mbti"`
 }
 
 type Q11eRepository interface {
 	ddd.RepositoryBase[Q11e]
-	GetByAddress(ctx context.Context, address string) *Q11e
-	CheckAndGetExistsByAddr(ctx context.Context, address string) (bool, *Q11e)
+	GetByAddress(ctx context.Context, userId primitive.ObjectID) *Q11e
+	CheckAndGetExistsByAddr(ctx context.Context, userId primitive.ObjectID) (bool, *Q11e)
 
-	GetManyByAddress(ctx context.Context, address []string) []Q11e
+	GetManyByAddress(ctx context.Context, userIds []primitive.ObjectID) []Q11e
 }

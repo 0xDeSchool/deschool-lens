@@ -5,8 +5,8 @@ import (
 	"github.com/0xdeschool/deschool-lens/backend/internal/hackathon"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/utils/linq"
-	"github.com/ethereum/go-ethereum/common"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type MongoUserRecommendRepository struct {
@@ -20,12 +20,12 @@ func NewMongoUserRecommendRepository(c *di.Container) *hackathon.UserRecommendat
 	return &repo
 }
 
-func (r *MongoUserRecommendRepository) GetUsers(ctx context.Context, addr string) []string {
+func (r *MongoUserRecommendRepository) GetUsers(ctx context.Context, userId primitive.ObjectID) []primitive.ObjectID {
 	filter := bson.D{
-		{Key: "fromAddr", Value: common.HexToAddress(addr).Hex()},
+		{Key: "userId", Value: userId},
 	}
 	data := r.Find(ctx, filter)
-	return linq.Map(data, func(x *hackathon.UserRecommendation) string {
-		return x.ToAddr
+	return linq.Map(data, func(x *hackathon.UserRecommendation) primitive.ObjectID {
+		return x.TargetId
 	})
 }

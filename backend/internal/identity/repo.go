@@ -14,7 +14,7 @@ type UserRepository interface {
 	Update(ctx context.Context, Id primitive.ObjectID, u *User) int
 	InsertMany(ctx context.Context, us []User, ignoreErr bool) []primitive.ObjectID
 	LinkPlatform(ctx context.Context, p *UserPlatform)
-	UnlinkPlatform(ctx context.Context, userId primitive.ObjectID, address common.Address, handle string, platform string)
+	UnlinkPlatform(ctx context.Context, userId primitive.ObjectID, address common.Address, handle string, platform UserPlatformType)
 
 	Find(ctx context.Context, address common.Address) *User
 	GetManyByAddr(ctx context.Context, userIds []common.Address) []User

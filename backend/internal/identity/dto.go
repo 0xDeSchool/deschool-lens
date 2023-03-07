@@ -27,9 +27,9 @@ func (l *LinkPlatformInput) ToEntity() *UserPlatform {
 }
 
 type UnlinkPlatformInput struct {
-	Handle   string `json:"handle"`                      // 对应平台的用户标识
-	Address  string `json:"address"  binding:"required"` // 平台地址
-	Platform string `json:"platform" binding:"required"` // 平台唯一标识，如 lens, cc(CyberConnect), deschool
+	Handle   string           `json:"handle"`                      // 对应平台的用户标识
+	Address  string           `json:"address"  binding:"required"` // 平台地址
+	Platform UserPlatformType `json:"platform" binding:"required"` // 平台唯一标识，如 lens, cc(CyberConnect), deschool
 }
 
 type UserInfo struct {
