@@ -78,7 +78,7 @@ func MatchEvents(ctx context.Context, input EventInput) []*EventMatchedItem {
 	interests := make([]string, 0) // 個人interests
 	repo := *di.Get[Q11eRepository]()
 	userId := mongodb.IDFromHex(input.UserId)
-	data := repo.Get(ctx, userId)
+	data := repo.GetByUserId(ctx, userId)
 	if data != nil {
 		interests = data.Interests
 	}
