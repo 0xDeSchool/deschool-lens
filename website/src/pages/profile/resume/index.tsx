@@ -345,7 +345,6 @@ const Resume = () => {
   const handlePublishCyberConnect = async () => {
     try {
       setLoadingCyber(true)
-      debugger
       const resumeDataStr = JSON.stringify(resumeData)
       if (ccProfile?.handle && user?.address && resumeDataStr) {
         const txhash = await ccInstance.createPost({

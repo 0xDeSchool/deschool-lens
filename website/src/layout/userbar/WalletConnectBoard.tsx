@@ -41,7 +41,7 @@ const PopoverAccountInfo: React.FC<PopoverAccountInfoProps> = (props) => {
       {cc && <div className="w-full frc-between gap-8">
         <div className='frc-between'>
           <div className="bg-black rounded-50% w-28px h-28px frc-center">
-            <CyberConnectIcon  alt="lens" width={20} height={20} />
+            <CyberConnectIcon style={{color: 'white'}} alt="cyberconnect" width={20} height={20} />
           </div>
           <span className='ml-2'>{cc.handle}</span>
         </div>

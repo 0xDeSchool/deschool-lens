@@ -28,7 +28,7 @@ const PlatformBoard: React.FC<PlatformBoardProps> = (props) => {
         className={`cursor-pointer bg-black h-36px min-h-36px min-w-36px transition-all transition-500 ${active === PlatformType.CYBERCONNECT ? activeClass : normalClass}`}
         onClick={() => setActive(PlatformType.CYBERCONNECT)}
       >
-        <CyberConnectIcon alt="cyberconnect" width={24} height={24} />
+        <CyberConnectIcon style={{color: 'white'}} alt="cyberconnect" width={24} height={24} />
         <div className={`ml-2 text-white text-18px font-ArchivoNarrow ${active === PlatformType.CYBERCONNECT ? 'block' : 'hidden'}`}>CyberConnect</div>
       </div>
       <div

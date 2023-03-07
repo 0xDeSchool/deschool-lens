@@ -204,7 +204,7 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
           <div key={ccProfile.handle} className='frc-between mt-4'>
             <div className="frc-start">
               <div className="bg-black rounded-50% w-28px h-28px frc-center">
-                <CyberConnectIcon alt="cyberconnect" width={20} height={20} />
+                <CyberConnectIcon style={{color: 'white'}} alt="cyberconnect" width={20} height={20} />
               </div>
               <span className='ml-2'>{ccProfile.handle}</span>
             </div>
