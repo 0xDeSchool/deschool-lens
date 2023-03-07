@@ -352,8 +352,9 @@ const Resume = () => {
       if (ccProfile?.handle && user?.address && resumeDataStr) {
         const txhash = await ccInstance.createPost({
           title: `RESUME OF${user?.address}`,
-          body: resumeDataStr
-        }, ccProfile?.handle)
+          body: resumeDataStr,
+          author: ccProfile?.handle
+        })
         if (txhash) {
           setPublishType('CyberConnect')
           setStep(1)
