@@ -1,4 +1,4 @@
-import Popover from 'antd/es/Popover'
+import Popover from 'antd/es/popover'
 import { useEffect, useState } from 'react'
 import IconCyberConnect from '~/assets/icons/cyberConnect.svg'
 import IconDeschool from '~/assets/icons/deschool.svg'
