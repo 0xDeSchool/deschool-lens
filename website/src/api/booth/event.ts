@@ -7,7 +7,7 @@ export interface EventItem {
 }
 
 export interface FilterEventsRequest {
-  address: string;
+  userId: string;
   events: EventItem[];
   users: string[];
 }
@@ -47,7 +47,7 @@ export function filterEvents(request: FilterEventsRequest): Promise<EventMatched
 }
 
 export interface InterestEventRequest {
-  address: string
+  userId: string
   targetId: string
 
 }

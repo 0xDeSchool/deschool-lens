@@ -67,8 +67,8 @@ func (m *UserManager) Link(ctx context.Context, link *UserPlatform) {
 	m.Repo.LinkPlatform(ctx, link)
 }
 
-func (m *UserManager) Unlink(ctx context.Context, userId primitive.ObjectID, platform, address string, handle string) {
-	m.Repo.UnlinkPlatform(ctx, userId, common.HexToAddress(address), platform, handle)
+func (m *UserManager) Unlink(ctx context.Context, userId primitive.ObjectID, platform UserPlatformType, address string, handle string) {
+	m.Repo.UnlinkPlatform(ctx, userId, common.HexToAddress(address), handle, platform)
 }
 
 func (m *UserManager) Update(ctx context.Context, info *User) {

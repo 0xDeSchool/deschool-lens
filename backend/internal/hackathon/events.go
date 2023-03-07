@@ -7,12 +7,13 @@ import (
 	"fmt"
 	"github.com/0xdeschool/deschool-lens/backend/internal/identity"
 	"github.com/0xdeschool/deschool-lens/backend/internal/interest"
+	"github.com/0xdeschool/deschool-lens/backend/pkg/db/mongodb"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/ddd"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/log"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/utils/linq"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/x"
-	"github.com/ethereum/go-ethereum/common"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
 	"strings"
 	"time"
@@ -26,9 +27,9 @@ type EventItem struct {
 }
 
 type EventInput struct {
-	Address string       `json:"address"`
-	Events  []*EventItem `json:"events"`
-	Users   []string     `json:"users"`
+	UserId string       `json:"userId"`
+	Events []*EventItem `json:"events"`
+	Users  []string     `json:"users"`
 }
 
 type UserItem struct {
@@ -76,7 +77,8 @@ type CourseDetail struct {
 func MatchEvents(ctx context.Context, input EventInput) []*EventMatchedItem {
 	interests := make([]string, 0) // 個人interests
 	repo := *di.Get[Q11eRepository]()
-	data := repo.GetByAddress(ctx, input.Address)
+	userId := mongodb.IDFromHex(input.UserId)
+	data := repo.Get(ctx, userId)
 	if data != nil {
 		interests = data.Interests
 	}
@@ -85,12 +87,12 @@ func MatchEvents(ctx context.Context, input EventInput) []*EventMatchedItem {
 	insRepo := *di.Get[interest.Repository]()
 
 	followRepo := *di.Get[FollowRepository]()
-	followingUsers := followRepo.GetFollowingUsers(ctx, input.Address)
+	followingUsers := followRepo.GetFollowingUsers(ctx, userId)
 	followingData := insRepo.CheckMany(ctx, followingUsers, ids, TargetTypeLink3Event)
 	following := getUserEventItems(ctx, followingData, 3)
 
 	matchRepo := *di.Get[UserRecommendationRepository]()
-	matchedUsers := matchRepo.GetUsers(ctx, input.Address)
+	matchedUsers := matchRepo.GetUsers(ctx, userId)
 	matchedData := insRepo.CheckMany(ctx, matchedUsers, ids, TargetTypeLink3Event)
 	matched := getUserEventItems(ctx, matchedData, 3)
 
@@ -116,23 +118,6 @@ func MatchEvents(ctx context.Context, input EventInput) []*EventMatchedItem {
 		item.Courses = RecommendCourses(ctx, e.Labels)
 		//item.Registrants = filterUsers(ctx, e.Id, input.Users)
 		item.IsEnabled = item.IsMatched()
-		result = append(result, item)
-	}
-	return result
-}
-
-type userInterest struct {
-	Address   string              `json:"address"`
-	Interests map[string]struct{} `json:"interests"`
-}
-
-func toDict(data []Q11e) []userInterest {
-	result := make([]userInterest, 0, len(data))
-	for _, d := range data {
-		item := userInterest{
-			Address:   d.Address,
-			Interests: linq.ToSet(d.Interests),
-		}
 		result = append(result, item)
 	}
 	return result
@@ -178,7 +163,7 @@ func RecommendCourses(ctx context.Context, labels []string) []*CourseDetail {
 
 func getUserEventItems(ctx context.Context, data []interest.Interest, limit int) map[string]*UserEventItem {
 	result := make(map[string]*UserEventItem)
-	ids := linq.Map(data, func(i *interest.Interest) string { return i.Address })
+	ids := linq.Map(data, func(i *interest.Interest) primitive.ObjectID { return i.UserId })
 	users := includeUsers(ctx, ids)
 	for i := range data {
 		v := &data[i]
@@ -189,7 +174,7 @@ func getUserEventItems(ctx context.Context, data []interest.Interest, limit int)
 			}
 			result[v.TargetId] = items
 		}
-		if user, ok := users[v.Address]; ok {
+		if user, ok := users[v.UserId]; ok {
 			if len(items.Users) < limit {
 				items.Users = append(items.Users, UserItem{
 					Id:          user.ID.Hex(),
@@ -204,21 +189,15 @@ func getUserEventItems(ctx context.Context, data []interest.Interest, limit int)
 	return result
 }
 
-func includeUsers(ctx context.Context, addrs ...[]string) map[string]*identity.User {
-	input := make([]common.Address, 0)
-	for _, addr := range addrs {
-		for _, a := range addr {
-			input = append(input, common.HexToAddress(a))
-		}
-	}
-	result := make(map[string]*identity.User)
-	if len(input) == 0 {
+func includeUsers(ctx context.Context, userIds []primitive.ObjectID) map[primitive.ObjectID]*identity.User {
+	result := make(map[primitive.ObjectID]*identity.User)
+	if len(userIds) == 0 {
 		return result
 	}
 	repo := *di.Get[identity.UserRepository]()
-	users := repo.GetManyByAddr(ctx, input)
+	users := repo.GetMany(ctx, userIds)
 	for i := range users {
-		result[users[i].Address] = &users[i]
+		result[users[i].ID] = &users[i]
 	}
 	return result
 }

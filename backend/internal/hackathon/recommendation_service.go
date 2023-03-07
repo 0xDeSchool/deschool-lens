@@ -3,11 +3,12 @@ package hackathon
 import (
 	"context"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"github.com/0xdeschool/deschool-lens/backend/pkg/utils/linq"
 )
 
-func (hm *HackathonManager) RunRecommendations(ctx context.Context, address string) *UserRecommendation {
+func (hm *HackathonManager) RunRecommendations(ctx context.Context, userId primitive.ObjectID) *UserRecommendation {
 	q11eList := hm.q11eRepo.GetAll(ctx)
 	var fromQ11e *Q11e
 	var recommendation *UserRecommendation
@@ -15,7 +16,7 @@ func (hm *HackathonManager) RunRecommendations(ctx context.Context, address stri
 
 	// Find self q11e
 	for _, q11e := range q11eList {
-		if q11e.Address == address {
+		if q11e.UserId == userId {
 			fromQ11e = &q11e
 			break
 		}
@@ -27,7 +28,7 @@ func (hm *HackathonManager) RunRecommendations(ctx context.Context, address stri
 
 	// Find the pair
 	for _, q11e := range q11eList {
-		if q11e.Address == address {
+		if q11e.UserId == userId {
 			continue
 		}
 		ur := hm.compareTwoId(ctx, *fromQ11e, q11e)
@@ -72,8 +73,8 @@ func (hm *HackathonManager) compareTwoId(ctx context.Context, fromQ11e Q11e, toQ
 
 	score := 0
 	ur := &UserRecommendation{
-		FromAddr: fromQ11e.Address,
-		ToAddr:   toQ11e.Address,
+		UserId:   fromQ11e.UserId,
+		TargetId: toQ11e.UserId,
 		Reasons:  []string{},
 	}
 

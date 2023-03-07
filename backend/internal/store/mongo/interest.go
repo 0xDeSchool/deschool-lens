@@ -5,9 +5,8 @@ import (
 	"github.com/0xdeschool/deschool-lens/backend/internal/interest"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/errx"
-	"github.com/0xdeschool/deschool-lens/backend/pkg/utils/linq"
-	"github.com/ethereum/go-ethereum/common"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 const InterestsCollectionName = "interests"
@@ -23,9 +22,9 @@ func NewMongoInterestRepository(c *di.Container) *interest.Repository {
 	return &repo
 }
 
-func (r *MongoInterestRepository) DeleteBy(ctx context.Context, address, targetId, targetType string) int {
+func (r *MongoInterestRepository) DeleteBy(ctx context.Context, address primitive.ObjectID, targetId, targetType string) int {
 	filter := bson.D{
-		{"address", common.HexToAddress(address).Hex()},
+		{"userId", address},
 		{"targetId", targetId},
 		{"targetType", targetType},
 	}
@@ -33,23 +32,19 @@ func (r *MongoInterestRepository) DeleteBy(ctx context.Context, address, targetI
 	errx.CheckError(err)
 	return int(result.DeletedCount)
 }
-func (r *MongoInterestRepository) GetManyByAddr(ctx context.Context, addresses []string, targetType string) []interest.Interest {
+func (r *MongoInterestRepository) GetManyByUsers(ctx context.Context, users []primitive.ObjectID, targetType string) []interest.Interest {
 	filter := bson.D{
-		{"address", bson.D{{"$in", toAddress(addresses)}}},
+		{"userId", bson.D{{"$in", users}}},
 		{"targetType", targetType},
 	}
 	return r.Find(ctx, filter)
 }
 
-func (r *MongoInterestRepository) CheckMany(ctx context.Context, address []string, targetId []string, targetType string) []interest.Interest {
+func (r *MongoInterestRepository) CheckMany(ctx context.Context, userIds []primitive.ObjectID, targetId []string, targetType string) []interest.Interest {
 	filter := bson.D{
-		{"address", bson.D{{"$in", toAddress(address)}}},
+		{"userIds", bson.D{{"$in", userIds}}},
 		{"targetId", bson.D{{"$in", targetId}}},
 		{"targetType", targetType},
 	}
 	return r.Find(ctx, filter)
-}
-
-func toAddress(addresses []string) []string {
-	return linq.Map(addresses, func(x *string) string { return common.HexToAddress(*x).Hex() })
 }
