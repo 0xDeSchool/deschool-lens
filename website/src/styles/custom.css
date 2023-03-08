@@ -178,6 +178,40 @@ label [type='checkbox']:focus,
 }
 /*********** radio ***********/
 
+
+
+.one-line-wrap {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  word-break: break-all;
+}
+
+.two-line-wrap {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  word-break: break-all;
+}
+
+.three-line-wrap {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  word-break: break-all;
+}
+
+.four-line-wrap {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
+  word-break: break-all;
+}
+
 input[type='search']:focus,
 input[type='text']:focus {
   box-shadow: none;
