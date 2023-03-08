@@ -35,7 +35,14 @@ const RecommandEventCard: React.FC<RecommandEventCardProps> = (props) => {
         alt="poster"
         className="w-full rounded-tl-2 rounded-tr-2 aspect-[16:9]"
         fallback={fallbackImage}
-        />
+        placeholder={
+          <Image
+            preview={false}
+            src={fallbackImage}
+            className="w-full rounded-tl-2 rounded-tr-2 aspect-[16:9]"
+          />
+        }
+      />
 
       <div className='px-4 pb-6 pt-4'>
         <div className="text-2xl mb-2">{info?.title}</div>
