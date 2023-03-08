@@ -6,11 +6,11 @@ import Skeleton from 'antd/es/skeleton'
 import message from 'antd/es/message'
 import Empty from 'antd/es/empty'
 import { RoleType } from '~/lib/enum'
-import { getUserContext, useAccount } from '~/context/account'
 import { followUser, unfollowUser } from '~/api/booth/follow'
 import Jazzicon from 'react-jazzicon'
 import { getShortAddress } from '~/utils/format'
 import { Link } from 'react-router-dom'
+import { useAccount } from '~/account'
 
 type FollowType = { Following?: string; Follower?: string; PersonFollowedVistor: boolean; VistorFollowedPerson: boolean }
 
@@ -26,7 +26,7 @@ const DeschoolFollowersModal = (props: {
   const { t } = useTranslation()
   const [follows, setFollows] = useState([] as FollowType[])
   const [loading, setLoading] = useState(true)
-  const { deschoolProfile } = useAccount()
+  const user = useAccount()
 
   const initList = async () => {
     setLoading(true)
@@ -50,18 +50,16 @@ const DeschoolFollowersModal = (props: {
   }, [visible])
 
   const handleFollow = async (address: string) => {
-    await followUser(address, deschoolProfile?.address!)
+    await followUser(address, user?.address!)
     message.success(`success following ${address}`)
     setUpdateTrigger(new Date().getTime())
   }
 
   const handleUnFollow = async (address: string) => {
-    await unfollowUser(address, deschoolProfile?.address!)
+    await unfollowUser(address, user?.address!)
     message.success(`success following ${address}`)
     setUpdateTrigger(new Date().getTime())
   }
-
-  const role = getUserContext().getLoginRoles()
 
   return (
     <Modal
@@ -98,7 +96,7 @@ const DeschoolFollowersModal = (props: {
                     {/* 三、用户在看别人的 Following，啥事都不能做，没有按钮。如果别人和他的关注者双向关注则用文字显示出来 */}
                     {/* 四、用户在看别人的 Follower，啥事都不能做，没有按钮。如果别人和他的关注者双向关注则用文字显示出来 */}
                     {/* TODO */}
-                    {!role.includes(RoleType.UserOfLens) ? null : (
+                    { (((follow.Follower || follow?.Following)!) && user?.address) && (
                       <button
                         type="button"
                         className="purple-border-button px-2 py-1"

@@ -5,6 +5,14 @@ import { ArrowLeftIcon, ArrowRightIcon } from '~/components/icon'
 import type { MatchedEvent } from '~/hooks/useCCProfile'
 import AvatarList from './AvatarList'
 import Tags from './Tags'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { EffectCoverflow } from 'swiper'
+import 'swiper/css'
+import 'swiper/css/effect-coverflow'
+import { useState } from 'react'
+import { NavLink } from 'react-router-dom'
+import fallbackImage from '~/assets/images/fallbackImage'
+import { NextArrowIcon } from '~/components/icon'
 
 const defatulCourseCover = "https://deschool.s3.amazonaws.com/courseCovers/default.png"
 
@@ -21,10 +29,10 @@ const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
   }
 
   return (
-    <div className="flex-1 h-full">
+    <div className="flex-1 h-full pr-10">
       <h1 className="text-xl font-500 font-Anton mb-8">Match criteria:</h1>
       {info.interested?.length > 0 && <div className="frc-between mb-4">
-        <span>Based on your interests in Match on </span>
+        <span>Based on your interests in <NavLink className="text-" to="/profile/match">Match</NavLink> on </span>
         <Tags tags={info.interested} />
       </div>}
       {info.matchedUsers && <div className="frc-between mb-4">

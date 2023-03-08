@@ -382,7 +382,7 @@ const Resume = () => {
     if (result?.displayName === address) {
       result.displayName = getShortAddress(address)
     }
-    console.log('fetchUserInfoByAddress', result)
+    setCurrentUser(result)
   }
 
   // 处理不同场景下的resume初始化

@@ -18,13 +18,16 @@ const UserInfoDeschool= () => {
       </div>
       {/* follows info */}
       <div className="mx-auto frc-center gap-8 flex-wrap">
-        <SkeletonButton active/>
-        <SkeletonButton active/>
+        <SkeletonButton style={{width: '100px'}} active/>
+        <SkeletonButton style={{width: '100px'}} active/>
       </div>
-      <p className="font-ArchivoNarrow text-#000000d8 text-16px leading-24px h-120px frc-center w-full">
-        <SkeletonInput className='mx-auto w-full' active/>
-      </p>
-      <SkeletonButton style={{width: '120px'}} className="mx-auto" active/>
+      <div className="font-ArchivoNarrow text-#000000d8 text-16px leading-24px h-120px frc-center w-full">
+        <SkeletonInput style={{width: '268px'}} className='mx-auto w-full' active/>
+      </div>
+      <div className='frc-between gap-8 mx-auto'>
+        <SkeletonButton style={{width: '120px'}} className="mx-auto" active/>
+        <SkeletonButton style={{width: '120px'}} className="mx-auto" active/>
+      </div>
     </>
   )
 }
