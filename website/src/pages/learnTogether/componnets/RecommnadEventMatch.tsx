@@ -48,7 +48,7 @@ const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
       </div>}
       <div className="divider w-full h-1px bg-gray-200 my-8" />
       <h1 className="text-xl font-500 font-Anton mb-8">Get prepared on deschool before the event</h1>
-      <div className='relative'>
+      <div className='relative w-100%'>
         {info?.courses?.length > 0 && <Swiper
             className="max-w-50vw w-full mx-auto frc-center"
             onSwiper={setSwiperRef}
@@ -60,8 +60,8 @@ const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
           >
           {info?.courses?.map((course) => {
             return (<SwiperSlide key={`${course.id}`} className="mx-auto rounded-16px frc-center">
-              <div className="frc-between gap-4">
-                <div className="relative h-240px aspect-[433/280] object-cover rounded-2 bg-white shadow">
+              <div className="h-240px  frc-between gap-4 shadow">
+                <div className="relative h-full aspect-[433/280] object-cover rounded-2 bg-white shadow">
                   <Image
                     preview={false}
                     src={course?.coverImage}
@@ -78,7 +78,7 @@ const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
                     }
                   />
                 </div>
-                <div className="h-160px fcs-between">
+                <div className="h-full fcs-between py-2">
                   <div className="text-2xl mb-2">{course?.title}</div>
                   <div className="mb-1">{course?.description}</div>
                   <Button type="primary" onClick={() => onStartLearning(course)}>Start Learning</Button>
