@@ -1,18 +1,10 @@
 import Button from 'antd/es/button'
 import { useState } from 'react'
 import { MatchedCourse } from '~/api/booth/event'
-import { ArrowLeftIcon, ArrowRightIcon } from '~/components/icon'
 import type { MatchedEvent } from '~/hooks/useCCProfile'
 import AvatarList from './AvatarList'
 import Tags from './Tags'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import { EffectCoverflow } from 'swiper'
-import 'swiper/css'
-import 'swiper/css/effect-coverflow'
-import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import fallbackImage from '~/assets/images/fallbackImage'
-import { NextArrowIcon } from '~/components/icon'
 
 const defatulCourseCover = "https://deschool.s3.amazonaws.com/courseCovers/default.png"
 
