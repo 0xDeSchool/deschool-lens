@@ -191,9 +191,9 @@ const DeschoolCard = (props: DeschoolCardProps) => {
             className="purple-border-button px-2 py-1"
             onClick={() => {
               if (isFollowedByMe && currentUser) {
-                handleUnFollow(currentUser)
+                handleUnFollow()
               } else if (currentUser) {
-                handleFollow(currentUser)
+                handleFollow()
               }
             }}
           >
