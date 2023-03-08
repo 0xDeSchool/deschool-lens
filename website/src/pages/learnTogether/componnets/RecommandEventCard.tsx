@@ -42,10 +42,9 @@ const RecommandEventCard: React.FC<RecommandEventCardProps> = (props) => {
           width={'100%'}
           height={'100%'}
           placeholder={
-            <SkeletonImage
-              active
+            <div
               style={{ width: '100%', height: '100%' }}
-              className="w-100% h-100% rounded-tl-2 rounded-tr-2 aspect-[16:9]"
+              className="w-100% h-100% rounded-tl-2 rounded-tr-2 aspect-[16:9] bg-gray-300"
             />
           }
         />

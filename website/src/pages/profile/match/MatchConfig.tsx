@@ -91,7 +91,11 @@ const MatchConfig = () => {
       if (!result) {
         return
       }
-      form.setFieldsValue(result)
+      let fields: Record<string, any> = {}
+      Object.entries(result).forEach(([key, value]) => {
+        fields[`${key.toLowerCase()}`] = value
+      })
+      form.setFieldsValue(fields)
     } catch (err) {
       /* empty */
     }
