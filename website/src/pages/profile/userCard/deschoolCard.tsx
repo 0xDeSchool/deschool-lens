@@ -131,14 +131,14 @@ const DeschoolCard = (props: DeschoolCardProps) => {
     })
   }
 
-  const handleFollow = async (user: UserInfo) => {
-    await followUser(user.id, currentUser?.id!)
+  const handleFollow = async () => {
+    await followUser(currentUser?.id!, user?.id!)
     message.success(`success following ${currentUser?.address}`)
     setUpdateTrigger(new Date().getTime())
   }
 
-  const handleUnFollow = async (user: UserInfo) => {
-    await unfollowUser(user.id, currentUser?.id!)
+  const handleUnFollow = async () => {
+    await unfollowUser(currentUser?.id!, user?.id!)
     message.success(`success unfollow ${currentUser?.address}`)
     setUpdateTrigger(new Date().getTime())
   }
@@ -191,9 +191,9 @@ const DeschoolCard = (props: DeschoolCardProps) => {
             className="purple-border-button px-2 py-1"
             onClick={() => {
               if (isFollowedByMe && currentUser) {
-                handleUnFollow(currentUser)
+                handleUnFollow()
               } else if (currentUser) {
-                handleFollow(currentUser)
+                handleFollow()
               }
             }}
           >
