@@ -1,4 +1,5 @@
 import http from '~/api/booth/http'
+import { UserFollower, UserFollowing } from './types'
 
 /**
  * @description deschool follow user
@@ -56,15 +57,9 @@ export async function checkfollowUser(toUser: string, fromUser: string): Promise
  * @param visitorAddress string 如果传了值，就需要查followings与这个人的follow关系
  * @returns
  */
-export async function getFollowings(userId: string, visitorUserId?: string): Promise<any> {
-  try {
-    const str = visitorUserId ? `/follow/following?userId=${userId}&visitorUserId=${visitorUserId}` : `/follow/following?userId=${userId}`
-    const result = await http.get(str)
-    return result
-  } catch (err) {
-    console.log(err)
-    return undefined
-  }
+export function getFollowings(userId: string, visitorUserId?: string): Promise<UserFollowing[]> {
+  const str = visitorUserId ? `/follow/following?userId=${userId}&visitorUserId=${visitorUserId}` : `/follow/following?userId=${userId}`
+  return http.get(str)
 }
 
 /**
@@ -73,13 +68,7 @@ export async function getFollowings(userId: string, visitorUserId?: string): Pro
  * @param visitorAddress string 如果传了值，就需要查followers与这个人的follow关系
  * @returns
  */
-export async function getFollowers(userId: string, visitorUserId?: string): Promise<any> {
-  try {
-    const str = visitorUserId ? `/follow/follower?userId=${userId}&visitorUserId=${visitorUserId}` : `/follow/follower?userId=${userId}`
-    const result = await http.get(str)
-    return result
-  } catch (err) {
-    console.log(err)
-    return undefined
-  }
+export function getFollowers(userId: string, visitorUserId?: string): Promise<UserFollower[]> {
+  const str = visitorUserId ? `/follow/follower?userId=${userId}&visitorUserId=${visitorUserId}` : `/follow/follower?userId=${userId}`
+  return http.get(str)
 }

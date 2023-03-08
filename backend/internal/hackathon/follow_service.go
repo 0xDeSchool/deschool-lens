@@ -2,6 +2,9 @@ package hackathon
 
 import (
 	"context"
+	"github.com/0xdeschool/deschool-lens/backend/internal/identity"
+	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
+	"github.com/0xdeschool/deschool-lens/backend/pkg/utils/linq"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
 )
@@ -27,13 +30,26 @@ func (hm *HackathonManager) InsertFollow(ctx context.Context, fromUser primitive
 
 // 查询偶像列表
 func (hm *HackathonManager) GetFollowing(ctx context.Context, userId primitive.ObjectID, vistorUserId primitive.ObjectID) []FollowingList {
-
 	result := hm.followRepo.GetListByFilter(ctx, userId, "fromUser")
-
+	userIds := linq.Map(result, func(i *Follow) primitive.ObjectID {
+		return i.ToUser
+	})
+	userRepo := *di.Get[identity.UserRepository]()
+	user := userRepo.GetMany(ctx, userIds)
+	userMap := linq.ToMap(user, func(i *identity.User) primitive.ObjectID { return i.ID })
 	var ret = make([]FollowingList, 0)
 	for _, item := range result {
+		u, ok := userMap[item.ToUser]
+		if !ok {
+			continue
+		}
 		ret = append(ret, FollowingList{
-			Following:            item.ToAddr,
+			Following: &UserItem{
+				Id:          u.ID.Hex(),
+				Avatar:      u.Avatar,
+				DisplayName: u.DisplayName,
+				Address:     u.Address,
+			},
 			VistorFollowedPerson: hm.CheckFollowExists(ctx, vistorUserId, item.ToUser),
 			PersonFollowedVistor: hm.CheckFollowExists(ctx, item.ToUser, vistorUserId),
 		})
@@ -43,13 +59,26 @@ func (hm *HackathonManager) GetFollowing(ctx context.Context, userId primitive.O
 
 // 查询粉丝列表
 func (hm *HackathonManager) GetFollower(ctx context.Context, userId primitive.ObjectID, vistorUserId primitive.ObjectID) []FollowerList {
-
-	result := hm.followRepo.GetListByFilter(ctx, userId, "toAddr")
-
+	result := hm.followRepo.GetListByFilter(ctx, userId, "toUser")
+	userIds := linq.Map(result, func(i *Follow) primitive.ObjectID {
+		return i.ToUser
+	})
+	userRepo := *di.Get[identity.UserRepository]()
+	user := userRepo.GetMany(ctx, userIds)
+	userMap := linq.ToMap(user, func(i *identity.User) primitive.ObjectID { return i.ID })
 	var ret = make([]FollowerList, 0)
 	for _, item := range result {
+		u, ok := userMap[item.ToUser]
+		if !ok {
+			continue
+		}
 		ret = append(ret, FollowerList{
-			Follower:             item.FromAddr,
+			Follower: &UserItem{
+				Id:          u.ID.Hex(),
+				Avatar:      u.Avatar,
+				DisplayName: u.DisplayName,
+				Address:     u.Address,
+			},
 			VistorFollowedPerson: hm.CheckFollowExists(ctx, vistorUserId, item.FromUser),
 			PersonFollowedVistor: hm.CheckFollowExists(ctx, item.FromUser, vistorUserId),
 		})

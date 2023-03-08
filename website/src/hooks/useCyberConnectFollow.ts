@@ -6,7 +6,7 @@ function useFollow() {
   const cc = useCyberConnect();
 
   const follow = useCallback(
-    async (address: string, handle: string) => {
+    async (handle: string) => {
       if (!cc)
         return {
           isError: true,
@@ -15,18 +15,18 @@ function useFollow() {
 
       toggleIsLoading(true);
       const error = await cc
-        .follow(address, handle)
+        .follow(handle)
         .catch((error: any) => error)
         .finally(() => toggleIsLoading(false));
 
       if (!error || error.message === "ALREADY_DONE") {
         return { isSuccess: true };
-      } 
+      }
         return {
           isError: true,
           message: "Network busy. Please try again later.",
         };
-      
+
     },
     [cc],
   );

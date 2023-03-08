@@ -4,16 +4,13 @@
  * @exports {UserProfile}
  */
 import { useEffect } from 'react'
-import { Outlet, useLocation, useNavigate, useParams } from 'react-router'
-import message from 'antd/es/message'
+import { Outlet, useNavigate, useParams } from 'react-router'
 import { useAccount } from '~/account/context'
 import UserCard from './userCard'
-import Verified from './resume/components/verified'
 
 const UserProfile = () => {
   const { address } = useParams()
   const navigate = useNavigate()
-  const location = useLocation()
   const user = useAccount()
 
   // 初始化登录场景，区分自己访问自己或自己访问别人或者别人访问
@@ -21,11 +18,12 @@ const UserProfile = () => {
     if (!user) {
       return
     }
-    if (address && user?.address && user?.address !== address) {
-      navigate(`/profile/${address}/resume`)
-      return
-    }
-    navigate('/profile/resume')
+    // 如果是自己访问自己判断条件放在了 resume 页面
+    // if (address && user?.address && user?.address !== address) {
+    //   navigate(`/profile/${address}/resume`)
+    //   return
+    // }
+    // navigate('/profile/resume')
   }
 
   useEffect(() => {

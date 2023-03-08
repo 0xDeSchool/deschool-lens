@@ -5,7 +5,9 @@ import { useState } from 'react';
 import { ccContractHub } from '~/api/cc/contract';
 import { PRIMARY_PROFILE } from '~/api/cc/graphql';
 import { useLazyQuery } from '@apollo/client';
-import { useAccount } from '~/account';
+import { getUserManager, useAccount } from '~/account';
+import { linkPlatform } from '~/api/booth';
+import { PlatformType } from '~/api/booth/booth';
 
 const CreateCyberConnectProfile: React.FC = () => {
   const user = useAccount()
@@ -39,6 +41,7 @@ const CreateCyberConnectProfile: React.FC = () => {
       return
     }
     if (!user) {
+      message.warning('Please login first')
       return
     }
     try {
@@ -71,12 +74,12 @@ const CreateCyberConnectProfile: React.FC = () => {
       // } else {
       // }
       message.error('Something went wrong')
-    } finally {
       setLoading(false)
+    } finally {
     }
   }
 
-  
+
   // 获取 CyberConnect Profile
   const getCyberConnectProfile = async () => {
     try {
@@ -98,13 +101,22 @@ const CreateCyberConnectProfile: React.FC = () => {
     }
   }
 
-
   // 轮询获取 CyberConnect Profile, 如果获取到数据那么停止轮询
   const pollingGetCyberConnectProfile = async () => {
     const timer = setTimeout(async () => {
       const userInfo = await getCyberConnectProfile()
       if (userInfo) {
         // if user info is available, stop polling
+        await linkPlatform({
+          handle: userInfo?.handle,
+          platform: PlatformType.CYBERCONNECT,
+          data: {
+            id: userInfo?.id,
+          },
+          address: user?.address!,
+        })
+        setLoading(false)
+        await getUserManager().tryAutoLogin()
         clearTimeout(timer)
       } else {
         // if user info is not available, try again in 1.5 seconds
@@ -124,7 +136,7 @@ const CreateCyberConnectProfile: React.FC = () => {
         maxLength={20}
         minLength={1}
         onChange={(e) => setHandle(e.target.value)} />
-      <Button type="primary" loading={loading} onClick={() => handleMint()}>MINT ON BSC</Button>
+      <Button style={{borderTopLeftRadius: 0, borderBottomLeftRadius: 0}} type="primary" loading={loading} onClick={() => handleMint()}>MINT ON BSC</Button>
     </div>
   );
 }

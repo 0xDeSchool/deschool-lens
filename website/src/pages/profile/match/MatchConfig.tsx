@@ -80,9 +80,9 @@ const MatchConfig = () => {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const [fired, setFired] = useState(false)
+  const user = useAccount()
 
   const loadInitialValues = async () => {
-    const user = useAccount()
     if (!user) {
       return
     }
@@ -103,7 +103,6 @@ const MatchConfig = () => {
   }, [])
 
   const handleSubmmit = async () => {
-    const user = useAccount()
     let address = user?.address
     try {
       setLoading(true)

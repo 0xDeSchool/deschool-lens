@@ -3,8 +3,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import message from 'antd/es/message'
 
-import { LoadingOutlined } from '@ant-design/icons'
-import { getNonceByUserAddress, postNonceSigByUserAddress } from '~/api/go/user'
+import { LoadingOutlined, LogoutOutlined } from '@ant-design/icons'
 import UnipassLogo from '~/assets/logos/unipass.svg'
 import MetaMaskImage from '~/assets/logos/mask.png'
 import type { WalletConfig } from '~/wallet'
@@ -13,10 +12,10 @@ import { PlatformType, postVerifiedIdentity } from '~/api/booth/booth'
 import DeschoolLogoDark from '~/assets/logos/logo-main.png'
 import IconDeschool from '~/assets/icons/deschool.svg'
 import Button from 'antd/es/button'
-import { getShortAddress } from '~/utils/format'
-import { getSignMessage, login } from '~/api/booth/account'
-import { SignMsgType } from '~/api/booth/types'
 import { getUserManager, useAccount } from '~/account'
+import { linkPlatform } from '~/api/booth'
+import { UserPlatform } from '~/api/booth/types'
+import { getShortAddress } from '~/utils/format'
 
 const ConnectDeschoolBoard: FC = () => {
   const userManager = getUserManager()
@@ -52,6 +51,13 @@ const ConnectDeschoolBoard: FC = () => {
         address: userManager.user.address,
         baseAddress: userManager.user.address,
         platform: PlatformType.BOOTH,
+      })
+
+      // 关联平台
+      await linkPlatform({
+        handle: userManager.user.address,
+        platform: PlatformType.DESCHOOL,
+        address: userManager.user.address,
       })
     }
   }
@@ -92,6 +98,18 @@ const ConnectDeschoolBoard: FC = () => {
     }
   }
 
+  const handleUnlinkDeschool = async (deschoolProfile: UserPlatform) => {
+    try {
+      if (deschoolProfile?.handle) {
+        getUserManager()?.unLinkPlatform(deschoolProfile?.handle, deschoolProfile.address, PlatformType.DESCHOOL)
+        // 重新获取用户信息
+        await getUserManager().tryAutoLogin()
+      }
+    } catch (error: any) {
+      message.error(error?.message ? error.message : '退出登录失败')
+    }
+  }
+
   const user = useAccount()
 
   return (
@@ -100,12 +118,17 @@ const ConnectDeschoolBoard: FC = () => {
         <div className="rounded-2 px-2 py-2 frc-start">
           <img src={DeschoolLogoDark} alt="lens" width={160} height={24} />
         </div>
-        {user && <div className="frc-start mt-4">
-          <div className="bg-#774ff8 rounded-50% w-28px h-28px frc-center">
-            <img src={IconDeschool} alt="deschool" width={20} height={20} />
+        {user?.deschoolProfileList()?.map(deschoolProfile => (
+          <div key={deschoolProfile.handle} className='frc-between mt-4'>
+            <div className="frc-start">
+              <div className="bg-#774ff8 rounded-50% w-28px h-28px frc-center">
+                <img src={IconDeschool} alt="deschool" width={20} height={20} />
+              </div>
+              <span className='ml-2'>{getShortAddress(deschoolProfile.address)}</span>
+            </div>
+            <Button type="primary" size='small' shape="circle" icon={<LogoutOutlined />} className="frc-center" onClick={() => handleUnlinkDeschool(deschoolProfile)} />
           </div>
-          <span className='ml-2'>{user.formateName()}</span>
-        </div>}
+        ))}
       </div>
       <div className='fcc-center w-full'>
         {!user ?

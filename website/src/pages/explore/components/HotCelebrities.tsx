@@ -17,7 +17,7 @@ const HotCelebrities = (props: { searchWord: string }) => {
   const initSeries = async () => {
     setLoading(true)
     try {
-      const response = await getLatestUsers(1, 9999999)
+      const response = await getLatestUsers({page: 1, pageSize: 50})
       setCelebrities(response.items)
       setCacheCelebrities(response.items)
     } finally {

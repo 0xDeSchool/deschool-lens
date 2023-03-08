@@ -110,7 +110,7 @@ export function DeschoolIcon(props: any) {
       {...props}
       component={() => (
         <svg {...props} width="42" height="26" viewBox="0 0 42 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0H15.8376L19.1371 3.29949V22.7005L15.8376 26H0V0ZM12.5381 6.59898V19.401H6.59898L6.59898 6.59898H12.5381ZM41.6161 6.60378H22.4239V0H41.6161V6.60378ZM37.5041 16.2618H22.4239V9.69931H37.5041V16.2618ZM41.6161 25.9611H22.4239V19.3986H41.6161V25.9611Z" fill="#ffffff"/>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0H15.8376L19.1371 3.29949V22.7005L15.8376 26H0V0ZM12.5381 6.59898V19.401H6.59898L6.59898 6.59898H12.5381ZM41.6161 6.60378H22.4239V0H41.6161V6.60378ZM37.5041 16.2618H22.4239V9.69931H37.5041V16.2618ZM41.6161 25.9611H22.4239V19.3986H41.6161V25.9611Z" fill="#ffffff" />
         </svg>
       )}
     />
@@ -123,13 +123,80 @@ export function LensIcon(props: any) {
       {...props}
       component={() => (
         <svg {...props} viewBox="0 0 381.55 381.55" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M241.5 101.77c-1.06 1.06-2.06 2.14-3.08 3.21 0-1.48.09-3 .09-4.45s0-3.08-.07-4.6c-1.74-63.12-96.88-63.12-98.62 0 0 1.52-.06 3-.06 4.6s.05 3 .09 4.45c-1-1.07-2-2.15-3.09-3.21s-2.19-2.16-3.29-3.21C87.6 55.16 20.33 122.43 63.73 168.3q1.58 1.65 3.21 3.29C119.31 224 189.13 224 189.13 224s69.83 0 122.2-52.37q1.64-1.64 3.21-3.29c43.4-45.87-23.87-113.14-69.74-69.74q-1.66 1.54-3.3 3.17z" stroke-miterlimit="10" stroke-width="11" fill="none" stroke="#00501e" />
+          <path d="M241.5 101.77c-1.06 1.06-2.06 2.14-3.08 3.21 0-1.48.09-3 .09-4.45s0-3.08-.07-4.6c-1.74-63.12-96.88-63.12-98.62 0 0 1.52-.06 3-.06 4.6s.05 3 .09 4.45c-1-1.07-2-2.15-3.09-3.21s-2.19-2.16-3.29-3.21C87.6 55.16 20.33 122.43 63.73 168.3q1.58 1.65 3.21 3.29C119.31 224 189.13 224 189.13 224s69.83 0 122.2-52.37q1.64-1.64 3.21-3.29c43.4-45.87-23.87-113.14-69.74-69.74q-1.66 1.54-3.3 3.17z" strokeMiterlimit="10" strokeWidth="11" fill="none" stroke="#00501e" />
           <path className="cls-3" d="M118.4 171.2c0-14.14 13.36-25.61 29.84-25.61s29.84 11.47 29.84 25.61" />
           <circle className="cls-1" cx="157.44" cy="159.86" r="11.51" />
           <path className="cls-3" d="M200.46 171.2c0-14.14 13.36-25.61 29.84-25.61s29.84 11.47 29.84 25.61" />
           <circle className="cls-1" cx="239.51" cy="159.86" r="11.51" />
           <path className="cls-3" d="M207.84 186.35c-3.3 6.05-10.44 10.26-18.74 10.26s-15.44-4.21-18.74-10.26" />
           <path className="cls-1" d="M332.1 310.44a99.88 99.88 0 01-63.39 6.61 98.15 98.15 0 01-52.59-31.15c1.36 1 2.76 1.85 4.19 2.72a74.1 74.1 0 0038.28 10.76 73.21 73.21 0 0034.29-8.57c.76-.4 1.53-.82 2.29-1.25l-5.44-9.56-2 1.09a62.31 62.31 0 01-61.75-1.9A64 64 0 01194.73 224v-4.24h-11.1V224a63.94 63.94 0 01-31.25 55.17 62.31 62.31 0 01-61.75 1.9l-2-1.09-5.44 9.56c.76.43 1.52.85 2.29 1.25a73.21 73.21 0 0034.29 8.57 74 74 0 0038.27-10.76c1.44-.87 2.84-1.77 4.2-2.72a98.19 98.19 0 01-52.59 31.15 99.87 99.87 0 01-63.39-6.61L40.74 320a111 111 0 0071.34 7.78A109.26 109.26 0 00174 289.06a93.38 93.38 0 009.66-14.78v56.2h11v-56.39a94.47 94.47 0 009.76 15 109.28 109.28 0 0061.9 38.73 111 111 0 0071.31-7.82z" />
+        </svg>
+      )}
+    />
+  )
+}
+
+export function ArrowLeftIcon(props: any) {
+  return (
+    <Icon
+      {...props}
+      component={() => (
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="18" cy="18" r="18" fill="black" fillOpacity="0.15" />
+          <path d="M10.1349 17.9425L24.7295 17.9425" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path
+            d="M16.0215 23.8042L10.135 17.943L16.0215 12.0808"
+            stroke="black"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      )}
+    />
+  )
+}
+
+export function ArrowRightIcon(props: any) {
+  return (
+    <Icon
+      {...props}
+      component={() => (
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M36 18C36 27.9411 27.9411 36 18 36C8.05887 36 0 27.9411 0 18C0 8.05887 8.05887 0 18 0C27.9411 0 36 8.05887 36 18Z"
+            fill="white"
+            fillOpacity="0.15"
+          />
+          <path d="M25.2167 17.4088H10.6221" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path
+            d="M19.3301 11.5472L25.2166 17.4083L19.3301 23.2705"
+            stroke="white"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      )}
+    />
+  )
+}
+
+export function NextArrowIcon(props: any) {
+  return (
+    <Icon
+      {...props}
+      component={() => (
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="18" cy="18" r="18" fill="#181818" fillOpacity="0.85" />
+          <path d="M10.1349 17.9425L24.7295 17.9425" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path
+            d="M16.021 23.8041L10.1345 17.9429L16.021 12.0807"
+            stroke="white"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
         </svg>
       )}
     />

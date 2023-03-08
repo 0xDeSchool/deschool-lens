@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import type { FollowRelationType } from '~/api/booth/follow';
 import { getFollowings, getFollowers, followUser, unfollowUser, checkfollowUser } from '~/api/booth/follow'
 import { useAccount } from '~/account'
-import type { UserInfo } from '~/api/booth/types';
+import type { UserFollower, UserFollowing, UserInfo } from '~/api/booth/types';
 import { getUserInfo } from '~/api/booth';
 import { getShortAddress } from '~/utils/format';
 import DeschoolFollowersModal from './deschoolModal'
@@ -23,8 +23,8 @@ const DeschoolCard = (props: DeschoolCardProps) => {
   const [modal, setModal] = useState<{ type: 'followers' | 'following'; visible: boolean }>({ type: 'followers', visible: false })
   const [currentUser, setCurrentUser] = useState<UserInfo | null>(null)
   const [isFollowedByMe, setIsFollowedByMe] = useState<boolean>(false)
-  const [followings, setFollowings] = useState([])
-  const [followers, setFollowers] = useState([])
+  const [followings, setFollowings] = useState<UserFollowing[]>([])
+  const [followers, setFollowers] = useState<UserFollower[]>([])
   const [updateTrigger, setUpdateTrigger] = useState(0)
   const { t } = useTranslation()
   const user = useAccount()
@@ -105,7 +105,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
         visible: false,
       })
     }
-  }, [updateTrigger,visitCase, user])
+  }, [updateTrigger, visitCase, user])
 
   const handleJumpFollowers = (num: number | undefined) => {
     if (num && num > 0) {
@@ -186,7 +186,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
       </p>
       {routeAddress && routeAddress !== user?.address && (
         <div className="m-10 text-right">
-          <button
+          {user && <button
             type="button"
             className="purple-border-button px-2 py-1"
             onClick={() => {
@@ -198,7 +198,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
             }}
           >
             {isFollowedByMe ? t('UnFollow') : t('Follow')}
-          </button>
+          </button>}
         </div>
       )}
       <DeschoolFollowersModal

@@ -31,7 +31,8 @@ export interface EventMatchedItem {
   followingUsers: RecomendedUsers
   matchedUsers: RecomendedUsers
   courses: MatchedCourse[]
-  registrants: string[]
+  registrants: RecomendedUsers
+  hasInterested: boolean
 }
 
 export interface MatchedCourse {

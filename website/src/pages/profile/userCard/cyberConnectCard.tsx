@@ -214,19 +214,13 @@ const CyberCard = (props: CyberCardProps) => {
         </a>
       </div>
       {currentUser?.handle ? (
-        <p className="m-10 text-xl line-wrap three-line-wrap">
+        <p className="m-10 text-xl line-wrap three-line-wrap break-words">
           {user?.bio || visitCase === 0 ? '' : "The user hasn't given a bio on CyberConnect for self yet :)"}
         </p>
       ) : (
-        <>
+        <div className='pb-16 pt-4'>
           {!currentUser?.handle && <CreateCyberConnectProfile />}
-          <p className="m-10 text-xl three-line-wrap">
-            Please get a CyberConnect handle to enable all Booth profile functions. You can grab one at:
-            <a href="https://opensea.io/collection/cyberconnect" className="block underline">
-              https://opensea.io/collection/cyberconnect
-            </a>
-          </p>
-        </>
+        </div>
       )}
       {visitCase === 1 && (
         <div className="m-10 text-right">
