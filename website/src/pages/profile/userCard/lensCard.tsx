@@ -11,6 +11,7 @@ import type { UserPlatform } from '~/api/booth/types'
 import { PlatformType } from '~/api/booth/booth'
 import FollowersModal from './modal'
 import Skeleton from 'antd/es/skeleton'
+import Button from 'antd/es/button'
 
 type LensCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
@@ -217,14 +218,14 @@ const LensCard = (props: LensCardProps) => {
       )}
       {visitCase === 1 && (
         <div className="m-10 text-right">
-          <button
-            type="button"
-            className={`${currentUser?.handle
+          <Button
+            className={`${
+              currentUser?.handle
                 ? 'purple-border-button'
                 : 'inline-flex items-center border border-gray rounded-xl bg-gray-3 text-gray-6 hover:cursor-not-allowed'
-              } px-2 py-1`}
-            disabled={!currentUser?.handle || !user?.lensProfile()}
-            onClick={() => {  
+            } px-2 py-1`}
+            disabled={!currentUser?.handle || !user?.address}
+            onClick={() => {
               if (isFollowedByMe) {
                 handleUnFollow(currentUser)
               } else {
@@ -233,7 +234,7 @@ const LensCard = (props: LensCardProps) => {
             }}
           >
             {isFollowedByMe ? t('UnFollow') : t('Follow')}
-          </button>
+          </Button>
         </div>
       )}
       <FollowersModal

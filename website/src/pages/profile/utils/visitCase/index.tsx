@@ -11,7 +11,7 @@ export function getVisitCase(routeAddress: string | undefined | null): VisitType
   const address = getUserManager().user?.address
   let visitCase: VisitType = -1
   // 地址栏和缓存都没有地址，既不是访问他人空间也不是访问自己，需要登录访问自己
-  if (!address) {
+  if (!address && !routeAddress) {
     visitCase = -1
     return visitCase
   }
