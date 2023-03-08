@@ -32,7 +32,7 @@ const RecommandEventCard: React.FC<RecommandEventCardProps> = (props) => {
   return (
     <div className="flex-1 rounded-2 max-w-520px bg-white shadow">
       {/* <img srcSet={info?.posterUrl} src={fallbackImage} alt="poster" className="w-full rounded-tl-2 rounded-tr-2 aspect-[16:9]" /> */}
-      <div className="max-w-520px w-520px h-292px rounded-tl-2 rounded-tr-2 aspect-[16:9]">
+      <div className="max-w-520px w-520px rounded-tl-2 rounded-tr-2 aspect-[16:9]">
         <Image
           preview={false}
           alt="poster"

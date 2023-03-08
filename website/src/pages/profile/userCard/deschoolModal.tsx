@@ -5,18 +5,18 @@ import Modal from 'antd/es/modal/Modal'
 import Skeleton from 'antd/es/skeleton'
 import message from 'antd/es/message'
 import Empty from 'antd/es/empty'
-import { RoleType } from '~/lib/enum'
 import { followUser, unfollowUser } from '~/api/booth/follow'
 import Jazzicon from 'react-jazzicon'
 import { getShortAddress } from '~/utils/format'
 import { Link } from 'react-router-dom'
 import { useAccount } from '~/account'
+import { UserFollower, UserFollowing } from '~/api/booth/types'
 
-type FollowType = { Following?: string; Follower?: string; PersonFollowedVistor: boolean; VistorFollowedPerson: boolean }
+type FollowType = UserFollower & UserFollowing
 
 const DeschoolFollowersModal = (props: {
-  followers: any
-  followings: any
+  followers: UserFollower[]
+  followings: UserFollowing[]
   type: 'followers' | 'following'
   visible: boolean
   closeModal: any
@@ -24,7 +24,7 @@ const DeschoolFollowersModal = (props: {
 }) => {
   const { type, visible, closeModal, followers, followings, setUpdateTrigger } = props
   const { t } = useTranslation()
-  const [follows, setFollows] = useState([] as FollowType[])
+  const [follows, setFollows] = useState<FollowType[]>([])
   const [loading, setLoading] = useState(true)
   const user = useAccount()
 
@@ -80,13 +80,13 @@ const DeschoolFollowersModal = (props: {
           {follows && follows.length > 0 ? (
             <div className="w-full">
               {follows?.map(follow => (
-                <div key={follow?.Follower || follow?.Following} className="relative border rounded-xl p-2 w-full frc-center">
+                <div key={follow.follower?.id || follow.following?.id} className="relative border rounded-xl p-2 w-full frc-center">
                   <div className="relative w-60px h-60px">
                     <Jazzicon diameter={60} seed={Math.floor(Math.random() * 30)} />
                   </div>
                   <div className="flex-1 fcs-center ml-2">
-                    <Link to={`/profile/${follow?.Follower || follow?.Following}/resume`}>
-                      <h1 className="text-xl">{getShortAddress(follow?.Follower || follow?.Following)}</h1>
+                    <Link to={`/profile/${follow.follower?.address || follow.following?.address}/resume`}>
+                      <h1 className="text-xl">{getShortAddress(follow.follower?.displayName || follow.following?.displayName)}</h1>
                     </Link>
                   </div>
                   <div>
@@ -96,19 +96,19 @@ const DeschoolFollowersModal = (props: {
                     {/* 三、用户在看别人的 Following，啥事都不能做，没有按钮。如果别人和他的关注者双向关注则用文字显示出来 */}
                     {/* 四、用户在看别人的 Follower，啥事都不能做，没有按钮。如果别人和他的关注者双向关注则用文字显示出来 */}
                     {/* TODO */}
-                    { (((follow.Follower || follow?.Following)!) && user?.address) && (
+                    {(((follow.follower || follow?.following)!) && user?.address) && (
                       <button
                         type="button"
                         className="purple-border-button px-2 py-1"
                         onClick={() => {
-                          if (follow?.VistorFollowedPerson) {
-                            handleUnFollow((follow.Follower || follow?.Following)!)
-                          } else if (follow && !follow?.VistorFollowedPerson) {
-                            handleFollow((follow.Follower || follow?.Following)!)
+                          if (follow?.vistorFollowedPerson) {
+                            handleUnFollow((follow.follower?.address || follow?.following?.address)!)
+                          } else if (follow && !follow?.vistorFollowedPerson) {
+                            handleFollow((follow.follower?.address || follow?.following?.address)!)
                           }
                         }}
                       >
-                        {follow?.VistorFollowedPerson ? t('UnFollow') : t('Follow')}
+                        {follow?.vistorFollowedPerson ? t('UnFollow') : t('Follow')}
                       </button>
                     )}
                   </div>

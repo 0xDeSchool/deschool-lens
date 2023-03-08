@@ -15,7 +15,7 @@ const AvatarList: React.FC<AvatarListProps> = (props) => {
   const navigate = useNavigate()
   const goProfile = (user: EventUserItem) => {
     debugger
-    navigate(`/profile/${user.address}`)
+    navigate(`/profile/${user.address}/resume`)
   }
   return (
     <div className="frc-start flex-0 translate-x-10px">
