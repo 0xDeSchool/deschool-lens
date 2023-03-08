@@ -120,7 +120,7 @@ func (r *MongoFollowRepository) CountUsers(ctx context.Context, userIds []primit
 		{"$match", bson.D{{key, bson.M{"$in": userIds}}}},
 	}
 	group := bson.D{{"$group", bson.D{
-		{"_id", "$fromUser"},
+		{"_id", "$" + key},
 		{"count", bson.D{{"$sum", 1}}},
 	}}}
 	pipeline := mongo.Pipeline{match, group}

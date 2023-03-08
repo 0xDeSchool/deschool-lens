@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import Jazzicon from 'react-jazzicon/dist/Jazzicon'
 import { useNavigate } from 'react-router-dom'
 import { DEFAULT_AVATAR, useAccount } from '~/account'
+import { getLatestUsers, getUserInfo } from '~/api/booth'
 import { followUser, unfollowUser } from '~/api/booth/follow'
 import { NewUserInfo } from '~/api/booth/types'
 import { getShortAddress } from '~/utils/format'
@@ -24,6 +25,7 @@ const UserInfoDeschool: React.FC<UserInfoDeschoolProps> = (props) => {
   const user = useAccount()
   const [loading, setLoading] = useState(true)
   const [isFollowLoading, setIsFollowLoading] = useState(false)
+  const [currentFollowerCount, setcurrentFollowerCount] = useState(followerCount)
 
   useEffect(() => {
     setLoading(false)
@@ -36,7 +38,10 @@ const UserInfoDeschool: React.FC<UserInfoDeschoolProps> = (props) => {
     }
     setIsFollowLoading(true)
     await followUser(id, user?.id)
-    refresh()
+    const u = await getLatestUsers({ userId: id })
+    if (u.items.length > 0) {
+      setcurrentFollowerCount(u.items[0].followerCount)
+    }
     setIsFollowLoading(false)
     message.success(`success following ${address}`)
   }
@@ -48,7 +53,6 @@ const UserInfoDeschool: React.FC<UserInfoDeschoolProps> = (props) => {
     }
     setIsFollowLoading(true)
     await unfollowUser(id, user?.id)
-    if (refresh) refresh()
     setIsFollowLoading(false)
     message.success(`success unfollow ${address}`)
   }
@@ -87,13 +91,13 @@ const UserInfoDeschool: React.FC<UserInfoDeschoolProps> = (props) => {
       {/* follows info */}
       <div className="mx-auto frc-center gap-8 flex-wrap">
         <a
-          className={`${followerCount && followerCount > 0 ? 'hover:underline hover:cursor-pointer' : ''
+          className={`${currentFollowerCount && currentFollowerCount > 0 ? 'hover:underline hover:cursor-pointer' : ''
             } text-xl`}
           onClick={() => {
             followerDetail && followerDetail()
           }}
         >
-          <span className="text-black">{followerCount || '-'} </span>
+          <span className="text-black">{currentFollowerCount || '-'} </span>
           <span className="text-gray-5 font-ArchivoNarrow">{t('profile.followers')}</span>
         </a>
         <a
