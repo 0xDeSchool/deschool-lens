@@ -10,10 +10,11 @@ import Tags from './Tags'
 
 type RecommandEventCardProps = {
   info: RecomendedEvents
+  refresh: () => void
 }
 
 const RecommandEventCard: React.FC<RecommandEventCardProps> = (props) => {
-  const { info } = props
+  const { info, refresh } = props
   const account = useAccount()
 
   const handleIterested = async () => {
@@ -22,6 +23,7 @@ const RecommandEventCard: React.FC<RecommandEventCardProps> = (props) => {
         targetId: info.id,
         userId: account.id,
       })
+      refresh()
     }
     window.open(`https://link3.to/e/${info.id}`)
   }
