@@ -30,11 +30,11 @@ type FollowRepository interface {
 type FollowerList struct {
 	VistorFollowedPerson bool
 	PersonFollowedVistor bool
-	Follower             string
+	Follower             *UserItem
 }
 
 type FollowingList struct {
 	VistorFollowedPerson bool
 	PersonFollowedVistor bool
-	Following            string
+	Following            *UserItem
 }
