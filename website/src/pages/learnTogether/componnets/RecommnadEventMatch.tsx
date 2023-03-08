@@ -5,14 +5,11 @@ import type { MatchedEvent } from '~/hooks/useCCProfile'
 import AvatarList from './AvatarList'
 import Tags from './Tags'
 import { Swiper, SwiperSlide } from 'swiper/react'
-import { EffectCoverflow } from 'swiper'
 import 'swiper/css'
-import 'swiper/css/effect-coverflow'
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import fallbackImage from '~/assets/images/fallbackImage'
 import { NextArrowIcon } from '~/components/icon'
-import SkeletonImage from 'antd/es/skeleton/Image'
 
 type RecommnadEventMatchProps = {
   info: MatchedEvent
@@ -22,6 +19,7 @@ const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
   const { info } = props
   const count = 10
   const [swiperRef, setSwiperRef] = useState<any>(null)
+  const [activeIndex, setActiveIndex] = useState(0)
 
   const onStartLearning = (c: MatchedCourse) => {
     window.open(`https://deschool.app/origin/series/${c.seriesId}/learning?courseId=${c.id}`)
@@ -52,21 +50,13 @@ const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
       <h1 className="text-xl font-500 font-Anton mb-8">Get prepared on deschool before the event</h1>
       <div className='relative'>
         {info?.courses?.length > 0 && <Swiper
-            className="w-full mx-auto frc-center"
+            className="max-w-50vw w-full mx-auto frc-center"
             onSwiper={setSwiperRef}
-            loop
-            effect={'coverflow'}
-            modules={[EffectCoverflow]}
+            loop={false}
             grabCursor
             centeredSlides
-            slidesPerView="auto"
-            coverflowEffect={{
-              rotate: 0,
-              stretch: 0,
-              depth: 100,
-              modifier: 2.5,
-              slideShadows: false,
-            }}
+            slidesPerView={1}
+            onActiveIndexChange={(swiper) => setActiveIndex(swiper.activeIndex)}
           >
           {info?.courses?.map((course) => {
             return (<SwiperSlide key={`${course.id}`} className="mx-auto rounded-16px frc-center">
@@ -97,11 +87,14 @@ const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
             </SwiperSlide>)
           })}
         </Swiper>}
-        {info?.courses?.length > 1 && <div className="absolute top-50% translate-y--50% left-0 z-1 w-36px h-36px rounded-50% bg-#181818D9 hover:bg-#18181840 cursor-pointer" onClick={() => swiperRef?.slidePrev()}>
-          <NextArrowIcon />
-        </div>}
-        {info?.courses?.length > 1 && <div
-          className="absolute top-50% translate-y--50% right-0 z-1 w-36px h-36px rounded-50% bg-#181818D9 hover:bg-#18181840 cursor-pointer transform rotate-180"
+        {(info?.courses?.length > 1 && activeIndex > 0) &&
+          <div
+            className="swiper-button-prev absolute top-50% translate-y--50% left--32px z-1 w-36px h-36px rounded-50% bg-#181818D9 hover:bg-#18181840 cursor-pointer"
+            onClick={() => swiperRef?.slidePrev()}>
+            <NextArrowIcon />
+          </div>}
+        {(info?.courses?.length > 1 && activeIndex + 1 < info?.courses?.length)&& <div
+          className="swiper-button-next absolute top-50% translate-y--50% right--32px z-1 w-36px h-36px rounded-50% bg-#181818D9 hover:bg-#18181840 cursor-pointer transform rotate-180"
           onClick={() => swiperRef?.slideNext()}
         >
           <NextArrowIcon />
