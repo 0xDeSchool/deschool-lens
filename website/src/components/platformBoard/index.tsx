@@ -9,7 +9,7 @@ type PlatformBoardProps = {
   change: (type: PlatformType) => void
 }
 
-const normalClass = 'frc-center rounded-full w-36px'
+const normalClass = 'frc-center rounded-full w-36px drop-shadow-xl'
 const activeClass = 'pl-12px frc-start w-full rounded-2'
 
 const PlatformBoard: React.FC<PlatformBoardProps> = (props) => {
@@ -23,7 +23,7 @@ const PlatformBoard: React.FC<PlatformBoardProps> = (props) => {
   }, [active])
 
   return (
-    <div className='frc-between w-full gap-1 mb-4'>
+    <div className='frc-between w-full gap-2 mb-4'>
       <div
         className={`cursor-pointer bg-black h-36px min-h-36px min-w-36px transition-all transition-500 ${active === PlatformType.CYBERCONNECT ? activeClass : normalClass}`}
         onClick={() => setActive(PlatformType.CYBERCONNECT)}

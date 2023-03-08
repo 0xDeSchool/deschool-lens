@@ -30,7 +30,7 @@ const RecommandEventCard: React.FC<RecommandEventCardProps> = (props) => {
   }
 
   return (
-    <div className="flex-1 rounded-2 max-w-520px bg-white shadow">
+    <div className="flex-1 rounded-2 max-w-520px shadow">
       {/* <img srcSet={info?.posterUrl} src={fallbackImage} alt="poster" className="w-full rounded-tl-2 rounded-tr-2 aspect-[16:9]" /> */}
       <div className="max-w-520px w-520px rounded-tl-2 rounded-tr-2 aspect-[16:9] overflow-hidden">
         <Image
@@ -50,7 +50,7 @@ const RecommandEventCard: React.FC<RecommandEventCardProps> = (props) => {
         />
       </div>
       <div className='px-4 pb-6 pt-4'>
-        <div className="text-2xl mb-2">{info?.title}</div>
+        <div className="text-2xl mb-2 font-ArchivoNarrow">{info?.title}</div>
         <div className="mb-1">{dayjs(`${info.startTimestamp}000`).format('ddd, MMMM, MM, YYYY')}</div>
         <div className="mb-2">{dayjs(`${info.startTimestamp}000`).format('hh:mm A')} - {dayjs(`${info?.endTimestamp}1000`).format('hh:mm A')}</div>
         <Tags tags={info.tags} />
