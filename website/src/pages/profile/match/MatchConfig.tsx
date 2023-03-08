@@ -91,7 +91,11 @@ const MatchConfig = () => {
       if (!result) {
         return
       }
-      form.setFieldsValue(result)
+      let fields: Record<string, any> = {}
+      Object.entries(result).forEach(([key, value]) => {
+        fields[`${key.toLowerCase()}`] = value
+      })
+      form.setFieldsValue(fields)
     } catch (err) {
       /* empty */
     }
@@ -103,7 +107,6 @@ const MatchConfig = () => {
   }, [])
 
   const handleSubmmit = async () => {
-    let address = user?.address
     try {
       setLoading(true)
       // 判断表单是否通过验证

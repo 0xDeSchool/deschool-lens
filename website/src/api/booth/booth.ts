@@ -1,5 +1,5 @@
 import http from '~/api/booth/http'
-import type { RecommendAddr } from '~/lib/types/app'
+import type { RecommendResult } from '~/lib/types/app'
 
 export enum PlatformType {
   BOOTH = 0,
@@ -164,9 +164,9 @@ export async function putQ11e(param: q11eParam): Promise<string | undefined> {
   }
 }
 
-export async function getRecommendation(userId: string): Promise<RecommendAddr | undefined> {
+export async function getRecommendation(userId: string): Promise<RecommendResult | undefined> {
   try {
-    const result: RecommendAddr = await http.get(`/id/recommendation?userId=${userId}`)
+    const result: RecommendResult = await http.get(`/id/recommendation?userId=${userId}`)
     return result
   } catch (err) {
     console.log(err)

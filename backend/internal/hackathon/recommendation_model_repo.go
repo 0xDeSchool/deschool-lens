@@ -8,7 +8,7 @@ import (
 )
 
 type UserRecommendation struct {
-	ddd.EntityBase `bson:",inline"`
+	ddd.EntityBase `bson:",inline" json:"ddd.EntityBase"`
 	UserId         primitive.ObjectID `bson:"userId"`
 	TargetId       primitive.ObjectID `bson:"targetId"`
 	Reasons        []string           `bson:"reasons"`

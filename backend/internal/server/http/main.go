@@ -3,6 +3,7 @@ package http
 import (
 	"github.com/0xdeschool/deschool-lens/backend/internal/hackathon"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
+	"github.com/0xdeschool/deschool-lens/backend/pkg/ginx"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/server"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/utils"
 )
@@ -32,7 +33,7 @@ func Init(sb *server.ServerBuiler) {
 }
 
 func HackathonApi(sb *server.ServerBuiler) {
-
+	altAuth := ginx.OptionalAuthHandlerFunc(sb)
 	// 在 Server 中添加 Hackathon 模块的各个 Route
 	sb.Configure(func(s *server.Server) error {
 		baseRoute := s.Route.Group("/api")
@@ -66,7 +67,7 @@ func HackathonApi(sb *server.ServerBuiler) {
 
 		baseRoute.POST("/events", filterEvents)
 
-		baseRoute.GET("users", getUsers)
+		baseRoute.GET("users", altAuth, getUsers)
 		return nil
 	})
 }

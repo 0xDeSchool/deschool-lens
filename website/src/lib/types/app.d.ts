@@ -1,3 +1,4 @@
+import { EventUserItem } from '~/api/booth/event'
 import type { Profile } from '~/api/lens/graphql/generated'
 
 export type ContractType = 'ERC20' | 'ERC721' | 'ERC1155'
@@ -364,9 +365,9 @@ export interface UserProfile {
   avatar: string | undefined
 }
 
-export interface RecommendAddr {
-  FromAddr: string
-  ToAddr: string
-  Reasons: string[]
-  Score: number
+export interface RecommendResult {
+  userId: string
+  target: EventUserItem
+  reasons: string[]
+  score: number
 }

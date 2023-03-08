@@ -11,6 +11,7 @@ import type { UserPlatform } from '~/api/booth/types'
 import { PlatformType } from '~/api/booth/booth'
 import FollowersModal from './modal'
 import Skeleton from 'antd/es/skeleton'
+import Button from 'antd/es/button'
 
 type LensCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
@@ -64,7 +65,7 @@ const LensCard = (props: LensCardProps) => {
       let displayName = getShortAddress(address!)
       // 如果是用户自己，则展示用户名
       if (visitCase === 0) {
-          displayName = user?.displayName!
+        displayName = user?.displayName!
       }
       // 根据最新用户信息结构更新当前用户信息
       setCurrentUser({
@@ -167,7 +168,7 @@ const LensCard = (props: LensCardProps) => {
   if (loading) {
     return (
       <div className="h-400px fcc-center">
-        <Skeleton active/>
+        <Skeleton active />
       </div>
     )
   }
@@ -183,9 +184,8 @@ const LensCard = (props: LensCardProps) => {
       </div>
       <div className="mx-10 frc-center flex-wrap">
         <a
-          className={`${
-            totalFollowers > 0 ? 'hover:underline hover:cursor-pointer' : ''
-          } text-xl mr-4 `}
+          className={`${totalFollowers > 0 ? 'hover:underline hover:cursor-pointer' : ''
+            } text-xl mr-4 `}
           onClick={() => {
             handleJumpFollowers(totalFollowers)
           }}
@@ -194,9 +194,8 @@ const LensCard = (props: LensCardProps) => {
           <span className="text-gray-5 font-ArchivoNarrow">{t('profile.followers')}</span>
         </a>
         <a
-          className={`${
-            totalFollowing > 0 ? 'hover:underline hover:cursor-pointer' : ''
-          } text-xl`}
+          className={`${totalFollowing > 0 ? 'hover:underline hover:cursor-pointer' : ''
+            } text-xl`}
           onClick={() => {
             handleJumpFollowing(totalFollowing)
           }}
@@ -219,14 +218,13 @@ const LensCard = (props: LensCardProps) => {
       )}
       {visitCase === 1 && (
         <div className="m-10 text-right">
-          <button
-            type="button"
+          <Button
             className={`${
               currentUser?.handle
                 ? 'purple-border-button'
                 : 'inline-flex items-center border border-gray rounded-xl bg-gray-3 text-gray-6 hover:cursor-not-allowed'
             } px-2 py-1`}
-            disabled={!currentUser?.handle}
+            disabled={!currentUser?.handle || !user?.address}
             onClick={() => {
               if (isFollowedByMe) {
                 handleUnFollow(currentUser)
@@ -236,7 +234,7 @@ const LensCard = (props: LensCardProps) => {
             }}
           >
             {isFollowedByMe ? t('UnFollow') : t('Follow')}
-          </button>
+          </Button>
         </div>
       )}
       <FollowersModal

@@ -4,6 +4,7 @@ import (
 	"github.com/0xdeschool/deschool-lens/backend/internal/hackathon"
 	"github.com/0xdeschool/deschool-lens/backend/internal/identity"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/db/mongodb"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type IdValidateInput struct {
@@ -53,6 +54,24 @@ func NewQ11e(input *PutQ11eInput) *hackathon.Q11e {
 		Mbti:      input.Mbti,
 	}
 	return q
+}
+
+type RecommendUserResult struct {
+	UserId   primitive.ObjectID `json:"userId"`
+	TargetId primitive.ObjectID `json:"targetId"`
+	Reasons  []string           `json:"reasons"`
+	Score    int                `json:"score"`
+	Target   *UserItem          `json:"target"`
+}
+
+func NewRecommendUserResult(ur *hackathon.UserRecommendation, u *identity.User) *RecommendUserResult {
+	return &RecommendUserResult{
+		UserId:   ur.UserId,
+		TargetId: ur.TargetId,
+		Reasons:  ur.Reasons,
+		Score:    ur.Score,
+		Target:   NewUserItem(u),
+	}
 }
 
 type UserItem struct {

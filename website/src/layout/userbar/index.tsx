@@ -12,6 +12,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import Logo from '../logo'
 import SwitchLanguage from './SwitchLanguage'
 import WalletConnectBoard from './WalletConnectBoard'
+import { getUserManager } from '~/account'
 
 const UserBar = () => {
   const { t } = useTranslation()
@@ -59,8 +60,12 @@ const UserBar = () => {
 
   // 根据路由激活导航样式
   useEffect(() => {
-    updateNavStatus()
+    getUserManager().tryAutoLogin()
   }, [location])
+
+  useEffect(() => {
+    updateNavStatus()
+  },[])
 
   // 用于自适应展示导航抽屉
   const showDrawer = () => {

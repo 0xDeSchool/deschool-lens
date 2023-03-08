@@ -61,14 +61,14 @@ func (hm *HackathonManager) GetFollowing(ctx context.Context, userId primitive.O
 func (hm *HackathonManager) GetFollower(ctx context.Context, userId primitive.ObjectID, vistorUserId primitive.ObjectID) []FollowerList {
 	result := hm.followRepo.GetListByFilter(ctx, userId, "toUser")
 	userIds := linq.Map(result, func(i *Follow) primitive.ObjectID {
-		return i.ToUser
+		return i.FromUser
 	})
 	userRepo := *di.Get[identity.UserRepository]()
 	user := userRepo.GetMany(ctx, userIds)
 	userMap := linq.ToMap(user, func(i *identity.User) primitive.ObjectID { return i.ID })
 	var ret = make([]FollowerList, 0)
 	for _, item := range result {
-		u, ok := userMap[item.ToUser]
+		u, ok := userMap[item.FromUser]
 		if !ok {
 			continue
 		}

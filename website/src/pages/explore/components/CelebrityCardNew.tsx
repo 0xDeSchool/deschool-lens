@@ -18,7 +18,7 @@ const CelebrityCardNew: React.FC<CelebrityCardNewProps> = (props) => {
   const [active, setActive] = useState<PlatformType>(PlatformType.DESCHOOL)
 
   return (
-    <div className="fcs-center px-6 py-8 bg-white rounded-md shadow-md w-375px">
+    <div className="fcs-center px-6 py-8 rounded-md shadow-md w-375px bg-gradient-to-b from-#FFFFFF to-#e3eeff">
       {/* header */}
       <PlatformBoard defaultActive={active} change={setActive}/>
       {/* user info */}

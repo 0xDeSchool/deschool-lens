@@ -1,4 +1,4 @@
-import http from "./http";
+import http from '~/api/booth/http'
 import type { NewUserInfo, PagedResult } from "./types";
 
 /**

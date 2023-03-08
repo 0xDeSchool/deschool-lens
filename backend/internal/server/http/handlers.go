@@ -104,7 +104,9 @@ func recommendationGetHandler(ctx *gin.Context) {
 	hm := *di.Get[hackathon.HackathonManager]()
 	userId := ctx.Query("userId")
 	result := hm.RunRecommendations(ctx, mongodb.IDFromHex(userId))
-	ctx.JSON(http.StatusOK, result)
+	ur := *di.Get[identity.UserRepository]()
+	u := ur.Get(ctx, result.TargetId)
+	ctx.JSON(http.StatusOK, NewRecommendUserResult(result, u))
 }
 
 func q11eGetHandler(ctx *gin.Context) {

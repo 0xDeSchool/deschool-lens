@@ -10,6 +10,7 @@ import type { UserFollower, UserFollowing, UserInfo } from '~/api/booth/types';
 import { getUserInfo } from '~/api/booth';
 import { getShortAddress } from '~/utils/format';
 import DeschoolFollowersModal from './deschoolModal'
+import Button from 'antd/es/button';
 
 type DeschoolCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
@@ -131,14 +132,14 @@ const DeschoolCard = (props: DeschoolCardProps) => {
     })
   }
 
-  const handleFollow = async (user: UserInfo) => {
-    await followUser(user.id, currentUser?.id!)
+  const handleFollow = async () => {
+    await followUser(currentUser?.id!, user?.id!)
     message.success(`success following ${currentUser?.address}`)
     setUpdateTrigger(new Date().getTime())
   }
 
-  const handleUnFollow = async (user: UserInfo) => {
-    await unfollowUser(user.id, currentUser?.id!)
+  const handleUnFollow = async () => {
+    await unfollowUser(currentUser?.id!, user?.id!)
     message.success(`success unfollow ${currentUser?.address}`)
     setUpdateTrigger(new Date().getTime())
   }
@@ -186,19 +187,19 @@ const DeschoolCard = (props: DeschoolCardProps) => {
       </p>
       {routeAddress && routeAddress !== user?.address && (
         <div className="m-10 text-right">
-          {user && <button
-            type="button"
+          {user && <Button
             className="purple-border-button px-2 py-1"
+            disabled={!user?.address}
             onClick={() => {
               if (isFollowedByMe && currentUser) {
-                handleUnFollow(currentUser)
+                handleUnFollow()
               } else if (currentUser) {
-                handleFollow(currentUser)
+                handleFollow()
               }
             }}
           >
             {isFollowedByMe ? t('UnFollow') : t('Follow')}
-          </button>}
+          </Button>}
         </div>
       )}
       <DeschoolFollowersModal
