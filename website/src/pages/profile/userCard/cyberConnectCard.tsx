@@ -153,7 +153,7 @@ const CyberCard = (props: CyberCardProps) => {
       return
     }
     setIsFollowLoading(true)
-    const result = await follow(user?.address!, currentUser?.handle!)
+    const result = await follow(currentUser?.handle!)
     setIsFollowLoading(false)
     console.log('result', result)
     // 关注成功后，刷新页面
@@ -166,7 +166,7 @@ const CyberCard = (props: CyberCardProps) => {
       return
     }
     setIsFollowLoading(true)
-    const result = await unFollow(user?.address!, currentUser?.handle!)
+    const result = await unFollow(currentUser?.handle!)
     setIsFollowLoading(false)
     console.log('result', result)
     // 关注成功后，刷新页面
