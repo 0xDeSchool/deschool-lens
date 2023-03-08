@@ -26,10 +26,19 @@ const UserInfoDeschool: React.FC<UserInfoDeschoolProps> = (props) => {
   const [loading, setLoading] = useState(true)
   const [isFollowLoading, setIsFollowLoading] = useState(false)
   const [currentFollowerCount, setcurrentFollowerCount] = useState(followerCount)
+  const [following, setFollowing] = useState(isFollowing)
 
   useEffect(() => {
     setLoading(false)
   }, [address])
+
+  const updateFollowStatus = async () => {
+    const u = await getLatestUsers({ userId: id })
+    if (u.items.length > 0) {
+      setcurrentFollowerCount(u.items[0].followerCount)
+      setFollowing(u.items[0].isFollowing)
+    }
+  }
 
   const handleFollow = async () => {
     if (!user?.id) {
@@ -38,10 +47,7 @@ const UserInfoDeschool: React.FC<UserInfoDeschoolProps> = (props) => {
     }
     setIsFollowLoading(true)
     await followUser(id, user?.id)
-    const u = await getLatestUsers({ userId: id })
-    if (u.items.length > 0) {
-      setcurrentFollowerCount(u.items[0].followerCount)
-    }
+    await updateFollowStatus()
     setIsFollowLoading(false)
     message.success(`success following ${address}`)
   }
@@ -53,6 +59,7 @@ const UserInfoDeschool: React.FC<UserInfoDeschoolProps> = (props) => {
     }
     setIsFollowLoading(true)
     await unfollowUser(id, user?.id)
+    await updateFollowStatus()
     setIsFollowLoading(false)
     message.success(`success unfollow ${address}`)
   }
@@ -115,7 +122,7 @@ const UserInfoDeschool: React.FC<UserInfoDeschoolProps> = (props) => {
         {bio}
       </p>
       <div className='frc-between gap-8 mx-auto'>
-        <Button type='primary' className='w-120px' loading={isFollowLoading} disabled={isFollowLoading} onClick={!isFollowing ? handleFollow : handleUnfollow}>{!isFollowing ? 'Follow' : 'Unfollow'}</Button>
+        <Button type='primary' className='w-120px' loading={isFollowLoading} disabled={isFollowLoading} onClick={!following ? handleFollow : handleUnfollow}>{!following ? 'Follow' : 'Unfollow'}</Button>
         <Button className='w-120px' onClick={handleJumpProfile}> {t('LearnMore')}</Button>
       </div>
     </>

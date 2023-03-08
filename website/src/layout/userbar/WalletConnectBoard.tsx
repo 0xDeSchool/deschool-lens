@@ -72,12 +72,6 @@ const WalletConnectBoard = () => {
     setOpen(true)
   }
 
-  useEffect(() => {
-    if (!user) {
-      getUserManager().tryAutoLogin()
-    }
-  }, [user])
-
   return (
     <>
       {!user && <button

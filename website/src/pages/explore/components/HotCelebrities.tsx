@@ -6,6 +6,7 @@ import Empty from 'antd/es/empty'
 import { getLatestUsers } from '~/api/booth'
 import type { NewUserInfo } from '~/api/booth/types'
 import CelebrityCardNew from './CelebrityCardNew'
+import { useAccount } from '~/account'
 
 const HotCelebrities = (props: { searchWord: string }) => {
   const { searchWord } = props
@@ -13,11 +14,12 @@ const HotCelebrities = (props: { searchWord: string }) => {
   const [loading, setLoading] = useState(true)
   const [celebrities, setCelebrities] = useState<NewUserInfo[]>([])
   const [cacheCelebrities, setCacheCelebrities] = useState<NewUserInfo[]>([])
+  const user = useAccount()
 
   const initSeries = async () => {
     setLoading(true)
     try {
-      const response = await getLatestUsers({page: 1, pageSize: 50})
+      const response = await getLatestUsers({ page: 1, pageSize: 50 })
       setCelebrities(response.items)
       setCacheCelebrities(response.items)
     } finally {
@@ -26,8 +28,10 @@ const HotCelebrities = (props: { searchWord: string }) => {
   }
 
   useEffect(() => {
-    initSeries()
-  }, [])
+    if (user) {
+      initSeries()
+    }
+  }, [user])
 
   useEffect(() => {
     setCelebrities(

@@ -13,7 +13,6 @@ const AvatarList: React.FC<AvatarListProps> = (props) => {
   const { avatarList, size = 24 } = props
   const navigate = useNavigate()
   const goProfile = (user: EventUserItem) => {
-    debugger
     navigate(`/profile/${user.address}/resume`)
   }
   return (
