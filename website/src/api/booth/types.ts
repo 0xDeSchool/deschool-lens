@@ -1,4 +1,5 @@
 import type { PlatformType } from "./booth";
+import { EventUserItem as UserItem } from "./event";
 
 export enum SignMsgType {
   LOGIN = 'login',
@@ -91,6 +92,19 @@ export interface UnlinkPlatformRequest {
   handle: string
   // 平台唯一标识，如 lens, cc(CyberConnect), deschool
   platform: PlatformType
+}
+
+
+export interface UserFollower {
+  vistorFollowedPerson: boolean
+  personFollowedVistor: boolean
+  follower?: UserItem
+}
+
+export interface UserFollowing {
+  vistorFollowedPerson: boolean
+  personFollowedVistor: boolean
+  following?: UserItem
 }
 
 

@@ -28,13 +28,13 @@ type FollowRepository interface {
 }
 
 type FollowerList struct {
-	VistorFollowedPerson bool
-	PersonFollowedVistor bool
-	Follower             string
+	VistorFollowedPerson bool      `json:"vistorFollowedPerson"`
+	PersonFollowedVistor bool      `json:"personFollowedVistor"`
+	Follower             *UserItem `json:"follower"`
 }
 
 type FollowingList struct {
-	VistorFollowedPerson bool
-	PersonFollowedVistor bool
-	Following            string
+	VistorFollowedPerson bool      `json:"vistorFollowedPerson"`
+	PersonFollowedVistor bool      `json:"personFollowedVistor"`
+	Following            *UserItem `json:"following"`
 }
