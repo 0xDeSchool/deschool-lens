@@ -188,7 +188,7 @@ const UserInfoCyberConnect: React.FC<UserInfoCyberConnectProps> = (props) => {
       </p>
       <div className='frc-between gap-8 mx-auto'>
         {/* disabled 用户自己、用户没有handle、正在调用关注中*/}
-        <Button type='primary' className='mx-auto px-8' loading={isFollowLoaindg} disabled={!currentUser?.handle || (address === user?.address) || isFollowLoaindg} onClick={!followersInfo?.isFollowedByMe ? handleFollow : handleUnfollow}>{!followersInfo?.isFollowedByMe ? 'Follow' : 'Unfollow'}</Button>
+        <Button type='primary' className='mx-auto px-8' loading={isFollowLoaindg} disabled={!currentUser?.handle || !user?.address || (address && address === user?.address) || isFollowLoaindg} onClick={!followersInfo?.isFollowedByMe ? handleFollow : handleUnfollow}>{!followersInfo?.isFollowedByMe ? 'Follow' : 'Unfollow'}</Button>
         <Button className='w-120px' onClick={handleJumpProfile}> {t('LearnMore')}</Button>
       </div>
     </>

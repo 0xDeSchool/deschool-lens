@@ -65,7 +65,7 @@ const UserBar = () => {
 
   useEffect(() => {
     updateNavStatus()
-  },[])
+  },[location])
 
   // 用于自适应展示导航抽屉
   const showDrawer = () => {
