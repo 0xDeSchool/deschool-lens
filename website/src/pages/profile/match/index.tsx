@@ -1,20 +1,19 @@
 import message from 'antd/es/message'
 import Alert from 'antd/es/alert'
-import ConnectDeschoolBoard from '~/layout/connectDeschool'
 import { useLayout } from '~/context/layout'
 import MatchConfig from './MatchConfig'
 import TalentRadar from './TalentRadar'
 import { useAccount } from '~/account'
 
 const Match = () => {
-  const { connectDeschoolBoardVisible, setConnectDeschoolBoardVisible } = useLayout() // 控制请求面板显隐
+  const { connectBoardVisible, setConnectBoardVisible } = useLayout() // 控制请求面板显隐
   const user = useAccount()
 
   const handleConnectDeschool = async () => {
-    if (connectDeschoolBoardVisible) {
+    if (connectBoardVisible) {
       return
     }
-    setConnectDeschoolBoardVisible(true)
+    setConnectBoardVisible(true)
   }
 
   return (
@@ -78,7 +77,6 @@ const Match = () => {
       {/* 填表环节 */}
       <div className="w-full h-1px bg-gray-3"> </div>
       <MatchConfig />
-      <ConnectDeschoolBoard />
     </div>
   )
 }
