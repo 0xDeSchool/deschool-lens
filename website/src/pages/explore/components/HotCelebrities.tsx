@@ -8,18 +8,20 @@ import type { NewUserInfo } from '~/api/booth/types'
 import CelebrityCardNew from './CelebrityCardNew'
 import { useAccount } from '~/account'
 
+const PAGE_SIZE = 18
 const HotCelebrities = (props: { searchWord: string }) => {
   const { searchWord } = props
   const { t } = useTranslation()
   const [loading, setLoading] = useState(true)
   const [celebrities, setCelebrities] = useState<NewUserInfo[]>([])
   const [cacheCelebrities, setCacheCelebrities] = useState<NewUserInfo[]>([])
+  const [page, setPage] = useState(1)
   const user = useAccount()
 
   const initSeries = async () => {
     setLoading(true)
     try {
-      const response = await getLatestUsers({ page: 1, pageSize: 50 })
+      const response = await getLatestUsers({ page, pageSize: PAGE_SIZE })
       setCelebrities(response.items)
       setCacheCelebrities(response.items)
     } finally {
@@ -27,11 +29,21 @@ const HotCelebrities = (props: { searchWord: string }) => {
     }
   }
 
-  useEffect(() => {
-    if (user) {
-      initSeries()
+  const handleLoadMore = async () => {
+    setLoading(true)
+    try {
+      const response = await getLatestUsers({ page: page + 1, pageSize: PAGE_SIZE })
+      setCelebrities([...celebrities, ...response.items])
+      setCacheCelebrities([...cacheCelebrities, ...response.items])
+      setPage(page + 1)
+    } finally {
+      setLoading(false)
     }
-  }, [user])
+  }
+
+  useEffect(() => {
+    initSeries()
+  }, [])
 
   useEffect(() => {
     setCelebrities(
@@ -44,12 +56,12 @@ const HotCelebrities = (props: { searchWord: string }) => {
   }, [searchWord])
 
 
-  // 跳转到粉丝详情页
+  // TODO: 跳转到粉丝详情页
   const handleFollowerDetail = (celebrity: NewUserInfo) => {
     console.log('follower detail')
   }
 
-  // T跳转到关注详情页
+  // TODO: 跳转到关注详情页
   const hanldeFollowingDetail = (celebrity: NewUserInfo) => {
     console.log('following detail')
   }
