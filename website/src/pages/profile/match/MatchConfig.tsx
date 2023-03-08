@@ -107,7 +107,6 @@ const MatchConfig = () => {
   }, [])
 
   const handleSubmmit = async () => {
-    let address = user?.address
     try {
       setLoading(true)
       // 判断表单是否通过验证

@@ -64,7 +64,7 @@ const LensCard = (props: LensCardProps) => {
       let displayName = getShortAddress(address!)
       // 如果是用户自己，则展示用户名
       if (visitCase === 0) {
-          displayName = user?.displayName!
+        displayName = user?.displayName!
       }
       // 根据最新用户信息结构更新当前用户信息
       setCurrentUser({
@@ -167,7 +167,7 @@ const LensCard = (props: LensCardProps) => {
   if (loading) {
     return (
       <div className="h-400px fcc-center">
-        <Skeleton active/>
+        <Skeleton active />
       </div>
     )
   }
@@ -183,9 +183,8 @@ const LensCard = (props: LensCardProps) => {
       </div>
       <div className="mx-10 frc-center flex-wrap">
         <a
-          className={`${
-            totalFollowers > 0 ? 'hover:underline hover:cursor-pointer' : ''
-          } text-xl mr-4 `}
+          className={`${totalFollowers > 0 ? 'hover:underline hover:cursor-pointer' : ''
+            } text-xl mr-4 `}
           onClick={() => {
             handleJumpFollowers(totalFollowers)
           }}
@@ -194,9 +193,8 @@ const LensCard = (props: LensCardProps) => {
           <span className="text-gray-5 font-ArchivoNarrow">{t('profile.followers')}</span>
         </a>
         <a
-          className={`${
-            totalFollowing > 0 ? 'hover:underline hover:cursor-pointer' : ''
-          } text-xl`}
+          className={`${totalFollowing > 0 ? 'hover:underline hover:cursor-pointer' : ''
+            } text-xl`}
           onClick={() => {
             handleJumpFollowing(totalFollowing)
           }}
@@ -221,13 +219,12 @@ const LensCard = (props: LensCardProps) => {
         <div className="m-10 text-right">
           <button
             type="button"
-            className={`${
-              currentUser?.handle
+            className={`${currentUser?.handle
                 ? 'purple-border-button'
                 : 'inline-flex items-center border border-gray rounded-xl bg-gray-3 text-gray-6 hover:cursor-not-allowed'
-            } px-2 py-1`}
-            disabled={!currentUser?.handle}
-            onClick={() => {
+              } px-2 py-1`}
+            disabled={!currentUser?.handle || !user?.lensProfile()}
+            onClick={() => {  
               if (isFollowedByMe) {
                 handleUnFollow(currentUser)
               } else {

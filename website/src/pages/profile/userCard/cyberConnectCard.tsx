@@ -223,14 +223,14 @@ const CyberCard = (props: CyberCardProps) => {
         </div>
       )}
       {visitCase === 1 && (
-        <div className="m-10 text-right">
+         <div className="m-10 text-right">
           <button
             type="button"
             className={`${currentUser?.handle
               ? 'purple-border-button'
               : 'inline-flex items-center border border-gray rounded-xl bg-gray-3 text-gray-6 hover:cursor-not-allowed'
               } px-2 py-1`}
-            disabled={!currentUser?.handle}
+            disabled={!currentUser?.handle || !user?.ccProfile()}
             onClick={() => {
               if (followersInfo?.isFollowedByMe) {
                 handleUnfollow()
