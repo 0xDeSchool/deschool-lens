@@ -28,7 +28,7 @@ const DEFAULT_EVENT = {
   id: "0aRLQ3",
   interested: [],
   isEnabled: false,
-  matchedUsers:null,
+  matchedUsers: null,
 }
 
 // 每页的数量
@@ -49,7 +49,7 @@ const useCCProfile = (defaultPage: number) => {
 
   // 根据推荐的事件，获取推荐的课程
   const fetchCourseByEvents = async (list: MatchedEvent[]): Promise<any[]> => {
-    const events = list.map((item: RecomendedEvents) => ({id: item.id, labels: item.tags}))
+    const events = list.map((item: RecomendedEvents) => ({ id: item.id, labels: item.tags }))
     if (!user?.id) {
       return []
     }
@@ -77,7 +77,7 @@ const useCCProfile = (defaultPage: number) => {
 
     // 如果没有推荐的课程，就将第一个设置为默认的推荐课程
     if (events.length === 0) {
-      setDefaultRecommandEvent({...list[0], ...DEFAULT_EVENT})
+      setDefaultRecommandEvent({ ...list[0], ...DEFAULT_EVENT } as any)
     } else {
       setDefaultRecommandEvent(null)
     }
@@ -119,7 +119,7 @@ const useCCProfile = (defaultPage: number) => {
 
   useEffect(() => {
     initData()
-  }, [page,user])
+  }, [page, user])
 
   const loadMore = useCallback(() => {
     if (hasNextPage) {
@@ -127,7 +127,7 @@ const useCCProfile = (defaultPage: number) => {
     }
   }, [page, hasNextPage])
 
-  const refresh = useCallback(() => {refreshEventsData(recomendedEvents)}, [recomendedEvents])
+  const refresh = useCallback(() => { refreshEventsData(recomendedEvents) }, [recomendedEvents])
 
   return { loading, error, value, defaultRecommandEvent, hasNextPage, loadMore, refresh }
 }
