@@ -181,3 +181,24 @@ export function ArrowRightIcon(props: any) {
     />
   )
 }
+
+export function NextArrowIcon(props: any) {
+  return (
+    <Icon
+      {...props}
+      component={() => (
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="18" cy="18" r="18" fill="#181818" fillOpacity="0.85" />
+          <path d="M10.1349 17.9425L24.7295 17.9425" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path
+            d="M16.021 23.8041L10.1345 17.9429L16.021 12.0807"
+            stroke="white"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      )}
+    />
+  )
+}

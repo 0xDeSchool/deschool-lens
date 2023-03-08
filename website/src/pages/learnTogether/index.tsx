@@ -17,12 +17,12 @@ const LearnTogether = () => {
       <p className="text-16px font-ArchivoNarrow ml-8 mb-8">for a more accurate <NavLink to="/profile/match" className="text-#774FF8">match</NavLink>, filled more info on your booth profile</p>
       {/* recommand event list */}
       {value?.map((item: MatchedEvent) => (
-          <div key={item.id} className="flex flex-row gap-12 mb-8">
-            {/* card info */}
-            <RecommandEventCard info={item} refresh={refresh}/>
-            {/* match info */}
-            <RecommnadEventMatch info={item} />
-          </div>
+        <div key={item.id} className="flex flex-row gap-12 mb-8 bg-white rounded-2">
+          {/* card info */}
+          <RecommandEventCard info={item} refresh={refresh}/>
+          {/* match info */}
+          <RecommnadEventMatch info={item} />
+        </div>
       ))}
       {(!loading && !defaultRecommandEvent && hasNextPage) && (
         <div className="text-center mt-10">
