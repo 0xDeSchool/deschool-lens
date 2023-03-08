@@ -81,10 +81,9 @@ const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
                     height={'100%'}
                     width={'100%'}
                     placeholder={
-                      <SkeletonImage
-                        active
+                      <div
                         style={{ width: '100%', height: '100%' }}
-                        className="relative aspect-[433/280] object-cover rounded-2"
+                        className="relative aspect-[433/280] object-cover rounded-2 bg-gray-300"
                       />
                     }
                   />
