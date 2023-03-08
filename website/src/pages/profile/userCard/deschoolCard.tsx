@@ -10,6 +10,7 @@ import type { UserFollower, UserFollowing, UserInfo } from '~/api/booth/types';
 import { getUserInfo } from '~/api/booth';
 import { getShortAddress } from '~/utils/format';
 import DeschoolFollowersModal from './deschoolModal'
+import Button from 'antd/es/button';
 
 type DeschoolCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
@@ -186,9 +187,9 @@ const DeschoolCard = (props: DeschoolCardProps) => {
       </p>
       {routeAddress && routeAddress !== user?.address && (
         <div className="m-10 text-right">
-          {user && <button
-            type="button"
+          {user && <Button
             className="purple-border-button px-2 py-1"
+            disabled={!user?.address}
             onClick={() => {
               if (isFollowedByMe && currentUser) {
                 handleUnFollow()
@@ -198,7 +199,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
             }}
           >
             {isFollowedByMe ? t('UnFollow') : t('Follow')}
-          </button>}
+          </Button>}
         </div>
       )}
       <DeschoolFollowersModal

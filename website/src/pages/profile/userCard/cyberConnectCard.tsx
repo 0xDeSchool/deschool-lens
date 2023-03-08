@@ -14,6 +14,7 @@ import type { UserPlatform } from '~/api/booth/types'
 import CreateCyberConnectProfile from './createCCProfile'
 import FollowersModal from './cyberConnecdCardModal'
 import Skeleton from 'antd/es/skeleton'
+import Button from 'antd/es/button'
 
 type CyberCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
@@ -224,13 +225,12 @@ const CyberCard = (props: CyberCardProps) => {
       )}
       {visitCase === 1 && (
         <div className="m-10 text-right">
-          <button
-            type="button"
+          <Button
             className={`${currentUser?.handle
               ? 'purple-border-button'
               : 'inline-flex items-center border border-gray rounded-xl bg-gray-3 text-gray-6 hover:cursor-not-allowed'
               } px-2 py-1`}
-            disabled={!currentUser?.handle}
+            disabled={!currentUser?.handle || !user?.address}
             onClick={() => {
               if (followersInfo?.isFollowedByMe) {
                 handleUnfollow()
@@ -240,7 +240,7 @@ const CyberCard = (props: CyberCardProps) => {
             }}
           >
             {followersInfo?.isFollowedByMe ? t('UnFollow') : t('Follow')}
-          </button>
+          </Button>
         </div>
       )}
       <FollowersModal
