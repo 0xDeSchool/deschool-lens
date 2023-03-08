@@ -4,8 +4,8 @@ import SkeletonImage from 'antd/es/skeleton/Image'
 import dayjs from 'dayjs'
 import { useAccount } from '~/account'
 import { interestEvent } from '~/api/booth/event'
-import fallbackImage from '~/assets/images/fallbackImage'
 import { MatchedEvent } from '~/hooks/useCCProfile'
+import fallbackImage from '~/assets/images/fallbackImage'
 import AvatarList from './AvatarList'
 import Tags from './Tags'
 
@@ -55,12 +55,12 @@ const RecommandEventCard: React.FC<RecommandEventCardProps> = (props) => {
         <div className="mb-1">{dayjs(`${info.startTimestamp}000`).format('ddd, MMMM, MM, YYYY')}</div>
         <div className="mb-2">{dayjs(`${info.startTimestamp}000`).format('hh:mm A')} - {dayjs(`${info?.endTimestamp}1000`).format('hh:mm A')}</div>
         <Tags tags={info.tags} />
-        <div className="frc-between gap-4 mt-4">
-          <Button disabled={info?.hasInterested} onClick={() => handleIterested()}>{info?.hasInterested ? 'interested' : 'I’m interested'}</Button>
-          <div className="flex-1 frc-start ">
-            <AvatarList avatarList={[]} />
-            <span className="flex-1 whitespace-nowrap">xxx +{info.registrantsCount} on Booth is also going</span>
-          </div>
+        <div className="frc-between gap-4 mt-4 ">
+          <Button className='w-120px' disabled={info?.hasInterested} onClick={() => handleIterested()}>{info?.hasInterested ? 'interested' : 'I’m interested'}</Button>
+          {info.registrants && <div className="flex-1 frc-start ">
+            <AvatarList avatarList={info.registrants.users} />
+            <span className={`flex-1 whitespace-nowrap`}> {info.registrants.count <= 3 ? '' : ('+' + (info.registrants.count - 3))} on Booth is also going</span>
+          </div>}
         </div>
       </div>
     </div>

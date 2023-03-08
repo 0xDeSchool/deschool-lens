@@ -110,7 +110,7 @@ export function DeschoolIcon(props: any) {
       {...props}
       component={() => (
         <svg {...props} width="42" height="26" viewBox="0 0 42 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path fillRule="evenodd" clipRule="evenodd" d="M0 0H15.8376L19.1371 3.29949V22.7005L15.8376 26H0V0ZM12.5381 6.59898V19.401H6.59898L6.59898 6.59898H12.5381ZM41.6161 6.60378H22.4239V0H41.6161V6.60378ZM37.5041 16.2618H22.4239V9.69931H37.5041V16.2618ZM41.6161 25.9611H22.4239V19.3986H41.6161V25.9611Z" fill="#ffffff"/>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0H15.8376L19.1371 3.29949V22.7005L15.8376 26H0V0ZM12.5381 6.59898V19.401H6.59898L6.59898 6.59898H12.5381ZM41.6161 6.60378H22.4239V0H41.6161V6.60378ZM37.5041 16.2618H22.4239V9.69931H37.5041V16.2618ZM41.6161 25.9611H22.4239V19.3986H41.6161V25.9611Z" fill="#ffffff" />
         </svg>
       )}
     />
@@ -136,16 +136,41 @@ export function LensIcon(props: any) {
   )
 }
 
-export function NextArrowIcon(props: any) {
+export function ArrowLeftIcon(props: any) {
   return (
     <Icon
       {...props}
       component={() => (
         <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="18" cy="18" r="18" fill="#181818" fillOpacity="0.85" />
-          <path d="M10.1349 17.9425L24.7295 17.9425" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="18" cy="18" r="18" fill="black" fillOpacity="0.15" />
+          <path d="M10.1349 17.9425L24.7295 17.9425" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           <path
-            d="M16.021 23.8041L10.1345 17.9429L16.021 12.0807"
+            d="M16.0215 23.8042L10.135 17.943L16.0215 12.0808"
+            stroke="black"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      )}
+    />
+  )
+}
+
+export function ArrowRightIcon(props: any) {
+  return (
+    <Icon
+      {...props}
+      component={() => (
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M36 18C36 27.9411 27.9411 36 18 36C8.05887 36 0 27.9411 0 18C0 8.05887 8.05887 0 18 0C27.9411 0 36 8.05887 36 18Z"
+            fill="white"
+            fillOpacity="0.15"
+          />
+          <path d="M25.2167 17.4088H10.6221" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path
+            d="M19.3301 11.5472L25.2166 17.4083L19.3301 23.2705"
             stroke="white"
             strokeWidth="1.5"
             strokeLinecap="round"

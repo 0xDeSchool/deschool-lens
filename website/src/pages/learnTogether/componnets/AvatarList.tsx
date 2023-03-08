@@ -23,7 +23,11 @@ const AvatarList: React.FC<AvatarListProps> = (props) => {
           key={v.id}
           src={v.avatar ? v.avatar : DEFAULT_AVATAR}
           size={size}
-          style={{ transform: `translateX(-${10 * index}px)`, border: '2px solid white', cursor: 'pointer' }}
+          style={{
+            transform: `translateX(-${10 * (index + 1)}px)`,
+            border: '2px solid white',
+            cursor: 'pointer',
+          }}
           onClick={() => goProfile(v)}
           alt={v.displayName}
         />
