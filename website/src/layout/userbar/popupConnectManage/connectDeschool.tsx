@@ -59,6 +59,8 @@ const ConnectDeschoolBoard: FC = () => {
         platform: PlatformType.DESCHOOL,
         address: userManager.user.address,
       })
+
+      await userManager.tryAutoLogin()
     }
   }
 
@@ -99,10 +101,15 @@ const ConnectDeschoolBoard: FC = () => {
   }
 
   const handleUnlinkDeschool = async (deschoolProfile: UserPlatform) => {
+    const withDisconnect = user?.deschoolProfileList()?.length === 1
+    if (withDisconnect) {
+      await handleDisconect()
+      return
+    }
     try {
       if (deschoolProfile?.handle) {
-        getUserManager()?.unLinkPlatform(deschoolProfile?.handle, deschoolProfile.address, PlatformType.DESCHOOL)
         // 重新获取用户信息
+        await getUserManager()?.unLinkPlatform(deschoolProfile?.handle, deschoolProfile.address, PlatformType.DESCHOOL)
         await getUserManager().tryAutoLogin()
       }
     } catch (error: any) {
