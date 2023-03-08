@@ -156,6 +156,12 @@ func followPostHandler(ctx *gin.Context) {
 	}
 	var input followInput
 	errx.CheckError(ctx.BindJSON(&input))
+	if input.FromUser == "" || input.ToUser == "" {
+		ginx.PanicValidatition("fromUser or toUser is empty")
+	}
+	if input.FromUser == input.ToUser {
+		ginx.PanicValidatition("follow yourself is not allowed")
+	}
 	hm := *di.Get[hackathon.HackathonManager]()
 
 	result := hm.InsertFollow(ctx, mongodb.IDFromHex(input.FromUser), mongodb.IDFromHex(input.ToUser))
