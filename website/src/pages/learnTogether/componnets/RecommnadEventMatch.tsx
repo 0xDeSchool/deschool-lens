@@ -41,8 +41,8 @@ const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
       <div className="divider w-full h-1px bg-gray-200 my-8" />
       <h1 className="text-xl font-500 font-Anton mb-8">Get prepared on deschool before the event</h1>
       {info.courses && <div className="frc-between gap-4">
-        <img className="h-120px aspect-[433/280] object-cover rounded-2" src="https://deschool.s3.amazonaws.com/seriesCovers/6323d96759c18e0e54fd677a33a1ad4e-a682-48a7-8bfb-56b9e01c16b7.jpg" alt="course cover" />
-        <div className="h-120px fcs-between">
+        <img className="h-160px aspect-[433/280] object-cover rounded-2" src="https://deschool.s3.amazonaws.com/seriesCovers/6323d96759c18e0e54fd677a33a1ad4e-a682-48a7-8bfb-56b9e01c16b7.jpg" alt="course cover" />
+        <div className="h-160px fcs-between">
           <div className="text-2xl mb-2">{info.courses[0]?.title}</div>
           <div className="mb-1">{info.courses[0]?.description}</div>
           <Button type="primary" onClick={() => onStartLearning(info.courses[0])}>Start Learning</Button>

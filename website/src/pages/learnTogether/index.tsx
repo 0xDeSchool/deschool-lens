@@ -12,7 +12,7 @@ const LearnTogether = () => {
   const {value, loading, hasNextPage, defaultRecommandEvent, loadMore} = useCCProfile(1)
 
   return (
-    <div className="relative w-auto mx-10 py-10 3xl:w-full 3xl:mx-auto 3xl:max-w-1440px 4xl:max-w-1680px h-full overflow-auto scroll-hidden">
+    <div className="relative w-auto mx-30 py-10 3xl:w-full 3xl:mx-auto 3xl:max-w-1440px 4xl:max-w-1680px h-full overflow-auto scroll-hidden">
       <h1 className="text-xl font-Anton ml-8 mb-4">Upcoming events<span className='ml-2 font-ArchivoNarrow'>based on your profile</span></h1>
       <p className="text-16px font-ArchivoNarrow ml-8 mb-8">for a more accurate <NavLink to="/profile/match" className="text-#774FF8">match</NavLink>, filled more info on your booth profile</p>
       {/* recommand event list */}
@@ -42,7 +42,7 @@ const LearnTogether = () => {
         </div>
         <p className="text-#666">To view your customized events recommendation, please complete your profile setup in Match</p>
         <div className="text-center mt-10">
-          <Button type='primary' onClick={() => navigate('/profile/match')}>Setting Interest</Button>
+          <Button type='primary' onClick={() => navigate('/profile/match')}>go to match</Button>
         </div>
       </div>}
       {/* 加载更多的过渡 */}
