@@ -26,7 +26,7 @@ const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
   }
 
   return (
-    <div className="flex-1 h-full pr-10 pt-16px">
+    <div className="flex-1 h-full pr-10 py-16px">
       <h1 className="text-xl font-500 font-Anton mb-8">Match criteria:</h1>
       {info.interested?.length > 0 && <div className="frc-between mb-4">
         <span>Based on your interests in <NavLink className="text-" to="/profile/match">Match</NavLink> on </span>
