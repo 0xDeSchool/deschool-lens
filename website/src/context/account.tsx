@@ -228,7 +228,7 @@ export const AccountContextProvider = ({ children }: { children: ReactElement })
       addUserProfile({
         type: 'deschool',
         address: deschoolProfile?.address || '',
-        username: deschoolProfile.username && deschoolProfile.username === deschoolProfile.address ? getShortAddress(deschoolProfile.address) : deschoolProfile.username,
+        username: deschoolProfile.username,
         avatar: deschoolProfile.avatar,
       })
       localStorage.setItem('deschoolProfile', JSON.stringify(deschoolProfile))

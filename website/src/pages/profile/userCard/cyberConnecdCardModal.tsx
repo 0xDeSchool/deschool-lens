@@ -122,7 +122,7 @@ const FollowersModal = (props: {
       return
     }
     setIsFollowLoading(true)
-    const result = await follow(cyberToken?.address!, handle)
+    const result = await follow(handle)
     setIsFollowLoading(false)
     console.log('result', result)
     // 关注成功后，刷新页面
@@ -135,7 +135,7 @@ const FollowersModal = (props: {
       return
     }
     setIsFollowLoading(true)
-    const result = await unFollow(cyberToken?.address!, handle)
+    const result = await unFollow(handle)
     setIsFollowLoading(false)
     console.log('result', result)
     // 关注成功后，刷新页面
