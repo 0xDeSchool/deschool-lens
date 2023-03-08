@@ -40,6 +40,29 @@ const useCCProfile = (defaultPage: number) => {
     return filtered?.length > 0 ? filtered : []
   }
 
+  // 合成数据
+  const mergeData = (list: MatchedEvent[], filteredCourseList: any[]) => {
+    const events: MatchedEvent[] = []
+
+    // 将推荐的课程和推荐的事件合并， 如果有对应的推荐课程，就将推荐课程的信息合并到推荐事件中
+    if (filteredCourseList.length > 0 && filteredCourseList.some((item: any) => item?.isEnabled)) {
+      for (let i = 0; i < list.length; i++) {
+        if (filteredCourseList[i]?.isEnabled) {
+          events.push({ ...list[i], ...filteredCourseList[i] })
+        }
+      }
+    }
+
+    // 如果没有推荐的课程，就将第一个设置为默认的推荐课程
+    if (events.length === 0) {
+      setDefaultRecommandEvent(list[0])
+    } else {
+      setDefaultRecommandEvent(null)
+    }
+
+    setRecomendedEvents(events)
+  }
+
   // 获取推荐的事件
   const initData = async () => {
     try {
@@ -52,22 +75,7 @@ const useCCProfile = (defaultPage: number) => {
       const list: MatchedEvent[] = result?.data?.trendingEvents?.list ?? []
 
       const filteredCourseList = await fetchCourseByEvents(list)
-      const events: MatchedEvent[] = []
-
-      // 将推荐的课程和推荐的事件合并， 如果有对应的推荐课程，就将推荐课程的信息合并到推荐事件中
-      if (filteredCourseList.length > 0 && filteredCourseList.some((item: any) => item?.isEnabled)) {
-        for (let i = 0; i < list.length; i++) {
-          if (filteredCourseList[i]?.isEnabled) {
-            events.push({ ...list[i], ...filteredCourseList[i] })
-          }
-        }
-      }
-      // 如果没有推荐的课程，就将第一个设置为默认的推荐课程
-      else {
-        setDefaultRecommandEvent(list[0])
-      }
-
-      setRecomendedEvents(events)
+      mergeData(list, filteredCourseList)
       setHasNextPage(result?.data?.trendingEvents?.pageInfo?.hasNextPage)
     } catch (error: Error | unknown) {
       setHasNextPage(false)
@@ -81,6 +89,12 @@ const useCCProfile = (defaultPage: number) => {
     }
   }
 
+  // 刷新推荐数据
+  const refreshEventsData = async (list: MatchedEvent[]) => {
+    const filteredCourseList = await fetchCourseByEvents(list)
+    mergeData(list, filteredCourseList)
+  }
+
   useEffect(() => {
     initData()
   }, [page,user])
@@ -91,7 +105,7 @@ const useCCProfile = (defaultPage: number) => {
     }
   }, [page, hasNextPage])
 
-  const refresh = useCallback(() => {initData()}, [])
+  const refresh = useCallback(() => {refreshEventsData(recomendedEvents)}, [recomendedEvents])
 
   return { loading, error, value, defaultRecommandEvent, hasNextPage, loadMore, refresh }
 }

@@ -35,7 +35,7 @@ const LearnTogether = () => {
       {defaultRecommandEvent && <div>
         <div className="frc-center gap-12 mb-8 relative px-12 pt-4">
           {/* card info */}
-          <RecommandEventCard info={defaultRecommandEvent}/>
+          <RecommandEventCard info={defaultRecommandEvent} refresh={refresh}/>
           {/* match info */}
           <RecommnadEventMatch info={defaultRecommandEvent}/>
           <div className='absolute top-0 right-0 left-0 bottom-0 z-11 bg-gradient-to-t from-gray-300 rounded-2 cursor-not-allowed' />
