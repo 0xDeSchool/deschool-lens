@@ -7,15 +7,19 @@ import { getLatestUsers } from '~/api/booth'
 import type { NewUserInfo } from '~/api/booth/types'
 import CelebrityCardNew from './CelebrityCardNew'
 import { useAccount } from '~/account'
+import ShowMoreLoading from '~/components/loading/showMore'
 
-const PAGE_SIZE = 18
+const PAGE_SIZE = 9
 const HotCelebrities = (props: { searchWord: string }) => {
   const { searchWord } = props
   const { t } = useTranslation()
   const [loading, setLoading] = useState(true)
+  const [moreLoading, setMoreLoading] = useState(false)
+  const [hasNextPage, setHasNextPage] = useState(false)
   const [celebrities, setCelebrities] = useState<NewUserInfo[]>([])
   const [cacheCelebrities, setCacheCelebrities] = useState<NewUserInfo[]>([])
   const [page, setPage] = useState(1)
+
   const user = useAccount()
 
   const initSeries = async () => {
@@ -24,20 +28,23 @@ const HotCelebrities = (props: { searchWord: string }) => {
       const response = await getLatestUsers({ page, pageSize: PAGE_SIZE })
       setCelebrities(response.items)
       setCacheCelebrities(response.items)
+      setHasNextPage(response.hasNext)
     } finally {
       setLoading(false)
     }
   }
 
   const handleLoadMore = async () => {
-    setLoading(true)
+    if (moreLoading) return
+    setMoreLoading(true)
     try {
       const response = await getLatestUsers({ page: page + 1, pageSize: PAGE_SIZE })
       setCelebrities([...celebrities, ...response.items])
       setCacheCelebrities([...cacheCelebrities, ...response.items])
+      setHasNextPage(response.hasNext)
       setPage(page + 1)
     } finally {
-      setLoading(false)
+      setMoreLoading(false)
     }
   }
 
@@ -104,6 +111,19 @@ const HotCelebrities = (props: { searchWord: string }) => {
                 />
               ))
             ) : <Empty />}
+          </div>
+        )}
+        {(!loading && !moreLoading && hasNextPage) && (
+          <div className="text-center mt-10">
+            <button type="button" className="bg-#1818180f border-#18181826 border-2 rounded-xl px-4 py-2" onClick={() => handleLoadMore()}>
+              {t('SeeMore')}
+            </button>
+          </div>
+        )}
+        {/* 加载更多的过渡 */}
+        {(moreLoading) && (
+          <div className="mt-10 w-full frc-center">
+            <ShowMoreLoading />
           </div>
         )}
       </div>
