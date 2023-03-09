@@ -184,7 +184,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
       </div>
 
       <p className="m-10 text-xl line-wrap three-line-wrap">
-        { visitCase === 0 ? '' : currentUser?.bio || "The user hasn't given a bio for self yet :)"}
+        { currentUser?.bio || (visitCase === 0 ? '' :  "The user hasn't given a bio for self yet :)")}
       </p>
       {routeAddress && routeAddress !== user?.address && (
         <div className="m-10 text-right">
