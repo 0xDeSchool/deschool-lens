@@ -5,8 +5,6 @@ import Skeleton from 'antd/es/skeleton'
 import message from 'antd/es/message'
 import Empty from 'antd/es/empty'
 import ShowMoreLoading from '~/components/loading/showMore'
-import { RoleType } from '~/lib/enum'
-import { getUserContext } from '~/context/account'
 import { Link } from 'react-router-dom'
 import { useLazyQuery } from '@apollo/client'
 
@@ -20,6 +18,7 @@ import { PRIMARY_PROFILE } from '~/api/cc/graphql'
 import { UserPlatform } from '~/api/booth/types'
 import { CyberProfile } from '~/lib/types/app'
 import Button from 'antd/es/button'
+import { getShortAddress } from '~/utils/format'
 
 const PADE_SIZE = 10
 let page = 1
@@ -194,7 +193,7 @@ const FollowersModal = (props: {
                   </div>
                   <div className="flex-1 fcs-center ml-2 h-60px">
                     <Link to={`/profile/${f?.address}/resume`}>
-                      <h1>{f?.displayName || f?.handle}</h1>
+                      <h1>{f?.displayName || f?.handle || getShortAddress(f?.address)}</h1>
                     </Link>
                   </div>
                   <div className='h-60px frc-center'>

@@ -11,6 +11,12 @@ export const PRIMARY_PROFILE = gql`
           metadata
           avatar
           isPrimary
+          metadataInfo {
+            displayName
+            bio
+            avatar
+            coverImage
+          }
         }
       }
     }
