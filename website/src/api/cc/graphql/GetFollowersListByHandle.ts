@@ -14,6 +14,15 @@ export const GET_FOLLOWER_LIST_BY_HANDLE = gql`
           node {
             address {
               address
+              wallet {
+                primaryProfile {
+                  handle
+                  avatar
+                  metadataInfo {
+                    displayName
+                  }
+                }
+              }
             }
             profile {
               id

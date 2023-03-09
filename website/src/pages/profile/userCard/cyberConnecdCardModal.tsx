@@ -61,7 +61,8 @@ const FollowersModal = (props: {
     edges = edges.map((item: any) => ({
         address: item.node.address.address,
         avatar: item.node.profile.avatar,
-        handle: item.node.profile.handle,
+        handle: item.node?.address?.wallet?.primaryProfile?.handle,
+        displayName: item.node?.address?.wallet?.primaryProfile?.metadataInfo?.displayName,
         isFollowedByMe: item.node.profile.isFollowedByMe,
       }))
     setFollows(edges)
@@ -193,7 +194,7 @@ const FollowersModal = (props: {
                   </div>
                   <div className="flex-1 fcs-center ml-2 h-60px">
                     <Link to={`/profile/${f?.address}/resume`}>
-                      <h1>{f?.handle}</h1>
+                      <h1>{f?.displayName || f?.handle}</h1>
                     </Link>
                   </div>
                   <div className='h-60px frc-center'>
