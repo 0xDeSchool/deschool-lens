@@ -1,7 +1,7 @@
 import Button from 'antd/es/button';
 import message from 'antd/es/message';
 import Input from 'antd/es/input';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { updateUserInfo } from '~/api/booth/account';
 import { DEFAULT_AVATAR, getUserManager, useAccount } from '~/account';
 import Avatar from 'antd/es/avatar';
@@ -19,6 +19,18 @@ const UpdateUsername: React.FC = () => {
   const [bio, setBio] = useState<string>(user?.bio || '')
   const [uploading, setUploading] = useState<boolean>(false)
 
+  useEffect(() => {
+    // 没有登录的情况下，重制信息
+    if (!user?.address) {
+      setAvatar('')
+      setUsername('')
+      setBio('')
+    } else {
+      setUsername(user?.formateName() || '')
+      setAvatar(user?.avatar || '')
+      setBio(user?.bio || '')
+    }
+  }, [user?.address])
   // 检查 username 是否合法
   const checkUsername = () => {
     if (!username) {

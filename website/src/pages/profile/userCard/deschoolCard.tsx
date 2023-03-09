@@ -182,8 +182,9 @@ const DeschoolCard = (props: DeschoolCardProps) => {
           <span className="text-gray-5 font-ArchivoNarrow">{t('profile.following')}</span>
         </a>
       </div>
+
       <p className="m-10 text-xl line-wrap three-line-wrap">
-        {currentUser?.bio || visitCase === 0 ? '' : "The user hasn't given a bio for self yet :)"}
+        { visitCase === 0 ? '' : currentUser?.bio || "The user hasn't given a bio for self yet :)"}
       </p>
       {routeAddress && routeAddress !== user?.address && (
         <div className="m-10 text-right">

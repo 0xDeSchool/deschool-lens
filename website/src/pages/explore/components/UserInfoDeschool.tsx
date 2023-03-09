@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import Jazzicon from 'react-jazzicon/dist/Jazzicon'
 import { useNavigate } from 'react-router-dom'
 import { DEFAULT_AVATAR, useAccount } from '~/account'
-import { getLatestUsers, getUserInfo } from '~/api/booth'
+import { getLatestUsers } from '~/api/booth'
 import { followUser, unfollowUser } from '~/api/booth/follow'
 import { NewUserInfo } from '~/api/booth/types'
 import { getShortAddress } from '~/utils/format'
@@ -119,7 +119,7 @@ const UserInfoDeschool: React.FC<UserInfoDeschoolProps> = (props) => {
         </a>
       </div>
       <p className="mt-4 mx-auto font-ArchivoNarrow text-#000000d8 text-16px align-center leading-24px h-80px line-wrap three-line-wrap">
-        {user?.bio || "The user hasn't given a bio for self yet :)"}
+        {bio || "The user hasn't given a bio for self yet :)"}
       </p>
       <div className='frc-between gap-8 mx-auto'>
         <Button
