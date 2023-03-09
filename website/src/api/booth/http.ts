@@ -46,15 +46,17 @@ instance.interceptors.response.use(
     return Promise.reject(v)
   },
   err => {
-    if (err.response.data) {
-      return err.response.data
-    }
+    const lng = getLanguage()
     if (lng === 'zh_CN') {
       message.error(ZH_CN_COMMON[err.response.status as keyof typeof ZH_CN_COMMON])
     } else {
       message.error(EN_US_COMMON[err.response.status as keyof typeof ZH_CN_COMMON])
     }
+    // if (err.response.data) {
+    //   return undefined
+    // }
     console.log('url', err.config.url)
+    return undefined
   },
 )
 

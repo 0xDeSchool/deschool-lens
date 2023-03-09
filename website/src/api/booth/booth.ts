@@ -197,6 +197,7 @@ export async function getQ11e(userId: string) {
 export interface SBTMeta {
   description: string
   image: string
+  normalized_metadata: any
   name: string
   contractType: string
   contractAddr: string

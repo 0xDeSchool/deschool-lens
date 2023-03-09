@@ -5,7 +5,7 @@
  */
 import { useEffect } from 'react'
 import { Outlet, useNavigate, useParams } from 'react-router'
-import { useAccount } from '~/account/context'
+import { useAccount } from '~/account'
 import UserCard from './userCard'
 
 const UserProfile = () => {
