@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { getShortAddress } from '~/utils/format'
 import { useTranslation } from 'react-i18next'
 import useFollow from '~/hooks/useCyberConnectFollow'
 import useUnFollow from '~/hooks/useCyberConnectUnfollow'
@@ -111,10 +110,10 @@ const CyberCard = (props: CyberCardProps) => {
 
   useEffect(() => {
     setModal({ type: 'followers', visible: false })
+    initUserInfo()
   }, [routeAddress])
 
   useEffect(() => {
-    initUserInfo()
     if (updateTrigger > 0) {
       setModal({
         type: 'followers',
@@ -155,7 +154,6 @@ const CyberCard = (props: CyberCardProps) => {
     setIsFollowLoading(true)
     const result = await follow(currentUser?.handle!)
     setIsFollowLoading(false)
-    console.log('result', result)
     // 关注成功后，刷新页面
     setUpdateTrigger(updateTrigger + 1)
   };
@@ -168,7 +166,6 @@ const CyberCard = (props: CyberCardProps) => {
     setIsFollowLoading(true)
     const result = await unFollow(currentUser?.handle!)
     setIsFollowLoading(false)
-    console.log('result', result)
     // 关注成功后，刷新页面
     setUpdateTrigger(updateTrigger + 1)
   };
@@ -229,6 +226,8 @@ const CyberCard = (props: CyberCardProps) => {
               ? 'purple-border-button'
               : 'inline-flex items-center border border-gray rounded-xl bg-gray-3 text-gray-6 hover:cursor-not-allowed'
               } px-2 py-1`}
+            style={{color: !followersInfo?.isFollowedByMe ? 'white' : ''}}
+            type={!followersInfo?.isFollowedByMe ? 'primary' : 'default'}
             disabled={!currentUser?.handle || !user?.address}
             onClick={() => {
               if (followersInfo?.isFollowedByMe) {

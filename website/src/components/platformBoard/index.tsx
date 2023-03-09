@@ -43,7 +43,7 @@ const PlatformBoard: React.FC<PlatformBoardProps> = (props) => {
         onClick={() => setActive(PlatformType.DESCHOOL)}
       >
         <img src={IconDeschool} alt="deschool" width={24} height={24} />
-        <div className={`ml-2 text-white text-18px font-ArchivoNarrow ${active === PlatformType.DESCHOOL ? 'block' : 'hidden'}`}>DeSchool</div>
+        <div className={`ml-2 text-white text-18px font-ArchivoNarrow ${active === PlatformType.DESCHOOL ? 'block' : 'hidden'}`}>DeSchool & Booth</div>
       </div>
     </div>
   )

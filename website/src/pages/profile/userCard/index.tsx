@@ -28,7 +28,6 @@ const UserCard = (props: UserCardProps) => {
   const [profileType, setProfileType] = useState<PlatformType>(PlatformType.DESCHOOL)
 
   useEffect(() => {
-    console.log('user', profileType)
     // 没登录访问自己
     if (user?.address) {
       setVisitCase(-1)

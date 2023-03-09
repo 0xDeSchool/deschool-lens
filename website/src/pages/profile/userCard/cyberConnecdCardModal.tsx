@@ -57,7 +57,6 @@ const FollowersModal = (props: {
     const followers = resp?.data?.profileByHandle?.followers
     const hasNext = followers?.pageInfo?.hasNextPage
     setHasNextPage(hasNext)
-    console.log('followers', followers)
     let edges = followers?.edges || []
     edges = edges.map((item: any) => ({
         address: item.node.address.address,
@@ -65,7 +64,6 @@ const FollowersModal = (props: {
         handle: item.node.profile.handle,
         isFollowedByMe: item.node.profile.isFollowedByMe,
       }))
-    console.log('edges', edges)
     setFollows(edges)
   }
 
@@ -154,7 +152,6 @@ const FollowersModal = (props: {
     setIsFollowLoading(true)
     const result = await follow(handle)
     setIsFollowLoading(false)
-    console.log('result', result)
     // 关注成功后，刷新页面
     initUserInfo(routeAddress!)
   };
@@ -167,7 +164,6 @@ const FollowersModal = (props: {
     setIsFollowLoading(true)
     const result = await unFollow(handle)
     setIsFollowLoading(false)
-    console.log('result', result)
     // 关注成功后，刷新页面
     initUserInfo(routeAddress!)
   };
@@ -195,13 +191,12 @@ const FollowersModal = (props: {
                   <div className="relative w-60px h-60px">
                     <LensAvatar avatarUrl={f?.avatar} size={60} wrapperClassName="fcc-center w-full" />
                   </div>
-                  <div className="flex-1 fcs-center ml-2">
+                  <div className="flex-1 fcs-center ml-2 h-60px">
                     <Link to={`/profile/${f?.address}/resume`}>
-                      <h1>{f?.name}</h1>
+                      <h1>{f?.handle}</h1>
                     </Link>
-                    <p>{f?.bio}</p>
                   </div>
-                  <div>
+                  <div className='h-60px frc-center'>
                     {/* 这里有多种情况： */}
                     {/* 一、用户在看自己的 Following，此时可以显示 Unfollow 按钮。如果两人互关以文字形式写在名字旁边 */}
                     {/* 二、用户在看自己的Followers，此时有 Follow 按钮用以回关，如果双向关注则显示出来，hover上去变成 Unfollow */}

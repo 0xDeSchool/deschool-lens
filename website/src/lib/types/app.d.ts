@@ -367,3 +367,16 @@ export interface RecommendResult {
   reasons: string[]
   score: number
 }
+
+
+interface NFT {
+  amount: string
+  metadata: string
+  name: string
+  normalized_metadata: {
+    description: string
+    image: string
+    name: string
+  }
+  token_address: string
+}

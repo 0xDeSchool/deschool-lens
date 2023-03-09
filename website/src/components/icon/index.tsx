@@ -110,7 +110,7 @@ export function DeschoolIcon(props: any) {
       {...props}
       component={() => (
         <svg {...props} width="42" height="26" viewBox="0 0 42 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0H15.8376L19.1371 3.29949V22.7005L15.8376 26H0V0ZM12.5381 6.59898V19.401H6.59898L6.59898 6.59898H12.5381ZM41.6161 6.60378H22.4239V0H41.6161V6.60378ZM37.5041 16.2618H22.4239V9.69931H37.5041V16.2618ZM41.6161 25.9611H22.4239V19.3986H41.6161V25.9611Z" fill="#ffffff" />
+          <path fillRule="evenodd" clipRule="evenodd" d="M0 0H15.8376L19.1371 3.29949V22.7005L15.8376 26H0V0ZM12.5381 6.59898V19.401H6.59898L6.59898 6.59898H12.5381ZM41.6161 6.60378H22.4239V0H41.6161V6.60378ZM37.5041 16.2618H22.4239V9.69931H37.5041V16.2618ZM41.6161 25.9611H22.4239V19.3986H41.6161V25.9611Z" fill="#ffffff" />
         </svg>
       )}
     />
@@ -196,6 +196,22 @@ export function NextArrowIcon(props: any) {
             strokeWidth="1.5"
             strokeLinecap="round"
             strokeLinejoin="round"
+          />
+        </svg>
+      )}
+    />
+  )
+}
+
+export function FinishedIcon(props: any) {
+  return (
+    <Icon
+      {...props}
+      component={() => (
+        <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+          <path
+            d="M13.0002 25.8002C5.93076 25.8002 0.200195 20.0696 0.200195 13.0002C0.200195 5.93076 5.93076 0.200195 13.0002 0.200195C20.0696 0.200195 25.8002 5.93076 25.8002 13.0002C25.8002 20.0696 20.0696 25.8002 13.0002 25.8002ZM11.724 18.1202L20.7736 9.06931L18.9637 7.2594L11.724 14.5004L8.10291 10.8792L6.293 12.6892L11.724 18.1202Z"
+            fill="#6525FF"
           />
         </svg>
       )}
