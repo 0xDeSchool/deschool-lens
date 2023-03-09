@@ -58,13 +58,12 @@ const CreateCyberConnectProfile: React.FC = () => {
         handle,
         metadata: JSON.stringify(metadata),
         avatar: user.avatar || '',
-        operator: user.address,
+        operator: '0x7b8B67DF90a32a7370E2625Ce5d7565Eecc52F57',
       }
-      const wallet= await ccWallet()
+      const wallet = await ccWallet()
       await wallet.getAddress()
       await ccContractHub().createProfile(payload, 0x0, 0x0);
       await pollingGetCyberConnectProfile()
-      message.success('Mint profile success')
     } catch (error: Error | unknown) {
       console.log('error', error)
       // if (error instanceof Error) {
@@ -101,7 +100,6 @@ const CreateCyberConnectProfile: React.FC = () => {
     } catch (e) {
       console.log('error', e)
     } finally {
-      setLoading(false)
     }
   }
 
@@ -121,6 +119,7 @@ const CreateCyberConnectProfile: React.FC = () => {
           displayName: user?.displayName,
         })
         setLoading(false)
+        message.success('Mint profile success')
         await getUserManager().tryAutoLogin()
         clearTimeout(timer)
       } else {

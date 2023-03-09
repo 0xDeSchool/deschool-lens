@@ -111,7 +111,7 @@ const CyberCard = (props: CyberCardProps) => {
   useEffect(() => {
     setModal({ type: 'followers', visible: false })
     initUserInfo()
-  }, [routeAddress])
+  }, [routeAddress, user])
 
   useEffect(() => {
     if (updateTrigger > 0) {
@@ -226,7 +226,7 @@ const CyberCard = (props: CyberCardProps) => {
               ? 'purple-border-button'
               : 'inline-flex items-center border border-gray rounded-xl bg-gray-3 text-gray-6 hover:cursor-not-allowed'
               } px-2 py-1`}
-            style={{color: !followersInfo?.isFollowedByMe ? 'white' : ''}}
+            style={{ color: !followersInfo?.isFollowedByMe ? 'white' : '' }}
             type={!followersInfo?.isFollowedByMe ? 'primary' : 'default'}
             disabled={!currentUser?.handle || !user?.address}
             onClick={() => {
