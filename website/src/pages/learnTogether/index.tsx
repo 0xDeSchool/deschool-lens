@@ -12,9 +12,9 @@ const LearnTogether = () => {
   const {value, loading, hasNextPage, defaultRecommandEvent, loadMore, refresh} = useCCProfile(1)
 
   return (
-    <div className="relative w-auto mx-10 py-10 3xl:w-full 3xl:mx-auto 3xl:max-w-1240px 4xl:max-w-1680px h-full overflow-auto scroll-hidden">
+    <div className="relative w-auto mx-10 py-10 3xl:w-full 3xl:mx-auto 3xl:max-w-1240px 4xl:max-w-1680px h-full overflow-auto scroll-hidden font-ArchivoNarrow text-xl">
       <h1 className="text-xl font-Anton ml-8 mb-4">Upcoming events<span className='ml-2 font-ArchivoNarrow'>based on your profile</span></h1>
-      <p className="text-16px font-ArchivoNarrow ml-8 mb-8">for a more accurate <NavLink to="/profile/match" className="text-#774FF8">match</NavLink>, filled more info on your booth profile</p>
+      <p className="text-xl font-ArchivoNarrow ml-8 mb-8">for a more accurate <NavLink to="/profile/match" className="text-#774FF8">match</NavLink>, filled more info on your booth profile</p>
       {/* recommand event list */}
       {value?.map((item: MatchedEvent) => (
         <div key={item.id} className="flex flex-row gap-12 mb-8 bg-white rounded-2">

@@ -86,7 +86,7 @@ const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
                 </div>
                 <div className="flex-1 h-full fcs-between py-2">
                   <div className="text-2xl mb-2">{course?.title}</div>
-                  <div className="mb-1">{course?.description}</div>
+                  <div className="mb-1 font-ArchivoNarrow">{course?.description}</div>
                   <Button type="primary" onClick={() => onStartLearning(course)}>Start Learning</Button>
                 </div>
               </div>

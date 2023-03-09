@@ -157,12 +157,12 @@ const MatchConfig = () => {
         layout="vertical"
         autoComplete="off"
         onFinish={handleSubmmit}
-        className="fcs-center space-y-10"
+        className="fcs-center space-y-10 font-ArchivoNarrow"
       >
         {/* 目标板块 */}
         <Form.Item
           name="goals"
-          label={<div className="py-3 text-xl font-bold">{t('matchpage.goals')}</div>}
+          label={<div className="py-3 text-xl font-bold font-ArchivoNarrow">{t('matchpage.goals')}</div>}
           colon={false}
           rules={[{ required: true, message: 'Please select your goals!' }]}
         >
@@ -186,7 +186,7 @@ const MatchConfig = () => {
                 },
               ].map(item => (
                 <Tooltip key={item.tip} title={item.tip}>
-                  <Checkbox value={item.short} style={{ lineHeight: '32px' }}>
+                  <Checkbox value={item.short} style={{ lineHeight: '32px', fontSize: '1rem' }} className="font-ArchivoNarrow text-xl">
                     {item.desc}
                   </Checkbox>
                 </Tooltip>
@@ -198,7 +198,7 @@ const MatchConfig = () => {
         {/* 感兴趣的领域板块 */}
         <Form.Item
           name="interests"
-          label={<div className="py-3 text-xl font-bold">{t('matchpage.fields')}</div>}
+          label={<div className="py-3 text-xl font-bold font-ArchivoNarrow">{t('matchpage.fields')}</div>}
           colon={false}
           className="w-full"
           rules={[{ required: true, message: 'Please tell us at least one your fields of interests!' }]}
@@ -272,12 +272,12 @@ const MatchConfig = () => {
         <div>
           <Form.Item
             name="mbti"
-            label={<div className="py-3 text-xl font-bold">{t('matchpage.character')}</div>}
+            label={<div className="py-3 text-xl font-bold font-ArchivoNarrow">{t('matchpage.character')}</div>}
             hasFeedback
             tooltip={t('matchpage.mbti')}
             style={{ marginBottom: 0 }}
           >
-            <Select placeholder="Please select a character">
+            <Select placeholder="Please select a character" className='font-ArchivoNarrow'>
               <Select.Option value={-1}>UnKnown</Select.Option>
               <Select.Option value={0}>INFP</Select.Option>
               <Select.Option value={1}>ENFP</Select.Option>
@@ -297,7 +297,7 @@ const MatchConfig = () => {
               <Select.Option value={15}>ESTJ</Select.Option>
             </Select>
           </Form.Item>
-          <div className="mt-2">
+          <div className="mt-2 font-ArchivoNarrow">
             <a href="https://www.16personalities.com/free-personality-test" target="_blank" rel="noreferrer">
               {'Not sure your MBTi type? Take a quiz first >>'}
             </a>
@@ -307,7 +307,7 @@ const MatchConfig = () => {
         {/* 提交按钮 */}
         <Form.Item>
           <div className="frc-end mt-20 space-x-2">
-            <Button loading={loading} type="primary" size="large" className="border-0 rounded-lg font-bold" htmlType="submit">
+            <Button loading={loading} type="primary" size="large" className="border-0 rounded-lg font-bold font-ArchivoNarrow" htmlType="submit">
               {t('matchpage.explore')}
             </Button>
           </div>
