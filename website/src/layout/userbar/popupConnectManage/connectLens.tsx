@@ -16,6 +16,7 @@ import Button from 'antd/es/button'
 import { linkPlatform } from '~/api/booth/account'
 import { getUserManager, useAccount } from '~/account/context'
 import { LogoutOutlined } from '@ant-design/icons'
+import { LinkPlatformRequest } from '~/api/booth/types'
 
 interface ConnectBoardProps {
   wallectConfig?: WalletConfig
@@ -27,6 +28,7 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
   const [loading, setLoading] = useState(false)
   const { t } = useTranslation()
   const user = useAccount()
+  const userManager = getUserManager()
   const lensProfile = user?.lensProfile()
 
   /**
@@ -50,7 +52,7 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
   }
 
   // 通过len签名登录
-  const handleLoginByAddress = async (address: string, isReload?: boolean) => {
+  const handleLoginByAddress = async (address: string, isReload?: boolean): Promise<LinkPlatformRequest | undefined> => {
     // 如果当前库中已经保存过登录记录则不需要重新签名登录
     if (lensProfile) {
       return
@@ -102,8 +104,7 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
           platform: PlatformType.LENS,
         })
 
-        // 关联平台
-        await linkPlatform({
+        return {
           handle: userInfo?.handle,
           platform: PlatformType.LENS,
           data: {
@@ -113,7 +114,7 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
           },
           address,
           displayName: userInfo.name,
-        })
+        }
       }
     } catch (error: any) {
       if (error?.reason) {
@@ -127,6 +128,22 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
       }
     } finally {
       if (isReload) window.location.reload()
+    }
+  }
+
+  /**
+   * 签名登录 Booth
+   * @returns
+   */
+  const handleConnectBooth = async (platform: LinkPlatformRequest) => {
+    try {
+      const type = WalletType.MetaMask
+      const config: WalletConfig = { type }
+      const provider = createProvider(config)
+      await getWallet().setProvider(type, provider)
+      await userManager.login(platform)
+    } catch (err: any) {
+      handleFailToConnect(err)
     }
   }
 
@@ -145,6 +162,18 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
       const address = await getWallet().getAddress()
       if (address) {
         await handleLoginByAddress(address)
+        const platformLinkInfo = await handleLoginByAddress(address)
+
+        if (!platformLinkInfo) return
+
+        // 如果用户未登录
+        if (!user?.address) {
+          await handleConnectBooth(platformLinkInfo)
+        }
+        // 关联平台
+        else {
+          await linkPlatform(platformLinkInfo)
+        }
         // 重新获取用户信息
         await getUserManager().tryAutoLogin()
       } else {
