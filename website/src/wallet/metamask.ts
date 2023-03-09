@@ -6,10 +6,9 @@ import { checkIsExpectChain, checkProvider } from '~/utils'
 import type { ethers } from 'ethers'
 import type { ProviderRpcError } from '~/auth'
 import { onAccountchanged, onChainChange, onDisconnect } from '~/auth'
-import { swtichChain } from '~/hooks/useAddToNetwork'
-// import * as polygonchain from '~/assets/chain.json'
-import * as binanceTestnetChain from '~/assets/chain_binance_testnet.json'
 import type { TransactionMessage, WalletConfig, WalletProvider } from './wallet'
+
+const toHex = (num: number) => `0x${num.toString(16)}`
 
 export class MetaMaskProvider implements WalletProvider {
   config: WalletConfig
@@ -39,29 +38,60 @@ export class MetaMaskProvider implements WalletProvider {
         return acts[0]
       }
     } catch (err) {
-      console.log(err)
+      // eslint-disable-next-line no-console
+      console.log('getConnectAccount', err)
     }
   }
 
   // 切链
   private async changeChain(): Promise<boolean> {
-    try {
-      await swtichChain({ chain: binanceTestnetChain, rpc: null })
+    if (!this.config.chain) {
       return true
-    } catch (err) {
-      console.log(err)
     }
-    return false
+    const chainid = toHex(this.config.chain.chainId)
+    try {
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: chainid }],
+      })
+    } catch (switchError: any) {
+      // This error code indicates that the chain has not been added to MetaMask.
+      if (switchError.code === 4902) {
+        // eslint-disable-next-line no-useless-catch
+        try {
+          await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                chainId: chainid,
+                chainName: this.config.chain.name,
+                nativeCurrency: this.config.chain.nativeCurrency,
+                rpcUrls: this.config.chain.rpc.map(r => r.url),
+                blockExplorerUrls: this.config.chain.explorers.map(e => e.url),
+              },
+            ],
+          })
+        } catch (addError) {
+          console.log('changeChain', addError)
+          return false
+        }
+      }
+    }
+    return true
   }
 
   private async checkChain(): Promise<boolean> {
-    const isChainRight = checkIsExpectChain()
+    if (!this.config.chain) {
+      return true
+    }
+    const isChainRight = checkIsExpectChain(this.config.chain.chainId)
     if (!isChainRight) {
       const result = await this.changeChain()
       return result
     }
     return isChainRight
   }
+
 
   async requestAccount(): Promise<string | undefined> {
     const isChainRight = await this.checkChain()
@@ -139,3 +169,6 @@ export class MetaMaskProvider implements WalletProvider {
     }
   }
 }
+
+
+

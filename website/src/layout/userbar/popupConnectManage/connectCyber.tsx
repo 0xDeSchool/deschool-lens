@@ -18,7 +18,7 @@ import { getUserManager } from '~/account';
 import { CloseOutlined, LogoutOutlined } from '@ant-design/icons'
 import type { LinkPlatformRequest, UserPlatform } from '~/api/booth/types'
 import { CyberConnectIcon } from '~/components/icon'
-import { platform } from 'os'
+import { ccWallet } from '~/wallet/wallet_cc'
 
 const DOMAIN = 'test.com'
 interface ConnectBoardProps {
@@ -51,7 +51,8 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
   // 对传入的challenge信息签名并返回签名结果
   const signLoginMessage = async (challengeText: string) => {
     const SIGN_MESSAGE = challengeText
-    const signMessageReturn = await getWallet().signMessage(SIGN_MESSAGE)
+    const wallet = await ccWallet()
+    const signMessageReturn = await wallet.signMessage(SIGN_MESSAGE)
     return signMessageReturn
   }
 
@@ -176,10 +177,8 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
     setLoading(true)
     try {
       // 初始化小狐狸钱包并获取地址
-      const config = { ...props.wallectConfig, type: WalletType.MetaMask }
-      const provider = createProvider(config)
-      await getWallet().setProvider(WalletType.MetaMask, provider)
-      const address = await getWallet().getAddress()
+      const wallet = await ccWallet()
+      const address = await wallet.getAddress()
       if (address) {
         const platformLinkInfo = await handleLoginByAddress(address)
 
@@ -233,7 +232,7 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
           <div key={ccProfile.handle} className='frc-between mt-4'>
             <div className="frc-start">
               <div className="bg-black rounded-50% w-28px h-28px frc-center">
-                <CyberConnectIcon style={{color: 'white'}} alt="cyberconnect" width={20} height={20} />
+                <CyberConnectIcon style={{ color: 'white' }} alt="cyberconnect" width={20} height={20} />
               </div>
               <span className='ml-2'>{ccProfile.handle}</span>
             </div>

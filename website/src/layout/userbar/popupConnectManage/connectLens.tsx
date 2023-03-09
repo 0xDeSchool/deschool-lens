@@ -16,8 +16,8 @@ import Button from 'antd/es/button'
 import { linkPlatform } from '~/api/booth/account'
 import { getUserManager, useAccount } from '~/account/context'
 import { LogoutOutlined } from '@ant-design/icons'
+import { lensWallet } from '~/wallet/wallet_lens'
 import { LinkPlatformRequest } from '~/api/booth/types'
-
 interface ConnectBoardProps {
   wallectConfig?: WalletConfig
   connectTrigger?: any
@@ -47,7 +47,8 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
   // 对传入的challenge信息签名并返回签名结果
   const signLoginMessage = async (challengeText: string) => {
     const SIGN_MESSAGE = challengeText
-    const signMessageReturn = await getWallet().signMessage(SIGN_MESSAGE)
+    const wallet = await lensWallet()
+    const signMessageReturn = await wallet.signMessage(SIGN_MESSAGE)
     return signMessageReturn
   }
 
@@ -156,10 +157,8 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
     setLoading(true)
     try {
       // 初始化小狐狸钱包并获取地址
-      const config = { ...props.wallectConfig, type: WalletType.MetaMask }
-      const provider = createProvider(config)
-      await getWallet().setProvider(WalletType.MetaMask, provider)
-      const address = await getWallet().getAddress()
+      const wallet = await lensWallet()
+      const address = await wallet.getAddress()
       if (address) {
         await handleLoginByAddress(address)
         const platformLinkInfo = await handleLoginByAddress(address)

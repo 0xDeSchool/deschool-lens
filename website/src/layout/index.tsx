@@ -11,6 +11,7 @@ import { scrollToTop } from '~/utils/common'
 import { RoleType } from '~/lib/enum'
 import Footer from './footer'
 import UserBar from './userbar'
+import { appWallet } from '~/wallet/booth'
 
 /*
  * @description: Layout
@@ -42,7 +43,8 @@ const Layout = () => {
   const handleOk = async () => {
     setIsSwitchingUser(true)
     try {
-      const addr = await getWallet().getAddress()
+      const wallet = await appWallet()
+      const addr = await wallet.getAddress()
       // TODO: Q产品 当用户切换时 怎么办
       if (getUserContext().lensToken?.address && addr !== getUserContext().lensToken?.address) {
         const cachedToken = await fetchUserDefaultProfile(addr)

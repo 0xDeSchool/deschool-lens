@@ -16,6 +16,7 @@ import { getUserManager, useAccount } from '~/account'
 import { linkPlatform } from '~/api/booth'
 import { UserPlatform } from '~/api/booth/types'
 import { getShortAddress } from '~/utils/format'
+import { appWallet } from '~/wallet/booth'
 
 const ConnectDeschoolBoard: FC = () => {
   const userManager = getUserManager()
@@ -38,7 +39,8 @@ const ConnectDeschoolBoard: FC = () => {
   }
 
   const signLoginMessage = async (nonce: string) => {
-    const signMessageReturn = await getWallet().signMessage(nonce)
+    const wallet = await appWallet()
+    const signMessageReturn = await wallet.signMessage(nonce)
     return signMessageReturn
   }
 
@@ -77,10 +79,7 @@ const ConnectDeschoolBoard: FC = () => {
       setLoadingUniPass(true)
     }
     try {
-      const config: WalletConfig = { type }
-      const provider = createProvider(config)
-      await getWallet().setProvider(type, provider)
-      handleLoginByAddress()
+      await handleLoginByAddress()
     } catch (err: any) {
       handleFailToConnect(err)
     } finally {
