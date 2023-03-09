@@ -70,10 +70,10 @@ const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
                 <div className="w-310px flex-0 relative h-full aspect-[433/280] object-cover rounded-2 bg-white shadow">
                   <Image
                     preview={false}
-                    src={course?.coverImage}
+                    src={course?.coverImage || 'https://deschool.s3.amazonaws.com/static/cover_course_event.jpg'}
                     alt="coverImage"
                     className="relative aspect-[433/280] object-cover rounded-2"
-                    fallback={fallbackImage}
+                    fallback={'https://deschool.s3.amazonaws.com/static/cover_course_event.jpg'}
                     height={'100%'}
                     width={'100%'}
                     placeholder={
