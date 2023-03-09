@@ -57,7 +57,6 @@ const FollowersModal = (props: {
     const followers = resp?.data?.profileByHandle?.followers
     const hasNext = followers?.pageInfo?.hasNextPage
     setHasNextPage(hasNext)
-    console.log('followers', followers)
     let edges = followers?.edges || []
     edges = edges.map((item: any) => ({
         address: item.node.address.address,
@@ -65,7 +64,6 @@ const FollowersModal = (props: {
         handle: item.node.profile.handle,
         isFollowedByMe: item.node.profile.isFollowedByMe,
       }))
-    console.log('edges', edges)
     setFollows(edges)
   }
 
@@ -154,7 +152,6 @@ const FollowersModal = (props: {
     setIsFollowLoading(true)
     const result = await follow(handle)
     setIsFollowLoading(false)
-    console.log('result', result)
     // 关注成功后，刷新页面
     initUserInfo(routeAddress!)
   };
@@ -167,7 +164,6 @@ const FollowersModal = (props: {
     setIsFollowLoading(true)
     const result = await unFollow(handle)
     setIsFollowLoading(false)
-    console.log('result', result)
     // 关注成功后，刷新页面
     initUserInfo(routeAddress!)
   };

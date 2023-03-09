@@ -111,10 +111,10 @@ const CyberCard = (props: CyberCardProps) => {
 
   useEffect(() => {
     setModal({ type: 'followers', visible: false })
+    initUserInfo()
   }, [routeAddress])
 
   useEffect(() => {
-    initUserInfo()
     if (updateTrigger > 0) {
       setModal({
         type: 'followers',
@@ -155,7 +155,6 @@ const CyberCard = (props: CyberCardProps) => {
     setIsFollowLoading(true)
     const result = await follow(currentUser?.handle!)
     setIsFollowLoading(false)
-    console.log('result', result)
     // 关注成功后，刷新页面
     setUpdateTrigger(updateTrigger + 1)
   };
@@ -168,7 +167,6 @@ const CyberCard = (props: CyberCardProps) => {
     setIsFollowLoading(true)
     const result = await unFollow(currentUser?.handle!)
     setIsFollowLoading(false)
-    console.log('result', result)
     // 关注成功后，刷新页面
     setUpdateTrigger(updateTrigger + 1)
   };
