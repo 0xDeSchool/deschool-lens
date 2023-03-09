@@ -39,9 +39,9 @@ jobs:
         uses: fifsky/ssh-action@v0.0.6
         with:
           command: |
-            sudo docker compose -f ${{ secrets.STG_BOOTH_SSH_FILEPATH }} pull
-            sudo docker compose -f ${{ secrets.STG_BOOTH_SSH_FILEPATH }} up -d
+            sudo docker compose -f ${{ vars.STG_BOOTH_SSH_FILEPATH }} pull
+            sudo docker compose -f ${{ vars.STG_BOOTH_SSH_FILEPATH }} up -d
             sudo docker image prune -f
-          host: ${{ secrets.STG_BOOTH_SSH_HOST }}
-          user: ${{ secrets.STG_BOOTH_SSH_USER }}
+          host: ${{ vars.STG_BOOTH_SSH_HOST }}
+          user: ${{ vars.STG_BOOTH_SSH_USER }}
           key: ${{ secrets.STG_BOOTH_SSH_PRIVATE_KEY }}
