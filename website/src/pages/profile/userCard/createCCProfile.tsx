@@ -8,6 +8,7 @@ import { useLazyQuery } from '@apollo/client';
 import { getUserManager, useAccount } from '~/account';
 import { linkPlatform } from '~/api/booth';
 import { PlatformType } from '~/api/booth/booth';
+import { ccWallet } from '~/wallet/wallet_cc';
 
 const CreateCyberConnectProfile: React.FC = () => {
   const user = useAccount()
@@ -59,8 +60,11 @@ const CreateCyberConnectProfile: React.FC = () => {
         avatar: user.avatar || '',
         operator: "0x85AAc6211aC91E92594C01F8c9557026797493AE",
       }
+      const wallet= await ccWallet()
+      await wallet.getAddress()
       await ccContractHub().createProfile(payload, 0x0, 0x0);
       await pollingGetCyberConnectProfile()
+      message.success('Mint profile success')
     } catch (error: Error | unknown) {
       console.log('error', error)
       // if (error instanceof Error) {
