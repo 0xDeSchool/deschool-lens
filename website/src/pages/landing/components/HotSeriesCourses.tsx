@@ -16,7 +16,7 @@ const HotSeries = () => {
     setLoading(true)
     try {
       const sortStr = '-enrolledCount'
-      const res: any = await getExploreSeries(1, 12, sortStr)
+      const res: any = await getExploreSeries(1, 9, sortStr)
       if (res && res.items) {
         setSerieses(res.items)
         setTotal(res.totalCount)
