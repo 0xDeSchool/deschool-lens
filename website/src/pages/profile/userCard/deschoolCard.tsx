@@ -146,7 +146,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
   }
 
   return (
-    <div>
+    <div >
       <div className='relative w-full frc-center'>
         <LensAvatar avatarUrl={currentUser?.avatar} />
       </div>
@@ -156,11 +156,11 @@ const DeschoolCard = (props: DeschoolCardProps) => {
         </div>)
       :<>
         {/* 处理数据为空的情况 */}
-        {currentUser && <div className="mt-70px w-full px-6 pb-6 fcc-center font-ArchivoNarrow">
+        <div className="mt-70px w-full px-6 pb-6 fcc-center font-ArchivoNarrow">
           <span className="text-center text-xl w-200px overflow-hidden text-ellipsis" title={currentUser?.displayName}>
-            {currentUser.displayName === currentUser.address ? getShortAddress(currentUser.address) : currentUser.displayName}
+            {!currentUser ? getShortAddress(routeAddress) : currentUser?.displayName === currentUser?.address ? getShortAddress(currentUser?.address) : currentUser?.displayName}
           </span>
-        </div>}
+        </div>
         <div className="mx-10 frc-center flex-wrap">
           <a
             className={`${followers?.length > 0 ? 'hover:underline hover:cursor-pointer' : ''
