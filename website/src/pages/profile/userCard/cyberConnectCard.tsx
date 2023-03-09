@@ -155,7 +155,7 @@ const CyberCard = (props: CyberCardProps) => {
     const result = await follow(currentUser?.handle!)
     setIsFollowLoading(false)
     // 关注成功后，刷新页面
-    setUpdateTrigger(updateTrigger + 1)
+    initUserInfo()
   };
 
   const handleUnfollow = async () => {
@@ -167,7 +167,7 @@ const CyberCard = (props: CyberCardProps) => {
     const result = await unFollow(currentUser?.handle!)
     setIsFollowLoading(false)
     // 关注成功后，刷新页面
-    setUpdateTrigger(updateTrigger + 1)
+    initUserInfo()
   };
 
   if (loading) {
