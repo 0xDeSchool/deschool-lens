@@ -81,6 +81,10 @@ export interface LinkPlatformRequest {
   platform: PlatformType
   // 当前签名的钱包地址
   address: string
+  // 名称
+  displayName?: string | null
+  // 头像
+  avatar?: string | null
   // 当前签名的钱包类型
   walletType?: string
   signHex?: string
