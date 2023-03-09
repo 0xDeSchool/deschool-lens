@@ -1,14 +1,15 @@
 import Popover from 'antd/es/popover'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Avatar from 'antd/es/avatar'
 import Button from 'antd/es/button/button'
 import { RightOutlined } from '@ant-design/icons'
 import Modal from 'antd/es/modal'
-import { DEFAULT_AVATAR, getUserManager, useAccount } from '~/account'
+import { DEFAULT_AVATAR, useAccount } from '~/account'
 import PopupConnectManage from './popupConnectManage'
 import { CyberConnectIcon, DeschoolIcon, LensIcon } from '~/components/icon'
 import { getShortAddress } from '~/utils/format'
+import { useLayout } from '~/context/layout'
 
 type PopoverAccountInfoProps = {
   open: () => void
@@ -66,18 +67,16 @@ const PopoverAccountInfo: React.FC<PopoverAccountInfoProps> = (props) => {
 const WalletConnectBoard = () => {
   const { t } = useTranslation()
   const user = useAccount()
-  const [open, setOpen] = useState(false)
   const [showPopover, setShowPopover] = useState(false)
-  const onClick = () => {
-    setOpen(true)
-  }
+  const {connectBoardVisible, setConnectBoardVisible} = useLayout()
+
 
   return (
     <>
       {!user && <button
         type="button"
         className="mx-auto text-white text-center text-xl whitespace-nowrap font-ArchivoNarrow min-w-100px w-200px h-48px bg-primary hover:bg-accent"
-        onClick={() => onClick()}
+        onClick={() => setConnectBoardVisible(true)}
       >
         <div className="mx-3 py-2">{t('Connect Wallet')}</div>
       </button>}
@@ -87,7 +86,6 @@ const WalletConnectBoard = () => {
           content={
             <PopoverAccountInfo
               open={() => {
-                setOpen(true)
                 setShowPopover(false)
               }
               } />
@@ -104,7 +102,7 @@ const WalletConnectBoard = () => {
         </Popover>)}
       <Modal
         wrapClassName=""
-        open={open}
+        open={connectBoardVisible}
         width='80%'
         title={null}
         footer={null}
@@ -112,12 +110,15 @@ const WalletConnectBoard = () => {
         centered
         closeIcon={null}
         style={{ height: '80vh' }}
-        onCancel={() => {
-          setOpen(false)
-        }}
         destroyOnClose
+        onCancel={() => {
+          setConnectBoardVisible(false)
+        }}
+        afterClose={() => {
+          setConnectBoardVisible(false)
+        }}
       >
-        <PopupConnectManage close={() => setOpen(false)} />
+        <PopupConnectManage close={() => setConnectBoardVisible(false)} />
       </Modal>
     </>
   )

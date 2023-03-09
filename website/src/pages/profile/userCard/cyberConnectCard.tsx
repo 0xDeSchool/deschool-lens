@@ -48,7 +48,6 @@ const CyberCard = (props: CyberCardProps) => {
       },
     })
     const primaryProfile = resp?.data?.profileByHandle
-    console.log('primaryProfile', primaryProfile)
     setFollowersInfo({
       followerCount: primaryProfile?.followerCount || 0,
       isFollowedByMe: primaryProfile?.isFollowedByMe || false,
@@ -102,7 +101,7 @@ const CyberCard = (props: CyberCardProps) => {
       }
       // 获取关注者信息
       if (currentUserHandle) {
-        await initUserFollowersInfo(currentUserHandle, routeAddress || user?.address!)
+        await initUserFollowersInfo(currentUserHandle, user?.address!)
         await initUserFollowingsInfo(routeAddress || user?.address!)
       }
     } finally {
