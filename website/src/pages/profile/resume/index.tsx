@@ -349,11 +349,12 @@ const Resume = () => {
       setLoadingCyber(true)
       const resumeDataStr = JSON.stringify(resumeData)
       if (ccProfile?.handle && user?.address && resumeDataStr) {
-        const txhash = await ccInstance.createPost({
+        const result = await ccInstance.createPost({
           title: `RESUME OF${user?.address}`,
           body: resumeDataStr,
           author: ccProfile?.handle,
         })
+        const txhash = result?.arweaveTxHash
         if (txhash) {
           setPublishType('CyberConnect')
           setStep(1)
