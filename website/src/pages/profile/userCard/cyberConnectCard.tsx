@@ -14,6 +14,7 @@ import CreateCyberConnectProfile from './createCCProfile'
 import FollowersModal from './cyberConnecdCardModal'
 import Skeleton from 'antd/es/skeleton'
 import Button from 'antd/es/button'
+import LensAvatar from './avatar'
 
 type CyberCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
@@ -27,7 +28,7 @@ const CyberCard = (props: CyberCardProps) => {
   const [modal, setModal] = useState<{ type: 'followers' | 'following'; visible: boolean }>({ type: 'followers', visible: false })
   const user = useAccount()
   const [currentUser, setCurrentUser] = useState<UserPlatform | undefined>(user?.ccProfile())
-  const [updateTrigger, setUpdateTrigger] = useState(0) // 此页面局部刷新
+  const [updateTrigger] = useState(0) // 此页面局部刷新
   const [getFollowingByHandle] = useLazyQuery(GET_FOLLOWER_BY_HANDLE)
   const [getFollowingByAddressEVM] = useLazyQuery(GET_FOLLOWING_BY_ADDRESS_EVM)
   const [getPrimaryProfile] = useLazyQuery(PRIMARY_PROFILE);
@@ -170,77 +171,78 @@ const CyberCard = (props: CyberCardProps) => {
     initUserInfo()
   };
 
-  if (loading) {
-    return (
-      <div className="h-400px fcc-center">
-        <Skeleton active />
-      </div>
-    )
-  }
-
   return (
     <div>
-      {/* 处理数据为空的情况 */}
-      <div className="mt-70px w-full px-6 pb-6 fcc-center font-ArchivoNarrow">
-        <span className="text-xl">
-          {currentUser?.displayName || currentUser?.handle}
-        </span>
-        <span className="text-xl text-gray-5">
-          {currentUser?.handle ? `${currentUser.handle.startsWith('@') ? '' : '@'}${currentUser?.handle}` : 'CyberConnect Handle Not Found'}</span>
+      <div className='relative w-full frc-center'>
+        <LensAvatar avatarUrl={currentUser?.avatar} />
       </div>
-      <div className="mx-10 frc-center flex-wrap">
-        <a
-          className={`${followersInfo.followerCount > 0 ? 'hover:underline hover:cursor-pointer' : ''
-            } text-xl mr-4 `}
-          onClick={() => {
-            handleJumpFollowers(followersInfo.followerCount)
-          }}
-        >
-          <span className="text-black">{followersInfo.followerCount || '-'} </span>
-          <span className="text-gray-5 font-ArchivoNarrow">{t('profile.followers')}</span>
-        </a>
-        <a
-          className={`${followingsInfo?.followingCount > 0 ? 'hover:underline hover:cursor-pointer' : ''
-            } text-xl`}
-          onClick={() => {
-            handleJumpFollowing(followingsInfo?.followingCount)
-          }}
-        >
-          <span className="text-black">{followingsInfo?.followingCount || '-'} </span>
-          <span className="text-gray-5 font-ArchivoNarrow">{t('profile.following')}</span>
-        </a>
-      </div>
-      {currentUser?.handle ? (
-        <p className="m-10 text-xl line-wrap three-line-wrap break-words">
-          {user?.bio || visitCase === 0 ? '' : "The user hasn't given a bio on CyberConnect for self yet :)"}
-        </p>
-      ) : (
-        <div className='pb-16 pt-4'>
-          {!currentUser?.handle && <CreateCyberConnectProfile />}
-        </div>
-      )}
-      {visitCase === 1 && (
-        <div className="m-10 text-right">
-          <Button
-            className={`${currentUser?.handle
-              ? 'purple-border-button'
-              : 'inline-flex items-center border border-gray rounded-xl bg-gray-3 text-gray-6 hover:cursor-not-allowed'
-              } px-2 py-1`}
-            style={{ color: !followersInfo?.isFollowedByMe ? 'white' : '' }}
-            type={!followersInfo?.isFollowedByMe ? 'primary' : 'default'}
-            disabled={!currentUser?.handle || !user?.address}
-            onClick={() => {
-              if (followersInfo?.isFollowedByMe) {
-                handleUnfollow()
-              } else {
-                handleFollow()
-              }
-            }}
-          >
-            {followersInfo?.isFollowedByMe ? t('UnFollow') : t('Follow')}
-          </Button>
-        </div>
-      )}
+      {loading ?
+        (<div className="h-400px fcc-center">
+          <Skeleton active />
+        </div>)
+        : <>
+          {/* 处理数据为空的情况 */}
+          <div className="mt-70px w-full px-6 pb-6 fcc-center font-ArchivoNarrow">
+            <span className="text-xl">
+              {currentUser?.displayName || currentUser?.handle}
+            </span>
+            <span className="text-xl text-gray-5">
+              {currentUser?.handle ? `${currentUser.handle.startsWith('@') ? '' : '@'}${currentUser?.handle}` : 'CyberConnect Handle Not Found'}</span>
+          </div>
+          <div className="mx-10 frc-center flex-wrap">
+            <a
+              className={`${followersInfo.followerCount > 0 ? 'hover:underline hover:cursor-pointer' : ''
+                } text-xl mr-4 `}
+              onClick={() => {
+                handleJumpFollowers(followersInfo.followerCount)
+              }}
+            >
+              <span className="text-black">{followersInfo.followerCount || '-'} </span>
+              <span className="text-gray-5 font-ArchivoNarrow">{t('profile.followers')}</span>
+            </a>
+            <a
+              className={`${followingsInfo?.followingCount > 0 ? 'hover:underline hover:cursor-pointer' : ''
+                } text-xl`}
+              onClick={() => {
+                handleJumpFollowing(followingsInfo?.followingCount)
+              }}
+            >
+              <span className="text-black">{followingsInfo?.followingCount || '-'} </span>
+              <span className="text-gray-5 font-ArchivoNarrow">{t('profile.following')}</span>
+            </a>
+          </div>
+          {currentUser?.handle ? (
+            <p className="m-10 text-xl line-wrap three-line-wrap break-words">
+              {user?.bio || visitCase === 0 ? '' : "The user hasn't given a bio on CyberConnect for self yet :)"}
+            </p>
+          ) : (
+            <div className='pb-16 pt-4'>
+              {!currentUser?.handle && <CreateCyberConnectProfile />}
+            </div>
+          )}
+          {visitCase === 1 && (
+            <div className="m-10 text-right">
+              <Button
+                className={`${currentUser?.handle
+                  ? 'purple-border-button'
+                  : 'inline-flex items-center border border-gray rounded-xl bg-gray-3 text-gray-6 hover:cursor-not-allowed'
+                  } px-2 py-1`}
+                style={{ color: !followersInfo?.isFollowedByMe ? 'white' : '' }}
+                type={!followersInfo?.isFollowedByMe ? 'primary' : 'default'}
+                disabled={!currentUser?.handle || !user?.address}
+                onClick={() => {
+                  if (followersInfo?.isFollowedByMe) {
+                    handleUnfollow()
+                  } else {
+                    handleFollow()
+                  }
+                }}
+              >
+                {followersInfo?.isFollowedByMe ? t('UnFollow') : t('Follow')}
+              </Button>
+            </div>
+          )}
+        </>}
       <FollowersModal
         routeAddress={routeAddress || user?.address}
         type={modal.type}

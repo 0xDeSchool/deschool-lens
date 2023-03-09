@@ -25,7 +25,8 @@ export interface UserPlatform {
   platform: PlatformType
   address: string
   displayName?: string
-
+  avatar?: string
+  bio?: string
   // 附加数据
   data: { [key: string]: string }
 }
