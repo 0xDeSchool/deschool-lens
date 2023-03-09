@@ -29,7 +29,7 @@ const CreateCyberConnectProfile: React.FC = () => {
       message.warning('Handle must be at most 20 characters')
       return false
     }
-    if (!/^[a-z0-9_]+$/.test(handle)) {
+    if (!/^^[a-z0-9_]{1,20}$/.test(handle)) {
       message.warning('Handle can only contain lowercase letters, numbers, and underscores')
       return false
     }
