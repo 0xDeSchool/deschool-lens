@@ -133,6 +133,7 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
           accessToken,
         },
         address,
+        displayName: userInfo?.displayName,
       })
     } catch (error: any) {
       if (error?.reason) {

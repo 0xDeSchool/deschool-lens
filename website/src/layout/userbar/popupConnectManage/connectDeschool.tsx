@@ -58,6 +58,7 @@ const ConnectDeschoolBoard: FC = () => {
         handle: userManager.user.address,
         platform: PlatformType.DESCHOOL,
         address: userManager.user.address,
+        displayName: userManager.user.address,
       })
 
       await userManager.tryAutoLogin()

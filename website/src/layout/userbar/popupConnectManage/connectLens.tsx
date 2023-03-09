@@ -112,6 +112,7 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
             refreshToken: authenticatedResult.refreshToken,
           },
           address,
+          displayName: userInfo.name,
         })
       }
     } catch (error: any) {

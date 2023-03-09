@@ -114,6 +114,7 @@ const CreateCyberConnectProfile: React.FC = () => {
             id: userInfo?.id,
           },
           address: user?.address!,
+          displayName: user?.displayName,
         })
         setLoading(false)
         await getUserManager().tryAutoLogin()
@@ -136,7 +137,7 @@ const CreateCyberConnectProfile: React.FC = () => {
         maxLength={20}
         minLength={1}
         onChange={(e) => setHandle(e.target.value)} />
-      <Button style={{borderTopLeftRadius: 0, borderBottomLeftRadius: 0}} type="primary" loading={loading} onClick={() => handleMint()}>MINT ON BSC</Button>
+      <Button style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }} type="primary" loading={loading} onClick={() => handleMint()}>MINT ON BSC</Button>
     </div>
   );
 }
