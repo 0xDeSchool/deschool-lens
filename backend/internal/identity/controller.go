@@ -61,6 +61,10 @@ func getUserInfo(ctx *gin.Context) {
 	} else {
 		ginx.PanicValidatition("invalid user")
 	}
+	if u == nil {
+		ctx.JSON(http.StatusOK, nil)
+		return
+	}
 	ctx.JSON(http.StatusOK, NewUserInfo(u, currentUser.ID == u.ID))
 }
 
