@@ -86,9 +86,22 @@ func linkPlatform(ctx *gin.Context) {
 	if !currentUser.Authenticated() {
 		ginx.PanicUnAuthenticated("unauthenticated")
 	}
+	um := di.Get[UserManager]()
+	user := um.Repo.Get(ctx, currentUser.ID)
 	data := input.ToEntity()
 	data.UserId = currentUser.ID
-	um := di.Get[UserManager]()
 	um.Link(ctx, data)
+	needUpdate := false
+	if user.DisplayName == user.Address && input.DisplayName != "" {
+		user.DisplayName = input.DisplayName
+		needUpdate = true
+	}
+	if user.Avatar == "" && input.Avatar != "" {
+		user.Avatar = input.Avatar
+		needUpdate = true
+	}
+	if needUpdate {
+		um.Update(ctx, user)
+	}
 	ctx.JSON(http.StatusOK, struct{}{})
 }

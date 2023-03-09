@@ -6,12 +6,14 @@ import (
 )
 
 type LinkPlatformInput struct {
-	Handle     string            `json:"handle"`                      // 对应平台的用户标识
-	Platform   UserPlatformType  `json:"platform" binding:"required"` // 平台唯一标识，如 lens, cc(CyberConnect), deschool
-	Address    string            `json:"address"  binding:"required"` // 平台地址
-	WalletType WalletType        `json:"walletType"`                  // 当前签名的钱包类型
-	SignHex    string            `json:"signHex"`
-	Data       map[string]string `json:"data"` // 附加数据
+	Handle      string            `json:"handle"`                      // 对应平台的用户标识
+	Platform    UserPlatformType  `json:"platform" binding:"required"` // 平台唯一标识，如 lens, cc(CyberConnect), deschool
+	DisplayName string            `json:"displayName"`                 // 平台上的用户名
+	Address     string            `json:"address"  binding:"required"` // 平台地址
+	WalletType  WalletType        `json:"walletType"`                  // 当前签名的钱包类型
+	SignHex     string            `json:"signHex"`
+	Avatar      string            `json:"avatar"`
+	Data        map[string]string `json:"data"` // 附加数据
 }
 
 func (l *LinkPlatformInput) ToEntity() *UserPlatform {
@@ -19,9 +21,11 @@ func (l *LinkPlatformInput) ToEntity() *UserPlatform {
 		return nil
 	}
 	p := &UserPlatform{
-		Handle:   l.Handle,
-		Platform: l.Platform,
-		Address:  common.HexToAddress(l.Address).Hex(),
+		Handle:      l.Handle,
+		Platform:    l.Platform,
+		Address:     common.HexToAddress(l.Address).Hex(),
+		DisplayName: l.DisplayName,
+		Avatar:      l.Avatar,
 	}
 	p.Data = l.Data
 	return p
