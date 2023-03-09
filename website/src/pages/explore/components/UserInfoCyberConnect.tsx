@@ -47,7 +47,6 @@ const UserInfoCyberConnect: React.FC<UserInfoCyberConnectProps> = (props) => {
       },
     })
     const primaryProfile = resp?.data?.profileByHandle
-    console.log('primaryProfile', primaryProfile)
     setFollowersInfo({
       followerCount: primaryProfile?.followerCount || 0,
       isFollowedByMe: primaryProfile?.isFollowedByMe || false,
@@ -187,7 +186,11 @@ const UserInfoCyberConnect: React.FC<UserInfoCyberConnectProps> = (props) => {
       </p>
       <div className='frc-between gap-8 mx-auto'>
         {/* disabled 用户自己、用户没有handle、正在调用关注中*/}
-        <Button className='w-120px frc-center purple-border-button px-2 py-1 font-ArchivoNarrow' loading={isFollowLoaindg} disabled={!currentUser?.handle || !user?.address || (address && address === user?.address) || isFollowLoaindg} onClick={!followersInfo?.isFollowedByMe ? handleFollow : handleUnfollow}>{!followersInfo?.isFollowedByMe ? 'Follow' : 'Unfollow'}</Button>
+        <Button
+          className='w-120px frc-center purple-border-button px-2 py-1 font-ArchivoNarrow'
+          style={{color: !followersInfo?.isFollowedByMe ? 'white' : ''}}
+          type={!followersInfo?.isFollowedByMe ? 'primary' : 'default'}
+          loading={isFollowLoaindg} disabled={!currentUser?.handle || !user?.address || (address && address === user?.address) || isFollowLoaindg} onClick={!followersInfo?.isFollowedByMe ? handleFollow : handleUnfollow}>{!followersInfo?.isFollowedByMe ? 'Follow' : 'Unfollow'}</Button>
         <Button className='w-120px frc-center purple-border-button px-2 py-1 font-ArchivoNarrow' onClick={handleJumpProfile}> {t('LearnMore')}</Button>
       </div>
     </>

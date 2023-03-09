@@ -122,7 +122,11 @@ const UserInfoDeschool: React.FC<UserInfoDeschoolProps> = (props) => {
         {user?.bio || "The user hasn't given a bio for self yet :)"}
       </p>
       <div className='frc-between gap-8 mx-auto'>
-        <Button className='w-120px frc-center purple-border-button px-2 py-1 font-ArchivoNarrow' loading={isFollowLoading} disabled={isFollowLoading} onClick={!following ? handleFollow : handleUnfollow}>{!following ? 'Follow' : 'Unfollow'}</Button>
+        <Button
+          className='w-120px frc-center purple-border-button px-2 py-1 font-ArchivoNarrow'
+          style={{color: following ? '' : 'white'}}
+          type={!following ? 'primary' : 'default'}
+          loading={isFollowLoading} disabled={isFollowLoading} onClick={!following ? handleFollow : handleUnfollow}>{!following ? 'Follow' : 'Unfollow'}</Button>
         <Button className='w-120px frc-center purple-border-button px-2 py-1 font-ArchivoNarrow' onClick={handleJumpProfile}> {t('LearnMore')}</Button>
       </div>
     </>
