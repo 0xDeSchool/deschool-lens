@@ -19,13 +19,13 @@ const PopupConnectManage: React.FC<PopupConnectManageProps> = (props) => {
       </div>
       <UpdateUsername />
       <div className='frc-center gap-8 px-8 pt-8 pb-12'>
-        <div className='item-connect flex-1'>
+        <div className='item-connect flex-1 max-w-300px min-w-300px'>
           <ConnectDeschool />
         </div>
-        <div className='item-connect flex-1'>
+        <div className='item-connect flex-1 max-w-300px min-w-300px'>
           <ConnectCyberBoard />
         </div>
-        <div className='item-connect flex-1'>
+        <div className='item-connect flex-1 max-w-300px min-w-300px'>
           <ConnectLensBoard />
         </div>
       </div>

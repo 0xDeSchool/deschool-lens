@@ -104,7 +104,7 @@ const WalletConnectBoard = () => {
       <Modal
         wrapClassName=""
         open={connectBoardVisible}
-        width='80%'
+        width='1100px'
         title={null}
         footer={null}
         closable={false}
