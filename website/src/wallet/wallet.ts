@@ -18,7 +18,13 @@ export type TransactionMessage = {
 
 export type WalletConfig = {
   type: WalletType
-  chainId?: string
+  chain?: {
+    chainId: number
+    name: string
+    rpc: { url: string }[]
+    explorers: { url: string }[]
+    [key: string]: any
+  }
   [key: string]: any
 
   accountChanged?: (account: string) => Promise<void>

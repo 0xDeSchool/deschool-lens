@@ -20,14 +20,15 @@ const checkInstallMetamask = () => {
   return false
 }
 
+const toHex = (num: number) => `0x${num.toString(16)}`
 /**
  * @description 判断是否在对应环境的链
  * @param
  * @returns {boolean}
  */
-const checkIsExpectChain = () => {
+const checkIsExpectChain = (chain: number): boolean => {
   const { chainId } = window.ethereum
-  if (chainId !== import.meta.env.VITE_APP_CHAIN) {
+  if (chainId !== toHex(chain)) {
     return false
   }
   return true

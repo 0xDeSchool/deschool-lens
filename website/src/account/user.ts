@@ -4,6 +4,7 @@ import type { UserInfo, UserPlatform } from "~/api/booth/types";
 import { SignMsgType } from "~/api/booth/types"
 import { getShortAddress } from "~/utils/format"
 import { getWallet } from "~/wallet"
+import { appWallet } from "~/wallet/booth";
 import { getCachedToken, removeToken, setToken } from "./token"
 
 export class AccountInfo {
@@ -101,7 +102,8 @@ export class UserManager {
   }
 
   async login() {
-    const address = await getWallet().getAddress()
+    const wallet = await appWallet()
+    const address = await wallet.getAddress()
     if (!address) {
       return
     }
@@ -111,9 +113,9 @@ export class UserManager {
       return
     }
     const msg = await getSignMessage({ address, signType: SignMsgType.LOGIN })
-    const signHex = await getWallet().signMessage(msg.message)
+    const signHex = await wallet.signMessage(msg.message)
     const loginResult = await login({
-      walletType: getWallet().type!,
+      walletType: wallet.type!,
       address,
       sig: signHex,
     })
@@ -126,7 +128,8 @@ export class UserManager {
   }
 
   async tryAutoLogin() {
-    const address = await getWallet().getConnectedAddress()
+    const wallet = await appWallet()
+    const address = await wallet.getConnectedAddress()
     if (!address) {
       return
     }
