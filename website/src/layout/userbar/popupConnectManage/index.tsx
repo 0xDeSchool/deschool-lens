@@ -20,7 +20,7 @@ const PopupConnectManage: React.FC<PopupConnectManageProps> = (props) => {
         <span>Booth</span>
         <Button shape='circle' size='large' icon={<CloseCircleOutlined style={{color: '#999'}} />} className="frc-center" onClick={() => close()} />
       </div>
-      <UpdateUsername disabled={!user}/>
+      <UpdateUsername />
       <div className='frc-center gap-8 px-8 pt-8 pb-24'>
         <div className='item-connect flex-1'>
           <ConnectDeschool />
