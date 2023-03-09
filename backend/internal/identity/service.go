@@ -24,7 +24,7 @@ type UserManager struct {
 func (m *UserManager) Find(ctx context.Context, addr string) *User {
 	u := m.Repo.Find(ctx, common.HexToAddress(addr))
 	if u == nil {
-		ginx.PanicNotFound("user not found")
+		return nil
 	}
 	platforms := m.Repo.GetPlatforms(ctx, u.ID)
 	u.Platforms = linq.Map(platforms, func(p *UserPlatform) *UserPlatform { return p })
