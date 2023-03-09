@@ -1,5 +1,3 @@
-import Avatar from 'antd/es/avatar'
-import { DEFAULT_AVATAR, useAccount } from '~/account'
 import { CloseCircleOutlined } from '@ant-design/icons'
 import Button from 'antd/es/button'
 import ConnectLensBoard from './connectLens'
@@ -12,7 +10,6 @@ type PopupConnectManageProps = {
 }
 const PopupConnectManage: React.FC<PopupConnectManageProps> = (props) => {
   const { close } = props
-  const user = useAccount()
 
   return (
     <div>

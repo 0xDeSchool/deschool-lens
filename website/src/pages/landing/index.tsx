@@ -26,8 +26,8 @@ const LandingHeader = () => {
       <div className="absolute w-full h-full left-0 top-0">
         <AnimateBg type="line" />
       </div>
-      {/* <h1 className="text-5xl font-Anton">{t('landing.title1')}</h1> */}
-      {/* <h2 className="mt-5 mb-10 text-xl text-white-5 font-Anton">{t('landing.title2')}</h2> */}
+      <h1 className="text-5xl font-Anton">{t('landing.title1')}</h1>
+      <h2 className="mt-5 mb-10 text-xl text-white-5 font-Anton">{t('landing.title2')}</h2>
       <div className="w-full frc-center font-ArchivoNarrow z-1">
         <button
           type="button"
