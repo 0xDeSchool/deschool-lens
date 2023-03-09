@@ -224,11 +224,14 @@ const Resume = () => {
 
   // 删除经历 - 确认
   const handleDeleteCard = (bt: BlockType, id: string) => {
+    console.log('bt: BlockType', bt, id)
     const newResumeData: ResumeData = { edu: [], career: [] }
     if (bt === BlockType.CareerBlockType && resumeData?.career !== undefined) {
       newResumeData.career = resumeData?.career?.filter(item => item.id !== id)
+      newResumeData.edu = resumeData?.edu
     } else if (bt === BlockType.EduBlockType && resumeData?.edu !== undefined) {
       newResumeData.edu = resumeData?.edu?.filter(item => item.id !== id)
+      newResumeData.career = resumeData?.career
     }
     setResumeData(newResumeData)
   }
