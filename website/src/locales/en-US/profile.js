@@ -3,7 +3,7 @@ const EN_US_PROFILE = {
     profile: 'My Booth',
     suggested: 'Suggested People',
     activities: 'Activities',
-    resume: 'Resume',
+    resume: 'My Resume',
     verified: 'Verified IDs',
     followers: 'Followers',
     following: 'Following',

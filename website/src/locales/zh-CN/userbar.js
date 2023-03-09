@@ -3,7 +3,7 @@ const ZH_CN_USERBAR = {
   exploreNav: '名人堂',
   plazaNav: '广场',
   matchNav: '同道中人',
-  learnTogetherNav: 'LEARN TOGETHER',
+  learnTogetherNav: '一起学习',
   roadmap: '路线图',
   community: '社区',
   whitepaper: '白皮书',

@@ -186,7 +186,7 @@ const MatchConfig = () => {
                 },
               ].map(item => (
                 <Tooltip key={item.tip} title={item.tip}>
-                  <Checkbox value={item.short} style={{ lineHeight: '32px', fontSize: '1rem' }} className="font-ArchivoNarrow text-xl">
+                  <Checkbox value={item.short} style={{ lineHeight: '32px', fontSize: '1rem' }} className="font-ArchivoNarrow">
                     {item.desc}
                   </Checkbox>
                 </Tooltip>
@@ -204,7 +204,7 @@ const MatchConfig = () => {
           rules={[{ required: true, message: 'Please tell us at least one your fields of interests!' }]}
           style={{ marginTop: 0 }}
         >
-          <Select mode="tags" options={InterestTag} />
+          <Select mode="tags" options={InterestTag} className="font-ArchivoNarrow text-md" />
         </Form.Item>
 
         {/* 偏好板块 */}
@@ -277,7 +277,7 @@ const MatchConfig = () => {
             tooltip={t('matchpage.mbti')}
             style={{ marginBottom: 0 }}
           >
-            <Select placeholder="Please select a character" className='font-ArchivoNarrow'>
+            <Select placeholder="Please select a character">
               <Select.Option value={-1}>UnKnown</Select.Option>
               <Select.Option value={0}>INFP</Select.Option>
               <Select.Option value={1}>ENFP</Select.Option>

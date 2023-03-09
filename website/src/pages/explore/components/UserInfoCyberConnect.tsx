@@ -83,7 +83,6 @@ const UserInfoCyberConnect: React.FC<UserInfoCyberConnectProps> = (props) => {
         setCurrentUser({} as UserPlatform)
         return
       }
-      userInfo.handle = userInfo?.handle
       // 此人有数据
       setCurrentUser(userInfo)
       if (userInfo.handle) {
@@ -183,13 +182,13 @@ const UserInfoCyberConnect: React.FC<UserInfoCyberConnectProps> = (props) => {
           <span className="text-gray-5 font-ArchivoNarrow">{t('profile.following')}</span>
         </a>
       </div>
-      <p className="font-ArchivoNarrow text-#000000d8 text-16px leading-24px h-120px line-wrap three-line-wrap">
-        {bio}
+      <p className="mt-4 mx-auto font-ArchivoNarrow text-#000000d8 text-16px align-center leading-24px h-80px line-wrap three-line-wrap">
+        {bio || "The user hasn't given a bio for self yet :)"}
       </p>
       <div className='frc-between gap-8 mx-auto'>
         {/* disabled 用户自己、用户没有handle、正在调用关注中*/}
-        <Button type='primary' className='mx-auto px-8' loading={isFollowLoaindg} disabled={!currentUser?.handle || !user?.address || (address && address === user?.address) || isFollowLoaindg} onClick={!followersInfo?.isFollowedByMe ? handleFollow : handleUnfollow}>{!followersInfo?.isFollowedByMe ? 'Follow' : 'Unfollow'}</Button>
-        <Button className='w-120px' onClick={handleJumpProfile}> {t('LearnMore')}</Button>
+        <Button className='w-120px frc-center purple-border-button px-2 py-1 font-ArchivoNarrow' loading={isFollowLoaindg} disabled={!currentUser?.handle || !user?.address || (address && address === user?.address) || isFollowLoaindg} onClick={!followersInfo?.isFollowedByMe ? handleFollow : handleUnfollow}>{!followersInfo?.isFollowedByMe ? 'Follow' : 'Unfollow'}</Button>
+        <Button className='w-120px frc-center purple-border-button px-2 py-1 font-ArchivoNarrow' onClick={handleJumpProfile}> {t('LearnMore')}</Button>
       </div>
     </>
   )

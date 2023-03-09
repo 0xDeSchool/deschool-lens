@@ -6,7 +6,7 @@ import message from 'antd/es/message'
 import Empty from 'antd/es/empty'
 import ShowMoreLoading from '~/components/loading/showMore'
 import { RoleType } from '~/lib/enum'
-import { getUserContext, useAccount } from '~/context/account'
+import { getUserContext } from '~/context/account'
 import { Link } from 'react-router-dom'
 import { useLazyQuery } from '@apollo/client'
 
@@ -15,7 +15,11 @@ import useUnFollow from '~/hooks/useCyberConnectUnfollow'
 import { GET_FOLLOWING_LIST_BY_ADDRESS_EVM } from '~/api/cc/graphql/GetFollowingListByAddressEVM'
 import { GET_FOLLOWER_LIST_BY_HANDLE } from '~/api/cc/graphql/GetFollowersListByHandle'
 import LensAvatar from './avatar'
-import type { CyberProfile } from '~/lib/types/app'
+import { useAccount } from '~/account'
+import { PRIMARY_PROFILE } from '~/api/cc/graphql'
+import { UserPlatform } from '~/api/booth/types'
+import { CyberProfile } from '~/lib/types/app'
+import Button from 'antd/es/button'
 
 const PADE_SIZE = 10
 let page = 1
@@ -27,16 +31,19 @@ const FollowersModal = (props: {
 }) => {
   const { routeAddress, type, visible, closeModal } = props
   const { t } = useTranslation()
-  const { cyberToken, cyberProfile } = useAccount()
   const [follows, setFollows] = useState([] as Array<CyberProfile | null>)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [loadingMore, setLoadingMore] = useState(false)
   const [getFollowingByAddressEVM] = useLazyQuery(GET_FOLLOWING_LIST_BY_ADDRESS_EVM)
   const [getFollowingByHandle] = useLazyQuery(GET_FOLLOWER_LIST_BY_HANDLE)
+  const [getPrimaryProfile] = useLazyQuery(PRIMARY_PROFILE);
+  const [currentUser, setCurrentUser] = useState<UserPlatform>()
   const { follow } = useFollow();
   const { unFollow } = useUnFollow();
   const [isFollowLoaindg, setIsFollowLoading] = useState(false)
   const [hasNextPage, setHasNextPage] = useState(false)
+  const user = useAccount()
+  const cyberProfile = user?.ccProfile()
 
   // 获取用户的关注者
   const initUserFollowersInfo = async (handle: string, address: string) => {
@@ -55,13 +62,10 @@ const FollowersModal = (props: {
     edges = edges.map((item: any) => ({
         address: item.node.address.address,
         avatar: item.node.profile.avatar,
-        handleStr: item.node.profile.handle,
-        handle: item.node.profile.handle.split('.cc')[0],
-        id: item.node.profile.id,
+        handle: item.node.profile.handle,
         isFollowedByMe: item.node.profile.isFollowedByMe,
-        bio: item.node.profile.metadataInfo.bio,
-        displayName: item.node.profile.metadataInfo.displayName,
       }))
+    console.log('edges', edges)
     setFollows(edges)
   }
 
@@ -83,11 +87,11 @@ const FollowersModal = (props: {
     setFollows(edges)
   }
 
-  const initFollowRelationship = async () => {
+  const initFollowRelationship = async (handle: string, address: string) => {
     setLoading(true)
     try {
       if (type === 'followers') {
-        initUserFollowersInfo(cyberProfile?.handle, cyberToken?.address!)
+        initUserFollowersInfo(handle, user?.address!)
       } else {
         initUserFollowingsInfo(routeAddress!)
       }
@@ -98,9 +102,35 @@ const FollowersModal = (props: {
     }
   }
 
+  // 根据不同情况初始化用户信息
+  const initUserInfo = async (address: string) => {
+    if (loading) return
+    setLoading(true)
+    try {
+      const res = await getPrimaryProfile({
+        variables: {
+          address,
+          me: user?.address,
+        },
+      });
+      const userInfo = res?.data?.address?.wallet?.primaryProfile
+      // 此人没有handle，cyber没数据
+       // 此人没有handle，cyber没数据
+       if (!userInfo) {
+        setCurrentUser({} as UserPlatform)
+        return
+      }
+      // 此人有数据
+      setCurrentUser(userInfo)
+      initFollowRelationship(userInfo?.handle, address)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
     if (visible) {
-      initFollowRelationship()
+      initUserInfo(routeAddress!)
     }
   }, [visible])
 
@@ -108,7 +138,7 @@ const FollowersModal = (props: {
     setLoadingMore(true)
     page += 1
     try {
-      await initFollowRelationship()
+      await initFollowRelationship(currentUser?.handle!, routeAddress!)
     } catch (error: any) {
       if (error && error.name && error.message) message.error(`${error.name}:${error.message}`)
     } finally {
@@ -126,7 +156,7 @@ const FollowersModal = (props: {
     setIsFollowLoading(false)
     console.log('result', result)
     // 关注成功后，刷新页面
-    // setUpdateTrigger(updateTrigger + 1)
+    initUserInfo(routeAddress!)
   };
 
   const handleUnfollow = async (handle: string) => {
@@ -139,10 +169,8 @@ const FollowersModal = (props: {
     setIsFollowLoading(false)
     console.log('result', result)
     // 关注成功后，刷新页面
-    // setUpdateTrigger(updateTrigger + 1)
+    initUserInfo(routeAddress!)
   };
-
-  const role = getUserContext().getLoginRoles()
 
   return (
     <Modal
@@ -180,9 +208,9 @@ const FollowersModal = (props: {
                     {/* 三、用户在看别人的 Following，啥事都不能做，没有按钮。如果别人和他的关注者双向关注则用文字显示出来 */}
                     {/* 四、用户在看别人的 Follower，啥事都不能做，没有按钮。如果别人和他的关注者双向关注则用文字显示出来 */}
                     {/* TODO */}
-                    {!role.includes(RoleType.UserOfCyber) ? null : (
-                      <button
-                        type="button"
+                    {user?.address && cyberProfile?.handle && (
+                      <Button
+                        disabled={isFollowLoaindg}
                         className="purple-border-button px-2 py-1"
                         onClick={() => {
                           if (f?.isFollowedByMe) {
@@ -193,7 +221,7 @@ const FollowersModal = (props: {
                         }}
                       >
                         {f?.isFollowedByMe ? t('UnFollow') : t('Follow')}
-                      </button>
+                      </Button>
                     )}
                   </div>
                 </div>
@@ -205,13 +233,13 @@ const FollowersModal = (props: {
               )}
               {hasNextPage && (
                 <div className="text-center mt-10">
-                  <button
-                    type="button"
+                  <Button
+                    disabled={loadingMore}
                     className={`bg-#1818180f border-#18181826 border-2 rounded-xl px-4 py-2 ${loadingMore ? 'cursor-not-allowed' : ''}`}
                     onClick={handleAddMore}
                   >
                     {t('SeeMore')}
-                  </button>
+                  </Button>
                 </div>
               )}
             </div>
