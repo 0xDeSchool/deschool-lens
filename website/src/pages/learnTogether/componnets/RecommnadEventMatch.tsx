@@ -6,10 +6,11 @@ import AvatarList from './AvatarList'
 import Tags from './Tags'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import fallbackImage from '~/assets/images/fallbackImage'
 import { NextArrowIcon } from '~/components/icon'
+import React from 'react'
 
 type RecommnadEventMatchProps = {
   info: MatchedEvent
@@ -20,13 +21,18 @@ const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
   const count = 10
   const [swiperRef, setSwiperRef] = useState<any>(null)
   const [activeIndex, setActiveIndex] = useState(0)
-
+  const [swiperWidth, setSwiperWidth] = useState('50vw')
+  const boardRef = React.useRef<HTMLDivElement>(null)
   const onStartLearning = (c: MatchedCourse) => {
     window.open(`https://deschool.app/origin/series/${c.seriesId}/learning?courseId=${c.id}`)
   }
 
+  useEffect(() => {
+    setSwiperWidth(`${boardRef?.current?.clientWidth} px` || '50vw')
+  }, [])
+
   return (
-    <div className="flex-1 h-full pr-10 py-16px">
+    <div ref={boardRef} className="flex-1 h-full pr-10 py-16px">
       <h1 className="text-xl font-500 font-Anton mb-8">Match criteria:</h1>
       {info.interested?.length > 0 && <div className="frc-between mb-4">
         <span>Based on your interests in <NavLink className="text-" to="/profile/match">Match</NavLink> on </span>
@@ -48,9 +54,9 @@ const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
       </div>}
       <div className="divider w-full h-1px bg-gray-200 my-8" />
       <h1 className="text-xl font-500 font-Anton mb-8">Get prepared on deschool before the event</h1>
-      <div className='relative w-100%'>
+      <div className='relative w-100%' style={{width: swiperWidth}}>
         {info?.courses?.length > 0 && <Swiper
-            className="max-w-50vw w-full mx-auto frc-center"
+            className="mx-auto frc-center"
             onSwiper={setSwiperRef}
             loop={false}
             grabCursor
@@ -59,9 +65,9 @@ const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
             onActiveIndexChange={(swiper) => setActiveIndex(swiper.activeIndex)}
           >
           {info?.courses?.map((course) => {
-            return (<SwiperSlide key={`${course.id}`} className="mx-auto rounded-16px frc-center">
-              <div className="h-240px  frc-between gap-4 shadow">
-                <div className="relative h-full aspect-[433/280] object-cover rounded-2 bg-white shadow">
+            return (<SwiperSlide key={`${course.id}`} style={{width: swiperWidth}} className="mx-auto rounded-16px frc-center">
+              <div className="h-240px frc-between gap-4 shadow" style={{width: swiperWidth}}>
+                <div className="w-370px flex-0 relative h-full aspect-[433/280] object-cover rounded-2 bg-white shadow">
                   <Image
                     preview={false}
                     src={course?.coverImage}
@@ -78,7 +84,7 @@ const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
                     }
                   />
                 </div>
-                <div className="h-full fcs-between py-2">
+                <div className="flex-1 h-full fcs-between py-2">
                   <div className="text-2xl mb-2">{course?.title}</div>
                   <div className="mb-1">{course?.description}</div>
                   <Button type="primary" onClick={() => onStartLearning(course)}>Start Learning</Button>
