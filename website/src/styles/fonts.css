@@ -35,28 +35,20 @@
   font-display: swap;
 }
 
-@font-face {
-  font-family: 'Yahei';
-  src: url('/fonts/35yahei.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-body {
-  font-family: 'ArchivoNarrow', Yahei, -apple-system, BlinkMacSystemFont, Helvetica, Tahoma, Arial, Hiragino Sans GB, Microsoft YaHei,
-    sans-serif;
-}
 /* 标题 */
 .font-Anton {
   font-family: 'Anton';
 }
 /* 正文 */
 .font-ArchivoNarrow {
-  font-family: 'ArchivoNarrow,ArchivoNarrowMedium,ArchivoNarrowSemibold,ArchivoNarrowBold';
+  font-family: 'ArchivoNarrow';
 }
-/* 中文 */
-.font-Yahei {
-  font-family: 'Yahei';
-  font-weight: 900;
+.font-ArchivoNarrow-Medium {
+  font-family: 'ArchivoNarrowMedium';
+}
+.font-ArchivoNarrow-Semibold {
+  font-family: 'ArchivoNarrowSemibold';
+}
+.font-ArchivoNarrow-Bold {
+  font-family: 'ArchivoNarrowBold';
 }
