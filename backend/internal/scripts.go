@@ -21,7 +21,8 @@ var userRepo identity.UserRepository
 func runFix() {
 	ctx := context.Background()
 	userRepo = *di.Get[identity.UserRepository]()
-	fixUsers(ctx)
+	//fixUsers(ctx)
+	fixUserLink(ctx)
 	//fixFollow(ctx)
 	//fixMatch(ctx)
 	//fixQ11E(ctx)
@@ -86,6 +87,25 @@ func fixQ11E(ctx context.Context) {
 				fr.Update(ctx, f.ID, f)
 			}
 
+		}
+	}
+}
+
+func fixUserLink(ctx context.Context) {
+	ir := *di.Get[hackathon.IdRepository]()
+	ur := *di.Get[identity.UserManager]()
+	ids := ir.GetAll(ctx)
+	for i := range ids {
+		id := &ids[i]
+		user := ur.Find(ctx, id.Address)
+		if id.Platform == hackathon.LensPlatform {
+			ur.Link(ctx, &identity.UserPlatform{
+				UserId:     user.ID,
+				Platform:   identity.PlatformLens,
+				Handle:     id.LensHandle,
+				Address:    id.Address,
+				VerifiedAt: id.CreatedAt,
+			})
 		}
 	}
 }

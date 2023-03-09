@@ -22,6 +22,7 @@ export async function getSbtInfoById(sbtId: string, pageSize: number, page: numb
   return http.get(`/sbt/${sbtId}/owners?pageSize=${pageSize}&page=${page}`)
 }
 
+
 /**
  * @method getPassInfoById
  * @description 从后台获取指定pass的详情
