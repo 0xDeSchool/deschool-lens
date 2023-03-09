@@ -3,7 +3,8 @@ import { BNB, BNBTestnet } from "./chains";
 
 const ccConfig: WalletConfig = {
   type: WalletType.MetaMask,
-  chain: import.meta.env.MODE === 'production' ? BNB : BNBTestnet,
+  // chain: import.meta.env.MODE === 'production' ? BNB : BNBTestnet,
+  chain: BNB
 }
 
 let ccProvider: WalletProvider | undefined
