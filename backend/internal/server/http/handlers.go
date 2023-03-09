@@ -44,8 +44,9 @@ func idValidateHandler(ctx *gin.Context) {
 func resumeGetHandler(ctx *gin.Context) {
 	hm := *di.Get[hackathon.HackathonManager]()
 	address := ctx.Query("address")
+	nonAutoGen := ginx.QueryBool(ctx, "non-auto-gen")
 	address = eth.NormalizeAddress(address)
-	resume := hm.GetResumeByAddr(ctx, address)
+	resume := hm.GetResumeByAddr(ctx, address, nonAutoGen)
 	ctx.JSON(http.StatusOK, resume)
 }
 
