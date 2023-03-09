@@ -65,6 +65,9 @@ type RecommendUserResult struct {
 }
 
 func NewRecommendUserResult(ur *hackathon.UserRecommendation, u *identity.User) *RecommendUserResult {
+	if ur == nil {
+		return nil
+	}
 	return &RecommendUserResult{
 		UserId:   ur.UserId,
 		TargetId: ur.TargetId,

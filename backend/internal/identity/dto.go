@@ -62,6 +62,9 @@ func NewPlatform(p *UserPlatform, isSelf bool) *Platform {
 }
 
 func NewUserInfo(user *User, isSelf bool) *UserInfo {
+	if user == nil {
+		return nil
+	}
 	return &UserInfo{
 		Id:          user.ID.Hex(),
 		Address:     user.Address,
