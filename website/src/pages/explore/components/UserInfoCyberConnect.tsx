@@ -83,7 +83,6 @@ const UserInfoCyberConnect: React.FC<UserInfoCyberConnectProps> = (props) => {
         setCurrentUser({} as UserPlatform)
         return
       }
-      userInfo.handle = userInfo?.handle
       // 此人有数据
       setCurrentUser(userInfo)
       if (userInfo.handle) {
