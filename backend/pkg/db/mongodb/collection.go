@@ -149,7 +149,7 @@ func (r *Collection[TEntity]) Delete(ctx context.Context, id primitive.ObjectID)
 func (r *Collection[TEntity]) DeleteMany(ctx context.Context, ids []primitive.ObjectID) int {
 	var v any = (*TEntity)(nil)
 	if _, ok := v.(ddd.DeletionAuditedEntity); ok {
-		ctx := ginx.WithScopedUnitwork(ctx)
+		ctx := ginx.WithScopedUnitWork(ctx)
 		var count int = 0
 		for i := range ids {
 			e := r.Get(ctx, ids[i])

@@ -32,6 +32,7 @@
     "@aws-sdk/protocol-http": "^3.226.0",
     "@aws-sdk/smithy-client": "^3.234.0",
     "@aws-sdk/xhr-http-handler": "3.226.0",
+    "@cyberlab/cyberconnect-v2": "0.0.1-alpha.17",
     "@dforo3/metaforo-sdk": "0.4.12-beta",
     "@dnd-kit/core": "^6.0.6",
     "@dnd-kit/sortable": "^7.0.1",
@@ -85,12 +86,14 @@
     "react-vertical-timeline-component": "^3.6.0",
     "react-virtuoso": "^4.1.0",
     "rxjs": "^7.8.0",
+    "swiper": "^9.1.0",
     "unocss": "^0.47.6",
     "uuid": "^9.0.0",
     "video-react": "^0.16.0",
     "vite": "^4.0.3",
     "vite-plugin-react-js-support": "^1.0.7",
-    "vite-plugin-style-import": "^2.0.0"
+    "vite-plugin-style-import": "^2.0.0",
+    "zen-observable": "^0.10.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.5",
@@ -108,6 +111,7 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/react-test-renderer": "^18.0.0",
     "@types/react-vertical-timeline-component": "^3.3.3",
+    "@types/swiper": "^6.0.0",
     "@typescript-eslint/eslint-plugin": "^5.47.0",
     "@typescript-eslint/parser": "^5.47.0",
     "@vitejs/plugin-legacy": "^3.0.1",

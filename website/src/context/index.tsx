@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 import { createContext } from 'react'
-import { AccountContextProvider } from './account'
+import { AccountContextProvider } from '~/account'
 import { LayoutContextProvider } from './layout'
 
 // 集成多个context,对外提供一个provider

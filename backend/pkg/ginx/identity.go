@@ -7,10 +7,10 @@ import (
 )
 
 type CurrentUserInfo struct {
-	ID       primitive.ObjectID
-	UserName string
-	Address  string
-	Avatar   string
+	ID          primitive.ObjectID
+	DisplayName string
+	Address     string
+	Avatar      string
 }
 
 func (u *CurrentUserInfo) Authenticated() bool {

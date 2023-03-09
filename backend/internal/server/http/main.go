@@ -2,18 +2,14 @@ package http
 
 import (
 	"github.com/0xdeschool/deschool-lens/backend/internal/hackathon"
-	"github.com/0xdeschool/deschool-lens/backend/pkg/app"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
-	"github.com/0xdeschool/deschool-lens/backend/pkg/errx"
+	"github.com/0xdeschool/deschool-lens/backend/pkg/ginx"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/server"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/utils"
 )
 
-func Init(builder *app.AppBuilder) {
-	// Init params
-	const LAST_RUN_ORDER = 999
-	sb := server.NewServerBuilder(builder)
-
+func Init(sb *server.ServerBuiler) {
+	builder := sb.App
 	// Add Server Configuration data in App pre-run step
 	sb.App.PreRun(func() error {
 		utils.ViperBind("Server", sb.Options)
@@ -22,7 +18,7 @@ func Init(builder *app.AppBuilder) {
 	})
 
 	// 添加 Hackathon Module
-	builder.Run(func() error {
+	builder.ConfigureServices(func() error {
 		options := &hackathon.HackathonOptions{}
 		utils.ViperBind("Hackathon", options)
 		di.AddValue(options)
@@ -34,19 +30,13 @@ func Init(builder *app.AppBuilder) {
 	// Add all module and api here
 	HackathonApi(sb)
 
-	// Run http server up
-	builder.OrderRun(LAST_RUN_ORDER, func() error {
-		s, err := sb.Build()
-		errx.CheckError(err)
-		return s.Run()
-	})
 }
 
 func HackathonApi(sb *server.ServerBuiler) {
-
+	altAuth := ginx.OptionalAuthHandlerFunc(sb)
 	// 在 Server 中添加 Hackathon 模块的各个 Route
 	sb.Configure(func(s *server.Server) error {
-		baseRoute := s.G.Group("/api")
+		baseRoute := s.Route.Group("/api")
 
 		// Stage 1 - 基础框架 + 身份
 		baseRoute.GET("/ping", pingHandler)
@@ -74,6 +64,10 @@ func HackathonApi(sb *server.ServerBuiler) {
 		baseRoute.GET("/follow/following", followingGetHandler)
 		baseRoute.GET("/follow/follower", followerGetHandler)
 		baseRoute.DELETE("/follow", followDeleteHandler)
+
+		baseRoute.POST("/events", filterEvents)
+
+		baseRoute.GET("users", altAuth, getUsers)
 		return nil
 	})
 }

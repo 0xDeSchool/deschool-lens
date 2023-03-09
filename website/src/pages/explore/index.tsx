@@ -4,10 +4,6 @@ import AnimateBg from '~/components/animateBg'
 import type { ChangeEvent } from 'react'
 import { useState } from 'react'
 import HotCelebrities from './components/HotCelebrities'
-// import LeftoffRecord from './LeftoffRecord'
-// import HotSeries from './HotSeries'
-// import HotCourses from './HotCourses'
-// import HotChannels from './HotChannels'
 
 const Explore = () => {
   const { t } = useTranslation()

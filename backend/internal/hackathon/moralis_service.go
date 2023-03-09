@@ -74,7 +74,14 @@ func GetNftByWallet(address string) *NftByWalletOutput {
 	ho := *di.Get[HackathonOptions]()
 	var API_KEY = ho.MoralisKey
 	// TODO: Move this to config
-	const TOKEN_ADDR_LIST_STR = "&token_addresses%5B0%5D=0xbac24a47c9f9d53500dfee0f4d996a009a5ba2d4&token_addresses%5B1%5D=0xEd1e617b9485168EEB25c6d56e1219747cE62D0e&token_addresses%5B2%5D=0x0D9ea891B4C30e17437D00151399990ED7965F00&token_addresses%5B3%5D=0x45ddb27dd9791957ae20781a2159d780a9626630"
+	const TOKEN_ADDR_LIST_STR = "" +
+		"&token_addresses%5B0%5D=0xbac24a47c9f9d53500dfee0f4d996a009a5ba2d4" +
+		"&token_addresses%5B1%5D=0xEd1e617b9485168EEB25c6d56e1219747cE62D0e" +
+		"&token_addresses%5B2%5D=0x0D9ea891B4C30e17437D00151399990ED7965F00" +
+		"&token_addresses%5B3%5D=0x45ddb27dd9791957ae20781a2159d780a9626630" +
+		"&token_addresses%5B4%5D=0x9d34D407D8586478b3e4c39BE633ED3D7be1c80C" +
+		"&token_addresses%5B5%5D=0x2221F5d189c611B09D7f7382Ce557ec66365C8fc" +
+		"&token_addresses%5B6%5D=0x2C436d61C5Af62bcbfeE40B1f0BE5B483DfA0E11"
 
 	// prepare http request
 	url := fmt.Sprintf("https://deep-index.moralis.io/api/v2/%s/nft?chain=polygon&format=decimal&disable_total=false%s&normalizeMetadata=true", address, TOKEN_ADDR_LIST_STR)

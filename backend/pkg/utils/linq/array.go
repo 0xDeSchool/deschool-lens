@@ -1,5 +1,7 @@
 package linq
 
+import "strings"
+
 func Unique[TSource any](source []TSource, equals func(t1 TSource, t2 TSource) bool) []TSource {
 	newArr := make([]TSource, 0)
 	for i := 0; i < len(source); i++ {
@@ -246,7 +248,15 @@ func DistinctBy[TSource any, TKey comparable](source []TSource, keySelector func
 	return result
 }
 
-func ToHashSet[TSource any, TKey comparable](source []TSource, keySelector func(*TSource) TKey) map[TKey]struct{} {
+func ToSet(source []string) map[string]struct{} {
+	result := make(map[string]struct{})
+	for i := range source {
+		result[strings.ToLower(source[i])] = struct{}{}
+	}
+	return result
+}
+
+func ToSetByKey[TSource any, TKey comparable](source []TSource, keySelector func(*TSource) TKey) map[TKey]struct{} {
 	result := make(map[TKey]struct{})
 	for i := range source {
 		result[keySelector(&source[i])] = struct{}{}
@@ -265,6 +275,48 @@ func GroupBy[TSource any, TKey comparable](source []TSource, keySelector func(*T
 	for i := range source {
 		k := keySelector(&source[i])
 		result[k] = append(result[k], &source[i])
+	}
+	return result
+}
+
+func Intersect[TSource comparable](source []TSource, other []TSource) []TSource {
+	if source == nil {
+		panic("parameter source is nil")
+	}
+	if other == nil {
+		panic("parameter other is nil")
+	}
+
+	dict := make(map[TSource]struct{})
+	result := make([]TSource, 0)
+	for i := range source {
+		dict[source[i]] = struct{}{}
+	}
+	for i := range other {
+		if _, ok := dict[other[i]]; ok {
+			result = append(result, other[i])
+		}
+	}
+	return result
+}
+
+func Combine[T comparable](source []T, other []T) []T {
+	if source == nil {
+		panic("parameter source is nil")
+	}
+	if other == nil {
+		panic("parameter other is nil")
+	}
+
+	dict := make(map[T]struct{})
+	result := make([]T, 0)
+	for i := range source {
+		dict[source[i]] = struct{}{}
+	}
+	for i := range other {
+		if _, ok := dict[other[i]]; !ok {
+			result = append(result, other[i])
+		}
 	}
 	return result
 }

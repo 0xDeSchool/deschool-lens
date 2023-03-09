@@ -24,7 +24,7 @@ type DeletionAuditedEntity interface {
 
 type AuditEntityBase struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty"`
-	CreatorId primitive.ObjectID `bson:"creatorId"`
+	CreatorId primitive.ObjectID `bson:"creatorId,omitempty"`
 	CreatedAt time.Time          `bson:"createdAt"`
 }
 

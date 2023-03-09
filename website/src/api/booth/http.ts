@@ -4,6 +4,7 @@ import axios from 'axios'
 import { getLanguage } from '~/utils/language'
 import ZH_CN_COMMON from '~/locales/zh-CN/request'
 import EN_US_COMMON from '~/locales/en-US/request'
+import { getToken } from '~/account'
 
 const lng = getLanguage()
 
@@ -19,7 +20,12 @@ const instance: AxiosInstance = axios.create({
 instance.interceptors.request.use(
   (config: AxiosRequestConfig) => {
     const headers: RawAxiosRequestHeaders = {}
-
+    // 附带鉴权的token
+    // const tokenObj = session.getSession('token', true)
+    const tokenInfo = getToken()
+    if (tokenInfo && tokenInfo.token) {
+      headers.Authorization = `Bearer ${tokenInfo.token}`
+    }
     return {
       ...config,
       headers: {
@@ -40,15 +46,17 @@ instance.interceptors.response.use(
     return Promise.reject(v)
   },
   err => {
-    if (err.response.data) {
-      return err.response.data
-    }
+    const lng = getLanguage()
     if (lng === 'zh_CN') {
       message.error(ZH_CN_COMMON[err.response.status as keyof typeof ZH_CN_COMMON])
     } else {
       message.error(EN_US_COMMON[err.response.status as keyof typeof ZH_CN_COMMON])
     }
+    // if (err.response.data) {
+    //   return undefined
+    // }
     console.log('url', err.config.url)
+    return undefined
   },
 )
 

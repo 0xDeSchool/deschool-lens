@@ -1,6 +1,11 @@
 package http
 
-import "github.com/0xdeschool/deschool-lens/backend/internal/hackathon"
+import (
+	"github.com/0xdeschool/deschool-lens/backend/internal/hackathon"
+	"github.com/0xdeschool/deschool-lens/backend/internal/identity"
+	"github.com/0xdeschool/deschool-lens/backend/pkg/db/mongodb"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 type IdValidateInput struct {
 	Address     string `json:"address"`
@@ -29,7 +34,7 @@ type GetSbtDetailOutput struct {
 }
 
 type PutQ11eInput struct {
-	Address   string   `json:"address"`
+	UserId    string   `json:"userId"`
 	Goals     []string `json:"goals"`
 	Interests []string `json:"interests"`
 	Pref1     string   `json:"pref1"`
@@ -40,7 +45,7 @@ type PutQ11eInput struct {
 
 func NewQ11e(input *PutQ11eInput) *hackathon.Q11e {
 	q := &hackathon.Q11e{
-		Address:   input.Address,
+		UserId:    mongodb.IDFromHex(input.UserId),
 		Goals:     input.Goals,
 		Interests: input.Interests,
 		Pref1:     input.Pref1,
@@ -49,4 +54,38 @@ func NewQ11e(input *PutQ11eInput) *hackathon.Q11e {
 		Mbti:      input.Mbti,
 	}
 	return q
+}
+
+type RecommendUserResult struct {
+	UserId   primitive.ObjectID `json:"userId"`
+	TargetId primitive.ObjectID `json:"targetId"`
+	Reasons  []string           `json:"reasons"`
+	Score    int                `json:"score"`
+	Target   *UserItem          `json:"target"`
+}
+
+func NewRecommendUserResult(ur *hackathon.UserRecommendation, u *identity.User) *RecommendUserResult {
+	if ur == nil {
+		return nil
+	}
+	return &RecommendUserResult{
+		UserId:   ur.UserId,
+		TargetId: ur.TargetId,
+		Reasons:  ur.Reasons,
+		Score:    ur.Score,
+		Target:   NewUserItem(u),
+	}
+}
+
+type UserItem struct {
+	identity.UserInfo `json:",inline"`
+	FollowingCount    int  `json:"followingCount"`
+	FollowerCount     int  `json:"followerCount"`
+	IsFollowing       bool `json:"isFollowing"`
+}
+
+func NewUserItem(u *identity.User) *UserItem {
+	return &UserItem{
+		UserInfo: *identity.NewUserInfo(u, false),
+	}
 }

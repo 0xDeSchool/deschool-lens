@@ -1,29 +1,27 @@
 import Divider from 'antd/es/divider'
 import { useEffect, useState } from 'react'
 import Button from 'antd/es/button'
-import Alert from 'antd/es/alert'
 import message from 'antd/es/message'
-import dayjs from 'dayjs'
-import ReactLoading from 'react-loading'
 import Modal from 'antd/es/modal'
-// import { useParams } from 'react-router'
+import dayjs from 'dayjs'
+import { v4 as uuid } from 'uuid'
+import ReactLoading from 'react-loading'
 import { useParams } from 'react-router-dom'
 import { getIdSbt, getResume, putResume } from '~/api/booth/booth'
-import { useAccount } from '~/context/account'
 import { createPost, pollAndIndexPost } from '~/api/lens/publication/post'
 import { getShortAddress } from '~/utils/format'
+import useCyberConnect from '~/hooks/useCyberConnect'
+import { useAccount } from '~/account'
 import CardEditor from './components/cardEditor'
 import ResumeBlock from './components/resumeBlock'
 import { BlockType } from './enum'
 import type { ResumeCardData, ResumeData, SbtInfo } from './types'
 import { randomConfetti } from './utils/confetti'
-import getVisitCase from '../utils/visitCase'
-
-const BOOTH_PATH = import.meta.env.VITE_APP_BOOTH_PATH
-
-// type ResumeProp = {
-//   handle?: string
-// }
+import type { VisitType } from '../utils/visitCase';
+import { getVisitCase } from '../utils/visitCase'
+import Congradulations from './components/congradulations'
+import { getUserInfo } from '~/api/booth'
+import { UserInfo } from '~/api/booth/types'
 
 export const STANDARD_RESUME_DATA: ResumeData = {
   career: [
@@ -41,7 +39,7 @@ export const STANDARD_RESUME_DATA: ResumeData = {
         },
       ],
       blockType: BlockType.CareerBlockType,
-      order: 1,
+      id: uuid(),
     },
   ],
   edu: [
@@ -59,48 +57,55 @@ export const STANDARD_RESUME_DATA: ResumeData = {
         },
       ],
       blockType: BlockType.EduBlockType,
-      order: 1,
+      id: uuid(),
     },
   ],
 }
 
+type PublishType = 'CyberConnect' | 'Lens'
+
 const Resume = () => {
-  // const { handle } = props
   const { address } = useParams()
-  const { lensProfile, lensToken, deschoolProfile } = useAccount()
+  const user = useAccount()
+  const lensProfile = user?.lensProfile()
+  const ccProfile = user?.ccProfile()
 
   const [isEditResume, setIsEditResume] = useState(false)
   const [isCreateCard, setIsCreateCard] = useState(false)
   const [isEditCard, setIsEditCard] = useState(false)
-  const [resumeData, setResumeData] = useState<ResumeData | undefined>()
+  const [resumeData, setResumeData] = useState<ResumeData>()
   const [cardData, setCardData] = useState<ResumeCardData | undefined>()
   const [loading, setLoading] = useState(true)
   const [putting, setPutting] = useState(false)
   const [prevData, setPrev] = useState<ResumeData | undefined>()
   const [sbtList, setSbtList] = useState<SbtInfo[]>([])
   const [congratulateVisible, setCongratulateVisible] = useState<boolean>(false)
-  const [step, setStep] = useState<number>(1)
+  const [step, setStep] = useState<1 | 2>(1)
+  const [PublishType, setPublishType] = useState<PublishType>('Lens')
   const [txHash, setTxHash] = useState<string>('')
-  const [userAddr, setUserAddr] = useState<string>('')
+  const [currentUser, setCurrentUser] = useState<UserInfo | null>(null)
   const [loadingLens, setLoadingLens] = useState(false)
-  const [visitCase, setVisitCase] = useState<0 | 1 | -1>(-1) // 0-自己访问自己 1-自己访问别人 -1-没登录访问自己
+  const [loadingCyber, setLoadingCyber] = useState(false)
+  const [visitCase, setVisitCase] = useState<VisitType>(-1) // 0-自己访问自己 1-自己访问别人 -1-没登录访问自己
+  const ccInstance = useCyberConnect()
 
-  // 把一条变成 Dayjs Obj
-  const convertStrToDayJsObj = (input: ResumeCardData) => {
-    input.startTime = dayjs(input.startTime)
-    input.endTime = dayjs(input.endTime)
-    return input
-  }
+  // 组装简历数据，添加id，转换时间格式
+  const convertResumeCardData = (input: ResumeCardData[]) => input.map((item: ResumeCardData, index: number) => ({
+        ...item,
+        startTime: dayjs(item.startTime),
+        endTime: dayjs(item.endTime),
+        id: index,
+      }))
 
   // 重新把数据变成Obj
   const covertCareerAndEdu = (input: string) => {
     const obj = JSON.parse(input)
     // 转换格式
     if (obj.career !== undefined) {
-      obj.career = [...obj.career.map((item: ResumeCardData) => convertStrToDayJsObj(item))]
+      obj.career = [...convertResumeCardData(obj.career)]
     }
     if (obj.edu !== undefined) {
-      obj.edu = [...obj.edu.map((item: ResumeCardData) => convertStrToDayJsObj(item))]
+      obj.edu = [...convertResumeCardData(obj.edu)]
     }
     return obj
   }
@@ -110,17 +115,17 @@ const Resume = () => {
   // 进入简历编辑 or 保存查看状态
   const onClickEditResume = async () => {
     if (isEditResume) {
-      const myAddress = lensToken?.address || deschoolProfile?.address
-      if (myAddress) {
+      if (user?.address) {
         setPutting(true)
         const dataStr = JSON.stringify(resumeData)
-        await putResume({ address: myAddress, data: dataStr })
+        await putResume({ address: user?.address, data: dataStr })
         setPutting(false)
       }
     } else {
-      // 深拷贝
+      // 深拷贝 // no 浅拷贝
       const prevStr = JSON.stringify(resumeData)
       const prevObj = covertCareerAndEdu(prevStr)
+
       setPrev(prevObj)
     }
     setIsEditResume(!isEditResume)
@@ -136,7 +141,6 @@ const Resume = () => {
   const handleEditOrCreateCardSave = async (newData: ResumeCardData) => {
     let dataIndex: number | undefined
     const bt = newData.blockType
-    const { order } = newData
 
     let newResumeData: ResumeData | undefined
     // 场景一：创造卡片
@@ -170,14 +174,14 @@ const Resume = () => {
       }
       // 职业类型
       if (bt === BlockType.CareerBlockType && newResumeData?.career !== undefined) {
-        dataIndex = newResumeData?.career.findIndex(item => item.blockType === bt && item.order === order)
+        dataIndex = newResumeData?.career.findIndex(item => item.blockType === bt && item.id === newData.id)
         if (dataIndex !== -1 && dataIndex !== undefined) {
           newResumeData.career[dataIndex] = newData
         }
       }
       // 教育类型
       else if (bt === BlockType.EduBlockType && newResumeData?.edu !== undefined) {
-        dataIndex = newResumeData?.edu.findIndex(item => item.blockType === bt && item.order === order)
+        dataIndex = newResumeData?.edu.findIndex(item => item.blockType === bt && item.id === newData.id)
         if (dataIndex !== -1 && dataIndex !== undefined) {
           newResumeData.edu[dataIndex] = newData
         }
@@ -200,7 +204,7 @@ const Resume = () => {
       endTime: undefined,
       proofs: [],
       blockType: bt,
-      order,
+      id: newData.id,
     }
     await setCardData(emptyCardData)
 
@@ -214,61 +218,31 @@ const Resume = () => {
     setIsEditCard(false)
   }
 
-  // 删除经历 - 确认
-  const handleDeleteCard = (bt: BlockType, order: number) => {
-    let prevArr: ResumeCardData[] | undefined
-    const newArr: ResumeCardData[] | undefined = []
-    const newResumeData: ResumeData | undefined = { edu: [], career: [] }
-    if (bt === BlockType.CareerBlockType) {
-      prevArr = resumeData?.career
-    } else if (bt === BlockType.EduBlockType) {
-      prevArr = resumeData?.edu
-    } else {
-      return
-    }
-    if (prevArr === undefined || resumeData === undefined) {
-      return
-    }
+  // 编辑 & 删除
+  // 不能通过 order 来判断，因为 order 是从 arr.length + 1 计算从而得到的
+  // 如果删除了某个 order，那么后面的 order 就会变成前面的 order，可能会有 order 重复的情况
 
-    // 写麻了，用 index 来算吧
-    const theIndex = order - 1
-    for (let i = 0; i <= theIndex - 1; i++) {
-      newArr[i] = prevArr[i]
-    }
-    for (let i = theIndex; i < prevArr.length - 1; i++) {
-      newArr[i] = prevArr[i + 1]
-      const temp = newArr[i].order
-      if (newArr[i] && temp !== undefined) {
-        newArr[i].order = temp - 1
-      }
-    }
-    if (bt === BlockType.CareerBlockType) {
-      newResumeData.edu = resumeData?.edu
-      newResumeData.career = newArr
-    } else if (bt === BlockType.EduBlockType) {
-      newResumeData.edu = newArr
-      newResumeData.career = resumeData?.career
-    } else {
-      return
+  // 删除经历 - 确认
+  const handleDeleteCard = (bt: BlockType, id: string) => {
+    const newResumeData: ResumeData = { edu: [], career: [] }
+    if (bt === BlockType.CareerBlockType && resumeData?.career !== undefined) {
+      newResumeData.career = resumeData?.career?.filter(item => item.id !== id)
+    } else if (bt === BlockType.EduBlockType && resumeData?.edu !== undefined) {
+      newResumeData.edu = resumeData?.edu?.filter(item => item.id !== id)
     }
     setResumeData(newResumeData)
   }
 
   // 开始编辑卡片
-  const handleEditCard = (bt: BlockType, order: number) => {
+  const handleEditCard = (bt: BlockType, id: string) => {
     let card: ResumeCardData | undefined
-    let arr: ResumeCardData[] | undefined
+
     if (bt === BlockType.CareerBlockType && resumeData?.career !== undefined) {
-      arr = resumeData?.career.filter(item => item.blockType === bt && item.order === order)
+      card = resumeData?.career?.find(item => item.id === id)
     } else if (bt === BlockType.EduBlockType && resumeData?.edu !== undefined) {
-      arr = resumeData?.edu.filter(item => item.blockType === bt && item.order === order)
-    } else {
-      return
+      card = resumeData?.edu?.find(item => item.id === id)
     }
-    if (arr?.length === 1) {
-      // TO-ASK 这里为啥会有一个分号
-      ;[card] = arr
-    } else {
+    if (!card) {
       return
     }
     setCardData(card)
@@ -276,7 +250,7 @@ const Resume = () => {
   }
 
   // 开始创建卡片
-  const handleCreateCard = (bt: BlockType, order: number) => {
+  const handleCreateCard = (bt: BlockType) => {
     const emptyCardData: ResumeCardData = {
       title: '',
       description: '',
@@ -284,11 +258,20 @@ const Resume = () => {
       endTime: undefined,
       proofs: undefined,
       blockType: bt,
-      order,
+      id: uuid(),
     }
     setCardData(emptyCardData)
     setIsCreateCard(true)
     setIsEditCard(true)
+  }
+
+  // 排序
+  const handleSortCard = (bt: BlockType, list: ResumeCardData[]) => {
+    if (bt === BlockType.CareerBlockType && resumeData?.career !== undefined) {
+      setResumeData({ career: list, edu: resumeData.edu })
+    } else if (bt === BlockType.EduBlockType && resumeData?.edu !== undefined) {
+      setResumeData({ career: resumeData.career, edu: list })
+    }
   }
 
   // 获取当前用户的简历
@@ -336,16 +319,16 @@ const Resume = () => {
   const handlePublish = async () => {
     try {
       setLoadingLens(true)
-      const resumeAddress = lensToken?.address || deschoolProfile?.address
       const resumeDataStr = JSON.stringify(resumeData)
-      // const resumeDataStr = JSON.stringify(STANDARD_RESUME_DATA)
-      if (lensProfile?.id && resumeAddress && resumeDataStr) {
-        const txhash = await createPost(lensProfile.id, resumeAddress, resumeDataStr)
+      const lensProfileId = lensProfile?.data?.id
+      if (lensProfileId && user?.address && resumeDataStr) {
+        const txhash = await createPost(lensProfileId, user?.address, resumeDataStr)
         if (txhash) {
+          setPublishType('Lens')
           setStep(1)
           setTxHash(txhash)
           setCongratulateVisible(true)
-          await pollAndIndexPost(txhash, lensProfile.id)
+          await pollAndIndexPost(txhash, lensProfileId)
           setStep(2)
           randomConfetti()
         }
@@ -357,10 +340,50 @@ const Resume = () => {
       console.log('error', error)
     } finally {
       setLoadingLens(false)
-      // setCongratulateVisible(false)
-      // setStep(1)
-      // setTxHash('')
     }
+  }
+
+  // Cyber 上发布个人简历
+  const handlePublishCyberConnect = async () => {
+    try {
+      setLoadingCyber(true)
+      const resumeDataStr = JSON.stringify(resumeData)
+      if (ccProfile?.handle && user?.address && resumeDataStr) {
+        const result = await ccInstance.createPost({
+          title: `RESUME OF${user?.address}`,
+          body: resumeDataStr,
+          author: ccProfile?.handle,
+        })
+        const txhash = result?.arweaveTxHash
+        if (txhash) {
+          setPublishType('CyberConnect')
+          setStep(1)
+          setTxHash(txhash)
+          setCongratulateVisible(true)
+          setStep(2)
+          randomConfetti()
+        }
+      } else {
+        message.error('PUBLICATION ERROR: Please get a lens handle first')
+      }
+    } catch (error) {
+      message.error('PUBLICATION ERROR: Publish Failed')
+      console.log('error', error)
+    } finally {
+      setLoadingCyber(false)
+    }
+  }
+
+  const fetchUserInfoByAddress = async () => {
+    if (!address) {
+      setCurrentUser(null)
+      return
+    }
+    const result = await getUserInfo(address)
+    if (result?.displayName === address) {
+      result.displayName = getShortAddress(address)
+    }
+    setCurrentUser(result)
   }
 
   // 处理不同场景下的resume初始化
@@ -368,11 +391,10 @@ const Resume = () => {
     let currentAddress: string | undefined | null = null
     if (primaryCase > -1) {
       // 0访问自己的地址，1访问他人地址（从路由拿）
-      currentAddress = primaryCase === 0 ? lensToken?.address || deschoolProfile?.address : address
+      currentAddress = primaryCase === 0 ? user?.address : address
       if (currentAddress) {
         await fetchUserResume(currentAddress)
         await fetchUserSbtList(currentAddress)
-        setUserAddr(currentAddress)
       } else {
         message.warning(`handlePrimaryCase Warning: case:${primaryCase},currentAddress:${currentAddress} error`)
       }
@@ -385,9 +407,10 @@ const Resume = () => {
   useEffect(() => {
     // 初始化登录场景，区分自己访问自己或自己访问别人或者别人访问
     const primaryCase = getVisitCase(address)
+    fetchUserInfoByAddress()
     setVisitCase(primaryCase)
     handlePrimaryCase(primaryCase)
-  }, [address, deschoolProfile, lensToken])
+  }, [address, user])
 
   return (
     <div className="bg-white p-8">
@@ -395,33 +418,37 @@ const Resume = () => {
       <div className="flex justify-between">
         <div className="text-2xl font-bold font-ArchivoNarrow">
           RESUME
-          {lensProfile?.handle && (
             <span className="ml-1">
-              OF <span className="ml-1 text-gray-5">{lensProfile ? `@${lensProfile.handle}` : ''}</span>
+              OF <span className="ml-1 text-gray-5 font-ArchivoNarrow">{currentUser?.displayName ||  user?.displayName}</span>
             </span>
-          )}
-          {!lensProfile?.handle && userAddr && (
-            <span className="ml-1">
-              OF <span className="ml-1 text-gray-5">{getShortAddress(userAddr).toUpperCase()}</span>
-            </span>
-          )}
         </div>
         <div className="flex">
           {visitCase === 0 && !isEditResume && (
-            <Button
-              type="primary"
-              onClick={() => handlePublish()}
-              disabled={!lensProfile}
-              loading={loadingLens}
-              className="bg-#abfe2c! text-black!"
-            >
-              {resumeData && step === 2 ? 'Published' : 'Publish On Lens'}
-            </Button>
+            <>
+              {user?.lensProfile() && <Button
+                type="primary"
+                onClick={() => handlePublish()}
+                disabled={!lensProfile}
+                loading={loadingLens}
+                className="bg-#abfe2c! text-black! mr-2 font-ArchivoNarrow"
+              >
+                {resumeData && step === 2 ? 'Published' : 'Publish On Lens'}
+              </Button>}
+              {user?.ccProfile() && <Button
+                type="primary"
+                onClick={() => handlePublishCyberConnect()}
+                disabled={!ccProfile}
+                loading={loadingCyber}
+                className="bg-black! text-white! font-ArchivoNarrow"
+              >
+                {resumeData && step === 2 ? 'Published' : 'Publish On CC'}
+              </Button>}
+            </>
           )}
 
           <div className="w-2"> </div>
           {visitCase === 0 && (
-            <Button onClick={onClickEditResume} loading={putting} type={isEditResume ? 'primary' : 'default'}>
+            <Button onClick={onClickEditResume} loading={putting} type={isEditResume ? 'primary' : 'default'} className="font-ArchivoNarrow">
               {isEditResume ? 'Save on DeSchool' : 'Edit'}
             </Button>
           )}
@@ -443,21 +470,23 @@ const Resume = () => {
           {/* 职业板块数据 */}
           <ResumeBlock
             blockType={BlockType.CareerBlockType}
-            dataArr={resumeData?.career}
+            dataArr={resumeData?.career || []}
             handleEditCard={handleEditCard}
             handleDeleteCard={handleDeleteCard}
             handleCreateCard={handleCreateCard}
+            handleSortCard={handleSortCard}
             isEditResume={isEditResume}
           />
 
           {/* 教育板块数据 */}
           <ResumeBlock
             blockType={BlockType.EduBlockType}
-            dataArr={resumeData?.edu}
+            dataArr={resumeData?.edu || []}
             handleEditCard={handleEditCard}
             handleDeleteCard={handleDeleteCard}
-            isEditResume={isEditResume}
             handleCreateCard={handleCreateCard}
+            handleSortCard={handleSortCard}
+            isEditResume={isEditResume}
           />
 
           {/* 一段经历编辑器 */}
@@ -495,42 +524,7 @@ const Resume = () => {
             </p>
           </div>
         ) : (
-          <div className="w-full">
-            <h1 className="text-2xl font-Anton">Congradulations! 🎉</h1>
-            <p className="font-ArchivoNarrow mt-6">Your first web3 resume is published! Hooray!</p>
-            <p className="font-ArchivoNarrow mt-1">
-              Thanks for using Booth to create your resume in a web3-enabled way! We hope this decentralized approach will help you stand
-              out in your job search :)
-            </p>
-            <p className="font-ArchivoNarrow">Now you can: </p>
-            <ol>
-              <li className="font-ArchivoNarrow mt-1">
-                1. Check{' '}
-                <a href={`https://polygonscan.com/tx/${txHash}`} target="_blank" rel="noreferrer" className="color-#774FF8">
-                  PolygonScan
-                </a>{' '}
-                to check transaction
-              </li>
-              <li className="font-ArchivoNarrow mt-1">
-                2. Visit{' '}
-                <a href={`https://lenster.xyz/u/${lensProfile?.handle}`} target="_blank" rel="noreferrer" className="color-#774FF8">
-                  Lenster
-                </a>{' '}
-                to view your resume, it should update in your feeds as a post in 10 seconds.{' '}
-              </li>
-              <li className="font-ArchivoNarrow mt-1">
-                3. Send your resume to someone (for work or just show off!) and invite more friends to this cool website with your unique
-                rerferral link:
-                <Alert
-                  className="mt-1!"
-                  message={
-                    <div className="font-ArchivoNarrow ">{`${BOOTH_PATH}?inviter=${lensToken?.address || deschoolProfile?.address}`}</div>
-                  }
-                  type="info"
-                />
-              </li>
-            </ol>
-          </div>
+          <Congradulations txHash={txHash} type={PublishType} />
         )}
       </Modal>
     </div>

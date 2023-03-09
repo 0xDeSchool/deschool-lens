@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { v4 as uuid } from 'uuid'
 import Modal from 'antd/es/modal'
 import Form from 'antd/es/form'
 import Input from 'antd/es/input'
@@ -19,7 +20,7 @@ const SbtItem = (props: { list: string[]; toggleList: (key: string) => void; ite
   return (
     <div
       key={key}
-      className={`aspect-square border-2 max-w-112px overflow-hidden 
+      className={`aspect-square border-2 max-w-112px overflow-hidden
       cursor-pointer ${isInList(key) ? 'border-#6525FF bg-gray-100' : 'border-black'}`}
       onClick={() => toggleList(key)}
     >
@@ -98,9 +99,25 @@ const SbtSelectList = (props: { sbtList: SbtInfo[]; originalList: SbtInfo[] | un
 const CardEditor = (input: CardEditorInput) => {
   const { isEditCard, handleOk, handleCancel, originalData, isCreateCard, sbtList } = input
   const [proofs, setProofs] = useState<SbtInfo[]>([])
+  const formRef = useRef(null)
   const [form] = Form.useForm()
 
-  const onSubmit = () => {
+  const checkValidateFields = async (): Promise<boolean> => {
+    let valid = true
+    try {
+      const values = await form.validateFields();
+      valid = true
+    } catch (errorInfo) {
+      valid = false
+    }
+    return valid
+  };
+
+  const onSubmit = async () => {
+    const valid = await checkValidateFields()
+    if (!valid) {
+      return
+    }
     const newCard: ResumeCardData | undefined = {
       title: form.getFieldValue('title'),
       description: form.getFieldValue('description'),
@@ -108,24 +125,28 @@ const CardEditor = (input: CardEditorInput) => {
       endTime: dayjs(form.getFieldValue('etime')),
       proofs,
       blockType: originalData?.blockType,
-      order: originalData?.order,
+      id: originalData?.id || uuid(),
     }
     handleOk(newCard)
   }
 
   // 时刻监听父组件传来的
   useEffect(() => {
-    form.setFieldsValue({
-      title: originalData?.title,
-      description: originalData?.description,
-      stime: originalData?.startTime,
-      etime: originalData?.endTime,
-    })
+    if (formRef.current) {
+      form.setFieldsValue({
+        title: originalData?.title,
+        description: originalData?.description,
+        stime: originalData?.startTime,
+        etime: originalData?.endTime,
+      })
+    }
+
   }, [originalData])
 
   return (
     <Modal title={isCreateCard ? 'Create new experience' : 'Edit experience'} open={isEditCard} onOk={onSubmit} onCancel={handleCancel}>
       <Form
+        ref={formRef}
         form={form}
         name="match"
         initialValues={{
@@ -136,16 +157,18 @@ const CardEditor = (input: CardEditorInput) => {
         }}
         layout="vertical"
       >
-        <Form.Item label='Experience Title (eg "ECO Partner", "Product Lead", etc.)' name="title">
+        <Form.Item
+          label='Experience Title (eg "ECO Partner", "Product Lead", etc.)' name="title"
+          rules={[{ required: true, message: 'Please input your experience title' }]}>
           <Input placeholder="Please input your experience title" />
         </Form.Item>
-        <Form.Item label="Start Time" name="stime">
+        <Form.Item label="Start Time" name="stime" rules={[{ required: true, message: 'Please select start time!' }]}>
           <DatePicker picker="month" />
         </Form.Item>
-        <Form.Item label="End Time" name="etime">
+        <Form.Item label="End Time" name="etime" rules={[{ required: true, message: 'Please select end time!' }]}>
           <DatePicker picker="month" />
         </Form.Item>
-        <Form.Item label="Description" name="description">
+        <Form.Item label="Description" name="description" rules={[{ required: true, message: 'Please input description' }]}>
           <TextArea rows={4} />
         </Form.Item>
         <Form.Item label="Available On-chain Proofs">

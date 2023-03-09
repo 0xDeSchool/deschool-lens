@@ -128,3 +128,12 @@ func (c *RequestClient) Post(url string, body any) (*http.Response, error) {
 	}
 	return resp.RawResponse, nil
 }
+
+func (c *RequestClient) PostObj(url string, body any, result interface{}) error {
+	hc := getDefaultClient(c.options)
+	request := hc.R()
+	request.Body = body
+	hc.R().SetResult(result)
+	_, err := hc.R().Post(url)
+	return err
+}
