@@ -4,6 +4,7 @@ import Button from 'antd/es/button'
 import message from 'antd/es/message'
 import Modal from 'antd/es/modal'
 import dayjs from 'dayjs'
+import CopyToClipboard from 'react-copy-to-clipboard'
 import { v4 as uuid } from 'uuid'
 import ReactLoading from 'react-loading'
 import { useParams } from 'react-router-dom'
@@ -22,6 +23,7 @@ import { getVisitCase } from '../utils/visitCase'
 import Congradulations from './components/congradulations'
 import { getUserInfo } from '~/api/booth'
 import { UserInfo } from '~/api/booth/types'
+import { ShareAltOutlined } from '@ant-design/icons'
 
 export const STANDARD_RESUME_DATA: ResumeData = {
   career: [
@@ -463,6 +465,19 @@ const Resume = () => {
               Cancel
             </Button>
           )}
+          {visitCase === 0 && <CopyToClipboard
+            text={`https://booth.ink/profile/${user?.address}/resume`}
+            onCopy={() => {
+              message.success('Copied')
+            }}
+          >
+            <Button
+              className="frc-center font-ArchivoNarrow whitespace-nowrap"
+              shape='circle'
+              icon={<ShareAltOutlined />}
+            >
+            </Button>
+          </CopyToClipboard>}
         </div>
       </div>
       <Divider />
