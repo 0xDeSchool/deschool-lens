@@ -205,7 +205,7 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
   }, [connectTrigger])
 
   return (
-    <div className="fcc-between w-full min-h-360px p-4 rounded-lg shadow">
+    <div className="fcc-between w-full min-h-360px p-4 rounded-lg drop-shadow-xl shadow-xl">
       <div className='fcs-start w-full'>
         <div className="bg-#abfe2c rounded-2 px-2 py-2 frc-start">
           <img src={IconLens} alt="lens" width={20} height={20} />

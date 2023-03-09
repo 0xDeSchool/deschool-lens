@@ -223,7 +223,7 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
   }, [connectTrigger, user])
 
   return (
-    <div className="fcc-between w-full min-h-360px p-4 rounded-lg shadow">
+    <div className="fcc-between w-full min-h-360px p-4 rounded-lg drop-shadow-xl shadow-xl">
       <div className='fcs-start w-full'>
         <div className="bg-black rounded-2 px-2 py-2 frc-start">
           <img src={IconCyberConnectLogo} alt="cyberconnect" />

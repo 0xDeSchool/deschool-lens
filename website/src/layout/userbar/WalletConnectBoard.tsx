@@ -22,7 +22,7 @@ const PopoverAccountInfo: React.FC<PopoverAccountInfoProps> = (props) => {
   const deschool = user?.deschoolProfile()
   return (
     <div className="bg-white rounded-2 px-2 py-3 fcc-start gap-4">
-      {user && <div className="w-full frc-between gap-8">
+      {user && <div className="w-full frc-between gap-8 mb-2 drop-shadow-xl">
         <div className='frc-start'>
           <div className="bg-#774ff8 rounded-50% w-28px h-28px frc-center">
             <DeschoolIcon style={{width: '20px', height: '20px'}} />
@@ -31,7 +31,7 @@ const PopoverAccountInfo: React.FC<PopoverAccountInfoProps> = (props) => {
         </div>
         <Button className='frc-center' onClick={open}>Expand<RightOutlined /></Button>
       </div>}
-      {lens && <div className="w-full frc-between gap-8">
+      {lens && <div className="w-full frc-between gap-8 drop-shadow-xl">
         <div className='frc-start'>
           <div className="bg-#abfe2c rounded-50% w-28px h-28px frc-center">
             <LensIcon alt="lens" width={20} height={20} />
@@ -40,7 +40,7 @@ const PopoverAccountInfo: React.FC<PopoverAccountInfoProps> = (props) => {
         </div>
         <div>+{user?.lensProfileList()?.length || 0}</div>
       </div>}
-      {cc && <div className="w-full frc-between gap-8">
+      {cc && <div className="w-full frc-between gap-8 drop-shadow-xl">
         <div className='frc-between'>
           <div className="bg-black rounded-50% w-28px h-28px frc-center">
             <CyberConnectIcon style={{color: 'white'}} alt="cyberconnect" width={20} height={20} />
@@ -49,7 +49,7 @@ const PopoverAccountInfo: React.FC<PopoverAccountInfoProps> = (props) => {
         </div>
         <div>+{user?.ccProfileList()?.length || 0}</div>
       </div>}
-      {deschool && <div className="w-full frc-between gap-8">
+      {deschool && <div className="w-full frc-between gap-8 drop-shadow-xl">
         <div className='frc-start'>
           <div className="bg-#774ff8 rounded-50% w-28px h-28px frc-center">
             <DeschoolIcon style={{width: '20px', height: '20px'}} />

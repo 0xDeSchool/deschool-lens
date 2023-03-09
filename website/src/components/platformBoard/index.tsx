@@ -9,7 +9,7 @@ type PlatformBoardProps = {
   change: (type: PlatformType) => void
 }
 
-const normalClass = 'frc-center rounded-full w-36px drop-shadow-xl'
+const normalClass = 'frc-center rounded-full w-36px drop-shadow-xl shadow-xl'
 const activeClass = 'pl-12px frc-start w-full rounded-2'
 
 const PlatformBoard: React.FC<PlatformBoardProps> = (props) => {

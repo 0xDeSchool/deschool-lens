@@ -6,8 +6,7 @@ import message from 'antd/es/message'
 import { LoadingOutlined, LogoutOutlined } from '@ant-design/icons'
 import UnipassLogo from '~/assets/logos/unipass.svg'
 import MetaMaskImage from '~/assets/logos/mask.png'
-import type { WalletConfig } from '~/wallet'
-import { createProvider, getWallet, WalletType } from '~/wallet'
+import { WalletType } from '~/wallet'
 import { PlatformType, postVerifiedIdentity } from '~/api/booth/booth'
 import DeschoolLogoDark from '~/assets/logos/logo-main.png'
 import IconDeschool from '~/assets/icons/deschool.svg'
@@ -16,7 +15,6 @@ import { getUserManager, useAccount } from '~/account'
 import { linkPlatform } from '~/api/booth'
 import { UserPlatform } from '~/api/booth/types'
 import { getShortAddress } from '~/utils/format'
-import { appWallet } from '~/wallet/booth'
 
 const ConnectDeschoolBoard: FC = () => {
   const userManager = getUserManager()
@@ -36,12 +34,6 @@ const ConnectDeschoolBoard: FC = () => {
     } else {
       message.error(err?.toString() || err)
     }
-  }
-
-  const signLoginMessage = async (nonce: string) => {
-    const wallet = await appWallet()
-    const signMessageReturn = await wallet.signMessage(nonce)
-    return signMessageReturn
   }
 
   // 调用deschool接口签名并登录
@@ -120,7 +112,7 @@ const ConnectDeschoolBoard: FC = () => {
   const user = useAccount()
 
   return (
-    <div className="fcc-between w-full min-h-360px p-4 rounded-lg shadow">
+    <div className="fcc-between w-full min-h-360px p-4 rounded-lg drop-shadow-xl shadow-xl">
       <div className='fcs-start w-full'>
         <div className="rounded-2 px-2 py-2 frc-start">
           <img src={DeschoolLogoDark} alt="lens" width={160} height={24} />
