@@ -5,13 +5,14 @@ import RouteGuard from '~/pages/routeGuard' // 跳别的页面之前的中间页
 import NoAuth from '~/pages/noAuth' // 无权限页面
 import Landing from '~/pages/landing'
 // 管理系列课程下的课程
-import Explore from '~/pages/explore' // 探索页面
+import Plaza from '~/pages/explore' // 探索页面
 import Profile from '~/pages/profile' // 个人中心
 import Roadmap from '~/pages/roadmap' // 网站路线图
 import PoskIntro from '~/pages/poskIntro' // pass/sbt介绍页面
 import Activities from '~/pages/profile/activities'  // 下个版本再做，用户活动记录
 import Resume from '~/pages/profile/resume' // 个人简历
 import Match from '~/pages/profile/match' // 匹配推荐配置页面
+import LearnTogether from '~/pages/learnTogether' // 匹配推荐配置页面
 import Layout from '../layout'
 
 const RouterObj = () => (
@@ -20,7 +21,8 @@ const RouterObj = () => (
       <Route path="/" element={<Layout />}>
         <Route path="" element={<Navigate to="/landing" />} />
         <Route path="landing" element={<Landing />} />
-        <Route path="explore" element={<Explore />} />
+        <Route path="plaza" element={<Plaza />} />
+        <Route path="learntogether" element={<LearnTogether />} />
         <Route path="profile" element={<Profile />}>
           <Route path="" element={<Navigate to="resume" />} />
           <Route path="activities" element={<Activities />} />

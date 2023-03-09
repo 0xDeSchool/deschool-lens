@@ -1,22 +1,19 @@
-import { useState } from 'react'
 import message from 'antd/es/message'
 import Alert from 'antd/es/alert'
-import ConnectDeschoolBoard from '~/layout/connectDeschool'
 import { useLayout } from '~/context/layout'
-import { useAccount } from '~/context/account'
 import MatchConfig from './MatchConfig'
 import TalentRadar from './TalentRadar'
+import { useAccount } from '~/account'
 
 const Match = () => {
-  const { connectDeschoolBoardVisible, setConnectDeschoolBoardVisible } = useLayout() // 控制请求面板显隐
-  const { deschoolProfile } = useAccount()
-  const [loginByDeschool] = useState(deschoolProfile?.jwtToken)
+  const { connectBoardVisible, setConnectBoardVisible } = useLayout() // 控制请求面板显隐
+  const user = useAccount()
 
   const handleConnectDeschool = async () => {
-    if (connectDeschoolBoardVisible) {
+    if (connectBoardVisible) {
       return
     }
-    setConnectDeschoolBoardVisible(true)
+    setConnectBoardVisible(true)
   }
 
   return (
@@ -32,11 +29,12 @@ const Match = () => {
             description="The radar chart is generated based on the current address and the credible on-chain education and working proofs of all your connected addresses on the Booth platform. If you have any questions about the radar chart, please provide feedback through the form below."
             type="info"
             showIcon
+            className='font-ArchivoNarrow text-xl'
           />
         </div>
-        <h1>You can gain perks by connecting existed addresses or learning courses from trusted providers:</h1>
-        <div className="frc-center my-4">
-          {loginByDeschool ? (
+        <h1 className='font-ArchivoNarrow text-xl'>You can gain perks by connecting existed addresses or learning courses from trusted providers:</h1>
+        <div className="frc-center my-4 font-ArchivoNarrow">
+          {user ? (
             <button type="button" className="border border-gray rounded-xl bg-gray-3 text-gray-6 hover:cursor-not-allowed p-2 mr-4">
               <span>Verified by Deschool</span>
             </button>
@@ -61,7 +59,7 @@ const Match = () => {
             <span>Connect Professional</span>
           </button>
           <a href="https://deschool.app" target="_blank" rel="noreferrer">
-            <button type="button" className="purple-border-button p-2">
+            <button type="button" className="purple-border-button p-2 font-ArchivoNarrow">
               <span>Learn Courses</span>
             </button>
           </a>
@@ -80,7 +78,6 @@ const Match = () => {
       {/* 填表环节 */}
       <div className="w-full h-1px bg-gray-3"> </div>
       <MatchConfig />
-      <ConnectDeschoolBoard />
     </div>
   )
 }

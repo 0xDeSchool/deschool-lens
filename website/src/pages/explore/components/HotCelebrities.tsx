@@ -2,105 +2,49 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Star1 from '~/assets/images/star1.png'
 import Skeleton from 'antd/es/skeleton'
-import { getProfilesRequest } from '~/api/lens/profile/get-profiles'
 import Empty from 'antd/es/empty'
-import { getExtendProfile } from '~/hooks/profile'
-import { PlatformType, getBoothUsers } from '~/api/booth/booth'
-import { getOtherUsersProfile } from '~/api/go/account'
-import type { CelebrityType } from './CelebrityCard'
-import CelebrityCard from './CelebrityCard'
-import type { Creator, ProfileExtend } from '~/lib/types/app'
+import { getLatestUsers } from '~/api/booth'
+import type { NewUserInfo } from '~/api/booth/types'
+import CelebrityCardNew from './CelebrityCardNew'
+import { useAccount } from '~/account'
+import ShowMoreLoading from '~/components/loading/showMore'
 
+const PAGE_SIZE = 9
 const HotCelebrities = (props: { searchWord: string }) => {
   const { searchWord } = props
   const { t } = useTranslation()
   const [loading, setLoading] = useState(true)
-  const [celebrities, setCelebrities] = useState([] as CelebrityType[])
-  const [cacheCelebrities, setCacheCelebrities] = useState([] as CelebrityType[])
+  const [moreLoading, setMoreLoading] = useState(false)
+  const [hasNextPage, setHasNextPage] = useState(false)
+  const [celebrities, setCelebrities] = useState<NewUserInfo[]>([])
+  const [cacheCelebrities, setCacheCelebrities] = useState<NewUserInfo[]>([])
+  const [page, setPage] = useState(1)
+
+  const user = useAccount()
 
   const initSeries = async () => {
     setLoading(true)
     try {
-      const response = await getBoothUsers()
-      if (!response || !Object.prototype.toString.call(response).includes('Array')) return
-
-      const baseAddressesArray = response.map(boothUser => boothUser.baseAddress)
-      const baseAddressesSet = new Set(baseAddressesArray)
-      const baseAddresses = Array.from(baseAddressesSet) // 去重后的地址
-
-      // 根据去重的地址整理展示的Celebrity List
-      const boothUsersArray = [] as CelebrityType[]
-      baseAddresses.forEach(baseAddress => {
-        // all results of an address
-        const results = response.filter(boothUser => boothUser.baseAddress === baseAddress)
-        const param = {} as CelebrityType
-        // TODO: 问题在于同一个地址，同一个lens,不同deschool身份的覆盖
-        results.forEach(user => {
-          if (user.platform === PlatformType.DESCHOOL) {
-            Object.assign(param, {
-              deschool: {
-                username: '',
-                address: user.baseAddress,
-                avatar: '',
-                bio: '',
-              },
-            })
-          } else if (user.platform === PlatformType.LENS) {
-            Object.assign(param, {
-              lens: {
-                name: '',
-                ownedBy: user.address,
-                avatarUrl: '',
-                handle: user.lensHandle,
-                bio: '',
-              },
-            })
-          }
-        })
-        if (JSON.stringify(param) !== '{}') boothUsersArray.push(param)
-      })
-
-      // 查所有 lens 用户信息
-      const lensUsers = boothUsersArray.filter(user => user.lens?.handle)
-      const lensUsersProfiles: any = await getProfilesRequest({
-        handles: lensUsers.map((lensUser: CelebrityType) => lensUser.lens.handle),
-      })
-      /* loop over profiles, create properly formatted ipfs image links */
-      const lensProfilesData: (ProfileExtend | null)[] = lensUsersProfiles?.items
-        ? lensUsersProfiles.items.map((profileInfo: any) => ({
-            ...getExtendProfile(profileInfo),
-          }))
-        : []
-
-      // 查所有 deschool 用户信息
-      const deschoolUsers = boothUsersArray.filter(user => user.deschool?.address)
-      const strArray = deschoolUsers.map((deschoolInfo: CelebrityType) => deschoolInfo.deschool?.address)
-      const deschoolProfilesData: (Creator | null)[] = await getOtherUsersProfile(strArray)
-
-      // 合并 lens 同地址
-      lensProfilesData.forEach(lensProfile => {
-        const index = boothUsersArray.findIndex(boothUser => boothUser.lens?.handle === lensProfile?.handle)
-        if (index > -1) {
-          boothUsersArray[index].lens.name = lensProfile?.name || ''
-          boothUsersArray[index].lens.avatarUrl = lensProfile?.avatarUrl || ''
-          boothUsersArray[index].lens.bio = lensProfile?.bio || ''
-        }
-      })
-
-      // 合并 deschool 同地址
-      deschoolProfilesData.forEach(deschoolProfile => {
-        const index = boothUsersArray.findIndex(boothUser => boothUser.deschool?.address === deschoolProfile?.address)
-        if (index > -1) {
-          boothUsersArray[index].deschool.username = deschoolProfile?.username || ''
-          boothUsersArray[index].deschool.avatar = deschoolProfile?.avatar || ''
-          boothUsersArray[index].deschool.bio = deschoolProfile?.bio || ''
-        }
-      })
-
-      setCelebrities(boothUsersArray)
-      setCacheCelebrities(boothUsersArray)
+      const response = await getLatestUsers({ page, pageSize: PAGE_SIZE })
+      setCelebrities(response.items)
+      setCacheCelebrities(response.items)
+      setHasNextPage(response.hasNext)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleLoadMore = async () => {
+    if (moreLoading) return
+    setMoreLoading(true)
+    try {
+      const response = await getLatestUsers({ page: page + 1, pageSize: PAGE_SIZE })
+      setCelebrities([...celebrities, ...response.items])
+      setCacheCelebrities([...cacheCelebrities, ...response.items])
+      setHasNextPage(response.hasNext)
+      setPage(page + 1)
+    } finally {
+      setMoreLoading(false)
     }
   }
 
@@ -112,14 +56,22 @@ const HotCelebrities = (props: { searchWord: string }) => {
     setCelebrities(
       cacheCelebrities.filter(
         c =>
-          c.lens?.handle?.includes(searchWord) ||
-          c.lens?.name?.includes(searchWord) ||
-          c.lens?.ownedBy?.includes(searchWord) ||
-          c.deschool?.address?.includes(searchWord) ||
-          c.deschool?.username?.includes(searchWord),
+          c.address.toLowerCase().includes(searchWord.toLowerCase()) ||
+          c.displayName?.toLowerCase().includes(searchWord.toLowerCase()),
       ),
     )
   }, [searchWord])
+
+
+  // TODO: 跳转到粉丝详情页
+  const handleFollowerDetail = (celebrity: NewUserInfo) => {
+    console.log('follower detail')
+  }
+
+  // TODO: 跳转到关注详情页
+  const hanldeFollowingDetail = (celebrity: NewUserInfo) => {
+    console.log('following detail')
+  }
 
   return (
     <div className="fcc-center mb-20">
@@ -150,11 +102,28 @@ const HotCelebrities = (props: { searchWord: string }) => {
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 m-auto">
             {celebrities && celebrities.length > 0 ? (
               celebrities.map(celebrity => (
-                <CelebrityCard key={celebrity.deschool?.address || celebrity.lens?.handle} celebrity={celebrity} />
+                <CelebrityCardNew
+                  key={celebrity.id}
+                  userInfo={celebrity}
+                  followerDetail={() => handleFollowerDetail(celebrity)}
+                  followingDetail={() => hanldeFollowingDetail(celebrity)}
+                  refresh={() => initSeries()}
+                />
               ))
-            ) : (
-              <Empty />
-            )}
+            ) : <Empty />}
+          </div>
+        )}
+        {(!loading && !moreLoading && hasNextPage) && (
+          <div className="text-center mt-10">
+            <button type="button" className="bg-#1818180f border-#18181826 border-2 rounded-xl px-4 py-2" onClick={() => handleLoadMore()}>
+              {t('SeeMore')}
+            </button>
+          </div>
+        )}
+        {/* 加载更多的过渡 */}
+        {(moreLoading) && (
+          <div className="mt-10 w-full frc-center">
+            <ShowMoreLoading />
           </div>
         )}
       </div>

@@ -2,121 +2,56 @@
  * @description: 顶部路由导航与用户信息栏
  * @author: fc
  */
-import React, { useState, useEffect } from 'react'
-// import addToNetwork from '~/hooks/useAddToNetwork'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { MenuOutlined } from '@ant-design/icons'
-import type { MenuProps } from 'antd'
-import Dropdown from 'antd/es/dropdown'
-import { ArrowDownIcon } from '~/components/icon'
 import Drawer from 'antd/es/drawer'
-import message from 'antd/es/message'
-import Lens from '~/assets/icons/lens.svg'
-import Deschool from '~/assets/icons/deschool.svg'
-import { getUserContext, useAccount } from '~/context/account'
 import { useLayout } from '~/context/layout'
-import { changeLanguage, getLanguage } from '~/utils/language'
 import './userbar.css'
-import { NavLink, useLocation } from 'react-router-dom'
-import { getShortAddress } from '~/utils/format'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import Logo from '../logo'
+import SwitchLanguage from './SwitchLanguage'
+import WalletConnectBoard from './WalletConnectBoard'
+import { getUserManager } from '~/account'
 
 const UserBar = () => {
-  const { currentWidth, setConnectLensBoardVisible, setConnectDeschoolBoardVisible } = useLayout()
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
+  const location = useLocation()
+  const navigate = useNavigate()
+  const { currentWidth } = useLayout()
   const [visible, setVisible] = useState(false) // 控制抽屉是否显示
   const [activeNav, setActiveNav] = useState('/landing') // 当前激活的路由
-  const [isShowDeschoolUserMenu, setDeschoolUserMenu] = useState(false)
-  const [isShowLensUserMenu, setLensUserMenu] = useState(false)
-  const location = useLocation()
-  const { lensProfile, lensToken, deschoolProfile } = useAccount()
 
   const navs = [
+    // {
+    //   path: '/landing',
+    //   name: t('home'),
+    // },
     {
-      path: '/landing',
-      name: t('home'),
-    },
-    {
-      path: '/explore',
-      name: t('exploreNav'),
+      path: '/plaza',
+      name: t('plazaNav'),
     },
     {
       path: '/profile/match',
       name: t('matchNav'),
     },
-  ]
-
-  // 退出 Deschool 登录
-  const disconnectFromDeschool = () => {
-    try {
-      getUserContext().disconnectFromDeschool()
-      setDeschoolUserMenu(false)
-    } catch (error: any) {
-      message.error(error?.message ? error.message : '退出登录失败')
-    }
-  }
-
-  // 退出 Lens 登录
-  const disconnectFromLens = async () => {
-    try {
-      getUserContext().disconnectFromLens()
-      setLensUserMenu(false)
-    } catch (error: any) {
-      message.error(error?.message ? error.message : '退出登录失败')
-    }
-  }
-
-  const DeschoolItems: MenuProps['items'] = [
     {
-      key: '1',
-      label: (
-        <button
-          type="button"
-          onClick={() => {
-            disconnectFromDeschool()
-          }}
-        >
-          Disconnect from Deschool
-        </button>
-      ),
+      path: '/learntogether',
+      name: t('learnTogetherNav'),
     },
   ]
-
-  const LensItems: MenuProps['items'] = [
-    {
-      key: '1',
-      label: (
-        <button
-          type="button"
-          onClick={() => {
-            disconnectFromLens()
-          }}
-        >
-          Disconnect from Lens
-        </button>
-      ),
-    },
-  ]
-
-  /**
-   * @description 控制 Deschool 用户登录以后的下拉菜单
-   */
-  const handleToggleDeschoolMenu = (value?: boolean) => {
-    setDeschoolUserMenu(value || !isShowDeschoolUserMenu)
-  }
-
-  /**
-   * @description 控制 Lens 用户登录以后的下拉菜单
-   */
-  const handleToggleLensMenu = (value?: boolean) => {
-    setLensUserMenu(value || !isShowLensUserMenu)
-  }
 
   const updateNavStatus = () => {
-    if (location.pathname.startsWith('/explore')) {
-      setActiveNav('/explore')
+    if (location.pathname.includes('/plaza')) {
+      setActiveNav('/plaza')
     } else if (location.pathname.includes('/landing')) {
       setActiveNav('/landing')
+    } else if (location.pathname.includes('/profile/match')) {
+      setActiveNav('/profile/match')
+    } else if (location.pathname.includes('/learntogether')) {
+      setActiveNav('/learntogether')
+    } else if (location.pathname.includes('/profile/resume')) {
+      setActiveNav('/profile/resume')
     } else {
       const s = location.pathname.split('/')
       setActiveNav(`/${s[3]}`)
@@ -125,19 +60,12 @@ const UserBar = () => {
 
   // 根据路由激活导航样式
   useEffect(() => {
-    updateNavStatus()
+    getUserManager().tryAutoLogin()
   }, [location])
 
-  const handleChange = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault()
-    if (i18n.language === 'en_US') {
-      changeLanguage('zh_CN')
-      i18n.changeLanguage('zh_CN')
-    } else {
-      changeLanguage('en_US')
-      i18n.changeLanguage('en_US')
-    }
-  }
+  useEffect(() => {
+    updateNavStatus()
+  },[location])
 
   // 用于自适应展示导航抽屉
   const showDrawer = () => {
@@ -149,16 +77,8 @@ const UserBar = () => {
     setVisible(false)
   }
 
-  const handleLoginLens = async () => {
-    setConnectLensBoardVisible(true)
-  }
-
-  const handleLoginDeschool = async () => {
-    setConnectDeschoolBoardVisible(true)
-  }
-
   return (
-    <div className="select-none fixed z-4 w-full bg-#ffffff80" style={{ backdropFilter: 'blur(12px)' }}>
+    <div className="select-none fixed z-4 w-full bg-#FFFFFF8A border-b-1px border-#1818180F" style={{ backdropFilter: 'blur(12px)' }}>
       <div className="flex flex-row items-center justify-between w-auto leading-8 py-4 px-6 xl:px-8 text-xl">
         {/* logo */}
         <div style={{ width: '174px', height: '26px', lineHeight: '32px' }}>
@@ -183,17 +103,7 @@ const UserBar = () => {
                   <NavLink to="/landing">
                     <Logo />
                   </NavLink>
-                  <div className="h-full flex flex-row items-center ml-4 cursor-pointer text-2xl text-black">
-                    <span
-                      className="mr-1 font-ArchivoNarrow min-w-[60px]"
-                      onClick={e => {
-                        handleChange(e)
-                      }}
-                    >
-                      {getLanguage() === 'zh_CN' ? '中文' : 'EN'}
-                    </span>
-                    <ArrowDownIcon style={{ width: '16px', height: '16px', color: '#000000' }} className="mr-1" />
-                  </div>
+                  <SwitchLanguage />
                 </div>
                 <div
                   className={`mt-8 relative flex-1 flex ${
@@ -203,8 +113,8 @@ const UserBar = () => {
                   {navs.map((nav, index) => (
                     <span
                       key={index.toString() + nav.name}
-                      className={`cursor-pointer text-2xl text-black font-ArchivoNarrow mr-10 ${currentWidth <= 768 ? 'mt-4' : ''} ${
-                        activeNav === nav.path ? 'border-b-2 border-#000000 hover:border-#00000088' : ''
+                      className={`cursor-pointer text-xl text-black font-ArchivoNarrow mr-10 ${currentWidth <= 768 ? 'mt-4' : ''} ${
+                        activeNav === nav.path ? 'nav-button-active text-#774FF8' : 'nav-button-normal border-white text-#181818D9'
                       }`}
                     >
                       <NavLink to={nav.path}>{nav.name}</NavLink>
@@ -218,76 +128,31 @@ const UserBar = () => {
           <div className="flex-1 relative frc-between mr-8 col-span-6 h-8 leading-8 text-black">
             <div className="frc-center space-x-5">
               {navs.map((nav, index) => (
-                <span
+                <div
                   key={index.toString() + nav.name}
-                  className={`cursor-pointer text-2xl font-ArchivoNarrow text-black ${
-                    activeNav === nav.path ? 'border-b-2 border-#000000 hover:border-#00000088' : ''
+                  className={`cursor-pointer text-xl font-ArchivoNarrow ${
+                    activeNav === nav.path ? 'nav-button-active text-#774FF8' : 'nav-button-normal border-white text-#181818D9'
                   }`}
+                  onClick={() => navigate(nav.path)}
                 >
-                  <NavLink to={nav.path}>{nav.name}</NavLink>
-                </span>
+                  {nav.name}
+                </div>
               ))}
             </div>
             <span
-              className={`cursor-pointer uppercase text-2xl font-ArchivoNarrow text-black ${
-                activeNav === '/profile/resume' ? 'border-b-2 border-#000000 hover:border-#00000088' : ''
+              className={`cursor-pointer uppercase text-xl font-ArchivoNarrow ${
+                activeNav === '/profile/resume' ? 'nav-button-active text-#774FF8' : 'nav-button-normal border-white text-#181818D9'
               }`}
+              onClick={() => navigate('/profile/resume')}
             >
-              <NavLink to="/profile/resume">{t('profile.resume')}</NavLink>
+              {t('profile.resume')}
             </span>
           </div>
         )}
-        {/* lens & deschool connect */}
-        <div className="flex flex-row items-center justify-end">
-          <Dropdown menu={{ items: LensItems }} placement="bottom" trigger={['click']} open={isShowLensUserMenu}>
-            <span
-              className="frc-center bg-#abfe2c rounded-xl px-4 mr-4"
-              onClick={e => {
-                e.preventDefault()
-                if (lensToken) {
-                  handleToggleLensMenu()
-                } else {
-                  handleLoginLens()
-                }
-              }}
-            >
-              <img src={Lens} alt="lens" width={24} height={24} />
-              <button type="button" className="text-black text-14px ml-2 font-ArchivoNarrow">
-                {lensProfile ? lensProfile?.handle : t('Connect Lens')}
-              </button>
-            </span>
-          </Dropdown>
-          <Dropdown menu={{ items: DeschoolItems }} placement="bottom" trigger={['click']} open={isShowDeschoolUserMenu}>
-            <span
-              className="frc-center bg-#774ff8 rounded-xl px-4"
-              onClick={e => {
-                e.preventDefault()
-                if (deschoolProfile) {
-                  handleToggleDeschoolMenu()
-                } else {
-                  handleLoginDeschool()
-                }
-              }}
-            >
-              <img src={Deschool} alt="lens" width={20} height={24} />
-              <button type="button" className="text-white text-14px ml-2 font-ArchivoNarrow">
-                {deschoolProfile ? getShortAddress(deschoolProfile?.address) : t('Connect Deschool')}
-              </button>
-            </span>
-          </Dropdown>
-        </div>
         {/* language switch */}
-        <div className="frc-center ml-4">
-          <span
-            className="font-ArchivoNarrow text-black cursor-pointer"
-            onClick={e => {
-              handleChange(e)
-            }}
-          >
-            {getLanguage() === 'zh_CN' ? '中文' : 'EN'}
-          </span>
-          <ArrowDownIcon style={{ width: '16px', height: '16px', color: '#000000' }} />
-        </div>
+        <SwitchLanguage/>
+        {/* wallet connect */}
+        <WalletConnectBoard />
       </div>
     </div>
   )

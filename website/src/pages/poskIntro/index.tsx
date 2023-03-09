@@ -19,6 +19,7 @@ import type { SBTDetailResult, SBTMeta } from '~/api/booth/booth'
 import { getSbtDetail } from '~/api/booth/booth'
 import Jazzicon from 'react-jazzicon'
 import OwnersOnLens from './owners'
+import { ipfsUrl } from '~/utils/ipfs'
 
 // 骨架屏
 const PoskIntroSkeleton = () => (
@@ -71,7 +72,7 @@ const PoskIntro = () => {
       if (contractAddress && tokenId) {
         const res: SBTDetailResult | undefined = await getSbtDetail(contractAddress!, tokenId)
         if (res && res.Metadata) {
-          setPoskInfo(res.Metadata)
+          setPoskInfo({ ...res.Metadata, ...res.Metadata.normalized_metadata })
         }
         if (res && res.Owners && res.Owners.length > 0) {
           setTotal(res.Owners.length)
@@ -138,7 +139,7 @@ const PoskIntro = () => {
               <>
                 <div className="fcc-center">
                   <Image
-                    src={poskInfo.image}
+                    src={ipfsUrl(poskInfo.image)}
                     fallback={fallbackImage}
                     style={{ width: '100%', height: '100%' }}
                     className="object-contain object-center"
@@ -175,8 +176,8 @@ const PoskIntro = () => {
             )}
           </div>
         </div>
-        <h1 className="text-2xl font-bold mt-10">{t('posk.lensmate')}</h1>
-        <OwnersOnLens owners={owners} />
+        {/* <h1 className="text-2xl font-bold mt-10">{t('posk.lensmate')}</h1> */}
+        {/* <OwnersOnLens owners={owners} /> */}
         {/* 关联拥有者 */}
         <h1 className="text-2xl font-bold mt-10">{t('posk.mate')}</h1>
         {owners && owners.length > 0 && (

@@ -1,10 +1,11 @@
 import http from '~/api/booth/http'
-import type { RecommendAddr } from '~/lib/types/app'
+import type { RecommendResult } from '~/lib/types/app'
 
 export enum PlatformType {
   BOOTH = 0,
   DESCHOOL = 1,
   LENS = 2,
+  CYBERCONNECT = 3,
 }
 
 export interface VerifiedInfo {
@@ -144,7 +145,7 @@ export async function getIdSbt(address: string): Promise<AbilitySbt | undefined>
 }
 
 export interface q11eParam {
-  address: string
+  userId: string
   goals: string[]
   interests: string[]
   pref1: string
@@ -163,9 +164,9 @@ export async function putQ11e(param: q11eParam): Promise<string | undefined> {
   }
 }
 
-export async function getRecommendation(address: string): Promise<RecommendAddr | undefined> {
+export async function getRecommendation(userId: string): Promise<RecommendResult | undefined> {
   try {
-    const result: RecommendAddr = await http.get(`/id/recommendation?address=${address}`)
+    const result: RecommendResult = await http.get(`/id/recommendation?userId=${userId}`)
     return result
   } catch (err) {
     console.log(err)
@@ -174,7 +175,7 @@ export async function getRecommendation(address: string): Promise<RecommendAddr 
 }
 
 export interface q11eModel {
-  address: string
+  userId: string
   goals: string[]
   interests: string[]
   pref1: string
@@ -183,9 +184,9 @@ export interface q11eModel {
   mbti: number
 }
 
-export async function getQ11e(address: string) {
+export async function getQ11e(userId: string) {
   try {
-    const result: q11eModel = await http.get(`/q11e?address=${address}`)
+    const result: q11eModel = await http.get(`/q11e?userId=${userId}`)
     return result
   } catch (err) {
     console.log(err)
@@ -196,6 +197,7 @@ export async function getQ11e(address: string) {
 export interface SBTMeta {
   description: string
   image: string
+  normalized_metadata: any
   name: string
   contractType: string
   contractAddr: string

@@ -1,7 +1,9 @@
 const EN_US_USERBAR = {
-  home: 'HOME', 
+  home: 'HOME',
   exploreNav: 'EXPLORE',
+  plazaNav: 'PLAZA',
   matchNav: 'MATCH',
+  learnTogetherNav: 'LEARN TOGETHER',
   courses: 'COURSE CENTER',
   roadmap: 'ROADMAP',
   community: 'COMMUNITY',
@@ -23,6 +25,7 @@ const EN_US_USERBAR = {
     placeholder: "search by handle/address...",
   },
   "Connect Lens": "Connect Lens",
+  "Connect CyberConnect": "Connect CyberConnect",
   "Connect Deschool": "Connect Deschool",
 }
 

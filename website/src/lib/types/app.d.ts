@@ -1,3 +1,4 @@
+import { EventUserItem } from '~/api/booth/event'
 import type { Profile } from '~/api/lens/graphql/generated'
 
 export type ContractType = 'ERC20' | 'ERC721' | 'ERC1155'
@@ -11,13 +12,24 @@ export interface LensTokenInfo {
   refreshToken: string
 }
 
+export interface CyberTokenInfo {
+  address: string
+  accessToken: string
+}
+
 export interface AccountContextProps {
   lensProfile: ProfileExtend | null
   lensToken: LensTokenInfo | null
+  cyberProfile: CyberProfile | null
+  cyberToken: CyberTokenInfo | null
   deschoolProfile: DeschoolProfile | null
+  userProfile: UserProfile[] | null
   setLensProfile: Dispatch<SetStateAction<ProfileExtend | null>>
   setLensToken: Dispatch<SetStateAction<LensTokenInfo | null>>
   setDescoolProfile: Dispatch<SetStateAction<DeschoolProfile | null>>
+  setCyberProfile: Dispatch<SetStateAction<CyberProfile | null>>
+  setCyberToken: Dispatch<SetStateAction<CyberTokenInfo | null>>
+  setUserProfile: Dispatch<SetStateAction<UserProfile[]>>
 }
 
 export interface LayoutContextProps {
@@ -25,10 +37,8 @@ export interface LayoutContextProps {
   currentWidth: number
   currentHeight: number
   layoutPosition: Position
-  connectLensBoardVisible: boolean
-  connectDeschoolBoardVisible: boolean
-  setConnectLensBoardVisible: Dispatch<SetStateAction<boolean>>
-  setConnectDeschoolBoardVisible: Dispatch<SetStateAction<boolean>>
+  connectBoardVisible: boolean
+  setConnectBoardVisible: Dispatch<SetStateAction<boolean>>
   setCurrentWidth: Dispatch<SetStateAction<number>>
   setCurrentHeight: Dispatch<SetStateAction<number>>
   setTheme: Dispatch<SetStateAction<string>>
@@ -300,6 +310,15 @@ export interface CoursePostParticipationInput {
   updates: Array<CourseParticipationUpdateInput>
 }
 
+export interface CyberProfile extends Profile {
+  avatar?: string
+  profileID?: number
+  handleStr?: string
+  isFollowedByMe?: boolean
+  isFollowingMe?: boolean
+  address?: string
+}
+
 export interface ProfileExtend extends Profile {
   avatarUrl?: string
   coverUrl?: string
@@ -335,9 +354,29 @@ export interface OtherDeschoolProfile {
   }
 }
 
-export interface RecommendAddr {
-  FromAddr: string
-  ToAddr: string
-  Reasons: string[]
-  Score: number
+export interface UserProfile {
+  type: 'cyber' | 'deschool' | 'lens'
+  address: string
+  username: string
+  avatar: string | undefined
+}
+
+export interface RecommendResult {
+  userId: string
+  target: EventUserItem
+  reasons: string[]
+  score: number
+}
+
+
+interface NFT {
+  amount: string
+  metadata: string
+  name: string
+  normalized_metadata: {
+    description: string
+    image: string
+    name: string
+  }
+  token_address: string
 }

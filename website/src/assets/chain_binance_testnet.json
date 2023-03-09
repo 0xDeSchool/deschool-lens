@@ -1,0 +1,27 @@
+{
+  "name": "Binance Smart Chain testnet",
+  "chain": "Binance",
+  "icon": "binance",
+  "rpc": [
+    {
+      "url": "https://bsc-testnet.public.blastapi.io",
+      "tracking": "limited",
+      "trackingDetails": "privacyStatement.blastapi"
+    },
+    { "url": "https://rpc-mainnet.maticvigil.com" },
+    { "url": "https://rpc-mainnet.matic.quiknode.pro" },
+    { "url": "https://matic-mainnet.chainstacklabs.com" },
+    { "url": "https://matic-mainnet-full-rpc.bwarelabs.com" },
+    { "url": "https://matic-mainnet-archive-rpc.bwarelabs.com" }
+  ],
+  "faucets": [],
+  "nativeCurrency": { "name": "Binance Coin", "symbol": "BNB", "decimals": 18 },
+  "infoURL": "https://bscscan.com",
+  "shortName": "matic",
+  "chainId": 97,
+  "networkId": 97,
+  "slip44": 966,
+  "explorers": [{ "name": "Binance", "url": "https://bscscan.com", "standard": "EIP3091" }],
+  "tvl": 1242987972.0764065,
+  "chainSlug": "binance"
+}

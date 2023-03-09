@@ -2,10 +2,13 @@
 
 import { UniPassPopupSDK } from '@unipasswallet/popup-sdk'
 import { UniPassTheme } from '@unipasswallet/popup-types'
-import type { TransactionMessage, WalletProvider } from './wallet'
+import type { TransactionMessage, WalletConfig, WalletProvider} from './wallet';
+import { WalletType } from './wallet'
 
 export class UniPassProvider implements WalletProvider {
   private wallet: any
+
+  config: WalletConfig = { type: WalletType.UniPass }
 
   constructor() {
     this.initUnipassWallet()
@@ -23,7 +26,7 @@ export class UniPassProvider implements WalletProvider {
     }
     const account = await this.wallet.login({
       email: true,
-      connectType: 'both',
+      connectType: 'booth',
     })
     return account.address
   }

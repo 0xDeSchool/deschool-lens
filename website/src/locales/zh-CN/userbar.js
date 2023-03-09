@@ -1,7 +1,9 @@
 const ZH_CN_USERBAR = {
   home: '主页',
   exploreNav: '名人堂',
+  plazaNav: '广场',
   matchNav: '同道中人',
+  learnTogetherNav: '一起学习',
   roadmap: '路线图',
   community: '社区',
   whitepaper: '白皮书',
@@ -22,6 +24,7 @@ const ZH_CN_USERBAR = {
     placeholder: "查询 handle/address...",
   },
   "Connect Lens": "连接Lens",
+  "Connect CyberConnect": "连接 CyberConnect",
   "Connect Deschool": "连接Deschool",
 }
 

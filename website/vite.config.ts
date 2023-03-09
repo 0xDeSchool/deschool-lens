@@ -86,7 +86,9 @@ export default defineConfig(({ mode }) => {
           rewrite: pathGoapi => pathGoapi.replace(/^\/goapiBoothLocal/, '/api'),
         },
         '/goapiBoothStg': {
-          target: 'http://ec2-54-90-108-215.compute-1.amazonaws.com:80',
+          // target: 'http://localhost:9000',
+          target: 'http://107.21.139.86:80',
+          // target: 'http://ec2-54-90-108-215.compute-1.amazonaws.com:80',
           secure: false,
           ws: true,
           changeOrigin: true,
@@ -98,6 +100,13 @@ export default defineConfig(({ mode }) => {
           ws: true,
           changeOrigin: true,
           rewrite: pathGoapi => pathGoapi.replace(/^\/goapiBoothPrd/, '/api'),
+        },
+        '/ccProfile': {
+          target: 'https://api.cyberconnect.dev/profile/',
+          secure: false,
+          ws: true,
+          changeOrigin: true,
+          rewrite: pathGoapi => pathGoapi.replace(/^\/ccProfile/, ''),
         },
       },
     },
@@ -143,3 +152,5 @@ export default defineConfig(({ mode }) => {
     },
   }
 })
+
+

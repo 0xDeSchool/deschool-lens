@@ -14,6 +14,6 @@ func main() {
 
 func buildApp() (*app.App, error) {
 	builder := app.NewAppBuilder()
-	builder.Use(internal.LensHackathonServer)
+	builder.Use(internal.BoothServer)
 	return builder.Build()
 }

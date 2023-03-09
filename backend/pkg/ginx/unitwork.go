@@ -77,8 +77,8 @@ func UnitWorkMiddleware() gin.HandlerFunc {
 	}
 }
 
-// 使用默认的UnitWork，在当前请求周期中有效，自动提交事务
-func WithScopedUnitwork(ctx context.Context) context.Context {
+// WithScopedUnitWork 使用默认的UnitWork，在当前请求周期中有效，自动提交事务
+func WithScopedUnitWork(ctx context.Context) context.Context {
 	v := ctx.Value(UnitWorkKey)
 	if v != nil {
 		uwm := v.(*unitWorkManager)
@@ -88,7 +88,7 @@ func WithScopedUnitwork(ctx context.Context) context.Context {
 	}
 }
 
-// 在当前请求周期中创建新的UnitWork，可控制UnitWork提交或取消
+// NewUnitWork 在当前请求周期中创建新的UnitWork，可控制UnitWork提交或取消
 // 另外，在请求结束时，UnitWorkMiddleware会自动提交，当请求执行过程中发生错误时自动abort
 func NewUnitWork(ctx context.Context) UnitWork {
 	v := ctx.Value(UnitWorkKey)

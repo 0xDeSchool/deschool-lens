@@ -1,7 +1,8 @@
 import type { DefaultOptions } from '@apollo/client'
 import { ApolloClient, ApolloLink, HttpLink, from, InMemoryCache } from '@apollo/client'
 import { onError } from '@apollo/client/link/error'
-import { getUserContext } from '~/context/account'
+import { getUserManager } from '~/account'
+import { PlatformType } from '../booth/booth'
 
 const API_URL = import.meta.env.VITE_APP_LENS_API
 
@@ -31,8 +32,8 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 
 // example how you can pass in the x-access-token into requests using `ApolloLink`
 const authLink = new ApolloLink((operation, forward) => {
-  const userContext = getUserContext()
-  const token = userContext?.lensToken?.accessToken
+  const userContext = getUserManager().user
+  const token = userContext?.platform(PlatformType.LENS)?.data?.accessToken
 
   // Use the setContext method to set the HTTP headers.
   operation.setContext({

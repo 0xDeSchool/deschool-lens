@@ -11,14 +11,18 @@ import { useTranslation } from 'react-i18next'
 import Tooltip from 'antd/es/tooltip'
 import type { q11eParam } from '~/api/booth/booth'
 import { getQ11e, putQ11e } from '~/api/booth/booth'
-import { useAccount } from '~/context/account'
 import Suggest from './suggested'
 import { randomConfetti } from '../resume/utils/confetti'
+import { useAccount } from '~/account'
 
 const InterestTag = [
   {
     value: 'defi',
     label: 'DeFi',
+  },
+  {
+    value: 'web3',
+    label: 'Web3',
   },
   {
     value: 'dao',
@@ -74,21 +78,24 @@ const MatchConfig = () => {
   const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
   const { t } = useTranslation()
-  const { lensToken, deschoolProfile } = useAccount()
   const [open, setOpen] = useState(false)
   const [fired, setFired] = useState(false)
+  const user = useAccount()
 
   const loadInitialValues = async () => {
-    const address = lensToken?.address || deschoolProfile?.address
-    if (!address) {
+    if (!user) {
       return
     }
     try {
-      const result = await getQ11e(address)
+      const result = await getQ11e(user.id)
       if (!result) {
         return
       }
-      form.setFieldsValue(result)
+      let fields: Record<string, any> = {}
+      Object.entries(result).forEach(([key, value]) => {
+        fields[`${key.toLowerCase()}`] = value
+      })
+      form.setFieldsValue(fields)
     } catch (err) {
       /* empty */
     }
@@ -107,23 +114,16 @@ const MatchConfig = () => {
       if (validResult?.errors) {
         return false
       }
-
-      // 检查地址
-      let address = lensToken?.address || deschoolProfile?.address
-      if (!address) {
-        const dscAddr = deschoolProfile?.address
-        if (!dscAddr) {
-          setLoading(false)
-          message.error('Not log in yet. Cannot get address from both Lens and DeSchool, please login and try again')
-          return false
-        }
-        address = dscAddr
+      if (!user) {
+        setLoading(false)
+        message.error('Not log in yet. Cannot get address from both Lens and DeSchool, please login and try again')
+        return false
       }
 
       // 最后请求
       const values = await form.getFieldsValue()
       const params: q11eParam = {
-        address,
+        userId: user.id,
         goals: values.goals,
         interests: values.interests,
         pref1: '[]', // values.pref1,
@@ -157,12 +157,12 @@ const MatchConfig = () => {
         layout="vertical"
         autoComplete="off"
         onFinish={handleSubmmit}
-        className="fcs-center space-y-10"
+        className="fcs-center space-y-10 font-ArchivoNarrow"
       >
         {/* 目标板块 */}
         <Form.Item
           name="goals"
-          label={<div className="py-3 text-xl font-bold">{t('matchpage.goals')}</div>}
+          label={<div className="py-3 text-xl font-bold font-ArchivoNarrow">{t('matchpage.goals')}</div>}
           colon={false}
           rules={[{ required: true, message: 'Please select your goals!' }]}
         >
@@ -186,7 +186,7 @@ const MatchConfig = () => {
                 },
               ].map(item => (
                 <Tooltip key={item.tip} title={item.tip}>
-                  <Checkbox value={item.short} style={{ lineHeight: '32px' }}>
+                  <Checkbox value={item.short} style={{ lineHeight: '32px', fontSize: '1rem' }} className="font-ArchivoNarrow">
                     {item.desc}
                   </Checkbox>
                 </Tooltip>
@@ -198,13 +198,13 @@ const MatchConfig = () => {
         {/* 感兴趣的领域板块 */}
         <Form.Item
           name="interests"
-          label={<div className="py-3 text-xl font-bold">{t('matchpage.fields')}</div>}
+          label={<div className="py-3 text-xl font-bold font-ArchivoNarrow">{t('matchpage.fields')}</div>}
           colon={false}
           className="w-full"
           rules={[{ required: true, message: 'Please tell us at least one your fields of interests!' }]}
           style={{ marginTop: 0 }}
         >
-          <Select mode="tags" options={InterestTag} />
+          <Select mode="tags" options={InterestTag} className="font-ArchivoNarrow text-md" />
         </Form.Item>
 
         {/* 偏好板块 */}
@@ -272,7 +272,7 @@ const MatchConfig = () => {
         <div>
           <Form.Item
             name="mbti"
-            label={<div className="py-3 text-xl font-bold">{t('matchpage.character')}</div>}
+            label={<div className="py-3 text-xl font-bold font-ArchivoNarrow">{t('matchpage.character')}</div>}
             hasFeedback
             tooltip={t('matchpage.mbti')}
             style={{ marginBottom: 0 }}
@@ -297,7 +297,7 @@ const MatchConfig = () => {
               <Select.Option value={15}>ESTJ</Select.Option>
             </Select>
           </Form.Item>
-          <div className="mt-2">
+          <div className="mt-2 font-ArchivoNarrow">
             <a href="https://www.16personalities.com/free-personality-test" target="_blank" rel="noreferrer">
               {'Not sure your MBTi type? Take a quiz first >>'}
             </a>
@@ -307,13 +307,13 @@ const MatchConfig = () => {
         {/* 提交按钮 */}
         <Form.Item>
           <div className="frc-end mt-20 space-x-2">
-            <Button loading={loading} type="primary" size="large" className="border-0 rounded-lg font-bold" htmlType="submit">
+            <Button loading={loading} type="primary" size="large" className="border-0 rounded-lg font-bold font-ArchivoNarrow" htmlType="submit">
               {t('matchpage.explore')}
             </Button>
           </div>
         </Form.Item>
       </Form>
-      <Modal title={<h1>Today's Match</h1>} open={open} footer={null} onCancel={() => setOpen(false)}>
+      <Modal title={<h1>Today's Match</h1>} open={open} destroyOnClose footer={null} onCancel={() => setOpen(false)}>
         <Suggest open={open} />
       </Modal>
     </div>

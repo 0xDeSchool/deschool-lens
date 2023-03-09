@@ -39,15 +39,15 @@ const ResumeCard = (input: ResumeCardInput) => {
       okType: 'danger',
       cancelText: 'Cancel',
       onOk() {
-        if (data.order !== undefined) {
-          handleDeleteCard(blockType, data.order)
+        if (data.id !== undefined) {
+          handleDeleteCard(blockType, data.id)
         }
       },
     })
   }
 
   return (
-    <div className="pt-4 px-4 hover:bg-gray-50 rounded-md">
+    <div className="pt-4 px-4 hover:bg-gray-50 rounded-md w-full">
       {/* Title */}
       <div className="flex justify-between items-center">
         <div className="font-bold my-2 text-lg">{data.title}</div>
@@ -63,11 +63,10 @@ const ResumeCard = (input: ResumeCardInput) => {
       <div className="mt-1">{data.description}</div>
 
       {/* SBTs Title */}
-      <div className="font-bold mt-8 mb-2">Proofs of Commitments</div>
-
+      {data.proofs && data.proofs.length > 0 && <div className="font-bold mt-8 mb-2">Proofs of Commitments</div>}
       {/* Proofs of Work */}
       <div className="flex justify-between">
-        <div className="flex flex-wrap">
+        <div className="flex flex-wrap flex-1">
           {data.proofs &&
             data.proofs.map(item => (
               <div key={`sbt-${item.address}-${item.tokenId}`} className="w-[110px] mr-2 relative">
@@ -88,7 +87,7 @@ const ResumeCard = (input: ResumeCardInput) => {
           <div className="w-90px flex justify-between">
             {isEditResume && (
               <EditOutlined
-                onClick={() => handleEditCard(data.blockType, data.order)}
+                onClick={() => handleEditCard(data.blockType, data.id)}
                 className="text-blue-4 hover:text-blue-6! w-40px h-40px hover:rounded-full hover:bg-blue-2 hover:border hover:border-blue-3 frc-center"
               />
             )}

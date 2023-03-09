@@ -5,16 +5,19 @@ import { useTranslation } from 'react-i18next'
 import message from 'antd/es/message'
 import CloseOutlined from '@ant-design/icons/CloseOutlined'
 import LoadingOutlined from '@ant-design/icons/LoadingOutlined'
-import { RoleType } from '~/lib/enum'
 
-import { getUserContext, useAccount } from '~/context/account'
-import { useLayout } from '~/context/layout'
 import type { WalletConfig } from '~/wallet'
 import { createProvider, getWallet, WalletType } from '~/wallet'
 import { fetchUserDefaultProfile } from '~/hooks/profile'
 import { authenticate, generateChallenge } from '~/api/lens/authentication/login'
 import { postVerifiedIdentity, PlatformType } from '~/api/booth/booth'
-
+import IconLens from '~/assets/icons/lens.svg'
+import Button from 'antd/es/button'
+import { linkPlatform } from '~/api/booth/account'
+import { getUserManager, useAccount } from '~/account/context'
+import { LogoutOutlined } from '@ant-design/icons'
+import { lensWallet } from '~/wallet/wallet_lens'
+import { LinkPlatformRequest } from '~/api/booth/types'
 interface ConnectBoardProps {
   wallectConfig?: WalletConfig
   connectTrigger?: any
@@ -22,17 +25,11 @@ interface ConnectBoardProps {
 
 const ConnectLensBoard: FC<ConnectBoardProps> = props => {
   const { connectTrigger } = props
-  const { connectLensBoardVisible, setConnectLensBoardVisible } = useLayout()
   const [loading, setLoading] = useState(false)
-  const [tempAddress, setTempAddress] = useState<string | undefined>()
   const { t } = useTranslation()
-  const { setLensToken, setLensProfile } = useAccount()
-
-  useEffect(() => {
-    if (connectLensBoardVisible === false) {
-      setLoading(false)
-    }
-  }, [connectLensBoardVisible])
+  const user = useAccount()
+  const userManager = getUserManager()
+  const lensProfile = user?.lensProfile()
 
   /**
    * @description 连接失败的异常处理
@@ -45,22 +42,20 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
     } else {
       message.error(err?.toString() || err)
     }
-    setConnectLensBoardVisible(false)
   }
 
   // 对传入的challenge信息签名并返回签名结果
   const signLoginMessage = async (challengeText: string) => {
     const SIGN_MESSAGE = challengeText
-    const signMessageReturn = await getWallet().signMessage(SIGN_MESSAGE)
+    const wallet = await lensWallet()
+    const signMessageReturn = await wallet.signMessage(SIGN_MESSAGE)
     return signMessageReturn
   }
 
   // 通过len签名登录
-  const handleLoginByAddress = async (address: string, isReload?: boolean) => {
+  const handleLoginByAddress = async (address: string, isReload?: boolean): Promise<LinkPlatformRequest | undefined> => {
     // 如果当前库中已经保存过登录记录则不需要重新签名登录
-    const roles = getUserContext().getLoginRoles()
-    if (roles.includes(RoleType.UserOfLens)) {
-      setConnectLensBoardVisible(false)
+    if (lensProfile) {
       return
     }
     try {
@@ -68,8 +63,6 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
       const userInfo = await fetchUserDefaultProfile(address)
       // 没handle,则lens profile为空
       if (!userInfo) {
-        setLensProfile(null)
-        setLensToken(null)
         message.info({
           key: 'nohandle',
           content: (
@@ -102,20 +95,26 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
         // check signature
         const authenticatedResult = await authenticate({ address, signature })
 
-        if (signature) {
-          setLensToken({
-            address,
+        if (!signature) return
+
+        // 不管是deschool还是lens登录后,均提交此地址的绑定信息给后台，后台判断是否是第一次来发 Deschool-Booth-Onboarding SBT
+        await postVerifiedIdentity({
+          address,
+          lensHandle: userInfo?.handle,
+          baseAddress: address,
+          platform: PlatformType.LENS,
+        })
+
+        return {
+          handle: userInfo?.handle,
+          platform: PlatformType.LENS,
+          data: {
+            id: userInfo?.id,
             accessToken: authenticatedResult.accessToken,
             refreshToken: authenticatedResult.refreshToken,
-          })
-          setLensProfile(userInfo)
-          // 不管是deschool还是lens登录后,均提交此地址的绑定信息给后台，后台判断是否是第一次来发 Deschool-Booth-Onboarding SBT
-          await postVerifiedIdentity({
-            address,
-            lensHandle: userInfo?.handle,
-            baseAddress: address,
-            platform: PlatformType.LENS,
-          })
+          },
+          address,
+          displayName: userInfo.name,
         }
       }
     } catch (error: any) {
@@ -129,8 +128,23 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
         message.error(String(error))
       }
     } finally {
-      setConnectLensBoardVisible(false)
       if (isReload) window.location.reload()
+    }
+  }
+
+  /**
+   * 签名登录 Booth
+   * @returns
+   */
+  const handleConnectBooth = async (platform: LinkPlatformRequest) => {
+    try {
+      const type = WalletType.MetaMask
+      const config: WalletConfig = { type }
+      const provider = createProvider(config)
+      await getWallet().setProvider(type, provider)
+      await userManager.login(platform)
+    } catch (err: any) {
+      handleFailToConnect(err)
     }
   }
 
@@ -143,13 +157,24 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
     setLoading(true)
     try {
       // 初始化小狐狸钱包并获取地址
-      const config = { ...props.wallectConfig, type: WalletType.MetaMask }
-      const provider = createProvider(config)
-      await getWallet().setProvider(WalletType.MetaMask, provider)
-      const address = await getWallet().getAddress()
-      setTempAddress(address)
+      const wallet = await lensWallet()
+      const address = await wallet.getAddress()
       if (address) {
         await handleLoginByAddress(address)
+        const platformLinkInfo = await handleLoginByAddress(address)
+
+        if (!platformLinkInfo) return
+
+        // 如果用户未登录
+        if (!user?.address) {
+          await handleConnectBooth(platformLinkInfo)
+        }
+        // 关联平台
+        else {
+          await linkPlatform(platformLinkInfo)
+        }
+        // 重新获取用户信息
+        await getUserManager().tryAutoLogin()
       } else {
         message.error("Can't get address info, please connect metamask first")
       }
@@ -160,70 +185,65 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
     }
   }
 
+  // 退出 Lens 登录
+  const handleDisconnect = async () => {
+    try {
+      if (lensProfile?.handle) {
+        getUserManager()?.unLinkPlatform(lensProfile?.handle, lensProfile.address, PlatformType.LENS)
+        // 重新获取用户信息
+        await getUserManager().tryAutoLogin()
+      }
+    } catch (error: any) {
+      message.error(error?.message ? error.message : '退出登录失败')
+    }
+  }
+
   useEffect(() => {
     if (connectTrigger) {
       handleLoginByAddress(connectTrigger, true)
     }
   }, [connectTrigger])
 
-  const panel = (
-    <div
-      className="relative bg-white flex flex-col justify-center items-center w-full p-10 rounded-lg dark:bg-#1a253b shadow dark:shadow-slate-300"
-      style={{ minHeight: '16rem', maxWidth: '38rem' }}
-    >
-      <p className="dark:text-white text-3xl">{t('connectWallet')}</p>
-      <div
-        className="text-2xl text-red-300 hover:text-red-400 cursor-pointer absolute right-6 top-0"
-        onClick={e => {
-          e.preventDefault()
-          setConnectLensBoardVisible(false)
-        }}
-      >
-        <CloseOutlined className="mt-2" />
-      </div>
-      <div className="rounded-4 bg-gray-1 p-6 mb-6 text-16px hidden">
-        <span>{t('connect_content_1')}</span>
-        <span className="text-#6525FF">{t('connect_content_2')}</span>
-        <span>{t('connect_content_3')}</span>
-        <span>{t('connect_content_4')}</span>
-        <span className="text-#6525FF">{t('connect_content_5')}</span>
+  return (
+    <div className="fcc-between w-full min-h-360px p-4 rounded-lg shadow">
+      <div className='fcs-start w-full'>
+        <div className="bg-#abfe2c rounded-2 px-2 py-2 frc-start">
+          <img src={IconLens} alt="lens" width={20} height={20} />
+          <span className='ml-1 text-#00501E'>LENS</span>
+        </div>
+        {lensProfile && <div className='frc-between mt-4'>
+          <div className="frc-start">
+            <div className="bg-#abfe2c rounded-50% w-28px h-28px frc-center">
+              <img src={IconLens} alt="cyberconnect" width={20} height={20} />
+            </div>
+            <span className='ml-2'>{lensProfile.handle}</span>
+          </div>
+          <Button type="primary" size='small' shape="circle" icon={<LogoutOutlined />} className="frc-center" onClick={handleDisconnect} />
+        </div>}
       </div>
       <div className="flex flex-row w-full items-center justify-center">
-        <button
+        <Button
           onClick={e => {
             e.preventDefault()
-            handleConnect()
+            lensProfile ? handleDisconnect() : handleConnect()
           }}
-          type="button"
-          className="flex flex-col items-center justify-between dark:bg-#1a253b cursor-pointer w-full p-3 mb-2 rounded-md border border-solid border-#6525FF bg-white hover:border-#6525FF66 hover:bg-#6525FF22"
+          className="w-full h-12 border border-solid border-#6525FF bg-white hover:border-#6525FF66 hover:bg-#6525FF22"
           disabled={loading}
-          style={{ cursor: `${loading ? 'not-allowed' : ''}` }}
         >
-          <div className="mb-0 text-#6525FF text-[16px] w-full frc-between">
-            <div className="flex">
-              <span>{t('SIGN TO LOGIN BY LENS')}</span>
+          {!lensProfile ? (<div className="text-#6525FF text-[16px] w-full frc-between">
+            <div className="frc-start">
+              <span className='mr-2'>CONNECT</span>
               {loading && (
-                <div className="loading ml-2 frc-center">
-                  <LoadingOutlined color="#6525FF" style={{ width: 20, height: 20, fontSize: 20 }} />
-                </div>
+                <LoadingOutlined color="#6525FF" />
               )}
             </div>
             <img alt="mask" src={MetaMaskImage} style={{ width: '25px', height: '25px' }} />
-          </div>
-          <div className="mt-2 text-sm text-black">{tempAddress}</div>
-        </button>
+          </div>) :
+            (<div className="text-#6525FF text-[16px] w-full frc-center">
+              DISCONNECT
+            </div>)}
+        </Button>
       </div>
-    </div>
-  )
-
-  return (
-    <div
-      className={`fixed top-0 bottom-0 left-0 right-0 w-full h-full z-[9999] ${
-        connectLensBoardVisible ? 'flex flex-row' : 'hidden'
-      } justify-center items-center text-2xl bg-gray-900 bg-opacity-50`}
-      style={{ backdropFilter: ' blur(5px)' }}
-    >
-      {panel}
     </div>
   )
 }

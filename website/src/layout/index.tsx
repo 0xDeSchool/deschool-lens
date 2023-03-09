@@ -8,11 +8,10 @@ import { getUserContext } from '~/context/account'
 import type { WalletConfig } from '~/wallet'
 import { getWallet } from '~/wallet'
 import { scrollToTop } from '~/utils/common'
-import ConnectDeschoolBoard from '~/layout/connectDeschool'
 import { RoleType } from '~/lib/enum'
-import ConnectLensBoard from './connectLens'
 import Footer from './footer'
 import UserBar from './userbar'
+import { appWallet } from '~/wallet/booth'
 
 /*
  * @description: Layout
@@ -24,7 +23,6 @@ const Layout = () => {
   const [isSwitchingUser, setIsSwitchingUser] = useState(false)
   const [pageLayout, setPageLayout] = useState('w-full')
   const [footerLayout, setFooterLayout] = useState('')
-  const [connectTrigger, setConnectTrigger] = useState<number | null>(null)
 
   const navigate = useNavigate()
   const { t } = useTranslation()
@@ -45,13 +43,13 @@ const Layout = () => {
   const handleOk = async () => {
     setIsSwitchingUser(true)
     try {
-      const addr = await getWallet().getAddress()
+      const wallet = await appWallet()
+      const addr = await wallet.getAddress()
       // TODO: Q产品 当用户切换时 怎么办
       if (getUserContext().lensToken?.address && addr !== getUserContext().lensToken?.address) {
         const cachedToken = await fetchUserDefaultProfile(addr)
         if (cachedToken == null) {
           setIsModalOpen(false)
-          setConnectTrigger(addr)
         }
       }
     } finally {
@@ -85,12 +83,6 @@ const Layout = () => {
       navigate('/landing')
       window.location.reload()
     },
-    // chainChanged: chainId => {
-    //   if (chainId === '0x89' && !isLogin()) {
-    //     setConnectTrigger(new Date().getTime())
-    //     window.location.reload()
-    //   }
-    // },
   }
   const [walletconfig] = useState<WalletConfig>(config)
 
@@ -105,7 +97,7 @@ const Layout = () => {
       >
         <div
           className={`flex-1 overflow-auto w-full fcc-center bg-#fafafa ${
-            location.pathname.startsWith('/explore') || location.pathname.startsWith('/landing') ? '' : 'pt-64px'
+            location.pathname.startsWith('/plaza') || location.pathname.startsWith('/landing') ? '' : 'pt-64px'
           }`}
         >
           <div className={`flex-1 overflow-auto flex flex-col ${pageLayout}`}>
@@ -114,9 +106,6 @@ const Layout = () => {
         </div>
         {location.pathname.startsWith('/profile') ? null : <Footer footerLayout={footerLayout} />}
       </div>
-      {/* login lens board */}
-      <ConnectLensBoard wallectConfig={walletconfig} connectTrigger={connectTrigger} />
-      <ConnectDeschoolBoard />
       <Modal
         title={<h1>{t('system.notify_title')}</h1>}
         closable={false}

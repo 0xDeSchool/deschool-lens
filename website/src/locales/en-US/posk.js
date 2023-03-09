@@ -3,7 +3,7 @@ const EN_US_POSK = {
   Owners: 'Owners',
   posk: {
     mate: 'Owners on Deschool',
-    lensmate: 'Owners on Lens',
+    lensmate: 'Owners on Booth',
   },
 }
 export default EN_US_POSK
