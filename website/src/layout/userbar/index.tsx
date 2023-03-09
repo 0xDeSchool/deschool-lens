@@ -23,10 +23,10 @@ const UserBar = () => {
   const [activeNav, setActiveNav] = useState('/landing') // 当前激活的路由
 
   const navs = [
-    {
-      path: '/landing',
-      name: t('home'),
-    },
+    // {
+    //   path: '/landing',
+    //   name: t('home'),
+    // },
     {
       path: '/plaza',
       name: t('plazaNav'),

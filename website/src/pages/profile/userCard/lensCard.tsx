@@ -206,7 +206,7 @@ const LensCard = (props: LensCardProps) => {
       </div>
       {currentUser?.handle ? (
         <p className="m-10 text-xl line-wrap three-line-wrap">
-          {user?.bio || visitCase === 0 ? '' : "The user hasn't given a bio on Lens for self yet :)"}
+          {user?.bio || visitCase === 0 ? '' : "The user hasn't given a bio for self yet :)"}
         </p>
       ) : (
         <p className="m-10 text-xl three-line-wrap">

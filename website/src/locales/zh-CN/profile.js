@@ -3,7 +3,7 @@ const ZH_CN_PROFILE = {
     profile: "个人空间",
     suggested: "推荐",
     activities: "活动",
-    resume: "简历",
+    resume: "我的简历",
     verified: "绑定",
     followers: "粉丝",
     following: "关注",
