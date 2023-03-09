@@ -23,7 +23,7 @@ type UserInfoCyberConnectProps = NewUserInfo & {
 }
 
 const UserInfoCyberConnect: React.FC<UserInfoCyberConnectProps> = (props) => {
-  const { avatar, address, displayName, bio, followerDetail, followingDetail } = props
+  const { address, followerDetail, followingDetail } = props
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { follow } = useFollow();
@@ -83,6 +83,9 @@ const UserInfoCyberConnect: React.FC<UserInfoCyberConnectProps> = (props) => {
         return
       }
       // 此人有数据
+      userInfo.avatar = userInfo?.metadataInfo?.avatar
+      userInfo.displayName = userInfo?.metadataInfo?.displayName
+      userInfo.bio = userInfo?.metadataInfo?.bio
       setCurrentUser(userInfo)
       if (userInfo.handle) {
         await refreshUserInfo(userInfo?.handle)
@@ -96,7 +99,7 @@ const UserInfoCyberConnect: React.FC<UserInfoCyberConnectProps> = (props) => {
   const refreshUserInfo = async (handle: string) => {
     return Promise.all([
       initUserFollowersInfo(handle, user?.address!),
-      initUserFollowingsInfo(user?.address!),
+      initUserFollowingsInfo(address),
     ])
   }
 
@@ -138,12 +141,12 @@ const UserInfoCyberConnect: React.FC<UserInfoCyberConnectProps> = (props) => {
     <>
       <div className='mx-auto fcc-center mb-8'>
         <div className="relative frc-center mt-24px mb-4">
-          {avatar ? (
+          {currentUser?.avatar ? (
             <Image
               preview={false}
               alt="user avatar"
               className="w-86px! h-86px! mb-4px rounded-full"
-              src={avatar}
+              src={currentUser?.avatar}
               fallback={DEFAULT_AVATAR}
               style={{ display: 'inline-block' }}
             />
@@ -155,7 +158,7 @@ const UserInfoCyberConnect: React.FC<UserInfoCyberConnectProps> = (props) => {
           </svg>
         </div>
         <h1 className="font-Anton text-black text-24px leading-32px h-32px line-wrap two-line-wrap">
-          {displayName === address ? getShortAddress(address) : displayName}
+          {currentUser?.displayName || currentUser?.handle || getShortAddress(address)}
         </h1>
       </div>
       {/* follows info */}
@@ -182,7 +185,7 @@ const UserInfoCyberConnect: React.FC<UserInfoCyberConnectProps> = (props) => {
         </a>
       </div>
       <p className="mt-4 mx-auto font-ArchivoNarrow text-#000000d8 text-16px align-center leading-24px h-80px line-wrap three-line-wrap">
-        {bio || "The user hasn't given a bio for self yet :)"}
+        {currentUser?.bio || "The user hasn't given a bio for self yet :)"}
       </p>
       <div className='frc-between gap-8 mx-auto'>
         {/* disabled 用户自己、用户没有handle、正在调用关注中*/}
