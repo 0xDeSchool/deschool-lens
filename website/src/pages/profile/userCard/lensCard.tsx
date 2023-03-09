@@ -12,6 +12,7 @@ import { PlatformType } from '~/api/booth/booth'
 import FollowersModal from './modal'
 import Skeleton from 'antd/es/skeleton'
 import Button from 'antd/es/button'
+import LensAvatar from './avatar'
 
 type LensCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
@@ -165,78 +166,79 @@ const LensCard = (props: LensCardProps) => {
     setUpdateTrigger(new Date().getTime())
   }
 
-  if (loading) {
-    return (
-      <div className="h-400px fcc-center">
-        <Skeleton active />
-      </div>
-    )
-  }
-
   return (
     <div>
-      {/* 处理数据为空的情况 */}
-      <div className="mt-70px w-full px-6 pb-6 fcc-center font-ArchivoNarrow">
-        <span className="text-xl">
-          {currentUser?.displayName}
-        </span>
-        <span className="text-xl text-gray-5">{currentUser?.handle ? `@${currentUser?.handle}` : 'Lens Handle Not Found'}</span>
+      <div className='relative w-full frc-center'>
+        <LensAvatar avatarUrl={currentUser?.avatar} />
       </div>
-      <div className="mx-10 frc-center flex-wrap">
-        <a
-          className={`${totalFollowers > 0 ? 'hover:underline hover:cursor-pointer' : ''
-            } text-xl mr-4 `}
-          onClick={() => {
-            handleJumpFollowers(totalFollowers)
-          }}
-        >
-          <span className="text-black">{totalFollowers || '-'} </span>
-          <span className="text-gray-5 font-ArchivoNarrow">{t('profile.followers')}</span>
-        </a>
-        <a
-          className={`${totalFollowing > 0 ? 'hover:underline hover:cursor-pointer' : ''
-            } text-xl`}
-          onClick={() => {
-            handleJumpFollowing(totalFollowing)
-          }}
-        >
-          <span className="text-black">{totalFollowing || '-'} </span>
-          <span className="text-gray-5 font-ArchivoNarrow">{t('profile.following')}</span>
-        </a>
-      </div>
-      {currentUser?.handle ? (
-        <p className="m-10 text-xl line-wrap three-line-wrap">
-          {user?.bio || visitCase === 0 ? '' : "The user hasn't given a bio for self yet :)"}
-        </p>
-      ) : (
-        <p className="m-10 text-xl three-line-wrap">
-          Please get a Lens handle to enable all Booth profile functions. You can grab one at:
-          <a href="https://opensea.io/collection/lens-protocol-profiles" className="block underline">
-            https://opensea.io/collection/lens-protocol-profiles
-          </a>
-        </p>
-      )}
-      {visitCase === 1 && (
-        <div className="m-10 text-right">
-          <Button
-            className={`${
-              currentUser?.handle
-                ? 'purple-border-button'
-                : 'inline-flex items-center border border-gray rounded-xl bg-gray-3 text-gray-6 hover:cursor-not-allowed'
-            } px-2 py-1`}
-            disabled={!currentUser?.handle || !user?.address}
+      {loading ?
+        (<div className="h-400px fcc-center">
+          <Skeleton active />
+        </div>)
+      :<>
+        {/* 处理数据为空的情况 */}
+        <div className="mt-70px w-full px-6 pb-6 fcc-center font-ArchivoNarrow">
+          <span className="text-xl">
+            {currentUser?.displayName}
+          </span>
+          <span className="text-xl text-gray-5">{currentUser?.handle ? `@${currentUser?.handle}` : 'Lens Handle Not Found'}</span>
+        </div>
+        <div className="mx-10 frc-center flex-wrap">
+          <a
+            className={`${totalFollowers > 0 ? 'hover:underline hover:cursor-pointer' : ''
+              } text-xl mr-4 `}
             onClick={() => {
-              if (isFollowedByMe) {
-                handleUnFollow(currentUser)
-              } else {
-                handleFollow(currentUser)
-              }
+              handleJumpFollowers(totalFollowers)
             }}
           >
-            {isFollowedByMe ? t('UnFollow') : t('Follow')}
-          </Button>
+            <span className="text-black">{totalFollowers || '-'} </span>
+            <span className="text-gray-5 font-ArchivoNarrow">{t('profile.followers')}</span>
+          </a>
+          <a
+            className={`${totalFollowing > 0 ? 'hover:underline hover:cursor-pointer' : ''
+              } text-xl`}
+            onClick={() => {
+              handleJumpFollowing(totalFollowing)
+            }}
+          >
+            <span className="text-black">{totalFollowing || '-'} </span>
+            <span className="text-gray-5 font-ArchivoNarrow">{t('profile.following')}</span>
+          </a>
         </div>
-      )}
+        {currentUser?.handle ? (
+          <p className="m-10 text-xl line-wrap three-line-wrap">
+            {user?.bio || visitCase === 0 ? '' : "The user hasn't given a bio for self yet :)"}
+          </p>
+        ) : (
+          <p className="m-10 text-xl three-line-wrap">
+            Please get a Lens handle to enable all Booth profile functions. You can grab one at:
+            <a href="https://opensea.io/collection/lens-protocol-profiles" className="block underline">
+              https://opensea.io/collection/lens-protocol-profiles
+            </a>
+          </p>
+        )}
+        {visitCase === 1 && (
+          <div className="m-10 text-right">
+            <Button
+              className={`${
+                currentUser?.handle
+                  ? 'purple-border-button'
+                  : 'inline-flex items-center border border-gray rounded-xl bg-gray-3 text-gray-6 hover:cursor-not-allowed'
+              } px-2 py-1`}
+              disabled={!currentUser?.handle || !user?.address}
+              onClick={() => {
+                if (isFollowedByMe) {
+                  handleUnFollow(currentUser)
+                } else {
+                  handleFollow(currentUser)
+                }
+              }}
+            >
+              {isFollowedByMe ? t('UnFollow') : t('Follow')}
+            </Button>
+          </div>
+        )}
+      </>}
       <FollowersModal
         routeAddress={routeAddress}
         profileId={currentUser?.data?.id}
