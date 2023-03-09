@@ -69,7 +69,7 @@ const ConnectDeschoolBoard: FC = () => {
    * 选择并连接一个第三方钱包，如果连接以后就签名登录deshcool
    * @returns
    */
-  const handleConect = async (type: WalletType) => {
+  const handleConnect = async (type: WalletType) => {
     if (loadingUniPass || loading) return
     if (type === WalletType.MetaMask) {
       setLoading(true)
@@ -143,7 +143,7 @@ const ConnectDeschoolBoard: FC = () => {
           <Button
             onClick={e => {
               e.preventDefault()
-              handleConect(WalletType.MetaMask)
+              handleConnect(WalletType.MetaMask)
             }}
             className="w-full h-12 border border-solid border-#6525FF bg-white hover:border-#6525FF66 hover:bg-#6525FF22"
             disabled={loading}
@@ -163,7 +163,7 @@ const ConnectDeschoolBoard: FC = () => {
           <Button
             onClick={e => {
               e.preventDefault()
-              handleConect(WalletType.UniPass)
+              handleConnect(WalletType.UniPass)
             }}
             className="w-full h-12 border border-solid border-#6525FF bg-white hover:border-#6525FF66 hover:bg-#6525FF22"
             disabled={loadingUniPass}

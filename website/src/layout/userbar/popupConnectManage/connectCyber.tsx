@@ -16,8 +16,9 @@ import { linkPlatform } from '~/api/booth/account'
 import { useAccount } from '~/account/context'
 import { getUserManager } from '~/account';
 import { CloseOutlined, LogoutOutlined } from '@ant-design/icons'
-import type { UserPlatform } from '~/api/booth/types'
+import type { LinkPlatformRequest, UserPlatform } from '~/api/booth/types'
 import { CyberConnectIcon } from '~/components/icon'
+import { platform } from 'os'
 
 const DOMAIN = 'test.com'
 interface ConnectBoardProps {
@@ -33,6 +34,7 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
   const [loginVerify] = useMutation(LOGIN_VERIFY);
   const [getPrimaryProfile] = useLazyQuery(PRIMARY_PROFILE);
   const user = useAccount()
+  const userManager = getUserManager()
   /**
    * @description 连接失败的异常处理
    * @param {}
@@ -53,8 +55,24 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
     return signMessageReturn
   }
 
+  /**
+   * 签名登录 Booth
+   * @returns
+   */
+  const handleConnectBooth = async (platform: LinkPlatformRequest) => {
+    try {
+      const type = WalletType.MetaMask
+      const config: WalletConfig = { type }
+      const provider = createProvider(config)
+      await getWallet().setProvider(type, provider)
+      await userManager.login(platform)
+    } catch (err: any) {
+      handleFailToConnect(err)
+    }
+  }
+
   // 通过 cyberconnect 签名登录
-  const handleLoginByAddress = async (address: string, isReload?: boolean) => {
+  const handleLoginByAddress = async (address: string, isReload?: boolean): Promise<LinkPlatformRequest | undefined> => {
     const ccprofile = user?.ccProfileList(address)
     // 如果当前库中已经保存过登录记录则不需要重新签名登录
     if (ccprofile && ccprofile.length > 0) {
@@ -120,12 +138,9 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
       const accessToken = accessTokenResult?.data?.loginVerify?.accessToken;
 
       if (!signature) return
-      // // 根据钱包地址查用户profile信息
-      // 需要在这里处理一下handle，因为cyber的handle是带有.cc的
-      userInfo.handleStr = userInfo?.handle
-      userInfo.handle = userInfo?.handle?.split('.cc')[0]
-      // 关联平台
-      await linkPlatform({
+
+      // 根据钱包地址查用户profile信息
+      const platformLinkInfo: LinkPlatformRequest = {
         handle: userInfo?.handle,
         platform: PlatformType.CYBERCONNECT,
         data: {
@@ -134,7 +149,9 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
         },
         address,
         displayName: userInfo?.displayName,
-      })
+      }
+      return platformLinkInfo
+
     } catch (error: any) {
       if (error?.reason) {
         message.error(error.reason)
@@ -164,7 +181,18 @@ const ConnectCyberBoard: FC<ConnectBoardProps> = props => {
       await getWallet().setProvider(WalletType.MetaMask, provider)
       const address = await getWallet().getAddress()
       if (address) {
-        await handleLoginByAddress(address)
+        const platformLinkInfo = await handleLoginByAddress(address)
+
+        if (!platformLinkInfo) return
+
+        // 如果用户未登录
+        if (!user?.address) {
+          await handleConnectBooth(platformLinkInfo)
+        }
+        // 关联平台
+        else {
+          await linkPlatform(platformLinkInfo)
+        }
         // 重新获取用户信息
         await getUserManager().tryAutoLogin()
       } else {

@@ -1,6 +1,6 @@
 import { getSignMessage, getUserInfo, login, unlinkPlatform } from "~/api/booth/account"
 import { PlatformType } from "~/api/booth/booth"
-import type { UserInfo, UserPlatform } from "~/api/booth/types";
+import type { LinkPlatformRequest, UserInfo, UserPlatform } from "~/api/booth/types";
 import { SignMsgType } from "~/api/booth/types"
 import { getShortAddress } from "~/utils/format"
 import { getWallet } from "~/wallet"
@@ -100,7 +100,7 @@ export class UserManager {
     }
   }
 
-  async login() {
+  async login(platform?: LinkPlatformRequest) {
     const address = await getWallet().getAddress()
     if (!address) {
       return
@@ -116,6 +116,7 @@ export class UserManager {
       walletType: getWallet().type!,
       address,
       sig: signHex,
+      platform,
     })
     if (loginResult?.jwtToken) {
       const info = await this.fetchUserInfo(address, loginResult.jwtToken)
