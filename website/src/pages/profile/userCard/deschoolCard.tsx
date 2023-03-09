@@ -163,7 +163,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
       <div className="mx-10 frc-center flex-wrap">
         <a
           className={`${followers?.length > 0 ? 'hover:underline hover:cursor-pointer' : ''
-            } text-xl mr-4 `}
+            } text-xl mr-4 font-ArchivoNarrow `}
           onClick={() => {
             handleJumpFollowers(followers?.length)
           }}
@@ -188,7 +188,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
       {routeAddress && routeAddress !== user?.address && (
         <div className="m-10 text-right">
           {user && <Button
-            className="purple-border-button px-2 py-1"
+            className="purple-border-button px-2 py-1 font-ArchivoNarrow"
             disabled={!user?.address}
             onClick={() => {
               if (isFollowedByMe && currentUser) {

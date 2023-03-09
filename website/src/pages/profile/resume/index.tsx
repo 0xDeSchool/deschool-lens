@@ -419,7 +419,7 @@ const Resume = () => {
         <div className="text-2xl font-bold font-ArchivoNarrow">
           RESUME
             <span className="ml-1">
-              OF <span className="ml-1 text-gray-5">{currentUser?.displayName ||  user?.displayName}</span>
+              OF <span className="ml-1 text-gray-5 font-ArchivoNarrow">{currentUser?.displayName ||  user?.displayName}</span>
             </span>
         </div>
         <div className="flex">
@@ -430,7 +430,7 @@ const Resume = () => {
                 onClick={() => handlePublish()}
                 disabled={!lensProfile}
                 loading={loadingLens}
-                className="bg-#abfe2c! text-black! mr-2"
+                className="bg-#abfe2c! text-black! mr-2 font-ArchivoNarrow"
               >
                 {resumeData && step === 2 ? 'Published' : 'Publish On Lens'}
               </Button>}
@@ -439,7 +439,7 @@ const Resume = () => {
                 onClick={() => handlePublishCyberConnect()}
                 disabled={!ccProfile}
                 loading={loadingCyber}
-                className="bg-black! text-white!"
+                className="bg-black! text-white! font-ArchivoNarrow"
               >
                 {resumeData && step === 2 ? 'Published' : 'Publish On CC'}
               </Button>}
@@ -448,7 +448,7 @@ const Resume = () => {
 
           <div className="w-2"> </div>
           {visitCase === 0 && (
-            <Button onClick={onClickEditResume} loading={putting} type={isEditResume ? 'primary' : 'default'}>
+            <Button onClick={onClickEditResume} loading={putting} type={isEditResume ? 'primary' : 'default'} className="font-ArchivoNarrow">
               {isEditResume ? 'Save on DeSchool' : 'Edit'}
             </Button>
           )}

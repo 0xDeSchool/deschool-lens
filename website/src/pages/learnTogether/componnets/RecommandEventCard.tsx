@@ -30,7 +30,7 @@ const RecommandEventCard: React.FC<RecommandEventCardProps> = (props) => {
   }
 
   return (
-    <div className="flex-1 rounded-2 max-w-520px shadow">
+    <div className="flex-1 rounded-2 max-w-520px shadow font-ArchivoNarrow text-lg">
       {/* <img srcSet={info?.posterUrl} src={fallbackImage} alt="poster" className="w-full rounded-tl-2 rounded-tr-2 aspect-[16:9]" /> */}
       <div className="max-w-520px w-520px rounded-tl-2 rounded-tr-2 aspect-[16:9] overflow-hidden">
         <Image
@@ -55,7 +55,7 @@ const RecommandEventCard: React.FC<RecommandEventCardProps> = (props) => {
         <div className="mb-2">{dayjs(`${info.startTimestamp}000`).format('hh:mm A')} - {dayjs(`${info?.endTimestamp}1000`).format('hh:mm A')}</div>
         <Tags tags={info.tags} />
         <div className="frc-between gap-4 mt-4 ">
-          <Button className='w-120px' disabled={info?.hasInterested} onClick={() => handleIterested()}>{info?.hasInterested ? 'interested' : 'I’m interested'}</Button>
+          <Button className='w-120px font-ArchivoNarrow' disabled={info?.hasInterested} onClick={() => handleIterested()}>{info?.hasInterested ? 'interested' : 'I’m interested'}</Button>
           {info.registrants && <div className="flex-1 frc-start ">
             <AvatarList avatarList={info.registrants.users} />
             <span className={`flex-1 whitespace-nowrap`}> {info.registrants.count <= 3 ? '' : ('+' + (info.registrants.count - 3))} on Booth is also going</span>

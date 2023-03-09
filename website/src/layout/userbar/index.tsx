@@ -113,7 +113,7 @@ const UserBar = () => {
                   {navs.map((nav, index) => (
                     <span
                       key={index.toString() + nav.name}
-                      className={`cursor-pointer text-2xl text-black font-ArchivoNarrow mr-10 ${currentWidth <= 768 ? 'mt-4' : ''} ${
+                      className={`cursor-pointer text-xl text-black font-ArchivoNarrow mr-10 ${currentWidth <= 768 ? 'mt-4' : ''} ${
                         activeNav === nav.path ? 'nav-button-active text-#774FF8' : 'nav-button-normal border-white text-#181818D9'
                       }`}
                     >
@@ -130,7 +130,7 @@ const UserBar = () => {
               {navs.map((nav, index) => (
                 <div
                   key={index.toString() + nav.name}
-                  className={`cursor-pointer text-2xl font-ArchivoNarrow ${
+                  className={`cursor-pointer text-xl font-ArchivoNarrow ${
                     activeNav === nav.path ? 'nav-button-active text-#774FF8' : 'nav-button-normal border-white text-#181818D9'
                   }`}
                   onClick={() => navigate(nav.path)}
@@ -140,7 +140,7 @@ const UserBar = () => {
               ))}
             </div>
             <span
-              className={`cursor-pointer uppercase text-2xl font-ArchivoNarrow ${
+              className={`cursor-pointer uppercase text-xl font-ArchivoNarrow ${
                 activeNav === '/profile/resume' ? 'nav-button-active text-#774FF8' : 'nav-button-normal border-white text-#181818D9'
               }`}
               onClick={() => navigate('/profile/resume')}
