@@ -58,7 +58,7 @@ const CreateCyberConnectProfile: React.FC = () => {
         handle,
         metadata: JSON.stringify(metadata),
         avatar: user.avatar || '',
-        operator: "0x85AAc6211aC91E92594C01F8c9557026797493AE",
+        operator: user.address,
       }
       const wallet= await ccWallet()
       await wallet.getAddress()
