@@ -1,9 +1,9 @@
 import { createProvider, getWallet, WalletConfig, WalletProvider, WalletType } from ".";
-import { BNBTestnet } from "./chains";
+import { BNB, BNBTestnet } from "./chains";
 
 const ccConfig: WalletConfig = {
   type: WalletType.MetaMask,
-  chain: BNBTestnet,
+  chain: import.meta.env.MODE === 'production' ? BNB : BNBTestnet,
 }
 
 let ccProvider: WalletProvider | undefined
