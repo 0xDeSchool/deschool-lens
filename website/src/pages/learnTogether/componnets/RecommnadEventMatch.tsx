@@ -66,8 +66,8 @@ const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
           >
           {info?.courses?.map((course) => {
             return (<SwiperSlide key={`${course.id}`} style={{width: swiperWidth}} className="mx-auto rounded-16px frc-center">
-              <div className="h-240px frc-between gap-4 shadow" style={{width: swiperWidth}}>
-                <div className="w-370px flex-0 relative h-full aspect-[433/280] object-cover rounded-2 bg-white shadow">
+              <div className="h-200px frc-between gap-4 shadow" style={{width: swiperWidth}}>
+                <div className="w-310px flex-0 relative h-full aspect-[433/280] object-cover rounded-2 bg-white shadow">
                   <Image
                     preview={false}
                     src={course?.coverImage}
@@ -95,12 +95,12 @@ const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
         </Swiper>}
         {(info?.courses?.length > 1 && activeIndex > 0) &&
           <div
-            className="swiper-button-prev absolute top-50% translate-y--50% left--32px z-1 w-36px h-36px rounded-50% bg-#181818D9 hover:bg-#18181840 cursor-pointer"
+            className="swiper-button-prev absolute top-50% translate-y--50% left--36px z-1 w-36px h-36px rounded-50% bg-#181818D9 hover:bg-#18181840 cursor-pointer"
             onClick={() => swiperRef?.slidePrev()}>
             <NextArrowIcon />
           </div>}
         {(info?.courses?.length > 1 && activeIndex + 1 < info?.courses?.length)&& <div
-          className="swiper-button-next absolute top-50% translate-y--50% right--32px z-1 w-36px h-36px rounded-50% bg-#181818D9 hover:bg-#18181840 cursor-pointer transform rotate-180"
+          className="swiper-button-next absolute top-50% translate-y--50% right--42px z-1 w-36px h-36px rounded-50% bg-#181818D9 hover:bg-#18181840 cursor-pointer transform rotate-180"
           onClick={() => swiperRef?.slideNext()}
         >
           <NextArrowIcon />
