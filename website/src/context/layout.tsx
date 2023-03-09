@@ -7,12 +7,8 @@ export const LayoutContext = createContext<LayoutContextProps>({
   currentWidth: 1920,
   currentHeight: 1080,
   layoutPosition: {},
-  connectLensBoardVisible: false,
-  setConnectLensBoardVisible: () => {},
-  cyberConnectBoardVisible: false,
-  setCyberConnectBoardVisible: () => {},
-  connectDeschoolBoardVisible: false,
-  setConnectDeschoolBoardVisible: () => {},
+  connectBoardVisible: false,
+  setConnectBoardVisible: () => {},
   setCurrentWidth: () => {},
   setCurrentHeight: () => {},
   setTheme: () => {},
@@ -23,9 +19,7 @@ export const LayoutContextProvider = ({ children }: { children: ReactElement }) 
   const [theme, setTheme] = useState('light')
   const [currentWidth, setCurrentWidth] = useState(1920)
   const [currentHeight, setCurrentHeight] = useState(1080)
-  const [connectLensBoardVisible, setConnectLensBoardVisible] = useState(false)
-  const [cyberConnectBoardVisible, setCyberConnectBoardVisible] = useState(false)
-  const [connectDeschoolBoardVisible, setConnectDeschoolBoardVisible] = useState(false)
+  const [connectBoardVisible, setConnectBoardVisible] = useState(false)
   const [layoutPosition, setLayoutPosition] = useState({})
 
   const onWidthChange = () => {
@@ -56,12 +50,8 @@ export const LayoutContextProvider = ({ children }: { children: ReactElement }) 
       setCurrentWidth,
       currentHeight,
       setCurrentHeight,
-      connectLensBoardVisible,
-      setConnectLensBoardVisible,
-      cyberConnectBoardVisible,
-      setCyberConnectBoardVisible,
-      connectDeschoolBoardVisible,
-      setConnectDeschoolBoardVisible,
+      connectBoardVisible,
+      setConnectBoardVisible,
       layoutPosition,
       setLayoutPosition,
     }),
@@ -72,12 +62,8 @@ export const LayoutContextProvider = ({ children }: { children: ReactElement }) 
       setCurrentWidth,
       currentHeight,
       setCurrentHeight,
-      connectLensBoardVisible,
-      setConnectLensBoardVisible,
-      cyberConnectBoardVisible,
-      setCyberConnectBoardVisible,
-      connectDeschoolBoardVisible,
-      setConnectDeschoolBoardVisible,
+      connectBoardVisible,
+      setConnectBoardVisible,
       layoutPosition,
       setLayoutPosition,
     ],

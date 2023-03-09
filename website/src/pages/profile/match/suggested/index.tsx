@@ -56,23 +56,23 @@ const Suggest = (props: { open: boolean }) => {
           <div className="flex flex-row justify-between">
             <div className="px-4 mr-2">
               {/* <LensAvatar avatarUrl={suggestedUser?.avatarUrl} size={60} wrapperClassName="fcc-center w-full" /> */}
-              <Jazzicon diameter={70} seed={Number(suggestedUser.target.id)} />
+              <Jazzicon diameter={70} seed={Number(suggestedUser?.target?.id)} />
             </div>
 
             <div className="flex flex-col justify-between items-center h-full">
               <div className="flex flex-col items-center">
                 <div>RECOMMENDED SCORE</div>
-                <div className="text-4xl my-2">{suggestedUser.score}</div>
+                <div className="text-4xl my-2">{suggestedUser?.score}</div>
               </div>
             </div>
           </div>
           {/* 推荐原因 */}
           <div className="flex fcs-center ml-">
-            <h1 className="mb-2 font-bold text-lg">{getShortAddress(suggestedUser.target.displayName)}</h1>
+            <h1 className="mb-2 font-bold text-lg">{getShortAddress(suggestedUser?.target?.displayName)}</h1>
             <h2 className="mb-1">He/She is recommended because</h2>
             <ul>
-              {suggestedUser.reasons &&
-                suggestedUser.reasons.map(item => (
+              {suggestedUser?.reasons &&
+                suggestedUser?.reasons.map(item => (
                   <li key={item} className="ml-2 my-1">
                     * {item}
                   </li>
@@ -80,8 +80,8 @@ const Suggest = (props: { open: boolean }) => {
             </ul>
           </div>
           {/* 最下面的操作按钮 */}
-          <div className="flex flex-row justify-between">
-            <NavLink to={`/profile/${suggestedUser.target.address}/resume`}>
+          {suggestedUser?.target?.address && <div className="flex flex-row justify-between">
+            <NavLink to={`/profile/${suggestedUser?.target?.address}/resume`}>
               <Button type="primary">
                 Visit Booth
               </Button>
@@ -91,7 +91,7 @@ const Suggest = (props: { open: boolean }) => {
                 Chat
               </Button>
             </div>
-          </div>
+          </div>}
         </div>
       ) : (
         !loading && (

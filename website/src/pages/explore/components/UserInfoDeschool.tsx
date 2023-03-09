@@ -42,7 +42,7 @@ const UserInfoDeschool: React.FC<UserInfoDeschoolProps> = (props) => {
 
   const handleFollow = async () => {
     if (!user?.id) {
-      message.error('Please first login')
+      message.warning('Please first login')
       return
     }
     setIsFollowLoading(true)

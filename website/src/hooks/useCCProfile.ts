@@ -11,24 +11,22 @@ const client = new ApolloClient({
 });
 
 // 推荐无数据时的默认数据
-const DEFAULT_EVENT = {
+const DEFAULT_EVENT: EventMatchedItem = {
   courses: [
     {
       coverImage: "https://s3.us-east-1.amazonaws.com/deschool/seriesCovers/63469eeb65454ebf70602e997a9616b6-1058-4c1b-b578-fec8f1025ba8",
-      createdAt: "2022-12-17T05:17:36.248Z",
-      creatorId: "63469eeb65454ebf70602e99",
       description: "阿喽哈~想知道DeSchool是个啥？想知道怎么玩转DeSchool？以及，开始上手DeSchool之前，你需要知道的Web3的ABC都在这里啦~",
       id: "639da5507a802abdc51405d4",
       seriesId: "639d50f07a802abdc51405ad",
       title: "功能介绍篇",
     }
   ],
-  followingUsers: null,
   hasInterested: true,
-  id: "0aRLQ3",
   interested: [],
   isEnabled: false,
-  matchedUsers: null,
+  followingUsers: {count: 0, users: []},
+  matchedUsers: {count: 0, users: []},
+  registrants: {count: 0, users: []},
 }
 
 // 每页的数量

@@ -27,7 +27,7 @@ export interface RecomendedUsers {
 
 export interface EventMatchedItem {
   interested: string[]
-  isEnabled: string[]
+  isEnabled: boolean
   followingUsers: RecomendedUsers
   matchedUsers: RecomendedUsers
   courses: MatchedCourse[]
