@@ -87,7 +87,8 @@ const WalletConnectBoard = () => {
             <PopoverAccountInfo
               open={() => {
                 setShowPopover(false)
-              }
+                setConnectBoardVisible(true)
+                }
               } />
           }
           open={showPopover}
