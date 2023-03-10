@@ -19,6 +19,7 @@ import { UserPlatform } from '~/api/booth/types'
 import { CyberProfile } from '~/lib/types/app'
 import Button from 'antd/es/button'
 import { getShortAddress } from '~/utils/format'
+import { ipfsUrl } from '~/utils/ipfs'
 
 const PADE_SIZE = 10
 let page = 1
@@ -118,6 +119,14 @@ const FollowersModal = (props: {
         setCurrentUser({} as UserPlatform)
         return
       }
+      let url = userInfo?.metadataInfo?.avatar
+      if (url?.startsWith('ipfs://')) {
+        const newUrl = ipfsUrl(url)
+        userInfo.avatar = newUrl
+      }
+
+      userInfo.bio = userInfo?.metadataInfo?.bio
+      userInfo.displayName = userInfo?.metadataInfo?.displayName
       // 此人有数据
       setCurrentUser(userInfo)
       initFollowRelationship(userInfo?.handle, address)
