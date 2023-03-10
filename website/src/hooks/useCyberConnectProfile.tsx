@@ -61,9 +61,9 @@ const useCyberConnectProfile = () => {
       }
       let url = userInfo?.metadataInfo?.avatar
       if (url?.startsWith('ipfs://')) {
-        const newUrl = ipfsUrl(url)
-        userInfo.avatar = newUrl
+        url = ipfsUrl(url)
       }
+      userInfo.avatar = url
       userInfo.bio = userInfo?.metadataInfo?.bio
       userInfo.displayName = userInfo?.metadataInfo?.displayName
       // 此人有数据
