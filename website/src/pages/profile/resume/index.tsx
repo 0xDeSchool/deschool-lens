@@ -26,45 +26,6 @@ import { UserInfo } from '~/api/booth/types'
 import { ShareAltOutlined } from '@ant-design/icons'
 import { ipfsUrl } from '~/utils/ipfs'
 
-export const STANDARD_RESUME_DATA: ResumeData = {
-  career: [
-    {
-      title: 'Booth Product Experiencer',
-      description:
-        "I experienced Booth's novel product, which is the LinkedIn of the Web3 world, which can provide people with authentic and credible work and education experience SBT as resume proof. Through Booth, we link to better and more real Web3 workers. I have fully experienced this product and made valuable suggestions",
-      startTime: dayjs('2023-02-04T16:00:00.000Z'),
-      endTime: dayjs('2023-02-04T16:00:00.000Z'),
-      proofs: [
-        {
-          address: '0x45DDB27dD9791957ae20781A2159D780A9626630',
-          tokenId: '0',
-          img: 'https://www.ensoul.io/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fensoul-labs-image%2F9qdqo3Booth-logos.jpeg&w=256&q=75',
-        },
-      ],
-      blockType: BlockType.CareerBlockType,
-      id: uuid(),
-    },
-  ],
-  edu: [
-    {
-      title: 'Booth & DeSchool Product Research',
-      description:
-        'I learned the knowledge of Web3 products, and successfully logged into the Booth product by linking Metamask and lens. This is an important educational experience for me. I learned the basic usage of Web3 products, so I have a credible skill certification when I look for a Web3 job or communicate with people in DAO in the future.',
-      startTime: dayjs('2023-02-04T16:00:00.000Z'),
-      endTime: dayjs('2023-02-04T16:00:00.000Z'),
-      proofs: [
-        {
-          address: '0x45DDB27dD9791957ae20781A2159D780A9626630',
-          tokenId: '1',
-          img: 'https://www.ensoul.io/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fensoul-labs-image%2FqvsspbBooth-logos.jpeg&w=256&q=75',
-        },
-      ],
-      blockType: BlockType.EduBlockType,
-      id: uuid(),
-    },
-  ],
-}
-
 type PublishType = 'CyberConnect' | 'Lens'
 
 const Resume = () => {
@@ -286,13 +247,10 @@ const Resume = () => {
     }
     const result = await getResume(resumeAddress)
 
-    if (!result) {
-      setResumeData(STANDARD_RESUME_DATA)
-      await putResume({ data: JSON.stringify(STANDARD_RESUME_DATA) })
-      return
+    if (result?.data) {
+      const resumeObj = covertCareerAndEdu(result.data)
+      setResumeData(resumeObj)
     }
-    const resumeObj = covertCareerAndEdu(result.data)
-    setResumeData(resumeObj)
     setLoading(false)
   }
 
