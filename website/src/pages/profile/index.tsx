@@ -6,11 +6,11 @@
 import { useEffect } from 'react'
 import { Outlet, useNavigate, useParams } from 'react-router'
 import { useAccount } from '~/account'
+import Verified from './resume/components/verified'
 import UserCard from './userCard'
 
 const UserProfile = () => {
   const { address } = useParams()
-  const navigate = useNavigate()
   const user = useAccount()
 
   // 初始化登录场景，区分自己访问自己或自己访问别人或者别人访问
@@ -35,13 +35,13 @@ const UserProfile = () => {
       <div className="w-full mt-70 xl:w-400px xl:mt-0">
         {/* 用戶面板信息從路由來或者自己緩存來 */}
         <UserCard routeAddress={address} />
-        {/* {location.pathname.includes('/profile/resume') ? <Verified /> : null} */}
+        {/* {location.pathname.includes('/profile/resume') && !address|| user?.address && user.address == address ?  <Verified/> : null} */}
       </div>
       <div className="w-full xl:w-auto xl:ml-3 flex-1 relative font-ArchivoNarrow">
         <div className="mb-10 overflow-auto p-6 border shadow-md rounded-xl">
           <Outlet />
         </div>
-      </div>
+      </div> 
     </div>
   )
 }

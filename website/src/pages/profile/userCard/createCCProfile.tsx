@@ -8,6 +8,7 @@ import { useLazyQuery } from '@apollo/client';
 import { getUserManager, useAccount } from '~/account';
 import { linkPlatform } from '~/api/booth';
 import { PlatformType } from '~/api/booth/booth';
+import { ccWallet } from '~/wallet/wallet_cc';
 
 const CreateCyberConnectProfile: React.FC = () => {
   const user = useAccount()
@@ -28,7 +29,7 @@ const CreateCyberConnectProfile: React.FC = () => {
       message.warning('Handle must be at most 20 characters')
       return false
     }
-    if (!/^[a-z0-9_]+$/.test(handle)) {
+    if (!/^^[a-z0-9_]{1,20}$/.test(handle)) {
       message.warning('Handle can only contain lowercase letters, numbers, and underscores')
       return false
     }
@@ -57,8 +58,10 @@ const CreateCyberConnectProfile: React.FC = () => {
         handle,
         metadata: JSON.stringify(metadata),
         avatar: user.avatar || '',
-        operator: "0x85AAc6211aC91E92594C01F8c9557026797493AE",
+        operator: '0x7b8B67DF90a32a7370E2625Ce5d7565Eecc52F57',
       }
+      const wallet = await ccWallet()
+      await wallet.getAddress()
       await ccContractHub().createProfile(payload, 0x0, 0x0);
       await pollingGetCyberConnectProfile()
     } catch (error: Error | unknown) {
@@ -97,7 +100,6 @@ const CreateCyberConnectProfile: React.FC = () => {
     } catch (e) {
       console.log('error', e)
     } finally {
-      setLoading(false)
     }
   }
 
@@ -117,6 +119,7 @@ const CreateCyberConnectProfile: React.FC = () => {
           displayName: user?.displayName,
         })
         setLoading(false)
+        message.success('Mint profile success')
         await getUserManager().tryAutoLogin()
         clearTimeout(timer)
       } else {

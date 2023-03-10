@@ -15,7 +15,6 @@ import DeschoolCard from './deschoolCard'
 import LensCard from './lensCard'
 import CyberConnectCard from './cyberConnectCard'
 import type { VisitType } from '../utils/visitCase'
-import LensAvatar from './avatar'
 
 type UserCardProps = {
   routeAddress: string | undefined // 父组件希望展示的地址，如果为空则展示登录者自己信息
@@ -53,13 +52,11 @@ const UserCard = (props: UserCardProps) => {
           alt="cover"
           className="h-60! object-cover! object-center! rounded-t-xl"
           wrapperClassName="w-full"
-          crossOrigin="anonymous"
         />)
         : (<div className="h-60 object-cover object-center rounded-t-xl overflow-hidden">
             <Jazzicon paperStyles={{ borderRadius: '10px' }} diameter={400} seed={Math.floor(Math.random() * 30)} />
           </div>)
         }
-        <LensAvatar avatarUrl={user?.avatar} />
         </div>
       {profileType === PlatformType.LENS &&
         <LensCard

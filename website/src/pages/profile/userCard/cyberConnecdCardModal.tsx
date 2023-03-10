@@ -5,8 +5,6 @@ import Skeleton from 'antd/es/skeleton'
 import message from 'antd/es/message'
 import Empty from 'antd/es/empty'
 import ShowMoreLoading from '~/components/loading/showMore'
-import { RoleType } from '~/lib/enum'
-import { getUserContext } from '~/context/account'
 import { Link } from 'react-router-dom'
 import { useLazyQuery } from '@apollo/client'
 
@@ -20,6 +18,8 @@ import { PRIMARY_PROFILE } from '~/api/cc/graphql'
 import { UserPlatform } from '~/api/booth/types'
 import { CyberProfile } from '~/lib/types/app'
 import Button from 'antd/es/button'
+import { getShortAddress } from '~/utils/format'
+import { ipfsUrl } from '~/utils/ipfs'
 
 const PADE_SIZE = 10
 let page = 1
@@ -61,7 +61,8 @@ const FollowersModal = (props: {
     edges = edges.map((item: any) => ({
         address: item.node.address.address,
         avatar: item.node.profile.avatar,
-        handle: item.node.profile.handle,
+        handle: item.node?.address?.wallet?.primaryProfile?.handle,
+        displayName: item.node?.address?.wallet?.primaryProfile?.metadataInfo?.displayName,
         isFollowedByMe: item.node.profile.isFollowedByMe,
       }))
     setFollows(edges)
@@ -118,6 +119,14 @@ const FollowersModal = (props: {
         setCurrentUser({} as UserPlatform)
         return
       }
+      let url = userInfo?.metadataInfo?.avatar
+      if (url?.startsWith('ipfs://')) {
+        const newUrl = ipfsUrl(url)
+        userInfo.avatar = newUrl
+      }
+
+      userInfo.bio = userInfo?.metadataInfo?.bio
+      userInfo.displayName = userInfo?.metadataInfo?.displayName
       // 此人有数据
       setCurrentUser(userInfo)
       initFollowRelationship(userInfo?.handle, address)
@@ -193,7 +202,7 @@ const FollowersModal = (props: {
                   </div>
                   <div className="flex-1 fcs-center ml-2 h-60px">
                     <Link to={`/profile/${f?.address}/resume`}>
-                      <h1>{f?.handle}</h1>
+                      <h1>{f?.displayName || f?.handle || getShortAddress(f?.address)}</h1>
                     </Link>
                   </div>
                   <div className='h-60px frc-center'>

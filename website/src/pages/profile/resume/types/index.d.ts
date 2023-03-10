@@ -47,4 +47,6 @@ export interface SbtInfo {
   address: string
   tokenId: string
   img: string
+  name?: string  
+  description?: string 
 }

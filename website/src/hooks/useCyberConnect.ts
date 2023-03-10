@@ -9,10 +9,10 @@ const getCCInstance = (provider: any) => {
   if (!provider) return null;
 
   const instance = new CyberConnect({
-    namespace: "BoothStg",
-    env: Env.STAGING,
+    namespace: import.meta.env.MODE === 'production' ? 'Booth' : "BoothStg",
+    env: import.meta.env.MODE === 'production' ? Env.PRODUCTION : Env.STAGING,
     provider,
-    signingMessageEntity: "BoothStg",
+    signingMessageEntity: import.meta.env.MODE === 'production' ? 'Booth' : "BoothStg",
   });
 
   cyberConnectInstance = instance;
