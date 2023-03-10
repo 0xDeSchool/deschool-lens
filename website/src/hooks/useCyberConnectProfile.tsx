@@ -86,12 +86,12 @@ const useCyberConnectProfile = () => {
   }, [])
 
   const refreshFollowInfo = useCallback(async (handle: string) => {
-    if (userProfile?.handle) {
+    if (handle) {
       // 获取关注者信息
       initUserFollowersInfo(handle, visitAddress)
       initUserFollowingsInfo(address)
     }
-  }, [])
+  }, [address, visitAddress])
 
   return { userProfile, followerCount, followingCount, isFollowedByMe, userLoading, fetchUserInfo, refreshFollowInfo }
 }
