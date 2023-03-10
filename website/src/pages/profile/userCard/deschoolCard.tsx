@@ -154,57 +154,57 @@ const DeschoolCard = (props: DeschoolCardProps) => {
         (<div className="h-400px fcc-center">
           <Skeleton active />
         </div>)
-      :<>
-        {/* 处理数据为空的情况 */}
-        <div className="mt-70px w-full px-6 pb-6 fcc-center font-ArchivoNarrow">
-          <span className="text-center text-xl w-200px overflow-hidden text-ellipsis" title={currentUser?.displayName}>
-            {!currentUser ? getShortAddress(routeAddress) : currentUser?.displayName === currentUser?.address ? getShortAddress(currentUser?.address) : currentUser?.displayName}
-          </span>
-        </div>
-        <div className="mx-10 frc-center flex-wrap">
-          <a
-            className={`${followers?.length > 0 ? 'hover:underline hover:cursor-pointer' : ''
-              } text-xl mr-4 font-ArchivoNarrow `}
-            onClick={() => {
-              handleJumpFollowers(followers?.length)
-            }}
-          >
-            <span className="text-black">{followers?.length || '-'} </span>
-            <span className="text-gray-5 font-ArchivoNarrow">{t('profile.followers')}</span>
-          </a>
-          <a
-            className={`${followings?.length > 0 ? 'hover:underline hover:cursor-pointer' : ''
-              } text-xl`}
-            onClick={() => {
-              handleJumpFollowing(followings?.length)
-            }}
-          >
-            <span className="text-black">{followings?.length || '-'} </span>
-            <span className="text-gray-5 font-ArchivoNarrow">{t('profile.following')}</span>
-          </a>
-        </div>
-
-        <p className="m-10 text-xl line-wrap three-line-wrap">
-          { currentUser?.bio || (visitCase === 0 ? '' :  "The user hasn't given a bio for self yet :)")}
-        </p>
-        {routeAddress && routeAddress !== user?.address && (
-          <div className="m-10 text-right">
-            {user && <Button
-              className="purple-border-button px-2 py-1 font-ArchivoNarrow"
-              disabled={!user?.address}
+        : <>
+          {/* 处理数据为空的情况 */}
+          <div className="mt-70px w-full px-6 pb-6 fcc-center font-ArchivoNarrow">
+            <span className="text-center text-xl w-200px overflow-hidden text-ellipsis" title={currentUser?.displayName}>
+              {!currentUser ? getShortAddress(routeAddress) : currentUser?.displayName === currentUser?.address ? getShortAddress(currentUser?.address) : currentUser?.displayName}
+            </span>
+          </div>
+          <div className="mx-10 frc-center flex-wrap">
+            <a
+              className={`${followers?.length > 0 ? 'hover:underline hover:cursor-pointer' : ''
+                } text-xl mr-4 font-ArchivoNarrow `}
               onClick={() => {
-                if (isFollowedByMe && currentUser) {
-                  handleUnFollow()
-                } else if (currentUser) {
-                  handleFollow()
-                }
+                handleJumpFollowers(followers?.length)
               }}
             >
-              {isFollowedByMe ? t('UnFollow') : t('Follow')}
-            </Button>}
+              <span className="text-black">{followers?.length || '-'} </span>
+              <span className="text-gray-5 font-ArchivoNarrow">{t('profile.followers')}</span>
+            </a>
+            <a
+              className={`${followings?.length > 0 ? 'hover:underline hover:cursor-pointer' : ''
+                } text-xl`}
+              onClick={() => {
+                handleJumpFollowing(followings?.length)
+              }}
+            >
+              <span className="text-black">{followings?.length || '-'} </span>
+              <span className="text-gray-5 font-ArchivoNarrow">{t('profile.following')}</span>
+            </a>
           </div>
-        )}
-      </>}
+
+          <p className="m-10 text-xl line-wrap three-line-wrap">
+            {currentUser?.bio || (visitCase === 0 ? '' : "The user hasn't given a bio for self yet :)")}
+          </p>
+          {routeAddress && (
+            <div className="m-10 text-right">
+              <Button
+                className="purple-border-button px-2 py-1 font-ArchivoNarrow"
+                disabled={!user || routeAddress === user?.address}
+                onClick={() => {
+                  if (isFollowedByMe && currentUser) {
+                    handleUnFollow()
+                  } else if (currentUser) {
+                    handleFollow()
+                  }
+                }}
+              >
+                {isFollowedByMe ? t('UnFollow') : t('Follow')}
+              </Button>
+            </div>
+          )}
+        </>}
       <DeschoolFollowersModal
         type={modal.type}
         visible={modal.visible}
