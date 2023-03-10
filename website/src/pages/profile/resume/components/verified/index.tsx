@@ -35,9 +35,7 @@ const Verified = (props: VerifiedProp) => {
               <h3 className=" mt-1">Provider: {['Booth', 'Deschool', 'Lens', 'Cyber Connect'][identity?.platform]}</h3>
               <div className="mt-4 text-sm color-gray">
                 <p className="mb-0">
-                  {identity.platform === PlatformType.BOOTH
-                    ? 'Your account is linked with an address on Booth platform. You can add SBTs gained from this linked address. This address can only be binded with your address.'
-                    : 'Your account is linked with an address on DeSchool platform. You can add SBTs gained from this linked address. This address can only be binded with your address.'}
+                  {`Your account is linked with an address on ${['Booth', 'Deschool', 'Lens', 'Cyber Connect'][identity?.platform]}. You can add SBTs gained from this linked address. This address can only be binded with your address.·`}
                 </p>
               </div>
             </div>
