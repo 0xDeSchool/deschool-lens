@@ -41,14 +41,14 @@ const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
         <span>Based on your match</span>
         <div className="frc-start">
           <AvatarList avatarList={info.matchedUsers.users} />
-          <span className="flex-1 whitespace-nowrap">xxx +{count} on Booth is also going</span>
+          <span className="flex-1 whitespace-nowrap">{info.matchedUsers.count <= 3 ? '' : ('+' + (info.matchedUsers.count - 3))} on Booth is also going</span>
         </div>
       </div>}
       {info.followingUsers && <div className="frc-between">
         <span>Based on your following</span>
         <div className="frc-start ">
           <AvatarList avatarList={info.followingUsers.users} />
-          <span className="flex-1 whitespace-nowrap"> {info.followingUsers.count} on Booth is also going</span>
+          <span className="flex-1 whitespace-nowrap"> {info.followingUsers.count <= 3 ? '' : ('+' + (info.followingUsers.count - 3))} on Booth is also going</span>
         </div>
       </div>}
       <div className="divider w-full h-1px bg-gray-200 my-8" />
