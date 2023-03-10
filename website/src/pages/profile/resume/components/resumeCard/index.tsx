@@ -74,7 +74,7 @@ const ResumeCard = (input: ResumeCardInput) => {
                   className="hover:cursor-pointer p-1 border border-white hover:border-#6525FF"
                   onClick={() => navigate(`/sbtIntro/${item.address}/${item.tokenId}`)}
                 >
-                  <Image width={100} height={100} src={item.img} fallback={fallbackImage} preview={false} />
+                  <Image width={100} height={100} src={item.img} crossOrigin='anonymous' fallback={fallbackImage} preview={false} />
                   <div style={{ position: 'absolute', bottom: '0px', right: '0px' }}>
                     <VerifiedIcon style={{ color: blockType === BlockType.CareerBlockType ? '#009411' : '#266DE0', fontSize: 22 }} />
                   </div>
