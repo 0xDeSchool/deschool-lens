@@ -6,4 +6,4 @@ labels:["web3"]
 }
 
 ###
-GET {{host}}/api/users
+GET {{host}}/api/users?platform=3
