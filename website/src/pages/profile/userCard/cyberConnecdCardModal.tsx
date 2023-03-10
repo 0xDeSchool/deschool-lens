@@ -19,7 +19,6 @@ import { UserPlatform } from '~/api/booth/types'
 import { CyberProfile } from '~/lib/types/app'
 import Button from 'antd/es/button'
 import { getShortAddress } from '~/utils/format'
-import { ipfsUrl } from '~/utils/ipfs'
 
 const PADE_SIZE = 10
 let page = 1
@@ -121,7 +120,7 @@ const FollowersModal = (props: {
       }
       let url = userInfo?.metadataInfo?.avatar
       if (url?.startsWith('ipfs://')) {
-        const newUrl = ipfsUrl(url)
+        const newUrl = url.replace('ipfs://', 'https://ipfs.io/ipfs/')
         userInfo.avatar = newUrl
       }
 

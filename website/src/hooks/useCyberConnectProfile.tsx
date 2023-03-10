@@ -4,7 +4,6 @@ import { UserPlatform } from '~/api/booth/types';
 import { PRIMARY_PROFILE } from '~/api/cc/graphql';
 import { GET_FOLLOWER_BY_HANDLE } from '~/api/cc/graphql/GetFollowersByHandle';
 import { GET_FOLLOWING_BY_ADDRESS_EVM } from '~/api/cc/graphql/GetFollowingsByAddressEVM';
-import { ipfsUrl } from '~/utils/ipfs';
 
 const useCyberConnectProfile = () => {
   const [userLoading, setUserLoading] = useState(false)
@@ -54,16 +53,15 @@ const useCyberConnectProfile = () => {
       });
       const userInfo = res?.data?.address?.wallet?.primaryProfile
       // 此人没有handle，cyber没数据
-       // 此人没有handle，cyber没数据
-       if (!userInfo) {
+      if (!userInfo) {
         setUserProfile({} as UserPlatform)
         return
       }
       let url = userInfo?.metadataInfo?.avatar
       if (url?.startsWith('ipfs://')) {
-        url = ipfsUrl(url)
+        url = url.replace('ipfs://', 'http://ipfs.io/ipfs/')
+        userInfo.avatar = url
       }
-      userInfo.avatar = url
       userInfo.bio = userInfo?.metadataInfo?.bio
       userInfo.displayName = userInfo?.metadataInfo?.displayName
       // 此人有数据
