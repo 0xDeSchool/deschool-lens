@@ -168,6 +168,7 @@ const CyberCard = (props: CyberCardProps) => {
                   } px-2 py-1`}
                 style={{ color: !isFollowedByMe ? 'white' : '' }}
                 type={!isFollowedByMe ? 'primary' : 'default'}
+                loading={isFollowLoaindg}
                 disabled={!userProfile?.handle || !user?.address}
                 onClick={() => {
                   if (isFollowedByMe) {

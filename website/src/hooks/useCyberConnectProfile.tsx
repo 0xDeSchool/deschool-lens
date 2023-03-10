@@ -74,7 +74,7 @@ const useCyberConnectProfile = () => {
   useEffect(() => {
     if (userProfile?.handle) {
       // 获取关注者信息
-      initUserFollowersInfo(address, visitAddress)
+      initUserFollowersInfo(userProfile.handle, visitAddress)
       initUserFollowingsInfo(address)
     }
   }, [userProfile])
@@ -88,7 +88,7 @@ const useCyberConnectProfile = () => {
   const refreshFollowInfo = useCallback(async () => {
     if (userProfile?.handle) {
       // 获取关注者信息
-      initUserFollowersInfo(address, visitAddress)
+      initUserFollowersInfo(userProfile.handle, visitAddress)
       initUserFollowingsInfo(address)
     }
   }, [])
