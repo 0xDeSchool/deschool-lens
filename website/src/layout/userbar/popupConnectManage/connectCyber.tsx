@@ -20,7 +20,7 @@ import type { LinkPlatformRequest, UserPlatform } from '~/api/booth/types'
 import { CyberConnectIcon } from '~/components/icon'
 import { ccWallet } from '~/wallet/wallet_cc'
 
-const DOMAIN = 'test.com'
+const DOMAIN = 'booth.ink'
 interface ConnectBoardProps {
   wallectConfig?: WalletConfig
   connectTrigger?: any
