@@ -123,7 +123,11 @@ func (m *MongoUserRepository) filterByUpdate(ctx context.Context, q *string, p *
 func (m *MongoUserRepository) filterByPlatform(ctx context.Context, q *string, platform identity.UserPlatformType, p *x.PageAndSort) []identity.User {
 	filter := bson.D{}
 	if q != nil {
-		filter = bson.D{{Key: "name", Value: bson.D{{Key: "$regex", Value: q}}}}
+		filter = bson.D{
+			{"$or", bson.A{
+				bson.D{{Key: "displayName", Value: bson.D{{Key: "$regex", Value: *q}}}},
+				bson.D{{Key: "address", Value: bson.D{{Key: "$regex", Value: *q}}}},
+			}}}
 	}
 	match := bson.D{{Key: "$match", Value: filter}}
 	lookup := bson.D{{Key: "$lookup", Value: bson.D{
@@ -140,11 +144,20 @@ func (m *MongoUserRepository) filterByPlatform(ctx context.Context, q *string, p
 	match2 := bson.D{{Key: "$match", Value: bson.D{
 		{Key: "platforms.0.platform", Value: platform},
 	}}}
-	sortValue := m.ParseSort(p)
+	lookup2 := bson.D{{Key: "$lookup", Value: bson.D{
+		{Key: "from", Value: "resume"},
+		{Key: "localField", Value: "_id"},
+		{Key: "foreignField", Value: "userId"},
+		{Key: "let", Value: bson.M{"updatedAt": "$updatedAt"}},
+		{Key: "pipeline", Value: bson.A{
+			bson.D{{Key: "$project", Value: bson.M{"updatedAt": 1}}},
+		}},
+		{Key: "as", Value: "resumes"},
+	}}}
 	skip := bson.D{{Key: "$skip", Value: (p.Page - 1) * p.PageSize}}
 	limit := bson.D{{Key: "$limit", Value: p.PageSize}}
-	sort := bson.D{{Key: "$sort", Value: sortValue}}
-	pipe := mongo.Pipeline{match, lookup, match2, sort, skip, limit}
+	sort := bson.D{{Key: "$sort", Value: bson.M{"resumes.0.updatedAt": -1}}}
+	pipe := mongo.Pipeline{match, lookup, match2, lookup2, sort, skip, limit}
 	cur, err := m.Collection(ctx).Col().Aggregate(ctx, pipe)
 	errx.CheckError(err)
 	data := make([]identity.User, 0)
