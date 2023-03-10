@@ -5,11 +5,12 @@ import Button from 'antd/es/button';
 import { useNavigate, NavLink } from 'react-router-dom';
 import RecommnadEventMatch from './componnets/RecommnadEventMatch';
 import RecommandEventCard from './componnets/RecommandEventCard';
+import Empty from 'antd/es/empty';
 
 const LearnTogether = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const {value, loading, hasNextPage, defaultRecommandEvent, loadMore, refresh} = useCCProfile(1)
+  const {value, loading, error, hasNextPage, defaultRecommandEvent, loadMore, refresh} = useCCProfile(1)
 
   return (
     <div className="relative w-auto mx-10 py-10 3xl:w-full 3xl:mx-auto 3xl:max-w-1240px 4xl:max-w-1680px h-full overflow-auto scroll-hidden font-ArchivoNarrow text-xl">
@@ -49,6 +50,12 @@ const LearnTogether = () => {
       {(loading) && (
         <div className="mt-10 w-full frc-center">
           <ShowMoreLoading />
+        </div>
+      )}
+      {error && (
+        <div className='fcc-center py-12'>
+          <Empty description={false} />
+          <Button type='primary' onClick={refresh}>Retry</Button>
         </div>
       )}
     </div>
