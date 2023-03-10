@@ -91,6 +91,15 @@ const CyberCard = (props: CyberCardProps) => {
             setCurrentUser({} as UserPlatform)
             return
           }
+          let url = userInfo?.metadataInfo?.avatar
+          if (url?.startsWith('ipfs://')) {
+            const re = 'ipfs://'
+            const newUrl = url.replace(re, 'http://ipfs.io/ipfs/')
+            userInfo.avatar = newUrl
+          }
+
+          userInfo.bio = userInfo?.metadataInfo?.bio
+          userInfo.displayName = userInfo?.metadataInfo?.displayName
           // 此人有数据
           setCurrentUser(userInfo)
           currentUserHandle = userInfo.handle
