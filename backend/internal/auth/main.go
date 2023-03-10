@@ -24,8 +24,8 @@ type JWTOptions struct {
 // AddAuth 添加权限
 func AddAuth(builder *server.ServerBuiler) {
 	opts := &JWTOptions{
-		Key:   "SeeDA0JWt",
-		Realm: "SeeDao",
+		Key:   "BoothJTWTokenKey",
+		Realm: "Booth",
 	}
 	utils.ViperBind("JWT", opts)
 	di.TryAddValue(opts)
