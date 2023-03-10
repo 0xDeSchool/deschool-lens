@@ -5,6 +5,7 @@ import (
 	"github.com/0xdeschool/deschool-lens/backend/pkg/db/mongodb"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/ddd"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/utils/linq"
+	"github.com/0xdeschool/deschool-lens/backend/pkg/x"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
 	"strconv"
@@ -224,6 +225,7 @@ func getUsers(ctx *gin.Context) {
 	um := *di.Get[identity.UserManager]()
 	var users []identity.User
 	userId := ctx.Query("userId")
+	platform := ginx.QueryInt(ctx, "platform", -1)
 	hasNext := false
 	if userId != "" {
 		u := um.Repo.Get(ctx, mongodb.IDFromHex(userId))
@@ -234,7 +236,11 @@ func getUsers(ctx *gin.Context) {
 			p.Sort = "-createdAt"
 		}
 		p.PageSize += 1
-		users = um.Repo.GetLatestUsers(ctx, p)
+		var platformType *identity.UserPlatformType = nil
+		if platform >= 0 {
+			platformType = x.Ptr(identity.UserPlatformType(platform))
+		}
+		users = um.Repo.GetLatestUsers(ctx, platformType, p)
 		hasNext = len(users) >= int(p.PageSize)
 		if hasNext {
 			users = users[:p.PageSize-1]
