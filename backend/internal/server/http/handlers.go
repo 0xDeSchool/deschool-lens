@@ -55,7 +55,7 @@ func resumeGetHandler(ctx *gin.Context) {
 		return
 	}
 	hm := di.Get[hackathon.HackathonManager]()
-	resume := hm.GetResumeByAddr(ctx, user.ID, nonAutoGen)
+	resume := hm.GetResumeByAddr(ctx, user.ID, user.Address, nonAutoGen)
 	ctx.JSON(http.StatusOK, resume)
 }
 
@@ -67,7 +67,7 @@ func resumePutHandler(ctx *gin.Context) {
 	if !currentUser.Authenticated() {
 		ginx.PanicUnAuthenticated("User is not authenticated")
 	}
-	id := hm.Insert(ctx, currentUser.ID, input.Data)
+	id := hm.Insert(ctx, currentUser.ID, currentUser.Address, input.Data)
 	ginx.EntityCreated(ctx, id.Hex())
 }
 
