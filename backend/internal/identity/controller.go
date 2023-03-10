@@ -49,7 +49,8 @@ func getUserInfo(ctx *gin.Context) {
 	currentUser := ginx.CurrentUser(ctx)
 	if addr == "" {
 		if !currentUser.Authenticated() {
-			ginx.PanicValidatition("addr is required")
+			ctx.JSON(http.StatusOK, nil)
+			return
 		}
 		addr = currentUser.Address
 	}

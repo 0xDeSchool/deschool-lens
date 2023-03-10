@@ -21,5 +21,5 @@ type UserRepository interface {
 	GetPlatforms(ctx context.Context, userId primitive.ObjectID) []UserPlatform
 	GetManyPlatforms(ctx context.Context, userIds []primitive.ObjectID) []UserPlatform
 
-	GetLatestUsers(ctx context.Context, platform *UserPlatformType, p *x.PageAndSort) []User
+	GetUsers(ctx context.Context, q *string, platform *UserPlatformType, p *x.PageAndSort) []User
 }

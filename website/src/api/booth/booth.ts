@@ -81,7 +81,8 @@ export async function getBoothUsers(): Promise<BoothUser[] | null> {
 }
 
 export interface Resume {
-  address: string
+  userId: string
+  address?: string
   data: string
 }
 /**
@@ -89,9 +90,9 @@ export interface Resume {
  * @description 获取当前 address 用户的简历信息
  * @returns {Object} Promise
  */
-export async function getResume(address: string): Promise<Resume | undefined> {
+export async function getResume(idOrAddr: string): Promise<Resume | undefined> {
   try {
-    const result: Resume = await http.get(`/resume?address=${address}`)
+    const result: Resume = await http.get(`/resume?key=${idOrAddr}`)
     return result
   } catch (err) {
     console.log(err)
@@ -100,14 +101,12 @@ export async function getResume(address: string): Promise<Resume | undefined> {
 }
 
 export interface ResumeParam {
-  address: string
   data: string
 }
 
-export async function putResume(param: ResumeParam): Promise<Resume | undefined> {
+export async function putResume(param: ResumeParam): Promise<string | undefined> {
   try {
-    const result: Resume = await http.put(`/resume`, param)
-    return result
+    return await http.put(`/resume`, param)
   } catch (err) {
     console.log(err)
     return undefined

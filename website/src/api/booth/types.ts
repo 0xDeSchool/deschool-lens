@@ -112,5 +112,10 @@ export interface UserFollowing {
   following?: UserItem
 }
 
-
-
+export interface UserRequest {
+  query?: string
+  page?: number
+  pageSize?: number
+  userId?: string
+  platform?: PlatformType
+}

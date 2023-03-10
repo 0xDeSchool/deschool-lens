@@ -2,6 +2,7 @@ package mongo
 
 import (
 	"context"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"github.com/0xdeschool/deschool-lens/backend/internal/hackathon"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
@@ -23,17 +24,17 @@ func NewMongoResumeRepository(c *di.Container) *hackathon.ResumeRepository {
 	return &repo
 }
 
-func (r *MongoResumeRepository) FindOneByAddress(ctx context.Context, address string) *hackathon.Resume {
+func (r *MongoResumeRepository) GetByUserId(ctx context.Context, userId primitive.ObjectID) *hackathon.Resume {
 	filter := bson.D{
-		{Key: "address", Value: address},
+		{Key: "userId", Value: userId},
 	}
 	return r.FindOne(ctx, filter)
 }
 
-func (r *MongoResumeRepository) CheckExistsByAddr(ctx context.Context, address string) bool {
+func (r *MongoResumeRepository) CheckExists(ctx context.Context, userId primitive.ObjectID) bool {
 	// 查询条件
 	filter := bson.D{
-		{Key: "address", Value: address},
+		{Key: "userId", Value: userId},
 	}
 	var result hackathon.Resume
 	err := r.Collection(ctx).Col().FindOne(ctx, filter).Decode(&result)

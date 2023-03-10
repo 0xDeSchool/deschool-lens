@@ -91,3 +91,11 @@ func Path(ctx *gin.Context, key string) string {
 	}
 	return v
 }
+
+func OptionalString(ctx *gin.Context, key string) *string {
+	v := strings.TrimSpace(ctx.Query(key))
+	if v == "" {
+		return nil
+	}
+	return &v
+}
