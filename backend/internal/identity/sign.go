@@ -76,10 +76,9 @@ func signHash(data []byte) []byte {
 
 func verifySigDefault(addr common.Address, msg string, sig string) bool {
 	sigData := hexutil.MustDecode(sig)
-	if sigData[64] != 27 && sigData[64] != 28 {
-		return false
+	if sigData[64] == 27 || sigData[64] == 28 {
+		sigData[64] -= 27
 	}
-	sigData[64] -= 27
 
 	pubKey, err := crypto.SigToPub(signHash([]byte(msg)), sigData)
 	if err != nil {
