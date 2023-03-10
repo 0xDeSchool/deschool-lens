@@ -11,6 +11,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -75,10 +76,41 @@ func (m *MongoUserRepository) GetPlatforms(ctx context.Context, userId primitive
 	return m.userPlatforms(ctx).Find(ctx, filter)
 }
 
-func (m *MongoUserRepository) GetLatestUsers(ctx context.Context, p *x.PageAndSort) []identity.User {
+func (m *MongoUserRepository) GetLatestUsers(ctx context.Context, platform *identity.UserPlatformType, p *x.PageAndSort) []identity.User {
+	if platform != nil {
+		return m.filterBy(ctx, *platform, p)
+	}
 	sort := m.ParseSort(p)
 	opts := options.Find().SetSort(sort).SetLimit(p.Limit()).SetSkip(p.Skip())
 	return m.MongoRepositoryBase.Find(ctx, bson.D{}, opts)
+}
+
+func (m *MongoUserRepository) filterBy(ctx context.Context, platform identity.UserPlatformType, p *x.PageAndSort) []identity.User {
+	match := bson.D{{Key: "$match", Value: bson.D{{}}}}
+	lookup := bson.D{{Key: "$lookup", Value: bson.D{
+		{Key: "from", Value: "user_platforms"},
+		{Key: "localField", Value: "_id"},
+		{Key: "foreignField", Value: "userId"},
+		{Key: "let", Value: bson.M{"platform": "$platform"}},
+		{Key: "pipeline", Value: bson.A{
+			bson.D{{Key: "$match", Value: bson.M{"platform": platform}}},
+			bson.D{{Key: "$project", Value: bson.M{"platform": 1}}},
+		}},
+		{Key: "as", Value: "platforms"},
+	}}}
+	match2 := bson.D{{Key: "$match", Value: bson.D{
+		{Key: "platforms.0.platform", Value: platform},
+	}}}
+	sortValue := m.ParseSort(p)
+	skip := bson.D{{Key: "$skip", Value: (p.Page - 1) * p.PageSize}}
+	limit := bson.D{{Key: "$limit", Value: p.PageSize}}
+	sort := bson.D{{Key: "$sort", Value: sortValue}}
+	pipe := mongo.Pipeline{match, lookup, match2, sort, skip, limit}
+	cur, err := m.Collection(ctx).Col().Aggregate(ctx, pipe)
+	errx.CheckError(err)
+	data := make([]identity.User, 0)
+	errx.CheckError(cur.All(ctx, &data))
+	return data
 }
 
 func (m *MongoUserRepository) userPlatforms(ctx context.Context) *mongodb.Collection[identity.UserPlatform] {
