@@ -48,12 +48,8 @@ type FullAuditEntityBase struct {
 }
 
 func (e *FullAuditEntityBase) Updating(ctx context.Context) {
-	if e.UpdatedAt.IsZero() {
-		e.UpdatedAt = time.Now()
-	}
-	if e.UpdaterId.IsZero() {
-		e.UpdaterId = ginx.CurrentUser(ctx).ID
-	}
+	e.UpdatedAt = time.Now()
+	e.UpdaterId = ginx.CurrentUser(ctx).ID
 }
 
 const SoftDeleteFieldName = "isDeleted"

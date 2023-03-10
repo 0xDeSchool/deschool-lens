@@ -25,7 +25,7 @@ const HotCelebrities = (props: { searchWord: string }) => {
   const initSeries = async () => {
     setLoading(true)
     try {
-      const response = await getLatestUsers({ page, pageSize: PAGE_SIZE })
+      const response = await getLatestUsers({ page, pageSize: PAGE_SIZE, query: searchWord })
       setCelebrities(response.items)
       setCacheCelebrities(response.items)
       setHasNextPage(response.hasNext)
@@ -50,16 +50,6 @@ const HotCelebrities = (props: { searchWord: string }) => {
 
   useEffect(() => {
     initSeries()
-  }, [])
-
-  useEffect(() => {
-    setCelebrities(
-      cacheCelebrities.filter(
-        c =>
-          c.address.toLowerCase().includes(searchWord.toLowerCase()) ||
-          c.displayName?.toLowerCase().includes(searchWord.toLowerCase()),
-      ),
-    )
   }, [searchWord])
 
 

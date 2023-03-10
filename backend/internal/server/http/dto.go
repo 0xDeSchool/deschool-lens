@@ -19,8 +19,7 @@ type IdValidateOutput struct {
 }
 
 type ResumePutInput struct {
-	Address string `json:"address"`
-	Data    string `json:"data"`
+	Data string `json:"data"`
 }
 
 type GetSbtDetailInput struct {

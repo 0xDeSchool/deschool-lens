@@ -21,11 +21,9 @@ var userRepo identity.UserRepository
 func runFix() {
 	ctx := context.Background()
 	userRepo = *di.Get[identity.UserRepository]()
-	//fixUsers(ctx)
-	fixUserLink(ctx)
-	//fixFollow(ctx)
-	//fixMatch(ctx)
-	//fixQ11E(ctx)
+
+	fixResume(ctx)
+
 }
 
 func fixUsers(ctx context.Context) {
@@ -117,4 +115,21 @@ func getUser(ctx context.Context, addr string) *identity.User {
 	user := userRepo.Find(ctx, common.HexToAddress(addr))
 	cachedUser[addr] = user
 	return user
+}
+
+func fixResume(ctx context.Context) {
+	repo := *di.Get[hackathon.ResumeRepository]()
+	data := repo.GetAll(ctx)
+	for i := range data {
+		r := &data[i]
+		if r.UserId.IsZero() {
+			u := getUser(ctx, r.Address)
+			if u == nil {
+				log.Warn("resume: user not found:" + r.Address)
+				continue
+			}
+			r.UserId = u.ID
+			repo.Update(ctx, r.ID, r)
+		}
+	}
 }

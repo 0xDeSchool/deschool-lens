@@ -224,13 +224,14 @@ func (mr *MongoRepositoryBase[TEntity]) FilterCount(ctx context.Context, filter 
 }
 
 // Upsert By Field
-func (mr *MongoRepositoryBase[TEntity]) UpsertByField(ctx context.Context, field string, fieldValue any, newObj TEntity) primitive.ObjectID {
+func (mr *MongoRepositoryBase[TEntity]) UpsertByField(ctx context.Context, field string, fieldValue any, newObj *TEntity) primitive.ObjectID {
 	filter := bson.D{
 		{Key: field, Value: fieldValue},
 	}
 	setter := bson.D{
 		{Key: "$set", Value: newObj},
 	}
+	ddd.SetAudited(ctx, newObj)
 	options := options.Update().SetUpsert(true)
 	result, err := mr.Collection(ctx).Col().UpdateOne(ctx, filter, setter, options)
 	errx.CheckError(err)

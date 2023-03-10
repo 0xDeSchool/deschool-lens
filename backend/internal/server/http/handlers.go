@@ -43,11 +43,19 @@ func idValidateHandler(ctx *gin.Context) {
 }
 
 func resumeGetHandler(ctx *gin.Context) {
-	hm := *di.Get[hackathon.HackathonManager]()
-	address := ctx.Query("address")
+	userIdOrAddr := ctx.Query("key")
 	nonAutoGen := ginx.QueryBool(ctx, "non-auto-gen")
-	address = eth.NormalizeAddress(address)
-	resume := hm.GetResumeByAddr(ctx, address, nonAutoGen)
+	if userIdOrAddr == "" {
+		ginx.PanicValidatition("key is required")
+	}
+	um := di.Get[identity.UserManager]()
+	user := um.Find(ctx, userIdOrAddr)
+	if user == nil {
+		ctx.JSON(http.StatusOK, nil)
+		return
+	}
+	hm := di.Get[hackathon.HackathonManager]()
+	resume := hm.GetResumeByAddr(ctx, user.ID, nonAutoGen)
 	ctx.JSON(http.StatusOK, resume)
 }
 
@@ -55,8 +63,11 @@ func resumePutHandler(ctx *gin.Context) {
 	hm := *di.Get[hackathon.HackathonManager]()
 	var input ResumePutInput
 	errx.CheckError(ctx.BindJSON(&input))
-	input.Address = eth.NormalizeAddress(input.Address)
-	id := hm.InsertResumeByAddr(ctx, input.Address, input.Data)
+	currentUser := ginx.CurrentUser(ctx)
+	if !currentUser.Authenticated() {
+		ginx.PanicUnAuthenticated("User is not authenticated")
+	}
+	id := hm.Insert(ctx, currentUser.ID, input.Data)
 	ginx.EntityCreated(ctx, id.Hex())
 }
 
@@ -98,7 +109,7 @@ func q11ePutHandler(ctx *gin.Context) {
 	hm := *di.Get[hackathon.HackathonManager]()
 	var input PutQ11eInput
 	errx.CheckError(ctx.BindJSON(&input))
-	id := hm.PutQ11e(ctx, *NewQ11e(&input))
+	id := hm.PutQ11e(ctx, NewQ11e(&input))
 	ginx.EntityCreated(ctx, id.Hex())
 }
 
@@ -225,6 +236,8 @@ func getUsers(ctx *gin.Context) {
 	um := *di.Get[identity.UserManager]()
 	var users []identity.User
 	userId := ctx.Query("userId")
+	query := ginx.OptionalString(ctx, "q")
+
 	platform := ginx.QueryInt(ctx, "platform", -1)
 	hasNext := false
 	if userId != "" {
@@ -240,7 +253,7 @@ func getUsers(ctx *gin.Context) {
 		if platform >= 0 {
 			platformType = x.Ptr(identity.UserPlatformType(platform))
 		}
-		users = um.Repo.GetLatestUsers(ctx, platformType, p)
+		users = um.Repo.GetUsers(ctx, query, platformType, p)
 		hasNext = len(users) >= int(p.PageSize)
 		if hasNext {
 			users = users[:p.PageSize-1]

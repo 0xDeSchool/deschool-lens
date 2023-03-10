@@ -34,6 +34,7 @@ func Init(sb *server.ServerBuiler) {
 
 func HackathonApi(sb *server.ServerBuiler) {
 	altAuth := ginx.OptionalAuthHandlerFunc(sb)
+	auth := ginx.OptionalAuthHandlerFunc(sb)
 	// 在 Server 中添加 Hackathon 模块的各个 Route
 	sb.Configure(func(s *server.Server) error {
 		baseRoute := s.Route.Group("/api")
@@ -46,7 +47,7 @@ func HackathonApi(sb *server.ServerBuiler) {
 
 		// Stage 2 - 简历 + 技能
 		baseRoute.GET("/resume", resumeGetHandler)
-		baseRoute.PUT("/resume", resumePutHandler)
+		baseRoute.PUT("/resume", auth, resumePutHandler)
 		baseRoute.GET("/id/sbt", idSbtDetailGetHandler)
 
 		// Stage 3 - 推荐 + 互联

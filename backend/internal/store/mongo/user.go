@@ -76,17 +76,56 @@ func (m *MongoUserRepository) GetPlatforms(ctx context.Context, userId primitive
 	return m.userPlatforms(ctx).Find(ctx, filter)
 }
 
-func (m *MongoUserRepository) GetLatestUsers(ctx context.Context, platform *identity.UserPlatformType, p *x.PageAndSort) []identity.User {
+func (m *MongoUserRepository) GetUsers(ctx context.Context, q *string, platform *identity.UserPlatformType, p *x.PageAndSort) []identity.User {
 	if platform != nil {
-		return m.filterBy(ctx, *platform, p)
+		return m.filterByPlatform(ctx, q, *platform, p)
+	} else {
+		return m.filterByUpdate(ctx, q, p)
 	}
-	sort := m.ParseSort(p)
-	opts := options.Find().SetSort(sort).SetLimit(p.Limit()).SetSkip(p.Skip())
-	return m.MongoRepositoryBase.Find(ctx, bson.D{}, opts)
+	//sort := m.ParseSort(p)
+	//opts := options.Find().SetSort(sort).SetLimit(p.Limit()).SetSkip(p.Skip())
+	//return m.MongoRepositoryBase.Find(ctx, bson.D{}, opts)
 }
 
-func (m *MongoUserRepository) filterBy(ctx context.Context, platform identity.UserPlatformType, p *x.PageAndSort) []identity.User {
-	match := bson.D{{Key: "$match", Value: bson.D{{}}}}
+// GetManyByAddr 通过简历更新时间排序
+func (m *MongoUserRepository) filterByUpdate(ctx context.Context, q *string, p *x.PageAndSort) []identity.User {
+	filter := bson.D{}
+	if q != nil {
+		filter = bson.D{
+			{"$or", bson.A{
+				bson.D{{Key: "displayName", Value: bson.D{{Key: "$regex", Value: *q}}}},
+				bson.D{{Key: "address", Value: bson.D{{Key: "$regex", Value: *q}}}},
+			}}}
+	}
+	match := bson.D{{Key: "$match", Value: filter}}
+	lookup := bson.D{{Key: "$lookup", Value: bson.D{
+		{Key: "from", Value: "resume"},
+		{Key: "localField", Value: "_id"},
+		{Key: "foreignField", Value: "userId"},
+		{Key: "let", Value: bson.M{"updatedAt": "$updatedAt"}},
+		{Key: "pipeline", Value: bson.A{
+			bson.D{{Key: "$project", Value: bson.M{"updatedAt": 1}}},
+		}},
+		{Key: "as", Value: "resumes"},
+	}}}
+	skip := bson.D{{Key: "$skip", Value: (p.Page - 1) * p.PageSize}}
+	limit := bson.D{{Key: "$limit", Value: p.PageSize}}
+	sort := bson.D{{Key: "$sort", Value: bson.M{"resumes.0.updatedAt": -1}}}
+	pipe := mongo.Pipeline{match, lookup, sort, skip, limit}
+	cur, err := m.Collection(ctx).Col().Aggregate(ctx, pipe)
+	errx.CheckError(err)
+	data := make([]identity.User, 0)
+	errx.CheckError(cur.All(ctx, &data))
+	return data
+}
+
+// GetManyByAddr 通过平台筛选，注册时间排序
+func (m *MongoUserRepository) filterByPlatform(ctx context.Context, q *string, platform identity.UserPlatformType, p *x.PageAndSort) []identity.User {
+	filter := bson.D{}
+	if q != nil {
+		filter = bson.D{{Key: "name", Value: bson.D{{Key: "$regex", Value: q}}}}
+	}
+	match := bson.D{{Key: "$match", Value: filter}}
 	lookup := bson.D{{Key: "$lookup", Value: bson.D{
 		{Key: "from", Value: "user_platforms"},
 		{Key: "localField", Value: "_id"},

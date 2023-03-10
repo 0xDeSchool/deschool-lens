@@ -22,7 +22,12 @@ type UserManager struct {
 }
 
 func (m *UserManager) Find(ctx context.Context, addr string) *User {
-	u := m.Repo.Find(ctx, common.HexToAddress(addr))
+	var u *User
+	if common.IsHexAddress(addr) {
+		u = m.Repo.Find(ctx, common.HexToAddress(addr))
+	} else if id, err := primitive.ObjectIDFromHex(addr); err == nil {
+		u = m.Repo.FirstOrDefault(ctx, id)
+	}
 	if u == nil {
 		return nil
 	}
