@@ -10,7 +10,7 @@ import Empty from 'antd/es/empty';
 const LearnTogether = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const {value, loading, error, hasNextPage, defaultRecommandEvent, loadMore, refresh} = useCCProfile(1)
+  const {value, loading, error, hasNextPage, defaultRecommandEvent, loadMore, refresh, retry} = useCCProfile(1)
 
   return (
     <div className="relative w-auto mx-10 py-10 3xl:w-full 3xl:mx-auto 3xl:max-w-1240px 4xl:max-w-1680px h-full overflow-auto scroll-hidden font-ArchivoNarrow text-xl">
@@ -55,7 +55,7 @@ const LearnTogether = () => {
       {error && (
         <div className='fcc-center py-12'>
           <Empty description={false} />
-          <Button type='primary' onClick={refresh}>Retry</Button>
+          <Button type='primary' onClick={retry}>Retry</Button>
         </div>
       )}
     </div>
