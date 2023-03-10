@@ -26,7 +26,7 @@ const CyberCard = (props: CyberCardProps) => {
   const { follow } = useFollow();
   const { unFollow } = useUnFollow();
   const [isFollowLoaindg, setIsFollowLoading] = useState(false)
-  const { userProfile, followerCount, followingCount, isFollowedByMe, userLoading, fetchUserInfo } = useCyberConnectProfile()
+  const { userProfile, followerCount, followingCount, isFollowedByMe, userLoading, fetchUserInfo, refreshFollowInfo } = useCyberConnectProfile()
 
   // 根据不同情况初始化用户信息
   const initUserInfo = async () => {
@@ -95,7 +95,7 @@ const CyberCard = (props: CyberCardProps) => {
     const result = await follow(userProfile?.handle!)
     setIsFollowLoading(false)
     // 关注成功后，刷新页面
-    initUserInfo()
+    refreshFollowInfo(userProfile.handle!)
   };
 
   const handleUnfollow = async () => {
@@ -107,7 +107,7 @@ const CyberCard = (props: CyberCardProps) => {
     const result = await unFollow(userProfile?.handle!)
     setIsFollowLoading(false)
     // 关注成功后，刷新页面
-    initUserInfo()
+    refreshFollowInfo(userProfile.handle!)
   };
 
   return (

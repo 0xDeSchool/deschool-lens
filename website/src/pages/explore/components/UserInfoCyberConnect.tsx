@@ -47,7 +47,7 @@ const UserInfoCyberConnect: React.FC<UserInfoCyberConnectProps> = (props) => {
     await follow(userProfile?.handle!)
     setIsFollowLoading(false)
     // 关注成功后，刷新页面
-    await refreshFollowInfo()
+    await refreshFollowInfo(userProfile.handle!);
   };
 
   const handleUnfollow = async () => {
@@ -59,7 +59,7 @@ const UserInfoCyberConnect: React.FC<UserInfoCyberConnectProps> = (props) => {
     await unFollow(userProfile?.handle!)
     setIsFollowLoading(false)
     // 关注成功后，刷新页面
-    await refreshFollowInfo()
+    await refreshFollowInfo(userProfile.handle!)
   };
 
   const handleJumpProfile = () => {

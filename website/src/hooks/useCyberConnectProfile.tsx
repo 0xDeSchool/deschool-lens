@@ -85,10 +85,10 @@ const useCyberConnectProfile = () => {
     await initUserInfo(address, visitAddress)
   }, [])
 
-  const refreshFollowInfo = useCallback(async () => {
+  const refreshFollowInfo = useCallback(async (handle: string) => {
     if (userProfile?.handle) {
       // 获取关注者信息
-      initUserFollowersInfo(userProfile.handle, visitAddress)
+      initUserFollowersInfo(handle, visitAddress)
       initUserFollowingsInfo(address)
     }
   }, [])
