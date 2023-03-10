@@ -24,6 +24,7 @@ import Congradulations from './components/congradulations'
 import { getUserInfo } from '~/api/booth'
 import { UserInfo } from '~/api/booth/types'
 import { ShareAltOutlined } from '@ant-design/icons'
+import { ipfsUrl } from '~/utils/ipfs'
 
 export const STANDARD_RESUME_DATA: ResumeData = {
   career: [
@@ -309,12 +310,13 @@ const Resume = () => {
     for (let i = 0; i < result.sbts.length; i++) {
       const sbt = result.sbts[i]
       const url = sbt.normalized_metadata.image
-      const re = 'ipfs://'
-      const newUrl = url.replace(re, 'http://ipfs.io/ipfs/')
+      const newUrl = ipfsUrl(url)
       sbtArr.push({
         address: sbt.token_address,
         tokenId: sbt.token_id,
         img: newUrl,
+        name: sbt.normalized_metadata.name,
+        description: sbt.normalized_metadata.description,
       })
     }
     setSbtList(sbtArr)
