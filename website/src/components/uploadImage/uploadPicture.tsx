@@ -216,12 +216,12 @@ const UploadPicture = forwardRef((props: UploadPictureProps, ref: Ref<UploadPict
                 <CloudUploadOutlined style={{ fontSize: 32, color: visible ? 'white' : 'transparent' }} />
                 <span style={{ color: visible ? 'white' : 'transparent' }}>{loading ? 'uploading' : 'upload'}</span>
               </div>
-              <img
+              {fileList[0].url && <img
                 src={fileList[0].url}
                 alt="series cover"
                 style={style}
                 className={`object-contain ${imgCropProps?.shape === 'round' ? 'rounded-full' : ''}`}
-              />
+              />}
             </div>
           ) : (
             uploadButton

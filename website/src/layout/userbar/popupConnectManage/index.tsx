@@ -14,18 +14,18 @@ const PopupConnectManage: React.FC<PopupConnectManageProps> = (props) => {
   return (
     <div>
       <div className='text-xl frc-between'>
-        <span>Booth</span>
+        <h1 className='text-2xl font-Anton'>Booth</h1>
         <Button shape='circle' size='large' icon={<CloseCircleOutlined style={{color: '#999'}} />} className="frc-center" onClick={() => close()} />
       </div>
       <UpdateUsername />
-      <div className='frc-center gap-8 px-8 pt-8 pb-24'>
-        <div className='item-connect flex-1'>
+      <div className='frc-center gap-8 px-8 pt-8 pb-12'>
+        <div className='item-connect flex-1 max-w-300px min-w-300px'>
           <ConnectDeschool />
         </div>
-        <div className='item-connect flex-1'>
+        <div className='item-connect flex-1 max-w-300px min-w-300px'>
           <ConnectCyberBoard />
         </div>
-        <div className='item-connect flex-1'>
+        <div className='item-connect flex-1 max-w-300px min-w-300px'>
           <ConnectLensBoard />
         </div>
       </div>

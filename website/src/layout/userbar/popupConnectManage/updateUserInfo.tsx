@@ -70,8 +70,8 @@ const UpdateUsername: React.FC = () => {
   }
 
   return (
-    <div className='frs-start gap-1 px-8 pt-24'>
-      {!edit && <Avatar size={68} alt="user avatar" src={user && user.avatar || DEFAULT_AVATAR} />}
+    <div className='frs-start gap-1 px-8 pt-12'>
+      {!edit && <Avatar size={68} alt="user avatar" className='drop-shadow-xl shadow-lg' src={user && user.avatar || DEFAULT_AVATAR} />}
       {edit && (
         <UploadPicture
           width={68}
@@ -91,21 +91,21 @@ const UpdateUsername: React.FC = () => {
         <div className="frc-start mb-2">
           <Input
             value={username}
-            style={{ width: '200px' }}
+            style={{ width: '240px' }}
             allowClear
             disabled={!user?.address || !edit || loading}
             placeholder={user?.address ? 'Please login' : 'Please input username'}
             bordered={false}
             maxLength={30}
             minLength={1}
-            onChange={(e) => setUsername(e.target.value)}/>
+            onChange={(e: any) => setUsername(e.target.value)}/>
           <Button
             type={!edit ? 'default' : 'primary'}
             icon={<EditOutlined />}
             size='small'
             loading={loading}
             disabled={!user?.address || uploading}
-            className="mr-2 frc-center"
+            className="ml-12 mr-2 frc-center"
             onClick={() => handleToggle()}>{edit ? 'SAVE' : 'EDIT'}</Button>
           {edit && <Button size='small' disabled={!user?.address}
             onClick={() => setEdit(false)}>CANCEL</Button>}
@@ -113,7 +113,7 @@ const UpdateUsername: React.FC = () => {
         <TextArea
           rows={3}
           value={bio}
-          style={{ width: '200px'}}
+          style={{ width: '240px'}}
           allowClear
           disabled={!user?.address || !edit || loading}
           placeholder={user?.address ? 'bio...' : 'Please input bio'}
@@ -121,7 +121,7 @@ const UpdateUsername: React.FC = () => {
           maxLength={100}
           minLength={1}
           autoSize={{ minRows: 3, maxRows: 4 }}
-          onChange={(e) => setBio(e.target.value)}/>
+          onChange={(e: any) => setBio(e.target.value)}/>
       </div>
 
     </div>

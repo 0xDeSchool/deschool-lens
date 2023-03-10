@@ -205,7 +205,7 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
   }, [connectTrigger])
 
   return (
-    <div className="fcc-between w-full min-h-360px p-4 rounded-lg shadow">
+    <div className="fcc-between w-full min-h-360px p-4 rounded-lg drop-shadow-xl shadow-xl">
       <div className='fcs-start w-full'>
         <div className="bg-#abfe2c rounded-2 px-2 py-2 frc-start">
           <img src={IconLens} alt="lens" width={20} height={20} />
@@ -230,7 +230,7 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
           className="w-full h-12 border border-solid border-#6525FF bg-white hover:border-#6525FF66 hover:bg-#6525FF22"
           disabled={loading}
         >
-          {!lensProfile ? (<div className="text-#6525FF text-[16px] w-full frc-between">
+          <div className="text-#6525FF text-[16px] w-full frc-between">
             <div className="frc-start">
               <span className='mr-2'>CONNECT</span>
               {loading && (
@@ -238,10 +238,7 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
               )}
             </div>
             <img alt="mask" src={MetaMaskImage} style={{ width: '25px', height: '25px' }} />
-          </div>) :
-            (<div className="text-#6525FF text-[16px] w-full frc-center">
-              DISCONNECT
-            </div>)}
+          </div>
         </Button>
       </div>
     </div>
