@@ -24,7 +24,7 @@ const SbtItem = (props: { list: string[]; toggleList: (key: string) => void; ite
       cursor-pointer ${isInList(key) ? 'border-#6525FF bg-gray-100' : 'border-black'}`}
       onClick={() => toggleList(key)}
     >
-      <Image src={item.img} preview={false} crossOrigin='anonymous' alt={item.name} fallback={fallbackImage} className="w-full h-full object-contain object-center" />
+      <Image src={item.img} preview={false} alt={item.name} fallback={fallbackImage} className="w-full h-full object-contain object-center" />
       <div className="flex justify-end" style={{ position: 'relative' }}>
         {list.includes(key) && (
           <div style={{ position: 'absolute', bottom: '5px', right: '5px' }}>

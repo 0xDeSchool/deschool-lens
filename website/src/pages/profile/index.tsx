@@ -41,7 +41,7 @@ const UserProfile = () => {
         <div className="mb-10 overflow-auto p-6 border shadow-md rounded-xl">
           <Outlet />
         </div>
-      </div>
+      </div> 
     </div>
   )
 }
