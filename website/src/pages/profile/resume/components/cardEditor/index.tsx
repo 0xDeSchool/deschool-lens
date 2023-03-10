@@ -125,7 +125,7 @@ const CardEditor = (input: CardEditorInput) => {
       endTime: dayjs(form.getFieldValue('etime')),
       proofs,
       blockType: originalData?.blockType,
-      id: originalData?.id || uuid(),
+      id: originalData?.id === undefined ? uuid() : originalData?.id,
     }
     handleOk(newCard)
   }

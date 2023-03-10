@@ -227,7 +227,6 @@ const Resume = () => {
 
   // 删除经历 - 确认
   const handleDeleteCard = (bt: BlockType, id: string) => {
-    console.log('bt: BlockType', bt, id)
     const newResumeData: ResumeData = { edu: [], career: [] }
     if (bt === BlockType.CareerBlockType && resumeData?.career !== undefined) {
       newResumeData.career = resumeData?.career?.filter(item => item.id !== id)
