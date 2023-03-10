@@ -68,7 +68,6 @@ const UserInfoDeschool: React.FC<UserInfoDeschoolProps> = (props) => {
     navigate(`/profile/${address}/resume`)
   }
 
-
   if (loading) return <UserInfoSkeleton />
 
   return (
@@ -121,14 +120,17 @@ const UserInfoDeschool: React.FC<UserInfoDeschoolProps> = (props) => {
       <p className="mt-4 mx-auto font-ArchivoNarrow text-#000000d8 text-16px align-center leading-24px h-80px line-wrap three-line-wrap">
         {bio || "The user hasn't given a bio for self yet :)"}
       </p>
-      <div className='frc-between gap-8 mx-auto'>
+      {<div className='frc-between gap-8 mx-auto'>
         <Button
           className='w-120px frc-center purple-border-button px-2 py-1 font-ArchivoNarrow'
-          style={{color: following ? '' : 'white'}}
+          style={{ color: following ? '' : 'white' }}
           type={!following ? 'primary' : 'default'}
-          loading={isFollowLoading} disabled={isFollowLoading} onClick={!following ? handleFollow : handleUnfollow}>{!following ? 'Follow' : 'Unfollow'}</Button>
+          loading={isFollowLoading}
+          disabled={isFollowLoading || !user || user.address === address}
+          onClick={!following ? handleFollow : handleUnfollow}>{!following ? 'Follow' : 'Unfollow'}
+        </Button>
         <Button className='w-120px frc-center purple-border-button px-2 py-1 font-ArchivoNarrow' onClick={handleJumpProfile}> {t('LearnMore')}</Button>
-      </div>
+      </div>}
     </>
   )
 }
