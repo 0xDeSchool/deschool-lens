@@ -108,6 +108,16 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true,
           rewrite: pathGoapi => pathGoapi.replace(/^\/ccProfile/, ''),
         },
+        '/mypinata':{
+          target: 'https://deschool.mypinata.cloud/ipfs/',
+          secure: false,
+          ws: true,
+          changeOrigin: true,
+          headers: {
+            'x-pinata-gateway-token':'6aiuIxB2BLgtHohX8bbyn7rA8CFFxqffIvMZwePri0iM-z2H_PkgyuRv5j7r8URF'
+          },
+          rewrite: pathGoapi => pathGoapi.replace(/^\/mypinata/, ''),
+        }
       },
     },
     // 构建
