@@ -88,10 +88,11 @@ const LensCard = (props: LensCardProps) => {
 
   useEffect(() => {
     setModal({ type: 'followers', visible: false })
+    initUserInfo()
   }, [routeAddress])
 
   useEffect(() => {
-    initUserInfo()
+
     if (updateTrigger > 0) {
       setModal({
         type: 'followers',

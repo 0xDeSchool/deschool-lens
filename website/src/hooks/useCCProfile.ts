@@ -119,15 +119,25 @@ const useCCProfile = (defaultPage: number) => {
     initData()
   }, [page, user])
 
+  // 加载更多
   const loadMore = useCallback(() => {
     if (hasNextPage) {
+      setError(null)
       setPage(page + 1)
     }
   }, [page, hasNextPage])
 
+  // 发生错误，重新请求当前页面数据
+  const retry = useCallback(() => {
+    // 重置错误
+    setError(null)
+    initData()
+  }, [])
+
+  // 刷新数据，仅刷新当前获取的数据
   const refresh = useCallback(() => { refreshEventsData(recomendedEvents) }, [recomendedEvents])
 
-  return { loading, error, value, defaultRecommandEvent, hasNextPage, loadMore, refresh }
+  return { loading, error, value, defaultRecommandEvent, hasNextPage, loadMore, refresh, retry }
 }
 
 export default useCCProfile;

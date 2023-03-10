@@ -8,7 +8,6 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
 import { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import fallbackImage from '~/assets/images/fallbackImage'
 import { NextArrowIcon } from '~/components/icon'
 import React from 'react'
 
@@ -20,7 +19,7 @@ const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
   const { info } = props
   const count = 10
   const [swiperRef, setSwiperRef] = useState<any>(null)
-  const [activeIndex, setActiveIndex] = useState(0)
+  const [activeIndex, setActiveIndex] = useState(1)
   const [swiperWidth, setSwiperWidth] = useState('50vw')
   const boardRef = React.useRef<HTMLDivElement>(null)
   const onStartLearning = (c: MatchedCourse) => {
@@ -56,18 +55,17 @@ const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
       <h1 className="text-xl font-500 font-Anton mb-8">Get prepared on deschool before the event</h1>
       <div className='relative w-100%' style={{width: swiperWidth}}>
         {info?.courses?.length > 0 && <Swiper
-            className="mx-auto frc-center"
+         style={{width: swiperWidth}}
             onSwiper={setSwiperRef}
             loop={false}
             grabCursor
-            centeredSlides
             slidesPerView={1}
             onActiveIndexChange={(swiper) => setActiveIndex(swiper.activeIndex)}
           >
           {info?.courses?.map((course) => {
-            return (<SwiperSlide key={`${course.id}`} style={{width: swiperWidth}} className="mx-auto rounded-16px frc-center">
-              <div className="h-200px frc-between gap-4 shadow" style={{width: swiperWidth}}>
-                <div className="w-310px flex-0 relative h-full aspect-[433/280] object-cover rounded-2 bg-white shadow">
+            return (<SwiperSlide key={`${course.id}`} >
+              <div className="h-200px frc-between gap-4">
+                <div className="w-310px flex-0 relative h-full aspect-[433/280] object-cover rounded-2 bg-white">
                   <Image
                     preview={false}
                     src={course?.coverImage || 'https://deschool.s3.amazonaws.com/static/cover_course_event.jpg'}
@@ -84,10 +82,10 @@ const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
                     }
                   />
                 </div>
-                <div className="flex-1 h-full fcs-between py-2">
-                  <div className="text-2xl mb-2">{course?.title}</div>
-                  <div className="mb-1 font-ArchivoNarrow">{course?.description}</div>
-                  <Button type="primary" onClick={() => onStartLearning(course)}>Start Learning</Button>
+                <div className="flex-1 h-full fcs-between gap-3 py-2">
+                  <div className="text-2xl">{course?.title}</div>
+                  <div className="text-xl font-ArchivoNarrow two-line-wrap">{course?.description}</div>
+                  <Button type="primary" className='dop-shadow-xl' onClick={() => onStartLearning(course)}>Start Learning</Button>
                 </div>
               </div>
             </SwiperSlide>)
@@ -95,12 +93,12 @@ const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
         </Swiper>}
         {(info?.courses?.length > 1 && activeIndex > 0) &&
           <div
-            className="swiper-button-prev absolute top-50% translate-y--50% left--36px z-1 w-36px h-36px rounded-50% bg-#181818D9 hover:bg-#18181840 cursor-pointer"
+            className="absolute top-50% translate-y--50% left--36px z-1 drop-shadow-xl shadow-xl w-36px h-36px rounded-50% bg-#181818D9 hover:bg-#18181840 cursor-pointer"
             onClick={() => swiperRef?.slidePrev()}>
             <NextArrowIcon />
           </div>}
         {(info?.courses?.length > 1 && activeIndex + 1 < info?.courses?.length)&& <div
-          className="swiper-button-next absolute top-50% translate-y--50% right--42px z-1 w-36px h-36px rounded-50% bg-#181818D9 hover:bg-#18181840 cursor-pointer transform rotate-180"
+          className="absolute top-50% translate-y--50% right--42px z-1 drop-shadow-xl shadow-xl w-36px h-36px rounded-50% bg-#181818D9 hover:bg-#18181840 cursor-pointer transform rotate-180"
           onClick={() => swiperRef?.slideNext()}
         >
           <NextArrowIcon />
