@@ -1,6 +1,8 @@
 package identity
 
 import (
+	"net/http"
+
 	"github.com/0xdeschool/deschool-lens/backend/pkg/db/mongodb"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/errx"
@@ -9,7 +11,6 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"net/http"
 )
 
 func identityController(sb *server.ServerBuiler) {
