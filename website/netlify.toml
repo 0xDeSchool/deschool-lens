@@ -54,7 +54,7 @@
 
 [[redirects]]
   from = "/goapiBoothStg/*"
-  to = "http://107.21.139.86:80/api/:splat"
+  to = "http://54.90.108.215/api/:splat"
   status = 200
   force = true
 
