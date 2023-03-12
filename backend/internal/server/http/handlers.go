@@ -44,6 +44,9 @@ func idValidateHandler(ctx *gin.Context) {
 
 func resumeGetHandler(ctx *gin.Context) {
 	userIdOrAddr := ctx.Query("key")
+	if userIdOrAddr == "" {
+		userIdOrAddr = ctx.Query("address")
+	}
 	nonAutoGen := ginx.QueryBool(ctx, "non-auto-gen")
 	if userIdOrAddr == "" {
 		ginx.PanicValidatition("key is required")
