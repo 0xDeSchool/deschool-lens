@@ -48,6 +48,7 @@ func (m *UserManager) Login(ctx context.Context, address common.Address, signHex
 		}
 		id := m.Repo.Insert(ctx, user)
 		if platform != nil {
+			platform.UserId = id
 			m.Link(ctx, platform)
 		}
 		user.ID = id
