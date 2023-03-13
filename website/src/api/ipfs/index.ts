@@ -36,4 +36,4 @@ export const uploadIpfsGetPath = async <T>(data: T) => {
   return result.path
 }
 
-exports.uploadIpfs = uploadIpfs
+export default { uploadIpfs }
