@@ -9,6 +9,7 @@ import Image from 'antd/es/image'
 import VerifiedIcon from '@mui/icons-material/Verified'
 import fallbackImage from '~/assets/images/fallbackImage'
 import type { CardEditorInput, ResumeCardData, SbtInfo } from '../../types'
+import Tooltip from 'antd/es/tooltip'
 
 const { TextArea } = Input
 
@@ -18,21 +19,23 @@ const SbtItem = (props: { list: string[]; toggleList: (key: string) => void; ite
   const isInList = (str: string) => list.includes(str)
 
   return (
-    <div
-      key={key}
-      className={`aspect-square border-2 max-w-112px overflow-hidden
-      cursor-pointer ${isInList(key) ? 'border-#6525FF bg-gray-100' : 'border-black'}`}
-      onClick={() => toggleList(key)}
-    >
-      <Image src={item.img} preview={false} alt={item.name} fallback={fallbackImage} className="w-full h-full object-contain object-center" />
-      <div className="flex justify-end" style={{ position: 'relative' }}>
-        {list.includes(key) && (
-          <div style={{ position: 'absolute', bottom: '5px', right: '5px' }}>
-            <VerifiedIcon style={{ color: '#6525FF', fontSize: 22 }} />
-          </div>
-        )}
+    <Tooltip title={item.name} placement="top">
+      <div
+        key={key}
+        className={`aspect-square border-2 max-w-112px overflow-hidden
+        cursor-pointer ${isInList(key) ? 'border-#6525FF bg-gray-100' : 'border-black'}`}
+        onClick={() => toggleList(key)}
+      >
+        <Image src={item.img} preview={false} alt={item.name} fallback={fallbackImage} className="w-full h-full object-contain object-center" />
+        <div className="flex justify-end" style={{ position: 'relative' }}>
+          {list.includes(key) && (
+            <div style={{ position: 'absolute', bottom: '5px', right: '5px' }}>
+              <VerifiedIcon style={{ color: '#6525FF', fontSize: 22 }} />
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </Tooltip>
   )
 }
 
