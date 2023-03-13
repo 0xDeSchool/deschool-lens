@@ -35,5 +35,3 @@ export const uploadIpfsGetPath = async <T>(data: T) => {
   console.log('upload result ipfs', result)
   return result.path
 }
-
-exports.uploadIpfs = uploadIpfs

@@ -5,21 +5,34 @@ import Avatar from 'antd/es/avatar'
 import Button from 'antd/es/button/button'
 import { RightOutlined } from '@ant-design/icons'
 import Modal from 'antd/es/modal'
-import { DEFAULT_AVATAR, useAccount } from '~/account'
+import { DEFAULT_AVATAR, getUserManager, useAccount } from '~/account'
 import { CyberConnectIcon, DeschoolIcon, LensIcon } from '~/components/icon'
 import { getShortAddress } from '~/utils/format'
 import { useLayout } from '~/context/layout'
 import PopupConnectManage from './popupConnectManage'
+import message from 'antd/es/message'
 
 type PopoverAccountInfoProps = {
   open: () => void
 }
 const PopoverAccountInfo: React.FC<PopoverAccountInfoProps> = (props) => {
   const { open } = props
+  const userManager = getUserManager()
   const user = useAccount()
   const lens = user?.lensProfile()
   const cc = user?.ccProfile()
   const deschool = user?.deschoolProfile()
+  const { t } = useTranslation()
+
+  // 退出 Deschool 登录
+  const handleDisconect = () => {
+    try {
+      userManager.disconnect()
+    } catch (error: any) {
+      message.error(error?.message ? error.message : '退出登录失败')
+    }
+  }
+
   return (
     <div className="bg-white rounded-2 px-2 py-3 fcc-start gap-4">
       {user && <div className="w-full frc-between gap-8 mb-2 drop-shadow-xl">
@@ -59,6 +72,9 @@ const PopoverAccountInfo: React.FC<PopoverAccountInfoProps> = (props) => {
           </span>
         </div>
         <div>+{user?.deschoolProfileList()?.length || 0}</div>
+      </div>}
+      {user && <div className="w-full frc-between gap-8 drop-shadow-xl mt-4">
+        <Button className='frc-center w-full' onClick={handleDisconect}>{t('disconnect')}</Button>
       </div>}
     </div>
   )
