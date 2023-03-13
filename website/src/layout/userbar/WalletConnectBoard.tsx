@@ -6,10 +6,10 @@ import Button from 'antd/es/button/button'
 import { RightOutlined } from '@ant-design/icons'
 import Modal from 'antd/es/modal'
 import { DEFAULT_AVATAR, useAccount } from '~/account'
-import PopupConnectManage from './popupConnectManage'
 import { CyberConnectIcon, DeschoolIcon, LensIcon } from '~/components/icon'
 import { getShortAddress } from '~/utils/format'
 import { useLayout } from '~/context/layout'
+import PopupConnectManage from './popupConnectManage'
 
 type PopoverAccountInfoProps = {
   open: () => void

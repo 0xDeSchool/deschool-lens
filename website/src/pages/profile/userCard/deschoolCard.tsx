@@ -9,8 +9,8 @@ import { useAccount } from '~/account'
 import type { UserFollower, UserFollowing, UserInfo } from '~/api/booth/types';
 import { getUserInfo } from '~/api/booth';
 import { getShortAddress } from '~/utils/format';
-import DeschoolFollowersModal from './deschoolModal'
 import Button from 'antd/es/button';
+import DeschoolFollowersModal from './deschoolModal'
 import LensAvatar from './avatar';
 
 type DeschoolCardProps = {
@@ -157,8 +157,8 @@ const DeschoolCard = (props: DeschoolCardProps) => {
         : <>
           {/* 处理数据为空的情况 */}
           <div className="mt-70px w-full px-6 pb-6 fcc-center font-ArchivoNarrow">
-            <span className="text-center text-xl w-200px overflow-hidden text-ellipsis" title={currentUser?.displayName}>
-              {!currentUser ? getShortAddress(routeAddress) : currentUser?.displayName === currentUser?.address ? getShortAddress(currentUser?.address) : currentUser?.displayName}
+            <span className="text-center text-xl w-200px overflow-hidden text-ellipsis">
+              {currentUser?.displayName || getShortAddress(routeAddress)}
             </span>
           </div>
           <div className="mx-10 frc-center flex-wrap">

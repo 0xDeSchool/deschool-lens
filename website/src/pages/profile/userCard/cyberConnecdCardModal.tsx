@@ -12,13 +12,13 @@ import useFollow from '~/hooks/useCyberConnectFollow'
 import useUnFollow from '~/hooks/useCyberConnectUnfollow'
 import { GET_FOLLOWING_LIST_BY_ADDRESS_EVM } from '~/api/cc/graphql/GetFollowingListByAddressEVM'
 import { GET_FOLLOWER_LIST_BY_HANDLE } from '~/api/cc/graphql/GetFollowersListByHandle'
-import LensAvatar from './avatar'
 import { useAccount } from '~/account'
 import { PRIMARY_PROFILE } from '~/api/cc/graphql'
-import { UserPlatform } from '~/api/booth/types'
-import { CyberProfile } from '~/lib/types/app'
+import type { UserPlatform } from '~/api/booth/types'
 import Button from 'antd/es/button'
 import { getShortAddress } from '~/utils/format'
+import type { CyberProfile } from '~/lib/types/app'
+import LensAvatar from './avatar'
 
 const PADE_SIZE = 10
 let page = 1
@@ -75,8 +75,7 @@ const FollowersModal = (props: {
       },
     })
     const followings = resp?.data?.address?.followings
-    const hasNextPage = followings?.pageInfo?.hasNextPage
-    setHasNextPage(hasNextPage)
+    setHasNextPage(followings?.pageInfo?.hasNextPage)
     let edges = followings?.edges || []
     edges = edges.map((item: any) => ({
         address: item.node.address.address,
@@ -85,7 +84,7 @@ const FollowersModal = (props: {
     setFollows(edges)
   }
 
-  const initFollowRelationship = async (handle: string, address: string) => {
+  const initFollowRelationship = async (handle: string) => {
     setLoading(true)
     try {
       if (type === 'followers') {
@@ -118,7 +117,7 @@ const FollowersModal = (props: {
         setCurrentUser({} as UserPlatform)
         return
       }
-      let url = userInfo?.metadataInfo?.avatar
+      const url = userInfo?.metadataInfo?.avatar
       if (url?.startsWith('ipfs://')) {
         const newUrl = url.replace('ipfs://', 'https://ipfs.io/ipfs/')
         userInfo.avatar = newUrl
@@ -128,7 +127,7 @@ const FollowersModal = (props: {
       userInfo.displayName = userInfo?.metadataInfo?.displayName
       // 此人有数据
       setCurrentUser(userInfo)
-      initFollowRelationship(userInfo?.handle, address)
+      initFollowRelationship(userInfo?.handle)
     } finally {
       setLoading(false)
     }
@@ -144,7 +143,7 @@ const FollowersModal = (props: {
     setLoadingMore(true)
     page += 1
     try {
-      await initFollowRelationship(currentUser?.handle!, routeAddress!)
+      await initFollowRelationship(currentUser?.handle!)
     } catch (error: any) {
       if (error && error.name && error.message) message.error(`${error.name}:${error.message}`)
     } finally {
@@ -158,7 +157,7 @@ const FollowersModal = (props: {
       return
     }
     setIsFollowLoading(true)
-    const result = await follow(handle)
+    await follow(handle)
     setIsFollowLoading(false)
     // 关注成功后，刷新页面
     initUserInfo(routeAddress!)
@@ -170,7 +169,7 @@ const FollowersModal = (props: {
       return
     }
     setIsFollowLoading(true)
-    const result = await unFollow(handle)
+    await unFollow(handle)
     setIsFollowLoading(false)
     // 关注成功后，刷新页面
     initUserInfo(routeAddress!)

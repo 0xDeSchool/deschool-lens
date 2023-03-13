@@ -6,11 +6,10 @@ import Jazzicon from 'react-jazzicon'
 import Button from 'antd/es/button'
 import { getRecommendation } from '~/api/booth/booth'
 import { getShortAddress } from '~/utils/format'
-import type { RecommendResult } from '~/lib/types/app'
 import { useAccount } from '~/account'
 import { NavLink } from 'react-router-dom'
+import type { RecommendResult } from '~/lib/types/app'
 
-const BOOTH_PATH = import.meta.env.VITE_APP_BOOTH_PATH
 // 根据match config配置的参数推荐用户想找的人
 const Suggest = (props: { open: boolean }) => {
   // const { t } = useTranslation()

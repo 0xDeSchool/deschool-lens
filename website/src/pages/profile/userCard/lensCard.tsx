@@ -9,9 +9,9 @@ import CloseOutlined from '@ant-design/icons/CloseOutlined'
 import { useAccount } from '~/account'
 import type { UserPlatform } from '~/api/booth/types'
 import { PlatformType } from '~/api/booth/booth'
-import FollowersModal from './modal'
 import Skeleton from 'antd/es/skeleton'
 import Button from 'antd/es/button'
+import FollowersModal from './modal'
 import LensAvatar from './avatar'
 
 type LensCardProps = {

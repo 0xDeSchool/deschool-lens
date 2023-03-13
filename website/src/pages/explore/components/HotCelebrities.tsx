@@ -5,9 +5,8 @@ import Skeleton from 'antd/es/skeleton'
 import Empty from 'antd/es/empty'
 import { getLatestUsers } from '~/api/booth'
 import type { NewUserInfo } from '~/api/booth/types'
-import CelebrityCardNew from './CelebrityCardNew'
-import { useAccount } from '~/account'
 import ShowMoreLoading from '~/components/loading/showMore'
+import CelebrityCardNew from './CelebrityCardNew'
 
 const PAGE_SIZE = 9
 const HotCelebrities = (props: { searchWord: string }) => {
@@ -19,8 +18,6 @@ const HotCelebrities = (props: { searchWord: string }) => {
   const [celebrities, setCelebrities] = useState<NewUserInfo[]>([])
   const [cacheCelebrities, setCacheCelebrities] = useState<NewUserInfo[]>([])
   const [page, setPage] = useState(1)
-
-  const user = useAccount()
 
   const initSeries = async () => {
     setLoading(true)
@@ -51,17 +48,6 @@ const HotCelebrities = (props: { searchWord: string }) => {
   useEffect(() => {
     initSeries()
   }, [searchWord])
-
-
-  // TODO: 跳转到粉丝详情页
-  const handleFollowerDetail = (celebrity: NewUserInfo) => {
-    console.log('follower detail')
-  }
-
-  // TODO: 跳转到关注详情页
-  const hanldeFollowingDetail = (celebrity: NewUserInfo) => {
-    console.log('following detail')
-  }
 
   return (
     <div className="fcc-center mb-20">
@@ -95,9 +81,6 @@ const HotCelebrities = (props: { searchWord: string }) => {
                 <CelebrityCardNew
                   key={celebrity.id}
                   userInfo={celebrity}
-                  followerDetail={() => handleFollowerDetail(celebrity)}
-                  followingDetail={() => hanldeFollowingDetail(celebrity)}
-                  refresh={() => initSeries()}
                 />
               ))
             ) : <Empty />}

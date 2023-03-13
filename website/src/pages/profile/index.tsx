@@ -3,32 +3,11 @@
  * @author victor
  * @exports {UserProfile}
  */
-import { useEffect } from 'react'
-import { Outlet, useNavigate, useParams } from 'react-router'
-import { useAccount } from '~/account'
-import Verified from './resume/components/verified'
+import { Outlet, useParams } from 'react-router'
 import UserCard from './userCard'
 
 const UserProfile = () => {
   const { address } = useParams()
-  const user = useAccount()
-
-  // 初始化登录场景，区分自己访问自己或自己访问别人或者别人访问
-  const initCase = () => {
-    if (!user) {
-      return
-    }
-    // 如果是自己访问自己判断条件放在了 resume 页面
-    // if (address && user?.address && user?.address !== address) {
-    //   navigate(`/profile/${address}/resume`)
-    //   return
-    // }
-    // navigate('/profile/resume')
-  }
-
-  useEffect(() => {
-    initCase()
-  }, [address, user])
 
   return (
     <div className="relative w-auto mx-10 py-10 3xl:w-full 3xl:mx-auto 3xl:max-w-1440px 4xl:max-w-1680px fcc-center xl:frs-center h-full overflow-auto scroll-hidden">
@@ -41,7 +20,7 @@ const UserProfile = () => {
         <div className="mb-10 overflow-auto p-6 border shadow-md rounded-xl">
           <Outlet />
         </div>
-      </div> 
+      </div>
     </div>
   )
 }

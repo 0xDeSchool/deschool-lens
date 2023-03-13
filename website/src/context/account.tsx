@@ -4,7 +4,6 @@ import { useMemo, useEffect, useState, useContext, createContext } from 'react'
 
 // import { getWallet } from '~/wallet'
 import { RoleType } from '~/lib/enum'
-import { getShortAddress } from '~/utils/format'
 import type { AccountContextProps, DeschoolProfile, ProfileExtend, LensTokenInfo, CyberProfile, CyberTokenInfo, UserProfile } from '~/lib/types/app'
 
 export const DEFAULT_AVATAR = 'https://s3.us-east-1.amazonaws.com/deschool/Avatars/avatar_def.png'
@@ -104,6 +103,7 @@ export class UserContext {
     if (this.deschoolProfile) {
       return this.deschoolProfile.address
     }
+    return ''
   }
 }
 

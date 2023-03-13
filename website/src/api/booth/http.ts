@@ -6,8 +6,6 @@ import ZH_CN_COMMON from '~/locales/zh-CN/request'
 import EN_US_COMMON from '~/locales/en-US/request'
 import { getToken } from '~/account'
 
-const lng = getLanguage()
-
 const instance: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_GO_BOOTH_API_URL,
   timeout: 600000, // request timeout

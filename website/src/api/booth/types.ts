@@ -1,5 +1,5 @@
 import type { PlatformType } from "./booth";
-import { EventUserItem as UserItem } from "./event";
+import type { EventUserItem as UserItem } from "./event";
 
 export enum SignMsgType {
   LOGIN = 'login',

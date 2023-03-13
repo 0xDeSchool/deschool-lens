@@ -8,8 +8,8 @@ import DatePicker from 'antd/es/date-picker'
 import Image from 'antd/es/image'
 import VerifiedIcon from '@mui/icons-material/Verified'
 import fallbackImage from '~/assets/images/fallbackImage'
-import type { CardEditorInput, ResumeCardData, SbtInfo } from '../../types'
 import Tooltip from 'antd/es/tooltip'
+import type { CardEditorInput, ResumeCardData, SbtInfo } from '../../types'
 
 const { TextArea } = Input
 
@@ -108,7 +108,7 @@ const CardEditor = (input: CardEditorInput) => {
   const checkValidateFields = async (): Promise<boolean> => {
     let valid = true
     try {
-      const values = await form.validateFields();
+      await form.validateFields();
       valid = true
     } catch (errorInfo) {
       valid = false

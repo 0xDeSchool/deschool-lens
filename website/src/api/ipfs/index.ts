@@ -1,4 +1,4 @@
-// eslint-disable-next-line import/no-unresolved
+/* eslint-disable */
 import { create } from 'ipfs-http-client'
 import { Base64 } from 'js-base64'
 
@@ -35,3 +35,5 @@ export const uploadIpfsGetPath = async <T>(data: T) => {
   console.log('upload result ipfs', result)
   return result.path
 }
+
+exports.uploadIpfs = uploadIpfs

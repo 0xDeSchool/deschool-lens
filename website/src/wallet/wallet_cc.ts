@@ -1,4 +1,5 @@
-import { createProvider, getWallet, WalletConfig, WalletProvider, WalletType } from ".";
+import type { WalletConfig, WalletProvider} from ".";
+import { createProvider, getWallet, WalletType } from ".";
 import { BNB, BNBTestnet } from "./chains";
 
 const ccConfig: WalletConfig = {

@@ -9,10 +9,10 @@ import Drawer from 'antd/es/drawer'
 import { useLayout } from '~/context/layout'
 import './userbar.css'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { getUserManager } from '~/account'
 import Logo from '../logo'
 import SwitchLanguage from './SwitchLanguage'
 import WalletConnectBoard from './WalletConnectBoard'
-import { getUserManager } from '~/account'
 
 const UserBar = () => {
   const { t } = useTranslation()

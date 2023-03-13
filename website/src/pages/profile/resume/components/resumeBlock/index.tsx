@@ -1,5 +1,5 @@
 import Button from 'antd/es/button'
-import { arrayMoveImmutable } from 'array-move'
+import { arrayMoveImmutable } from 'array-move' // eslint-disable-line import/no-extraneous-dependencies
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -62,7 +62,9 @@ const ResumeBlock = (input: ResumeBlockInput) => {
       const newIndex = dataArr.findIndex(item => item.id === over.id)
 
       const newData = arrayMoveImmutable(cachelist, oldIndex, newIndex).filter((el: any) => !!el)
-      handleSortCard && handleSortCard(blockType, newData)
+      if (handleSortCard) {
+        handleSortCard(blockType, newData)
+      }
     }
   }
 

@@ -4,12 +4,12 @@ import useFollow from '~/hooks/useCyberConnectFollow'
 import useUnFollow from '~/hooks/useCyberConnectUnfollow'
 import message from 'antd/es/message'
 import { useAccount } from '~/account'
-import CreateCyberConnectProfile from './createCCProfile'
-import FollowersModal from './cyberConnecdCardModal'
 import Skeleton from 'antd/es/skeleton'
 import Button from 'antd/es/button'
-import LensAvatar from './avatar'
 import useCyberConnectProfile from '~/hooks/useCyberConnectProfile'
+import CreateCyberConnectProfile from './createCCProfile'
+import FollowersModal from './cyberConnecdCardModal'
+import LensAvatar from './avatar'
 
 type CyberCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
@@ -30,21 +30,18 @@ const CyberCard = (props: CyberCardProps) => {
 
   // 根据不同情况初始化用户信息
   const initUserInfo = async () => {
-    try {
-      switch (visitCase) {
-        // 访问自己的空间
-        case 0:
-          fetchUserInfo(user?.address!, user?.address!)
-          break
-        // 访问他人的空间
-        case 1: {
-          fetchUserInfo(routeAddress!, user?.address!)
-          break
-        }
-        default:
-          break
+    switch (visitCase) {
+      // 访问自己的空间
+      case 0:
+        fetchUserInfo(user?.address!, user?.address!)
+        break
+      // 访问他人的空间
+      case 1: {
+        fetchUserInfo(routeAddress!, user?.address!)
+        break
       }
-    } finally {
+      default:
+        break
     }
   }
 
@@ -92,7 +89,7 @@ const CyberCard = (props: CyberCardProps) => {
       return
     }
     setIsFollowLoading(true)
-    const result = await follow(userProfile?.handle!)
+    await follow(userProfile?.handle!)
     setIsFollowLoading(false)
     // 关注成功后，刷新页面
     refreshFollowInfo(userProfile.handle!)
@@ -104,7 +101,7 @@ const CyberCard = (props: CyberCardProps) => {
       return
     }
     setIsFollowLoading(true)
-    const result = await unFollow(userProfile?.handle!)
+    await unFollow(userProfile?.handle!)
     setIsFollowLoading(false)
     // 关注成功后，刷新页面
     refreshFollowInfo(userProfile.handle!)

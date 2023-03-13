@@ -1,10 +1,9 @@
 import Button from 'antd/es/button'
 import Image from 'antd/es/image'
-import SkeletonImage from 'antd/es/skeleton/Image'
 import dayjs from 'dayjs'
 import { useAccount } from '~/account'
 import { interestEvent } from '~/api/booth/event'
-import { MatchedEvent } from '~/hooks/useCCProfile'
+import type { MatchedEvent } from '~/hooks/useCCProfile'
 import fallbackImage from '~/assets/images/fallbackImage'
 import AvatarList from './AvatarList'
 import Tags from './Tags'
@@ -39,8 +38,8 @@ const RecommandEventCard: React.FC<RecommandEventCardProps> = (props) => {
           src={info?.posterUrl}
           className="w-100% h-100% rounded-tl-2 rounded-tr-2 aspect-[16:9] hover:scale-105 transition-all duration-300"
           fallback={fallbackImage}
-          width={'100%'}
-          height={'100%'}
+          width="100%"
+          height="100%"
           placeholder={
             <div
               style={{ width: '100%', height: '100%' }}
@@ -58,7 +57,7 @@ const RecommandEventCard: React.FC<RecommandEventCardProps> = (props) => {
           <Button className='w-120px font-ArchivoNarrow' disabled={info?.hasInterested} onClick={() => handleIterested()}>{info?.hasInterested ? 'interested' : 'I’m interested'}</Button>
           {info.registrants && <div className="flex-1 frc-start ">
             <AvatarList avatarList={info.registrants.users} />
-            <span className={`flex-1 whitespace-nowrap`}> {info.registrants.count <= 3 ? '' : ('+' + (info.registrants.count - 3))} on Booth is also going</span>
+            <span className="flex-1 whitespace-nowrap"> {info.registrants.count <= 3 ? '' : (`+${  info.registrants.count - 3}`)} on Booth is also going</span>
           </div>}
         </div>
       </div>

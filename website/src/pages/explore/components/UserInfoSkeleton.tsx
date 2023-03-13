@@ -2,8 +2,7 @@ import SkeletonAvatar from 'antd/es/skeleton/Avatar'
 import SkeletonButton from 'antd/es/skeleton/Button'
 import SkeletonInput from 'antd/es/skeleton/Input'
 
-const UserInfoDeschool= () => {
-  return (
+const UserInfoDeschool= () => (
     <>
       <div className='mx-auto fcc-center mb-8'>
         <div className="relative frc-center mt-24px mb-4">
@@ -30,6 +29,5 @@ const UserInfoDeschool= () => {
       </div>
     </>
   )
-}
 
 export default UserInfoDeschool

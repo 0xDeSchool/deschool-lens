@@ -15,7 +15,7 @@ const activeClass = 'pl-12px frc-start w-full rounded-2'
 
 const PlatformBoard: React.FC<PlatformBoardProps> = (props) => {
   const { change, defaultActive } = props
-  const [active, setActive] = useState<PlatformType>(defaultActive ? defaultActive : PlatformType.DESCHOOL)
+  const [active, setActive] = useState<PlatformType>(defaultActive || PlatformType.DESCHOOL)
   const user = useAccount()
 
   useEffect(() => {

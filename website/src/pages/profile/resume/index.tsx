@@ -13,6 +13,10 @@ import { createPost, pollAndIndexPost } from '~/api/lens/publication/post'
 import { getShortAddress } from '~/utils/format'
 import useCyberConnect from '~/hooks/useCyberConnect'
 import { useAccount } from '~/account'
+import { getUserInfo } from '~/api/booth'
+import type { UserInfo } from '~/api/booth/types'
+import { ShareAltOutlined } from '@ant-design/icons'
+import { ipfsUrl } from '~/utils/ipfs'
 import CardEditor from './components/cardEditor'
 import ResumeBlock from './components/resumeBlock'
 import { BlockType } from './enum'
@@ -21,10 +25,6 @@ import { randomConfetti } from './utils/confetti'
 import type { VisitType } from '../utils/visitCase';
 import { getVisitCase } from '../utils/visitCase'
 import Congradulations from './components/congradulations'
-import { getUserInfo } from '~/api/booth'
-import { UserInfo } from '~/api/booth/types'
-import { ShareAltOutlined } from '@ant-design/icons'
-import { ipfsUrl } from '~/utils/ipfs'
 
 type PublishType = 'CyberConnect' | 'Lens'
 
@@ -434,8 +434,7 @@ const Resume = () => {
               className="frc-center font-ArchivoNarrow whitespace-nowrap"
               shape='circle'
               icon={<ShareAltOutlined />}
-            >
-            </Button>
+             />
           </CopyToClipboard>}
         </div>
       </div>
