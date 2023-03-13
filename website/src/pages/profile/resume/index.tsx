@@ -17,6 +17,7 @@ import { getUserInfo } from '~/api/booth'
 import type { UserInfo } from '~/api/booth/types'
 import { ShareAltOutlined } from '@ant-design/icons'
 import { ipfsUrl } from '~/utils/ipfs'
+import { useLayout } from '~/context/layout'
 import CardEditor from './components/cardEditor'
 import ResumeBlock from './components/resumeBlock'
 import { BlockType } from './enum'
@@ -380,6 +381,7 @@ const Resume = () => {
     handlePrimaryCase(primaryCase)
   }, [address, user])
 
+  const { setConnectBoardVisible } = useLayout()
   // 判断是否从deschool跳转来，并执行一系列操作
   useEffect(() => {
     const origin = query.get('origin')
@@ -387,6 +389,7 @@ const Resume = () => {
     const tokenId = query.get('tokenId')
 
     if (origin && origin === 'deschoolFeedback' && contractAddress && tokenId) {
+      setConnectBoardVisible(false)
       setIsEditResume(true)
       handleCreateCard(BlockType.EduBlockType, contractAddress, tokenId)
     }
