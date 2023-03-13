@@ -26,7 +26,7 @@ const SbtItem = (props: { list: string[]; toggleList: (key: string) => void; ite
         cursor-pointer ${isInList(key) ? 'border-#6525FF bg-gray-100' : 'border-black'}`}
         onClick={() => toggleList(key)}
       >
-        <Image src={item.img} preview={false} alt={item.name} fallback={fallbackImage} className="w-full h-full object-contain object-center" />
+        <Image src={item.img} preview={false} alt={item.name} fallback={fallbackImage} wrapperClassName='w-full h-full' className="w-full h-full object-contain object-center" />
         <div className="flex justify-end" style={{ position: 'relative' }}>
           {list.includes(key) && (
             <div style={{ position: 'absolute', bottom: '5px', right: '5px' }}>
@@ -42,7 +42,7 @@ const SbtItem = (props: { list: string[]; toggleList: (key: string) => void; ite
 const SbtSelectList = (props: { sbtList: SbtInfo[]; originalList: SbtInfo[] | undefined; setProofs: (list: SbtInfo[]) => void }) => {
   const [list, setList] = useState<string[]>([])
   const { sbtList, originalList, setProofs } = props
-
+  
   const toggleList = (key: string) => {
     const newList = list.slice()
     if (list.includes(key)) {
@@ -63,25 +63,26 @@ const SbtSelectList = (props: { sbtList: SbtInfo[]; originalList: SbtInfo[] | un
     const loadedList: string[] = []
     sbtList.forEach(listItem => {
       const index = originalList.findIndex(
-        originalItem => originalItem.address === listItem.address && originalItem.tokenId === listItem.tokenId,
+        originalItem => originalItem.address?.toLowerCase() === listItem.address.toLowerCase() && originalItem.tokenId && originalItem.tokenId === listItem.tokenId,
       )
       if (index !== -1) {
         loadedList.push(`sbt-${listItem.address}-${listItem.tokenId}`)
       }
     })
     setList(loadedList)
-  }, [originalList])
+  }, [originalList, sbtList])
 
   //
   useEffect(() => {
     const newProofs: SbtInfo[] = []
+
     for (let i = 0; i < list.length; i++) {
       const key = list[i]
       const pieces = key.split('-')
       if (pieces.length < 3) {
         continue
       }
-      const sbt = sbtList.find(item => item.address === pieces[1] && item.tokenId === pieces[2])
+      const sbt = sbtList.find(item => item.address?.toLowerCase() === pieces[1]?.toLowerCase() && item.tokenId === pieces[2])
       if (!sbt) {
         continue
       }
@@ -101,6 +102,7 @@ const SbtSelectList = (props: { sbtList: SbtInfo[]; originalList: SbtInfo[] | un
 
 const CardEditor = (input: CardEditorInput) => {
   const { isEditCard, handleOk, handleCancel, originalData, isCreateCard, sbtList } = input
+
   const [proofs, setProofs] = useState<SbtInfo[]>([])
   const formRef = useRef(null)
   const [form] = Form.useForm()

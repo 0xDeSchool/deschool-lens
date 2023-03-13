@@ -7,7 +7,7 @@ import dayjs from 'dayjs'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { v4 as uuid } from 'uuid'
 import ReactLoading from 'react-loading'
-import { useParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 import { getIdSbt, getResume, putResume } from '~/api/booth/booth'
 import { createPost, pollAndIndexPost } from '~/api/lens/publication/post'
 import { getShortAddress } from '~/utils/format'
@@ -17,6 +17,7 @@ import { getUserInfo } from '~/api/booth'
 import type { UserInfo } from '~/api/booth/types'
 import { ShareAltOutlined } from '@ant-design/icons'
 import { ipfsUrl } from '~/utils/ipfs'
+import { useLayout } from '~/context/layout'
 import CardEditor from './components/cardEditor'
 import ResumeBlock from './components/resumeBlock'
 import { BlockType } from './enum'
@@ -30,6 +31,7 @@ type PublishType = 'CyberConnect' | 'Lens'
 
 const Resume = () => {
   const { address } = useParams()
+  const [query] = useSearchParams()
   const user = useAccount()
   const lensProfile = user?.lensProfile()
   const ccProfile = user?.ccProfile()
@@ -216,13 +218,16 @@ const Resume = () => {
   }
 
   // 开始创建卡片
-  const handleCreateCard = (bt: BlockType) => {
+  const handleCreateCard = (bt: BlockType, contractAddress?: string, tokenId?: string) => {
     const emptyCardData: ResumeCardData = {
       title: '',
       description: '',
       startTime: undefined,
       endTime: undefined,
-      proofs: undefined,
+      proofs: contractAddress && tokenId ? [{
+        address: contractAddress,
+        tokenId, img: '',
+      }] : undefined,
       blockType: bt,
       id: uuid(),
     }
@@ -376,6 +381,20 @@ const Resume = () => {
     handlePrimaryCase(primaryCase)
   }, [address, user])
 
+  const { setConnectBoardVisible } = useLayout()
+  // 判断是否从deschool跳转来，并执行一系列操作
+  useEffect(() => {
+    const origin = query.get('origin')
+    const contractAddress = query.get('contractAddress')
+    const tokenId = query.get('tokenId')
+
+    if (origin && origin === 'deschoolFeedback' && contractAddress && tokenId) {
+      setConnectBoardVisible(false)
+      setIsEditResume(true)
+      handleCreateCard(BlockType.EduBlockType, contractAddress, tokenId)
+    }
+  }, [query])
+
   return (
     <div className="bg-white p-8">
       {/* 简历标题 + 编辑按钮 */}
@@ -434,7 +453,7 @@ const Resume = () => {
               className="frc-center font-ArchivoNarrow whitespace-nowrap"
               shape='circle'
               icon={<ShareAltOutlined />}
-             />
+            />
           </CopyToClipboard>}
         </div>
       </div>
