@@ -151,7 +151,7 @@ const CyberCard = (props: CyberCardProps) => {
             </a>
           </div>
           {userProfile?.handle ? (
-            <p className="m-10 text-xl break-words line-wrap three-line-wrap break-words">
+            <p className="m-10 text-xl line-wrap three-line-wrap break-words"  style={{wordBreak: 'break-word'}}>
               {user?.bio || visitCase === 0 ? '' : "The user hasn't given a bio on CyberConnect for self yet :)"}
             </p>
           ) : (

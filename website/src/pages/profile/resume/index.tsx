@@ -420,7 +420,7 @@ const Resume = () => {
           <div className="w-2"> </div>
 
           {isEditResume && (
-            <Button danger onClick={handleCancelEditing}>
+            <Button danger onClick={handleCancelEditing} className="mr-2">
               Cancel
             </Button>
           )}
