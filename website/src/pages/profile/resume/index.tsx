@@ -388,12 +388,16 @@ const Resume = () => {
     const contractAddress = query.get('contractAddress')
     const tokenId = query.get('tokenId')
 
+    if (!user) {
+      setConnectBoardVisible(true)
+      return
+    }
     if (origin && origin === 'deschoolFeedback' && contractAddress && tokenId) {
       setConnectBoardVisible(false)
       setIsEditResume(true)
       handleCreateCard(BlockType.EduBlockType, contractAddress, tokenId)
     }
-  }, [query])
+  }, [query, user])
 
   return (
     <div className="bg-white p-8">
