@@ -47,11 +47,11 @@ func (m *UserManager) Login(ctx context.Context, address common.Address, signHex
 			DisplayName: address.Hex(),
 		}
 		id := m.Repo.Insert(ctx, user)
-		if platform != nil {
-			platform.UserId = id
-			m.Link(ctx, platform)
-		}
 		user.ID = id
+	}
+	if platform != nil {
+		platform.UserId = user.ID
+		m.Link(ctx, platform)
 	}
 	return user
 }
