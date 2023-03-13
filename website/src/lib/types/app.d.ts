@@ -1,4 +1,4 @@
-import { EventUserItem } from '~/api/booth/event'
+import type { EventUserItem } from '~/api/booth/event'
 import type { Profile } from '~/api/lens/graphql/generated'
 
 export type ContractType = 'ERC20' | 'ERC721' | 'ERC1155'
@@ -367,17 +367,4 @@ export interface RecommendResult {
   target: EventUserItem
   reasons: string[]
   score: number
-}
-
-
-interface NFT {
-  amount: string
-  metadata: string
-  name: string
-  normalized_metadata: {
-    description: string
-    image: string
-    name: string
-  }
-  token_address: string
 }

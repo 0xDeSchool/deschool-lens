@@ -17,7 +17,8 @@ import { linkPlatform } from '~/api/booth/account'
 import { getUserManager, useAccount } from '~/account/context'
 import { LogoutOutlined } from '@ant-design/icons'
 import { lensWallet } from '~/wallet/wallet_lens'
-import { LinkPlatformRequest } from '~/api/booth/types'
+import type { LinkPlatformRequest } from '~/api/booth/types'
+
 interface ConnectBoardProps {
   wallectConfig?: WalletConfig
   connectTrigger?: any
@@ -225,7 +226,11 @@ const ConnectLensBoard: FC<ConnectBoardProps> = props => {
         <Button
           onClick={e => {
             e.preventDefault()
-            lensProfile ? handleDisconnect() : handleConnect()
+            if (lensProfile) {
+              handleDisconnect()
+            } else {
+              handleConnect()
+            }
           }}
           className="w-full h-12 border border-solid border-#6525FF bg-white hover:border-#6525FF66 hover:bg-#6525FF22"
           disabled={loading}

@@ -8,6 +8,7 @@ import DatePicker from 'antd/es/date-picker'
 import Image from 'antd/es/image'
 import VerifiedIcon from '@mui/icons-material/Verified'
 import fallbackImage from '~/assets/images/fallbackImage'
+import Tooltip from 'antd/es/tooltip'
 import type { CardEditorInput, ResumeCardData, SbtInfo } from '../../types'
 
 const { TextArea } = Input
@@ -18,28 +19,30 @@ const SbtItem = (props: { list: string[]; toggleList: (key: string) => void; ite
   const isInList = (str: string) => list.includes(str)
 
   return (
-    <div
-      key={key}
-      className={`aspect-square border-2 max-w-112px overflow-hidden
-      cursor-pointer ${isInList(key) ? 'border-#6525FF bg-gray-100' : 'border-black'}`}
-      onClick={() => toggleList(key)}
-    >
-      <Image src={item.img} preview={false} alt={item.name} fallback={fallbackImage} className="w-full h-full object-contain object-center" />
-      <div className="flex justify-end" style={{ position: 'relative' }}>
-        {list.includes(key) && (
-          <div style={{ position: 'absolute', bottom: '5px', right: '5px' }}>
-            <VerifiedIcon style={{ color: '#6525FF', fontSize: 22 }} />
-          </div>
-        )}
+    <Tooltip title={item.name} placement="top">
+      <div
+        key={key}
+        className={`aspect-square border-2 max-w-112px overflow-hidden
+        cursor-pointer ${isInList(key) ? 'border-#6525FF bg-gray-100' : 'border-black'}`}
+        onClick={() => toggleList(key)}
+      >
+        <Image src={item.img} preview={false} alt={item.name} fallback={fallbackImage} wrapperClassName='w-full h-full' className="w-full h-full object-contain object-center" />
+        <div className="flex justify-end" style={{ position: 'relative' }}>
+          {list.includes(key) && (
+            <div style={{ position: 'absolute', bottom: '5px', right: '5px' }}>
+              <VerifiedIcon style={{ color: '#6525FF', fontSize: 22 }} />
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </Tooltip>
   )
 }
 
 const SbtSelectList = (props: { sbtList: SbtInfo[]; originalList: SbtInfo[] | undefined; setProofs: (list: SbtInfo[]) => void }) => {
   const [list, setList] = useState<string[]>([])
   const { sbtList, originalList, setProofs } = props
-
+  
   const toggleList = (key: string) => {
     const newList = list.slice()
     if (list.includes(key)) {
@@ -60,25 +63,26 @@ const SbtSelectList = (props: { sbtList: SbtInfo[]; originalList: SbtInfo[] | un
     const loadedList: string[] = []
     sbtList.forEach(listItem => {
       const index = originalList.findIndex(
-        originalItem => originalItem.address === listItem.address && originalItem.tokenId === listItem.tokenId,
+        originalItem => originalItem.address?.toLowerCase() === listItem.address.toLowerCase() && originalItem.tokenId && originalItem.tokenId === listItem.tokenId,
       )
       if (index !== -1) {
         loadedList.push(`sbt-${listItem.address}-${listItem.tokenId}`)
       }
     })
     setList(loadedList)
-  }, [originalList])
+  }, [originalList, sbtList])
 
   //
   useEffect(() => {
     const newProofs: SbtInfo[] = []
+
     for (let i = 0; i < list.length; i++) {
       const key = list[i]
       const pieces = key.split('-')
       if (pieces.length < 3) {
         continue
       }
-      const sbt = sbtList.find(item => item.address === pieces[1] && item.tokenId === pieces[2])
+      const sbt = sbtList.find(item => item.address?.toLowerCase() === pieces[1]?.toLowerCase() && item.tokenId === pieces[2])
       if (!sbt) {
         continue
       }
@@ -98,6 +102,7 @@ const SbtSelectList = (props: { sbtList: SbtInfo[]; originalList: SbtInfo[] | un
 
 const CardEditor = (input: CardEditorInput) => {
   const { isEditCard, handleOk, handleCancel, originalData, isCreateCard, sbtList } = input
+
   const [proofs, setProofs] = useState<SbtInfo[]>([])
   const formRef = useRef(null)
   const [form] = Form.useForm()
@@ -105,7 +110,7 @@ const CardEditor = (input: CardEditorInput) => {
   const checkValidateFields = async (): Promise<boolean> => {
     let valid = true
     try {
-      const values = await form.validateFields();
+      await form.validateFields();
       valid = true
     } catch (errorInfo) {
       valid = false

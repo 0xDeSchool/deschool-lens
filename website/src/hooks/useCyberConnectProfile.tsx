@@ -1,6 +1,6 @@
 import { useLazyQuery } from '@apollo/client';
 import { useCallback, useEffect, useState } from 'react';
-import { UserPlatform } from '~/api/booth/types';
+import type { UserPlatform } from '~/api/booth/types';
 import { PRIMARY_PROFILE } from '~/api/cc/graphql';
 import { GET_FOLLOWER_BY_HANDLE } from '~/api/cc/graphql/GetFollowersByHandle';
 import { GET_FOLLOWING_BY_ADDRESS_EVM } from '~/api/cc/graphql/GetFollowingsByAddressEVM';
@@ -18,11 +18,11 @@ const useCyberConnectProfile = () => {
   const [visitAddress, setVisitAddress] = useState('')
 
   // 获取用户的关注者
-  const initUserFollowersInfo = async (handle: string, address: string) => {
+  const initUserFollowersInfo = async (handle: string, addressVal: string) => {
     const resp = await getFollowingByHandle({
       variables: {
         handle,
-        me: address,
+        me: addressVal,
       },
     })
     const primaryProfile = resp?.data?.profileByHandle
@@ -31,24 +31,24 @@ const useCyberConnectProfile = () => {
   }
 
   // 获取用户的关注的人
-  const initUserFollowingsInfo = async (address: string) => {
+  const initUserFollowingsInfo = async (addressVal: string) => {
     const resp = await getFollowingByAddressEVM({
       variables: {
-        address,
+        address: addressVal,
       },
     })
     setFollowingCount(resp?.data?.address?.followingCount || 0)
   }
 
   // 根据不同情况初始化用户信息
-  const initUserInfo = async (address: string, visitAddress: string) => {
+  const initUserInfo = async (addressVal: string, visitAddressVal: string) => {
     if (userLoading) return
     setUserLoading(true)
     try {
       const res = await getPrimaryProfile({
         variables: {
-          address,
-          me: visitAddress,
+          address: addressVal,
+          me: visitAddressVal,
         },
       });
       const userInfo = res?.data?.address?.wallet?.primaryProfile
@@ -79,10 +79,10 @@ const useCyberConnectProfile = () => {
     }
   }, [userProfile])
 
-  const fetchUserInfo = useCallback(async (address: string, visitAddress: string) => {
-    setAdress(address)
-    setVisitAddress(visitAddress)
-    await initUserInfo(address, visitAddress)
+  const fetchUserInfo = useCallback(async (addressVal: string, visitAddressVal: string) => {
+    setAdress(addressVal)
+    setVisitAddress(visitAddressVal)
+    await initUserInfo(address, visitAddressVal)
   }, [])
 
   const refreshFollowInfo = useCallback(async (handle: string) => {

@@ -1,12 +1,10 @@
-import type { AxiosInstance, AxiosRequestConfig, RawAxiosRequestHeaders } from 'axios'
+import type { AxiosInstance, RawAxiosRequestHeaders } from 'axios'
 import message from 'antd/es/message'
 import axios from 'axios'
 import { getLanguage } from '~/utils/language'
 import ZH_CN_COMMON from '~/locales/zh-CN/request'
 import EN_US_COMMON from '~/locales/en-US/request'
 import { getToken } from '~/account'
-
-const lng = getLanguage()
 
 const instance: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_GO_BOOTH_API_URL,
@@ -18,7 +16,7 @@ const instance: AxiosInstance = axios.create({
  * 请求拦截z
  */
 instance.interceptors.request.use(
-  (config: AxiosRequestConfig) => {
+  (config: any) => {
     const headers: RawAxiosRequestHeaders = {}
     // 附带鉴权的token
     // const tokenObj = session.getSession('token', true)

@@ -1,17 +1,9 @@
-import { useEffect, useState } from 'react'
-import { PlatformType, getVerifiedIdentities } from '~/api/booth/booth'
-
 import Tooltip from 'antd/es/tooltip'
 import { InfoCircleOutlined } from '@ant-design/icons'
 import { getShortAddress } from '~/utils/format'
 import { useAccount } from '~/account'
 
-type VerifiedProp = {
-  address?: string
-}
-
-const Verified = (props: VerifiedProp) => {
-  const { address } = props
+const Verified = () => {
   const user = useAccount()
 
   return user && user.platform.length > 0 ? (
@@ -28,8 +20,8 @@ const Verified = (props: VerifiedProp) => {
         </Tooltip>
       </div>
       <div className="mx-2 my-2">
-        {user?.platforms?.map((identity, index) => (
-          <div key={`${index}-${identity?.address}`} className="relative p-4 w-full frs-center mt-2 bg-gray-1 rounded-xl">
+        {user?.platforms?.map((identity) => (
+          <div key="{identity?.address}" className="relative p-4 w-full frs-center mt-2 bg-gray-1 rounded-xl">
             <div className="flex-1 fcs-center font-ArchivoNarrow">
               <h1 className="text-large font-bold">{getShortAddress(identity?.displayName || identity.handle)}</h1>
               <h3 className=" mt-1">Provider: {['Booth', 'Deschool', 'Lens', 'Cyber Connect'][identity?.platform]}</h3>

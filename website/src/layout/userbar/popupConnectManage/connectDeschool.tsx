@@ -13,7 +13,7 @@ import IconDeschool from '~/assets/icons/deschool.svg'
 import Button from 'antd/es/button'
 import { getUserManager, useAccount } from '~/account'
 import { linkPlatform } from '~/api/booth'
-import { UserPlatform } from '~/api/booth/types'
+import type { UserPlatform } from '~/api/booth/types'
 import { getShortAddress } from '~/utils/format'
 
 const ConnectDeschoolBoard: FC = () => {
@@ -22,6 +22,7 @@ const ConnectDeschoolBoard: FC = () => {
   const [loadingUniPass, setLoadingUniPass] = useState(false)
   // MetaMask or UniPass
   const { t } = useTranslation()
+  const user = useAccount()
 
   /**
    * @description 连接失败的异常处理
@@ -108,8 +109,6 @@ const ConnectDeschoolBoard: FC = () => {
       message.error(error?.message ? error.message : '退出登录失败')
     }
   }
-
-  const user = useAccount()
 
   return (
     <div className="fcc-between w-full min-h-360px p-4 rounded-lg drop-shadow-xl shadow-xl">

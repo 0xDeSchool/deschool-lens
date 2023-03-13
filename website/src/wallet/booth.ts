@@ -1,4 +1,5 @@
-import { createProvider, getWallet, WalletConfig, WalletProvider, WalletType } from ".";
+import type { WalletConfig, WalletProvider} from ".";
+import { createProvider, getWallet, WalletType } from ".";
 
 const boothConfig: WalletConfig = {
   type: WalletType.MetaMask,

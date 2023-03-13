@@ -1,9 +1,9 @@
 import message from 'antd/es/message'
 import Alert from 'antd/es/alert'
 import { useLayout } from '~/context/layout'
+import { useAccount } from '~/account'
 import MatchConfig from './MatchConfig'
 import TalentRadar from './TalentRadar'
-import { useAccount } from '~/account'
 
 const Match = () => {
   const { connectBoardVisible, setConnectBoardVisible } = useLayout() // 控制请求面板显隐

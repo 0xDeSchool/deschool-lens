@@ -36,6 +36,51 @@ const CreateCyberConnectProfile: React.FC = () => {
     return true
   }
 
+  // 获取 CyberConnect Profile
+  const getCyberConnectProfile = async () => {
+    try {
+      const res = await getPrimaryProfile({
+        variables: {
+          address: user?.address,
+        },
+      })
+      const userInfo = res?.data?.address?.wallet?.primaryProfile
+      if (!userInfo) {
+        console.log('no handle')
+        return
+      }
+      return userInfo
+    } catch (e) {
+      console.log('error', e)
+    }
+  }
+
+  // 轮询获取 CyberConnect Profile, 如果获取到数据那么停止轮询
+  const pollingGetCyberConnectProfile = async () => {
+    const timer = setTimeout(async () => {
+      const userInfo = await getCyberConnectProfile()
+      if (userInfo) {
+        // if user info is available, stop polling
+        await linkPlatform({
+          handle: userInfo?.handle,
+          platform: PlatformType.CYBERCONNECT,
+          data: {
+            id: userInfo?.id,
+          },
+          address: user?.address!,
+          displayName: user?.displayName,
+        })
+        setLoading(false)
+        message.success('Mint profile success')
+        await getUserManager().tryAutoLogin()
+        clearTimeout(timer)
+      } else {
+        // if user info is not available, try again in 1.5 seconds
+        pollingGetCyberConnectProfile()
+      }
+    }, 1500)
+  }
+
   // 创建 CyberConnect Profile
   const handleMint = async () => {
     if (!checkHandle()) {
@@ -66,67 +111,9 @@ const CreateCyberConnectProfile: React.FC = () => {
       await pollingGetCyberConnectProfile()
     } catch (error: Error | unknown) {
       console.log('error', error)
-      // if (error instanceof Error) {
-      //   if (error?.code === 'UNPREDICTABLE_GAS_LIMIT') {
-      //     message.error(error.code)
-      //   } else if (error?.code === 'ACTION_REJECTED') {
-      //     message.warning('Action rejected the transaction')
-      //   } else {
-      //     message.error(error.message)
-      //   }
-      // } else {
-      // }
       message.error('Something went wrong')
       setLoading(false)
-    } finally {
     }
-  }
-
-
-  // 获取 CyberConnect Profile
-  const getCyberConnectProfile = async () => {
-    try {
-      const res = await getPrimaryProfile({
-        variables: {
-          address: user?.address,
-        },
-      })
-      const userInfo = res?.data?.address?.wallet?.primaryProfile
-      if (!userInfo) {
-        console.log('no handle')
-        return
-      }
-      return userInfo
-    } catch (e) {
-      console.log('error', e)
-    } finally {
-    }
-  }
-
-  // 轮询获取 CyberConnect Profile, 如果获取到数据那么停止轮询
-  const pollingGetCyberConnectProfile = async () => {
-    const timer = setTimeout(async () => {
-      const userInfo = await getCyberConnectProfile()
-      if (userInfo) {
-        // if user info is available, stop polling
-        await linkPlatform({
-          handle: userInfo?.handle,
-          platform: PlatformType.CYBERCONNECT,
-          data: {
-            id: userInfo?.id,
-          },
-          address: user?.address!,
-          displayName: user?.displayName,
-        })
-        setLoading(false)
-        message.success('Mint profile success')
-        await getUserManager().tryAutoLogin()
-        clearTimeout(timer)
-      } else {
-        // if user info is not available, try again in 1.5 seconds
-        pollingGetCyberConnectProfile()
-      }
-    }, 1500)
   }
 
   return (

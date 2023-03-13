@@ -6,20 +6,15 @@ import { useTranslation } from 'react-i18next'
 import Jazzicon from 'react-jazzicon/dist/Jazzicon'
 import { useNavigate } from 'react-router'
 import { DEFAULT_AVATAR, useAccount } from '~/account'
-import { NewUserInfo } from '~/api/booth/types'
+import type { NewUserInfo } from '~/api/booth/types'
 import useFollow from '~/hooks/useCyberConnectFollow'
 import useCyberConnectProfile from '~/hooks/useCyberConnectProfile'
 import useUnFollow from '~/hooks/useCyberConnectUnfollow'
 import { getShortAddress } from '~/utils/format'
 import UserInfoSkeleton from './UserInfoSkeleton'
 
-type UserInfoCyberConnectProps = NewUserInfo & {
-  followerDetail?: () => void,
-  followingDetail?: () => void,
-}
-
-const UserInfoCyberConnect: React.FC<UserInfoCyberConnectProps> = (props) => {
-  const { address, followerDetail, followingDetail } = props
+const UserInfoCyberConnect: React.FC<NewUserInfo> = (props) => {
+  const { address } = props
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { follow } = useFollow();
@@ -97,9 +92,6 @@ const UserInfoCyberConnect: React.FC<UserInfoCyberConnectProps> = (props) => {
         <a
           className={`${followerCount && followerCount > 0 ? 'hover:underline hover:cursor-pointer' : ''
             } text-xl`}
-          onClick={() => {
-            followerDetail && followerDetail()
-          }}
         >
           <span className="text-black">{followerCount || '-'} </span>
           <span className="text-gray-5 font-ArchivoNarrow">{t('profile.followers')}</span>
@@ -107,9 +99,6 @@ const UserInfoCyberConnect: React.FC<UserInfoCyberConnectProps> = (props) => {
         <a
           className={`${followingCount && followingCount > 0 ? 'hover:underline hover:cursor-pointer' : ''
             } text-xl`}
-          onClick={() => {
-            followingDetail && followingDetail()
-          }}
         >
           <span className="text-black">{followingCount || '-'} </span>
           <span className="text-gray-5 font-ArchivoNarrow">{t('profile.following')}</span>
@@ -119,7 +108,7 @@ const UserInfoCyberConnect: React.FC<UserInfoCyberConnectProps> = (props) => {
         {userProfile?.bio || "The user hasn't given a bio for self yet :)"}
       </p>
       <div className='frc-between gap-8 mx-auto'>
-        {/* disabled 用户自己、用户没有handle、正在调用关注中*/}
+        {/* disabled 用户自己、用户没有handle、正在调用关注中 */}
         <Button
           className='w-120px frc-center purple-border-button px-2 py-1 font-ArchivoNarrow'
           style={{color: !isFollowedByMe ? 'white' : ''}}

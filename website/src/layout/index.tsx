@@ -1,17 +1,14 @@
 // @ts-nocheck 忽略文件校验
-import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
 import LoadingOutlined from '@ant-design/icons/LoadingOutlined'
 import Modal from 'antd/es/modal/Modal'
 import { getUserContext } from '~/context/account'
-import type { WalletConfig } from '~/wallet'
-import { getWallet } from '~/wallet'
 import { scrollToTop } from '~/utils/common'
-import { RoleType } from '~/lib/enum'
+import { appWallet } from '~/wallet/booth'
 import Footer from './footer'
 import UserBar from './userbar'
-import { appWallet } from '~/wallet/booth'
 
 /*
  * @description: Layout
@@ -24,7 +21,6 @@ const Layout = () => {
   const [pageLayout, setPageLayout] = useState('w-full')
   const [footerLayout, setFooterLayout] = useState('')
 
-  const navigate = useNavigate()
   const { t } = useTranslation()
 
   const getPageLayout = () => {
@@ -61,30 +57,6 @@ const Layout = () => {
   const handleCancel = () => {
     setIsModalOpen(false)
   }
-
-  const config: WalletConfig = {
-    accountChanged: (account: string) => {
-      const role = getUserContext().getLoginRoles()
-      if (role.includes(RoleType.Visitor)) {
-        handleOk()
-      } else if (account) {
-        setIsModalOpen(true)
-      } else {
-        // 账户地址变则lens和deschool都受影响
-        getUserContext().disconnectFromDeschool()
-        getUserContext().disconnectFromLens()
-        navigate('/landing')
-        window.location.reload()
-      }
-    },
-    disconnected: () => {
-      getUserContext().disconnectFromDeschool()
-      getUserContext().disconnectFromLens()
-      navigate('/landing')
-      window.location.reload()
-    },
-  }
-  const [walletconfig] = useState<WalletConfig>(config)
 
   return (
     <div className="relative w-full h-full bg-white">

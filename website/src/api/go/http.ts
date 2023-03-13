@@ -1,5 +1,5 @@
 import message from 'antd/es/message'
-import type { AxiosInstance, AxiosRequestConfig, RawAxiosRequestHeaders } from 'axios'
+import type { AxiosInstance, RawAxiosRequestHeaders } from 'axios'
 import axios from 'axios'
 import Session from '~/utils/session'
 
@@ -15,7 +15,7 @@ const instance: AxiosInstance = axios.create({
  * 请求拦截z
  */
 instance.interceptors.request.use(
-  (config: AxiosRequestConfig) => {
+  (config: any) => {
     // let customHeader = {}
     // 自定义头部信息
     // if (config.headers)

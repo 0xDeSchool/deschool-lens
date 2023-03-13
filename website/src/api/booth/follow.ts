@@ -1,5 +1,5 @@
 import http from '~/api/booth/http'
-import { UserFollower, UserFollowing } from './types'
+import type { UserFollower, UserFollowing } from './types'
 
 /**
  * @description deschool follow user

@@ -7,21 +7,17 @@ import { useTranslation } from 'react-i18next'
 import Jazzicon from 'react-jazzicon/dist/Jazzicon'
 import { useNavigate } from 'react-router'
 import { DEFAULT_AVATAR, useAccount } from '~/account'
-import { NewUserInfo } from '~/api/booth/types'
+import type { NewUserInfo } from '~/api/booth/types'
 import { followByProfileIdWithLens } from '~/api/lens/follow/follow'
 import { unfollowByProfileIdWithLens } from '~/api/lens/follow/unfollow'
 import { fetchUserDefaultProfile, getExtendProfile } from '~/hooks/profile'
-import { ProfileExtend } from '~/lib/types/app'
 import { getShortAddress } from '~/utils/format'
+import type { ProfileExtend } from '~/lib/types/app'
 import UserInfoSkeleton from './UserInfoSkeleton'
 
-type UserInfoLensProps = NewUserInfo & {
-  followerDetail?: () => void,
-  followingDetail?: () => void,
-}
 
-const UserInfoLens: React.FC<UserInfoLensProps> = (props) => {
-  const { avatar, address, displayName, bio, followerDetail, followingDetail } = props
+const UserInfoLens: React.FC<NewUserInfo> = (props) => {
+  const { avatar, address, displayName, bio } = props
   const { t } = useTranslation()
   const navigate = useNavigate()
   const [currentUser, setCurrentUser] = useState<ProfileExtend | null>(null)
@@ -31,14 +27,6 @@ const UserInfoLens: React.FC<UserInfoLensProps> = (props) => {
   const [isFollowLoading, setIsFollowLoading] = useState(false)
   const [loading, setLoading] = useState(false)
   const user = useAccount()
-
-  // 重置用户信息
-  const resetUserInfo = () => {
-    setCurrentUser(null)
-    setIsFollowedByMe(false)
-    setTotalFollowers(0)
-    setTotalFollowing(0)
-  }
 
   // 根据不同情况初始化用户信息
   const initUserInfo = async () => {
@@ -152,9 +140,6 @@ const UserInfoLens: React.FC<UserInfoLensProps> = (props) => {
         <a
           className={`${totalFollowers && totalFollowers > 0 ? 'hover:underline hover:cursor-pointer' : ''
             } text-xl`}
-          onClick={() => {
-            followerDetail && followerDetail()
-          }}
         >
           <span className="text-black">{totalFollowers || '-'} </span>
           <span className="text-gray-5 font-ArchivoNarrow">{t('profile.followers')}</span>
@@ -162,9 +147,6 @@ const UserInfoLens: React.FC<UserInfoLensProps> = (props) => {
         <a
           className={`${totalFollowing && totalFollowing > 0 ? 'hover:underline hover:cursor-pointer' : ''
             } text-xl`}
-          onClick={() => {
-            followingDetail && followingDetail()
-          }}
         >
           <span className="text-black">{totalFollowing || '-'} </span>
           <span className="text-gray-5 font-ArchivoNarrow">{t('profile.following')}</span>

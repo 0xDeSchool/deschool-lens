@@ -2,7 +2,7 @@ import Avatar from 'antd/es/avatar'
 import Tooltip from 'antd/es/tooltip'
 import { useNavigate } from 'react-router'
 import { DEFAULT_AVATAR } from '~/account'
-import { EventUserItem } from '~/api/booth/event'
+import type { EventUserItem } from '~/api/booth/event'
 
 type AvatarListProps = {
   avatarList: EventUserItem[]

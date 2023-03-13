@@ -10,7 +10,7 @@ import Jazzicon from 'react-jazzicon'
 import { getShortAddress } from '~/utils/format'
 import { Link } from 'react-router-dom'
 import { useAccount } from '~/account'
-import { UserFollower, UserFollowing } from '~/api/booth/types'
+import type { UserFollower, UserFollowing } from '~/api/booth/types'
 
 type FollowType = UserFollower & UserFollowing
 

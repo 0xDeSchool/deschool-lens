@@ -1,15 +1,14 @@
 import Button from 'antd/es/button'
 import Image from 'antd/es/image'
-import { MatchedCourse } from '~/api/booth/event'
+import type { MatchedCourse } from '~/api/booth/event'
 import type { MatchedEvent } from '~/hooks/useCCProfile'
-import AvatarList from './AvatarList'
-import Tags from './Tags'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { NextArrowIcon } from '~/components/icon'
-import React from 'react'
+import Tags from './Tags'
+import AvatarList from './AvatarList'
 
 type RecommnadEventMatchProps = {
   info: MatchedEvent
@@ -17,7 +16,6 @@ type RecommnadEventMatchProps = {
 
 const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
   const { info } = props
-  const count = 10
   const [swiperRef, setSwiperRef] = useState<any>(null)
   const [activeIndex, setActiveIndex] = useState(1)
   const [swiperWidth, setSwiperWidth] = useState('50vw')
@@ -41,14 +39,14 @@ const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
         <span>Based on your match</span>
         <div className="frc-start">
           <AvatarList avatarList={info.matchedUsers.users} />
-          <span className="flex-1 whitespace-nowrap">{info.matchedUsers.count <= 3 ? '' : ('+' + (info.matchedUsers.count - 3))} on Booth is also going</span>
+          <span className="flex-1 whitespace-nowrap">{info.matchedUsers.count <= 3 ? '' : (`+${  info.matchedUsers.count - 3}`)} on Booth is also going</span>
         </div>
       </div>}
       {info.followingUsers && <div className="frc-between">
         <span>Based on your following</span>
         <div className="frc-start ">
           <AvatarList avatarList={info.followingUsers.users} />
-          <span className="flex-1 whitespace-nowrap"> {info.followingUsers.count <= 3 ? '' : ('+' + (info.followingUsers.count - 3))} on Booth is also going</span>
+          <span className="flex-1 whitespace-nowrap"> {info.followingUsers.count <= 3 ? '' : (`+${  info.followingUsers.count - 3}`)} on Booth is also going</span>
         </div>
       </div>}
       <div className="divider w-full h-1px bg-gray-200 my-8" />
@@ -62,8 +60,7 @@ const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
             slidesPerView={1}
             onActiveIndexChange={(swiper) => setActiveIndex(swiper.activeIndex)}
           >
-          {info?.courses?.map((course) => {
-            return (<SwiperSlide key={`${course.id}`} >
+          {info?.courses?.map((course) => (<SwiperSlide key={`${course.id}`} >
               <div className="h-200px frc-between gap-4">
                 <div className="w-310px flex-0 relative h-full aspect-[433/280] object-cover rounded-2 bg-white">
                   <Image
@@ -71,9 +68,9 @@ const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
                     src={course?.coverImage || 'https://deschool.s3.amazonaws.com/static/cover_course_event.jpg'}
                     alt="coverImage"
                     className="relative aspect-[433/280] object-cover rounded-2"
-                    fallback={'https://deschool.s3.amazonaws.com/static/cover_course_event.jpg'}
-                    height={'100%'}
-                    width={'100%'}
+                    fallback="https://deschool.s3.amazonaws.com/static/cover_course_event.jpg"
+                    height="100%"
+                    width="100%"
                     placeholder={
                       <div
                         style={{ width: '100%', height: '100%' }}
@@ -88,8 +85,7 @@ const RecommnadEventMatch: React.FC<RecommnadEventMatchProps> = (props) => {
                   <Button type="primary" className='dop-shadow-xl' onClick={() => onStartLearning(course)}>Start Learning</Button>
                 </div>
               </div>
-            </SwiperSlide>)
-          })}
+            </SwiperSlide>))}
         </Swiper>}
         {(info?.courses?.length > 1 && activeIndex > 0) &&
           <div

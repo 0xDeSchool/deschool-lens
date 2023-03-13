@@ -20,5 +20,5 @@ export function getLatestUsers(params: UserRequest): Promise<PagedResult<NewUser
   if (params.platform) {
     query += `&platform=${params.platform}`
   }
-  return http.get(`/users?sort=-createdAt&` + query)
+  return http.get(`/users?sort=-createdAt&${  query}`)
 }

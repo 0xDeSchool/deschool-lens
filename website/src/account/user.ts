@@ -80,7 +80,7 @@ export class UserManager {
     this._user = info
   }
 
-  async fetchUserInfo(addr: string, token?: string): Promise<AccountInfo | null> {
+  async fetchUserInfo(addr: string, token?: string): Promise<AccountInfo | null> { // eslint-disable-line class-methods-use-this
     if (!token) {
       const cachedToken = getCachedToken(addr)
       if (!cachedToken) {
@@ -121,9 +121,9 @@ export class UserManager {
       platform,
     })
     if (loginResult?.jwtToken) {
-      const info = await this.fetchUserInfo(address, loginResult.jwtToken)
-      if (info) {
-        this.changeUser(info)
+      const infoVal = await this.fetchUserInfo(address, loginResult.jwtToken)
+      if (infoVal) {
+        this.changeUser(infoVal)
       }
     }
   }
@@ -145,7 +145,7 @@ export class UserManager {
     this._user = user
   }
 
-  async unLinkPlatform(handle: string, address: string, type: PlatformType) {
+  async unLinkPlatform(handle: string, address: string, type: PlatformType) { // eslint-disable-line class-methods-use-this
     await unlinkPlatform({ handle, platform: type, address })
   }
 

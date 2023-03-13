@@ -18,7 +18,7 @@ function useUnFollow() {
 
       const error = await cc
         .unfollow(handle)
-        .catch((error: any) => error)
+        .catch((e: any) => e)
         .finally(() => toggleIsLoading(false));
 
       if (!error || error.message === "ALREADY_DONE") {

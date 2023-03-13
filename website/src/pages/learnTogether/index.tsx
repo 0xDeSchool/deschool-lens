@@ -1,11 +1,12 @@
 import { useTranslation } from 'react-i18next';
-import useCCProfile, { MatchedEvent } from '~/hooks/useCCProfile';
+import type { MatchedEvent } from '~/hooks/useCCProfile';
+import useCCProfile from '~/hooks/useCCProfile';
 import ShowMoreLoading from '~/components/loading/showMore'
 import Button from 'antd/es/button';
 import { useNavigate, NavLink } from 'react-router-dom';
+import Empty from 'antd/es/empty';
 import RecommnadEventMatch from './componnets/RecommnadEventMatch';
 import RecommandEventCard from './componnets/RecommandEventCard';
-import Empty from 'antd/es/empty';
 
 const LearnTogether = () => {
   const { t } = useTranslation()

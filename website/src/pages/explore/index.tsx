@@ -10,7 +10,7 @@ const Explore = () => {
   const [searchWord, setSearchWord] = useState('')
 
   const handleChange = (e: KeyboardEvent<HTMLInputElement>) => {
-    const value = e.currentTarget.value
+    const {value} = e.currentTarget
     setSearchWord(value)
   }
 

@@ -11,9 +11,9 @@ import { useTranslation } from 'react-i18next'
 import Tooltip from 'antd/es/tooltip'
 import type { q11eParam } from '~/api/booth/booth'
 import { getQ11e, putQ11e } from '~/api/booth/booth'
+import { useAccount } from '~/account'
 import Suggest from './suggested'
 import { randomConfetti } from '../resume/utils/confetti'
-import { useAccount } from '~/account'
 
 const InterestTag = [
   {
@@ -91,7 +91,7 @@ const MatchConfig = () => {
       if (!result) {
         return
       }
-      let fields: Record<string, any> = {}
+      const fields: Record<string, any> = {}
       Object.entries(result).forEach(([key, value]) => {
         fields[`${key.toLowerCase()}`] = value
       })

@@ -9,9 +9,9 @@ import CloseOutlined from '@ant-design/icons/CloseOutlined'
 import { useAccount } from '~/account'
 import type { UserPlatform } from '~/api/booth/types'
 import { PlatformType } from '~/api/booth/booth'
-import FollowersModal from './modal'
 import Skeleton from 'antd/es/skeleton'
 import Button from 'antd/es/button'
+import FollowersModal from './modal'
 import LensAvatar from './avatar'
 
 type LensCardProps = {
@@ -207,7 +207,7 @@ const LensCard = (props: LensCardProps) => {
           </a>
         </div>
         {currentUser?.handle ? (
-          <p className="m-10 text-xl break-words line-wrap three-line-wrap">
+          <p className="m-10 text-xl line-wrap three-line-wrap" style={{wordBreak: 'break-word'}}>
             {user?.bio || visitCase === 0 ? '' : "The user hasn't given a bio for self yet :)"}
           </p>
         ) : (

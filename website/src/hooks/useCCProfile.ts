@@ -19,7 +19,7 @@ const DEFAULT_EVENT: EventMatchedItem = {
       id: "639da5507a802abdc51405d4",
       seriesId: "639d50f07a802abdc51405ad",
       title: "功能介绍篇",
-    }
+    },
   ],
   hasInterested: true,
   interested: [],
@@ -97,10 +97,10 @@ const useCCProfile = (defaultPage: number) => {
       const filteredCourseList = await fetchCourseByEvents(list)
       mergeData(list, filteredCourseList)
       setHasNextPage(result?.data?.trendingEvents?.pageInfo?.hasNextPage)
-    } catch (error: Error | unknown) {
+    } catch (e: Error | unknown) {
       setHasNextPage(false)
-      if (error instanceof Error) {
-        setError(error)
+      if (e instanceof Error) {
+        setError(e)
       } else {
         setError(new Error('Unknown error'))
       }

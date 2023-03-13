@@ -16,7 +16,7 @@ function useFollow() {
       toggleIsLoading(true);
       const error = await cc
         .follow(handle)
-        .catch((error: any) => error)
+        .catch((e: any) => e)
         .finally(() => toggleIsLoading(false));
 
       if (!error || error.message === "ALREADY_DONE") {

@@ -18,7 +18,6 @@ import { useTranslation } from 'react-i18next'
 import type { SBTDetailResult, SBTMeta } from '~/api/booth/booth'
 import { getSbtDetail } from '~/api/booth/booth'
 import Jazzicon from 'react-jazzicon'
-import OwnersOnLens from './owners'
 import { ipfsUrl } from '~/utils/ipfs'
 
 // 骨架屏

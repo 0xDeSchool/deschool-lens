@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useAccount } from '~/account'
 import { PlatformType } from '~/api/booth/booth'
 import IconDeschool from '~/assets/icons/deschool.svg'
 import IconLens from '~/assets/icons/lens.svg'
@@ -14,7 +15,8 @@ const activeClass = 'pl-12px frc-start w-full rounded-2'
 
 const PlatformBoard: React.FC<PlatformBoardProps> = (props) => {
   const { change, defaultActive } = props
-  const [active, setActive] = useState<PlatformType>(defaultActive ? defaultActive : PlatformType.DESCHOOL)
+  const [active, setActive] = useState<PlatformType>(defaultActive || PlatformType.DESCHOOL)
+  const user = useAccount()
 
   useEffect(() => {
     if (change) {
@@ -26,6 +28,7 @@ const PlatformBoard: React.FC<PlatformBoardProps> = (props) => {
     <div className='frc-between w-full gap-2 mb-4'>
       <div
         className={`cursor-pointer bg-black h-36px min-h-36px min-w-36px transition-all transition-500 ${active === PlatformType.CYBERCONNECT ? activeClass : normalClass}`}
+        style={{ opacity: user?.ccProfile()?.address ? '1' : '0.4' }}
         onClick={() => setActive(PlatformType.CYBERCONNECT)}
       >
         <CyberConnectIcon style={{color: 'white'}} alt="cyberconnect" width={24} height={24} />
@@ -33,6 +36,7 @@ const PlatformBoard: React.FC<PlatformBoardProps> = (props) => {
       </div>
       <div
         className={`cursor-pointer bg-#abfe2c rounded-full h-36px min-h-36px min-w-36px transition-all transition-500 ${active === PlatformType.LENS ? activeClass : normalClass}`}
+        style={{ opacity: user?.lensProfile()?.address ? '1' : '0.4' }}
         onClick={() => setActive(PlatformType.LENS)}
       >
         <img src={IconLens} alt="lens" width={24} height={24} />

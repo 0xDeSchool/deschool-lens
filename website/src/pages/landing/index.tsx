@@ -3,11 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { useLayout } from '~/context/layout'
 import { useNavigate } from 'react-router'
 import AnimateBg from '~/components/animateBg'
-import HotSeries from './components/HotSeriesCourses'
-import HotSBTs from './components/HotSBTs'
 import { NavLink } from 'react-router-dom'
 import Button from 'antd/es/button'
-import Image from 'antd/es/image'
 
 const LandingHeader = () => {
   const { t } = useTranslation()
@@ -50,8 +47,7 @@ type LandingBoardItemProps = {
   btnText: string
   routePath: string
 }
-const LandingBoardItem = ({ title, banner, btnText, routePath }: LandingBoardItemProps) => {
-  return (
+const LandingBoardItem = ({ title, banner, btnText, routePath }: LandingBoardItemProps) => (
     <div className='mx-auto w-100% mb-24'>
       <h2 className="mx-auto text-3xl text-center font-ArchivoNarrow ">{title}</h2>
       <img src={banner} alt="banner" style={{width: '80vw', height: 'auto'}}/>
@@ -60,7 +56,6 @@ const LandingBoardItem = ({ title, banner, btnText, routePath }: LandingBoardIte
       </NavLink>
     </div>
   )
-}
 const LandingBody = () => {
   const { setLayoutPosition } = useLayout()
   const { t } = useTranslation()
