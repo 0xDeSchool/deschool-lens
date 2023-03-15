@@ -14,6 +14,16 @@ const (
 	PlatformCyberConnect UserPlatformType = 3
 )
 
+type Contact struct {
+	Id          string            `bson:"id"`
+	Type        string            `bson:"type"`
+	Name        string            `bson:"name,omitempty"`
+	Description string            `bson:"description,omitempty"`
+	Icon        string            `bson:"icon,omitempty"`
+	Url         string            `bson:"url,omitempty"`
+	Privates    map[string]string `bson:"privates,omitempty"`
+}
+
 type User struct {
 	ddd.FullAuditEntityBase `bson:",inline"`
 	ddd.WithExtraEntity     `bson:",inline"`
@@ -22,7 +32,27 @@ type User struct {
 	DisplayName             string          `bson:"displayName"`
 	Avatar                  string          `bson:"avatar"`
 	Bio                     string          `bson:"bio"`
+	Contacts                []*Contact      `bson:"contacts"`
 	Platforms               []*UserPlatform `bson:"-"`
+}
+
+func (u *User) Contract(name string) string {
+	for _, v := range u.Contacts {
+		if v.Type == name {
+			return v.Url
+		}
+	}
+	return ""
+}
+
+func (u *User) SetContract(c *Contact) {
+	for i, v := range u.Contacts {
+		if v.Type == c.Type {
+			u.Contacts[i] = c
+			return
+		}
+	}
+	u.Contacts = append(u.Contacts, c)
 }
 
 type UserPlatform struct {
