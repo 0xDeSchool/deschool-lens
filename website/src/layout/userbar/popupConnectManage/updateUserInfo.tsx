@@ -49,6 +49,7 @@ const UpdateUsername: React.FC = () => {
     try {
       setLoading(true)
       await updateUserInfo({
+        ...user,
         displayName: username,
         avatar,
         bio,

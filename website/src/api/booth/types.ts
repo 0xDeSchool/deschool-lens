@@ -36,6 +36,14 @@ export interface PagedResult<T> {
   items: T[]
 }
 
+export interface Contact {
+  contactType: string
+  name: string
+  description?: string
+  icon?: string
+  url?: string
+}
+
 export interface UserInfo {
   id: string
   address: string

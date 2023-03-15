@@ -4,6 +4,7 @@ import ConnectLensBoard from './connectLens'
 import ConnectCyberBoard from './connectCyber'
 import ConnectDeschool from './connectDeschool'
 import UpdateUsername from './updateUserInfo'
+import ContactBoard from './ContactBoard'
 
 type PopupConnectManageProps = {
   close: () => void
@@ -17,7 +18,10 @@ const PopupConnectManage: React.FC<PopupConnectManageProps> = (props) => {
         <h1 className='text-2xl font-Anton'>Booth</h1>
         <Button shape='circle' size='large' icon={<CloseCircleOutlined style={{color: '#999'}} />} className="frc-center" onClick={() => close()} />
       </div>
-      <UpdateUsername />
+      <div className='border-b-1 frc-start'>
+        <UpdateUsername />
+        <ContactBoard />
+      </div>
       <div className='frc-center gap-8 px-8 pt-8 pb-12'>
         <div className='item-connect flex-1 max-w-300px min-w-300px'>
           <ConnectDeschool />
