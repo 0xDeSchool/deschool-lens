@@ -1,12 +1,13 @@
 import Button from 'antd/es/button'
 import Modal from 'antd/es/modal/Modal'
 import { message, QRCode } from 'antd';
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useAccount } from '~/account'
 import html2canvas from 'html2canvas';
 import { download } from '~/utils';
 import { useTranslation } from 'react-i18next';
 import { LoadingOutlined } from '@ant-design/icons';
+import { getShortAddress } from '~/utils/format';
 
 const BusinessCard = () => {
   const [open, setOpen] = useState(false)
@@ -15,6 +16,10 @@ const BusinessCard = () => {
   const [qrcodeLoading, setQrcodeLoading] = useState(false)
   const user = useAccount()
   const { t } = useTranslation()
+
+  const contacts = useMemo(() => {
+    return user?.contacts?.filter((item) => item.name) || []
+  }, [user])
 
   const cacheImage = (src: string) => {
     return new Promise((resolve, reject) => {
@@ -99,7 +104,7 @@ const BusinessCard = () => {
               <div className='flex-1 frc-start'>
                 <img crossOrigin="anonymous" src={'https://dechooltest.s3.amazonaws.com/fe/0xb3153C43D0c8eA42D329918aF53fB8eE76BA07F37fb22b18-38d6-4378-8478-bf4ad0837bc6.jpeg'} alt={user?.displayName} className="min-w-56px w-56px min-h-56px h-56px rounded-full"/>
                 <div className='text-20px font-Anton ml-2 bg-clip-text text-shadow-#fff'
-                >{user?.displayName}</div>
+                >{user?.displayName === user?.address ? getShortAddress(user?.address) : user?.displayName}</div>
               </div>
               <div className='flex-1 fce-between'>
                 <div className='text-18px font-ArchivoNarrow-Medium'>Most recent job title</div>
@@ -109,22 +114,14 @@ const BusinessCard = () => {
           </div>
           <div className='flex-1 frc-between w-full'>
             <div className='font-ArchivoNarrow'>
-              <div>
-                <span className='text-gray text-12px text-right w-48px inline-block'>Twitter</span>
-                <a href='https://twitter.com/Arjun74999550' target="_blank"><span className='ml-2 text-14px text-black'>Arjun74999550</span></a>
-              </div>
-              <div>
-                <span className='text-gray text-12px text-right w-48px inline-block'>Discord</span>
-                <span className='ml-2 text-14px text-black'>ayjun#7478</span>
-              </div>
-              <div>
-                <span className='text-gray text-12px text-right w-48px inline-block'>WeChat</span>
-                <a><span className='ml-2 text-14px text-black'>17600143603</span></a>
-              </div>
-              <div>
-                <span className='text-gray text-12px text-right w-48px inline-block'>Email</span>
-                <a href='mailto:ayac3j@gmail.com'><span className='ml-2 text-14px text-black'>ayac3j@gmail.com</span></a>
-              </div>
+              {contacts?.map((item, index) => {
+                return (
+                  <div key={item.contactType}>
+                    <span className='text-gray text-12px text-right w-48px inline-block'>{item.contactType}</span>
+                    <span className='ml-2 text-14px text-black'>{item.name}</span>
+                  </div>
+                )
+              })}
             </div>
             <div className='w-86px h-86px self-end'>
               {/* <img crossOrigin="anonymous" src={qrcode} alt="qrcode" className='w-86px h-86px'/> */}
