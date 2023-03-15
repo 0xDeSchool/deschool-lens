@@ -1,5 +1,5 @@
 import http from '~/api/booth/http'
-import type { NewUserInfo, PagedResult, UserRequest } from "./types";
+import type { UserDetail, PagedResult, UserRequest } from "./types";
 
 /**
  * 获取最新用户列表
@@ -7,7 +7,7 @@ import type { NewUserInfo, PagedResult, UserRequest } from "./types";
  * @param limit 每页大小
  * @returns
  */
-export function getLatestUsers(params: UserRequest): Promise<PagedResult<NewUserInfo>> {
+export function getLatestUsers(params: UserRequest): Promise<PagedResult<UserDetail>> {
   let query = ""
   if (params.userId) {
     query = `userId=${params.userId}`

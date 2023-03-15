@@ -36,20 +36,26 @@ export interface PagedResult<T> {
   items: T[]
 }
 
+export interface Contract {
+  contactType: string
+  name: string
+  description: string
+  icon: string
+  url: string
+}
+
 export interface UserInfo {
   id: string
   address: string
   displayName?: string
   avatar?: string
   bio?: string
+  contacts?: Contract[]
   platforms?: UserPlatform[]
-  FollowingCount?: number
-  FollowerCount?: number
-  IsFollowing?: boolean
 }
 
 // 新用户信息
-export interface NewUserInfo extends UserInfo {
+export interface UserDetail extends UserInfo {
   followerCount: number
   followingCount: number
   isFollowing: boolean
@@ -66,6 +72,7 @@ export interface UpdateUserInfo {
   displayName?: string
   avatar?: string
   bio?: string
+  contacts?: Contract[]
 }
 
 export interface LoginResponse {

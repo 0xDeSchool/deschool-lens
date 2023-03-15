@@ -8,11 +8,11 @@ import { useNavigate } from 'react-router-dom'
 import { DEFAULT_AVATAR, useAccount } from '~/account'
 import { getLatestUsers } from '~/api/booth'
 import { followUser, unfollowUser } from '~/api/booth/follow'
-import { NewUserInfo } from '~/api/booth/types'
+import { UserDetail } from '~/api/booth/types'
 import { getShortAddress } from '~/utils/format'
 import UserInfoSkeleton from './UserInfoSkeleton'
 
-type UserInfoDeschoolProps = NewUserInfo & {
+type UserInfoDeschoolProps = UserDetail & {
   followerDetail?: () => void,
   followingDetail?: () => void,
   refresh: () => void,

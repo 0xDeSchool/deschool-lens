@@ -4,7 +4,7 @@ import Star1 from '~/assets/images/star1.png'
 import Skeleton from 'antd/es/skeleton'
 import Empty from 'antd/es/empty'
 import { getLatestUsers } from '~/api/booth'
-import type { NewUserInfo } from '~/api/booth/types'
+import type { UserDetail } from '~/api/booth/types'
 import CelebrityCardNew from './CelebrityCardNew'
 import { useAccount } from '~/account'
 import ShowMoreLoading from '~/components/loading/showMore'
@@ -16,8 +16,8 @@ const HotCelebrities = (props: { searchWord: string }) => {
   const [loading, setLoading] = useState(true)
   const [moreLoading, setMoreLoading] = useState(false)
   const [hasNextPage, setHasNextPage] = useState(false)
-  const [celebrities, setCelebrities] = useState<NewUserInfo[]>([])
-  const [cacheCelebrities, setCacheCelebrities] = useState<NewUserInfo[]>([])
+  const [celebrities, setCelebrities] = useState<UserDetail[]>([])
+  const [cacheCelebrities, setCacheCelebrities] = useState<UserDetail[]>([])
   const [page, setPage] = useState(1)
 
   const user = useAccount()
@@ -54,12 +54,12 @@ const HotCelebrities = (props: { searchWord: string }) => {
 
 
   // TODO: 跳转到粉丝详情页
-  const handleFollowerDetail = (celebrity: NewUserInfo) => {
+  const handleFollowerDetail = (celebrity: UserDetail) => {
     console.log('follower detail')
   }
 
   // TODO: 跳转到关注详情页
-  const hanldeFollowingDetail = (celebrity: NewUserInfo) => {
+  const hanldeFollowingDetail = (celebrity: UserDetail) => {
     console.log('following detail')
   }
 

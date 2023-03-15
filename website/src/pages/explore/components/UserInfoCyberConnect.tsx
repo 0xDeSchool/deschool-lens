@@ -6,14 +6,14 @@ import { useTranslation } from 'react-i18next'
 import Jazzicon from 'react-jazzicon/dist/Jazzicon'
 import { useNavigate } from 'react-router'
 import { DEFAULT_AVATAR, useAccount } from '~/account'
-import { NewUserInfo } from '~/api/booth/types'
+import { UserDetail } from '~/api/booth/types'
 import useFollow from '~/hooks/useCyberConnectFollow'
 import useCyberConnectProfile from '~/hooks/useCyberConnectProfile'
 import useUnFollow from '~/hooks/useCyberConnectUnfollow'
 import { getShortAddress } from '~/utils/format'
 import UserInfoSkeleton from './UserInfoSkeleton'
 
-type UserInfoCyberConnectProps = NewUserInfo & {
+type UserInfoCyberConnectProps = UserDetail & {
   followerDetail?: () => void,
   followingDetail?: () => void,
 }

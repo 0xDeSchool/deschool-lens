@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { NewUserInfo } from '~/api/booth/types'
+import { UserDetail } from '~/api/booth/types'
 import { PlatformType } from '~/api/booth/booth'
 import PlatformBoard from '~/components/platformBoard'
 import UserInfoDeschool from './UserInfoDeschool'
@@ -7,7 +7,7 @@ import UserInfoCyberConnect from './UserInfoCyberConnect'
 import UserInfoLens from './UserInfoLens'
 
 type CelebrityCardNewProps = {
-  userInfo: NewUserInfo
+  userInfo: UserDetail
   followerDetail?: () => void,
   followingDetail?: () => void,
   refresh: () => void,
