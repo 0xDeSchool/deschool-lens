@@ -388,7 +388,7 @@ const Resume = () => {
     const contractAddress = query.get('contractAddress')
     const tokenId = query.get('tokenId')
 
-    if (!user) {
+    if (!user && origin && origin === 'deschoolFeedback') {
       setConnectBoardVisible(true)
       return
     }
