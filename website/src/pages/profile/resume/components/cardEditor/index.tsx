@@ -3,14 +3,15 @@ import { v4 as uuid } from 'uuid'
 import Modal from 'antd/es/modal'
 import Form from 'antd/es/form'
 import Input from 'antd/es/input'
-import dayjs from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import DatePicker from 'antd/es/date-picker'
 import Image from 'antd/es/image'
 import VerifiedIcon from '@mui/icons-material/Verified'
 import fallbackImage from '~/assets/images/fallbackImage'
 import Tooltip from 'antd/es/tooltip'
 import type { CardEditorInput, ResumeCardData, SbtInfo } from '../../types'
-
+import Button from 'antd/es/button'
+import Checkbox from 'antd/es/checkbox/Checkbox'
 const { TextArea } = Input
 
 const SbtItem = (props: { list: string[]; toggleList: (key: string) => void; item: SbtInfo }) => {
@@ -42,7 +43,7 @@ const SbtItem = (props: { list: string[]; toggleList: (key: string) => void; ite
 const SbtSelectList = (props: { sbtList: SbtInfo[]; originalList: SbtInfo[] | undefined; setProofs: (list: SbtInfo[]) => void }) => {
   const [list, setList] = useState<string[]>([])
   const { sbtList, originalList, setProofs } = props
-  
+
   const toggleList = (key: string) => {
     const newList = list.slice()
     if (list.includes(key)) {
@@ -106,7 +107,6 @@ const CardEditor = (input: CardEditorInput) => {
   const [proofs, setProofs] = useState<SbtInfo[]>([])
   const formRef = useRef(null)
   const [form] = Form.useForm()
-
   const checkValidateFields = async (): Promise<boolean> => {
     let valid = true
     try {
@@ -128,6 +128,7 @@ const CardEditor = (input: CardEditorInput) => {
       description: form.getFieldValue('description'),
       startTime: dayjs(form.getFieldValue('stime')),
       endTime: dayjs(form.getFieldValue('etime')),
+      isPresent: form.getFieldValue('isPresent'),
       proofs,
       blockType: originalData?.blockType,
       id: originalData?.id === undefined ? uuid() : originalData?.id,
@@ -143,6 +144,7 @@ const CardEditor = (input: CardEditorInput) => {
         description: originalData?.description,
         stime: originalData?.startTime,
         etime: originalData?.endTime,
+        isPresent: originalData?.isPresent,
       })
     }
 
@@ -159,6 +161,7 @@ const CardEditor = (input: CardEditorInput) => {
           stime: originalData?.startTime,
           etime: originalData?.endTime,
           description: originalData?.description,
+          isPresent: originalData?.isPresent,
         }}
         layout="vertical"
       >
@@ -168,11 +171,27 @@ const CardEditor = (input: CardEditorInput) => {
           <Input placeholder="Please input your experience title" />
         </Form.Item>
         <Form.Item label="Start Time" name="stime" rules={[{ required: true, message: 'Please select start time!' }]}>
-          <DatePicker picker="month" />
+          <DatePicker picker="month" disabledDate={current => {
+            // 如果选择至今，则开始时间不能大于当前时间
+            if (form.getFieldValue('isPresent')) {
+              return dayjs(form.getFieldValue('etime')).isBefore(dayjs())
+            }
+            // 如果选择了结束时间，则开始时间不能大于结束时间
+            return dayjs(form.getFieldValue('etime')).isBefore(current)}
+          }/>
         </Form.Item>
-        <Form.Item label="End Time" name="etime" rules={[{ required: true, message: 'Please select end time!' }]}>
-          <DatePicker picker="month" />
-        </Form.Item>
+        <div className='frc-start'>
+          <Form.Item label="End Time" name="etime" rules={[{ required: true, message: 'Please select end time!' }]}>
+            <DatePicker
+              picker="month"
+              // 开始时间不能大于结束时间
+              disabledDate={current => !dayjs(form.getFieldValue('stime')).isBefore(current)}
+            />
+          </Form.Item>
+          <Form.Item label=" " name="isPresent" valuePropName="checked" className='ml-4'>
+            <Checkbox>Present</Checkbox>
+          </Form.Item>
+        </div>
         <Form.Item label="Description" name="description" rules={[{ required: true, message: 'Please input description' }]}>
           <TextArea rows={4} />
         </Form.Item>

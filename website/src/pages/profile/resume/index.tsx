@@ -107,7 +107,6 @@ const Resume = () => {
   const handleEditOrCreateCardSave = async (newData: ResumeCardData) => {
     let dataIndex: number | undefined
     const bt = newData.blockType
-
     let newResumeData: ResumeData | undefined
     // 场景一：创造卡片
     if (isCreateCard) {
@@ -168,6 +167,7 @@ const Resume = () => {
       description: '',
       startTime: undefined,
       endTime: undefined,
+      isPresent: false,
       proofs: [],
       blockType: bt,
       id: newData.id,
@@ -224,6 +224,7 @@ const Resume = () => {
       description: '',
       startTime: undefined,
       endTime: undefined,
+      isPresent: false,
       proofs: contractAddress && tokenId ? [{
         address: contractAddress,
         tokenId, img: '',

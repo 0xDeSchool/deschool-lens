@@ -55,7 +55,8 @@ const ResumeCard = (input: ResumeCardInput) => {
         <div className="italic">
           {data.startTime?.year()} {data.startTime?.month() !== undefined ? monthNames[data.startTime?.month()] : ''}
           {' - '}
-          {data.endTime?.year()} {data.endTime?.month() !== undefined ? monthNames[data.endTime?.month()] : ''}
+          {data.isPresent && 'Present'}
+          {!data.isPresent && data.endTime?.year()} {!data.isPresent && data.endTime?.month() !== undefined ? monthNames[data.endTime?.month()] : ''}
         </div>
       </div>
 
