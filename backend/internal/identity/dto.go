@@ -37,13 +37,44 @@ type UnlinkPlatformInput struct {
 	Platform UserPlatformType `json:"platform" binding:"required"` // 平台唯一标识，如 lens, cc(CyberConnect), deschool
 }
 
+type ContactDto struct {
+	Type        string `json:"contactType" binding:"required"`
+	Name        string `json:"name,omitempty"`
+	Description string `json:"description,omitempty"`
+	Icon        string `json:"icon,omitempty"`
+	Url         string `json:"url,omitempty"`
+}
+
+func (cc *ContactDto) ToEntity() *Contact {
+	return &Contact{
+		Name:        cc.Name,
+		Type:        cc.Type,
+		Description: cc.Description,
+		Icon:        cc.Icon,
+		Url:         cc.Url,
+	}
+}
+
+func NewContractDto(c *Contact) *ContactDto {
+	if c == nil {
+		return nil
+	}
+	return &ContactDto{
+		Type: c.Type,
+		Name: c.Name,
+		Icon: c.Icon,
+		Url:  c.Url,
+	}
+}
+
 type UserInfo struct {
-	Id          string      `json:"id"`
-	Address     string      `json:"address"`
-	DisplayName string      `json:"displayName"`
-	Avatar      string      `json:"avatar"`
-	Bio         string      `json:"bio"`
-	Platforms   []*Platform `json:"platforms"`
+	Id          string        `json:"id"`
+	Address     string        `json:"address"`
+	DisplayName string        `json:"displayName"`
+	Avatar      string        `json:"avatar"`
+	Bio         string        `json:"bio"`
+	Platforms   []*Platform   `json:"platforms"`
+	Contacts    []*ContactDto `json:"contacts,omitempty"`
 }
 
 type Platform struct {
@@ -75,6 +106,7 @@ func NewUserInfo(user *User, isSelf bool) *UserInfo {
 		DisplayName: user.DisplayName,
 		Avatar:      user.Avatar,
 		Bio:         user.Bio,
+		Contacts:    linq.Map(user.Contacts, func(c **Contact) *ContactDto { return NewContractDto(*c) }),
 		Platforms: linq.Map(user.Platforms, func(p **UserPlatform) *Platform {
 			return NewPlatform(*p, isSelf)
 		}),
@@ -82,9 +114,10 @@ func NewUserInfo(user *User, isSelf bool) *UserInfo {
 }
 
 type UserUpdateInput struct {
-	DisplayName *string `json:"displayName"`
-	Avatar      *string `json:"avatar"`
-	Bio         *string `json:"bio"`
+	DisplayName *string       `json:"displayName"`
+	Avatar      *string       `json:"avatar"`
+	Bio         *string       `json:"bio"`
+	Contacts    []*ContactDto `json:"contacts"`
 }
 
 func (input *UserUpdateInput) ToEntity(u *User) {
@@ -96,5 +129,14 @@ func (input *UserUpdateInput) ToEntity(u *User) {
 	}
 	if input.Bio != nil {
 		u.Bio = *input.Bio
+	}
+
+	if input.Contacts != nil {
+		for i := range input.Contacts {
+			c := input.Contacts[i]
+			if c != nil {
+				u.SetContract(c.ToEntity())
+			}
+		}
 	}
 }
