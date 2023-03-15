@@ -67,6 +67,7 @@ const EN_US_COMMON = {
   includedIn: 'This series course is included in NFT Pass: ',
   Total: 'Total',
   SeeMore: 'See More',
+  saveSuccess: 'Save Success',
 }
 
 export default EN_US_COMMON
