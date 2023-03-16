@@ -3,7 +3,7 @@ package internal
 import (
 	"context"
 	"github.com/0xdeschool/deschool-lens/backend/internal/hackathon"
-	"github.com/0xdeschool/deschool-lens/backend/internal/identity"
+	identity2 "github.com/0xdeschool/deschool-lens/backend/internal/modules/identity"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/app"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/log"
@@ -14,13 +14,13 @@ func Scripts(b *app.AppBuilder) {
 	b.CmdBuilder.AddRun("fix", "fix", runFix)
 }
 
-var cachedUser = map[string]*identity.User{}
+var cachedUser = map[string]*identity2.User{}
 
-var userRepo identity.UserRepository
+var userRepo identity2.UserRepository
 
 func runFix() {
 	ctx := context.Background()
-	userRepo = *di.Get[identity.UserRepository]()
+	userRepo = *di.Get[identity2.UserRepository]()
 
 	fixResume(ctx)
 
@@ -28,11 +28,11 @@ func runFix() {
 
 func fixUsers(ctx context.Context) {
 	r := *di.Get[hackathon.IdRepository]()
-	users := make([]identity.User, 0)
+	users := make([]identity2.User, 0)
 	data := r.GetAll(ctx)
 	for i := range data {
 		u := &data[i]
-		item := identity.User{
+		item := identity2.User{
 			Address: u.Address,
 		}
 		item.ID = u.ID
@@ -41,7 +41,7 @@ func fixUsers(ctx context.Context) {
 		item.DisplayName = u.Address
 		users = append(users, item)
 	}
-	userRepo := *di.Get[identity.UserRepository]()
+	userRepo := *di.Get[identity2.UserRepository]()
 	userRepo.InsertMany(ctx, users, true)
 }
 
@@ -91,15 +91,15 @@ func fixQ11E(ctx context.Context) {
 
 func fixUserLink(ctx context.Context) {
 	ir := *di.Get[hackathon.IdRepository]()
-	ur := *di.Get[identity.UserManager]()
+	ur := *di.Get[identity2.UserManager]()
 	ids := ir.GetAll(ctx)
 	for i := range ids {
 		id := &ids[i]
 		user := ur.Find(ctx, id.Address)
 		if id.Platform == hackathon.LensPlatform {
-			ur.Link(ctx, &identity.UserPlatform{
+			ur.Link(ctx, &identity2.UserPlatform{
 				UserId:     user.ID,
-				Platform:   identity.PlatformLens,
+				Platform:   identity2.PlatformLens,
 				Handle:     id.LensHandle,
 				Address:    id.Address,
 				VerifiedAt: id.CreatedAt,
@@ -108,7 +108,7 @@ func fixUserLink(ctx context.Context) {
 	}
 }
 
-func getUser(ctx context.Context, addr string) *identity.User {
+func getUser(ctx context.Context, addr string) *identity2.User {
 	if user, ok := cachedUser[addr]; ok {
 		return user
 	}

@@ -15,7 +15,7 @@ type Follow struct {
 }
 
 type FollowRepository interface {
-	ddd.RepositoryBase[Follow]
+	ddd.Repository[Follow]
 	CheckExistsByToAndFromAddr(ctx context.Context, fromUser primitive.ObjectID, toUser primitive.ObjectID) bool
 	GetListByFilter(ctx context.Context, userId primitive.ObjectID, key string) []Follow
 	DeleteByToAndFrom(ctx context.Context, fromUser primitive.ObjectID, toUser primitive.ObjectID) bool

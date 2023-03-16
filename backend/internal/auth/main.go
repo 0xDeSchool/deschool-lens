@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"github.com/0xdeschool/deschool-lens/backend/internal/identity"
+	identity2 "github.com/0xdeschool/deschool-lens/backend/internal/modules/identity"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/ginx"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/server"
@@ -10,10 +10,10 @@ import (
 )
 
 type LoginInput struct {
-	Address    string                      `json:"address" binding:"required"`
-	Sig        string                      `json:"sig" binding:"required"`
-	WalletType identity.WalletType         `json:"walletType"`
-	Platform   *identity.LinkPlatformInput `json:"platform"`
+	Address    string                       `json:"address" binding:"required"`
+	Sig        string                       `json:"sig" binding:"required"`
+	WalletType identity2.WalletType         `json:"walletType"`
+	Platform   *identity2.LinkPlatformInput `json:"platform"`
 }
 
 type JWTOptions struct {

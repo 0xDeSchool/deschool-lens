@@ -14,7 +14,7 @@ type Resume struct {
 }
 
 type ResumeRepository interface {
-	ddd.RepositoryBase[Resume]
+	ddd.Repository[Resume]
 	GetByUserId(ctx context.Context, address primitive.ObjectID) *Resume
 	CheckExists(ctx context.Context, userId primitive.ObjectID) bool
 }

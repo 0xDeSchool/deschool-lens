@@ -1,10 +1,10 @@
 package auth
 
 import (
+	identity2 "github.com/0xdeschool/deschool-lens/backend/internal/modules/identity"
 	"net/http"
 	"time"
 
-	"github.com/0xdeschool/deschool-lens/backend/internal/identity"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/errx"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/ginx"
@@ -33,7 +33,7 @@ type LogoutResult struct {
 	Success bool `json:"success"`
 }
 
-func NewCurrentUserInfo(user *identity.User) *ginx.CurrentUserInfo {
+func NewCurrentUserInfo(user *identity2.User) *ginx.CurrentUserInfo {
 	return &ginx.CurrentUserInfo{
 		ID:          user.ID,
 		DisplayName: user.DisplayName,
@@ -92,7 +92,7 @@ func jwtAuthenticate(c *gin.Context) (interface{}, error) {
 		return nil, err
 	}
 	if input.WalletType == "" {
-		input.WalletType = identity.MetaMask
+		input.WalletType = identity2.MetaMask
 	}
 	if !common.IsHexAddress(input.Address) {
 		ginx.PanicValidatition("invalid address")
@@ -143,8 +143,8 @@ func jwtLogoutResponse(c *gin.Context, code int) {
 	})
 }
 
-func authenticate(c *gin.Context, address common.Address, sig string, t identity.WalletType, platform *identity.LinkPlatformInput) (*ginx.CurrentUserInfo, error) {
-	um := di.Get[identity.UserManager]()
+func authenticate(c *gin.Context, address common.Address, sig string, t identity2.WalletType, platform *identity2.LinkPlatformInput) (*ginx.CurrentUserInfo, error) {
+	um := di.Get[identity2.UserManager]()
 	p := platform.ToEntity()
 	user := um.Login(c, address, sig, t, p)
 	userInfo := NewCurrentUserInfo(user)
@@ -167,7 +167,7 @@ func getSignMsg(ctx *gin.Context) {
 		ginx.PanicValidatition("invalid address")
 	}
 	addr := common.HexToAddress(input.Address)
-	message := identity.CreateSignMessage(addr, input.SignType)
+	message := identity2.CreateSignMessage(addr, input.SignType)
 	ctx.JSON(http.StatusOK, SingMessageOutput{
 		Message: message,
 	})

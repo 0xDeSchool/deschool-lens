@@ -2,7 +2,7 @@ package hackathon
 
 import (
 	"context"
-	"github.com/0xdeschool/deschool-lens/backend/internal/identity"
+	identity2 "github.com/0xdeschool/deschool-lens/backend/internal/modules/identity"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/utils/linq"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -34,9 +34,9 @@ func (hm *HackathonManager) GetFollowing(ctx context.Context, userId primitive.O
 	userIds := linq.Map(result, func(i *Follow) primitive.ObjectID {
 		return i.ToUser
 	})
-	userRepo := *di.Get[identity.UserRepository]()
+	userRepo := *di.Get[identity2.UserRepository]()
 	user := userRepo.GetMany(ctx, userIds)
-	userMap := linq.ToMap(user, func(i *identity.User) primitive.ObjectID { return i.ID })
+	userMap := linq.ToMap(user, func(i *identity2.User) primitive.ObjectID { return i.ID })
 	var ret = make([]FollowingList, 0)
 	for _, item := range result {
 		u, ok := userMap[item.ToUser]
@@ -63,9 +63,9 @@ func (hm *HackathonManager) GetFollower(ctx context.Context, userId primitive.Ob
 	userIds := linq.Map(result, func(i *Follow) primitive.ObjectID {
 		return i.FromUser
 	})
-	userRepo := *di.Get[identity.UserRepository]()
+	userRepo := *di.Get[identity2.UserRepository]()
 	user := userRepo.GetMany(ctx, userIds)
-	userMap := linq.ToMap(user, func(i *identity.User) primitive.ObjectID { return i.ID })
+	userMap := linq.ToMap(user, func(i *identity2.User) primitive.ObjectID { return i.ID })
 	var ret = make([]FollowerList, 0)
 	for _, item := range result {
 		u, ok := userMap[item.FromUser]

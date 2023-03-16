@@ -99,6 +99,19 @@ func (r *Collection[TEntity]) Exists(ctx context.Context, id primitive.ObjectID)
 	return true
 }
 
+func (r *Collection[TEntity]) ExistsByFilter(ctx context.Context, filter bson.D) bool {
+	filter = r.setSoftDeleteFilter(filter)
+	var result TEntity
+	err := r.Col().FindOne(ctx, filter).Decode(&result)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return false
+		}
+		panic(err)
+	}
+	return true
+}
+
 func (r *Collection[TEntity]) Insert(ctx context.Context, entity *TEntity) primitive.ObjectID {
 	ddd.SetAudited(ctx, entity)
 	result, err := r.Col().InsertOne(ctx, entity)

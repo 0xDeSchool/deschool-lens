@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type RepositoryBase[TEntity any] interface {
+type Repository[TEntity any] interface {
 	GetAll(ctx context.Context) []TEntity
 	Get(ctx context.Context, id primitive.ObjectID) *TEntity
 	FirstOrDefault(ctx context.Context, id primitive.ObjectID) *TEntity
@@ -20,6 +20,7 @@ type RepositoryBase[TEntity any] interface {
 	// InsertMany ignoreErr: 是否忽略批量插入时的错误, 一般为false, 当导入时忽略重复key的时候可以设为true
 	InsertMany(ctx context.Context, entitis []TEntity, ignoreErr bool) []primitive.ObjectID
 	Exists(ctx context.Context, id primitive.ObjectID) bool
+	ExistsByField(ctx context.Context, field string, v any) bool
 	Update(ctx context.Context, id primitive.ObjectID, entity *TEntity) int
 	Delete(ctx context.Context, id primitive.ObjectID) int
 	DeleteMany(ctx context.Context, ids []primitive.ObjectID) int

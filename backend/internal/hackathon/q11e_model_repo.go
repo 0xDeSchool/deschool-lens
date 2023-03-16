@@ -47,7 +47,7 @@ type Q11e struct {
 }
 
 type Q11eRepository interface {
-	ddd.RepositoryBase[Q11e]
+	ddd.Repository[Q11e]
 	GetByUserId(ctx context.Context, userId primitive.ObjectID) *Q11e
 	CheckAndGetExistsByUser(ctx context.Context, userId primitive.ObjectID) (bool, *Q11e)
 
