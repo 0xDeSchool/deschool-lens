@@ -107,8 +107,8 @@ const BusinessCard = () => {
                 >{user?.displayName === user?.address ? getShortAddress(user?.address) : user?.displayName}</div>
               </div>
               <div className='flex-1 fce-between'>
-                <div className='text-18px font-ArchivoNarrow-Medium'>Most recent job title</div>
-                <div className='font-ArchivoNarrow-Semibold'>org with logo</div>
+                <div className='text-18px font-ArchivoNarrow-Medium'>{user?.resumeInfo?.role}</div>
+                <div className='font-ArchivoNarrow-Semibold'>{user?.resumeInfo?.project?.name}</div>
               </div>
             </div>
           </div>

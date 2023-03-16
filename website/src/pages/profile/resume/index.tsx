@@ -164,7 +164,7 @@ const Resume = () => {
     // 清空卡片信息
     const emptyCardData: ResumeCardData = {
       title: '',
-      projectName: '',
+      project: null,
       role: '',
       description: '',
       startTime: undefined,
@@ -224,7 +224,7 @@ const Resume = () => {
     const emptyCardData: ResumeCardData = {
       title: '',
       description: '',
-      projectName: '',
+      project: null,
       role: '',
       startTime: undefined,
       endTime: undefined,
@@ -250,6 +250,18 @@ const Resume = () => {
     }
   }
 
+  // 获取当前用户最新职位信息, 用于展示用户名片上
+  const fetchUserLatestCareer = async (resumeDataList: ResumeData) => {
+    if (!resumeDataList?.career?.length) {
+      return
+    }
+    // 找至今的职位
+    const latestCareer = resumeDataList?.career?.find(item => item.isPresent) || resumeDataList?.career[0]
+    if (latestCareer?.project && latestCareer?.role) {
+      user?.setResumeInfo(latestCareer.project, latestCareer.role)
+    }
+  }
+
   // 获取当前用户的简历
   const fetchUserResume = async (resumeAddress: string) => {
     if (!resumeAddress) {
@@ -260,6 +272,7 @@ const Resume = () => {
     if (result?.data) {
       const resumeObj = covertCareerAndEdu(result.data)
       setResumeData(resumeObj)
+      fetchUserLatestCareer(resumeObj)
     }
     setLoading(false)
   }

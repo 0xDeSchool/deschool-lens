@@ -129,7 +129,7 @@ const CardEditor = (input: CardEditorInput) => {
     }
     const newCard: ResumeCardData | undefined = {
       title: form.getFieldValue('title'),
-      projectName: form.getFieldValue('projectName'),
+      project: form.getFieldValue('project'),
       role: form.getFieldValue('role'),
       description: form.getFieldValue('description'),
       startTime: dayjs(form.getFieldValue('stime')),
@@ -147,7 +147,7 @@ const CardEditor = (input: CardEditorInput) => {
     if (formRef.current) {
       form.setFieldsValue({
         title: originalData?.title,
-        projectName: originalData?.projectName,
+        project: originalData?.project,
         role: originalData?.role,
         description: originalData?.description,
         stime: originalData?.startTime,
@@ -166,7 +166,7 @@ const CardEditor = (input: CardEditorInput) => {
         name="match"
         initialValues={{
           title: originalData?.title,
-          projectName: originalData?.projectName,
+          project: originalData?.project,
           role: originalData?.role,
           stime: originalData?.startTime,
           etime: originalData?.endTime,
@@ -181,7 +181,7 @@ const CardEditor = (input: CardEditorInput) => {
           <Input placeholder="Please input your experience title" />
         </Form.Item>
         <Form.Item
-          label='Project' name="projectName"
+          label='Project' name="project"
           valuePropName="defaultValue"
           rules={[{ required: true, message: 'Please add your projects' }]}>
           <ProjectSelector />

@@ -33,14 +33,9 @@ export interface ResumeData {
   edu: ResumeCardData[] | undefined
 }
 
-export interface Project {
-  name: string
-  url: string
-  icon: string
-}
 export interface ResumeCardData {
   title: string
-  projectName: string
+  project: ResumeProject
   role: string
   description: string
   startTime: Dayjs | undefined

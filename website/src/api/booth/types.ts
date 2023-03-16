@@ -164,6 +164,7 @@ export interface ResumeProjectBase {
   name: string
   description?: string
   url?: string
+  icon?: string
 }
 
 export interface ResumeProjectCreateRequest extends ResumeProjectBase {

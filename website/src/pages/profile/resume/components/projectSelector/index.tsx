@@ -5,39 +5,34 @@ import Form from 'antd/es/form';
 import Input from 'antd/es/input';
 import Modal from 'antd/es/modal';
 import Select from 'antd/es/select'
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAccount } from '~/account';
+import { createResumeProject, getResumeProjects } from '~/api/booth/resume';
+import { ResumeProject } from '~/api/booth/types';
 import UploadPicture from '~/components/uploadImage/uploadPicture';
-import { Project } from '../../types';
-const optionsProject= [
-  {
-    name: 'DeSchool',
-    icon: 'https://dechooltest.s3.amazonaws.com/fe/0xb3153C43D0c8eA42D329918aF53fB8eE76BA07F37fb22b18-38d6-4378-8478-bf4ad0837bc6.jpeg',
-    url: '',
-  },
-  {
-    name: 'Designer',
-    icon: 'https://dechooltest.s3.amazonaws.com/fe/0xb3153C43D0c8eA42D329918aF53fB8eE76BA07F37fb22b18-38d6-4378-8478-bf4ad0837bc6.jpeg',
-    url: '',
-  },
-];
 
 type ProjectSelectorProps = {
-  defaultValue?: string;
-  onChange?: (value: string) => void;
+  defaultValue?: ResumeProject;
+  onChange?: (value: ResumeProject) => void;
 }
 const ProjectSelector: React.FC<ProjectSelectorProps> = (props) => {
   const { defaultValue, onChange } = props;
-  const [items, setItems] = useState(optionsProject);
-  const [value, setValue] = useState(defaultValue);
+  const [items, setItems] = useState<ResumeProject[]>([]);
+  const [value, setValue] = useState<string | null>(defaultValue?.name || null);
   const [open, setOpen] = useState(false)
   const [isAddProject, setIsAddProject] = useState(false)
   const formRef = useRef(null)
   const [form] = Form.useForm()
   const user = useAccount()
 
-  const handleSelect = (val: string) => {
-    setValue(val)
+  // 获取项目列表
+  const fetchResumeProject = async () => {
+    const res = await getResumeProjects({query: ''})
+    setItems(res.items)
+  }
+
+  const handleSelect = (val: ResumeProject) => {
+    setValue(val.name)
     setOpen(false)
     if (onChange) {
       onChange(val)
@@ -65,6 +60,8 @@ const ProjectSelector: React.FC<ProjectSelectorProps> = (props) => {
       ...form.getFieldsValue(),
       icon: form.getFieldValue('icon')[0],
     }
+    await createResumeProject(params)
+    await fetchResumeProject()
     // setItems()
     setIsAddProject(false)
     // 刷新项目列表数据
@@ -73,6 +70,10 @@ const ProjectSelector: React.FC<ProjectSelectorProps> = (props) => {
   const handleCancel = () => {
     setIsAddProject(false)
   }
+
+  useEffect(() => {
+    fetchResumeProject()
+  }, [])
 
   return (
     <>
@@ -85,7 +86,7 @@ const ProjectSelector: React.FC<ProjectSelectorProps> = (props) => {
         dropdownRender={() => (
           <>
             {items.map((item) => {
-              return <div key={item.name} className='frc-start py-2 px-2 border-b-1 cursor-pointer' onClick={() => handleSelect(item.name)}>
+              return <div key={item.name} className='frc-start py-2 px-2 border-b-1 cursor-pointer' onClick={() => handleSelect(item)}>
                   <Avatar src={item.icon} />
                   <span className='ml-3'>{item.name}</span>
                 </div>
@@ -95,7 +96,6 @@ const ProjectSelector: React.FC<ProjectSelectorProps> = (props) => {
             </Button>
           </>
         )}
-        options={items.map((item) => ({ label: item, value: item }))}
       />
       <Modal
         open={isAddProject}
