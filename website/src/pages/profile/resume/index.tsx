@@ -164,6 +164,8 @@ const Resume = () => {
     // 清空卡片信息
     const emptyCardData: ResumeCardData = {
       title: '',
+      projectName: '',
+      role: '',
       description: '',
       startTime: undefined,
       endTime: undefined,
@@ -222,6 +224,8 @@ const Resume = () => {
     const emptyCardData: ResumeCardData = {
       title: '',
       description: '',
+      projectName: '',
+      role: '',
       startTime: undefined,
       endTime: undefined,
       isPresent: false,
