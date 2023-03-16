@@ -11,8 +11,8 @@ import fallbackImage from '~/assets/images/fallbackImage'
 import Tooltip from 'antd/es/tooltip'
 import type { CardEditorInput, ResumeCardData, SbtInfo } from '../../types'
 import Checkbox from 'antd/es/checkbox/Checkbox'
-import Select from 'antd/es/select'
 import ProjectSelector from '../projectSelector'
+import RoleSelector from '../roleSelector'
 const { TextArea } = Input
 
 const SbtItem = (props: { list: string[]; toggleList: (key: string) => void; item: SbtInfo }) => {
@@ -63,7 +63,7 @@ const SbtSelectList = (props: { sbtList: SbtInfo[]; originalList: SbtInfo[] | un
       return
     }
     const loadedList: string[] = []
-    sbtList.forEach(listItem => {
+    sbtList?.forEach(listItem => {
       const index = originalList.findIndex(
         originalItem => originalItem.address?.toLowerCase() === listItem.address.toLowerCase() && originalItem.tokenId && originalItem.tokenId === listItem.tokenId,
       )
@@ -102,14 +102,6 @@ const SbtSelectList = (props: { sbtList: SbtInfo[]; originalList: SbtInfo[] | un
   )
 }
 
-const optionsRole= [
-  {value: 'Developer'},
-  {value: 'Designer'},
-  {value: 'Product Manager'},
-  {value: 'Marketing'},
-  {value: 'Business'},
-  {value: 'Other'}
-];
 const CardEditor = (input: CardEditorInput) => {
   const { isEditCard, handleOk, handleCancel, originalData, isCreateCard, sbtList } = input
 
@@ -130,6 +122,7 @@ const CardEditor = (input: CardEditorInput) => {
   };
 
   const onSubmit = async () => {
+    console.log('onSubmit', form.getFieldsValue())
     const valid = await checkValidateFields()
     if (!valid) {
       return
@@ -189,18 +182,15 @@ const CardEditor = (input: CardEditorInput) => {
         </Form.Item>
         <Form.Item
           label='Project' name="projectName"
+          valuePropName="defaultValue"
           rules={[{ required: true, message: 'Please add your projects' }]}>
           <ProjectSelector />
         </Form.Item>
         <Form.Item
           label='Role' name="role"
+          valuePropName="defaultValue"
           rules={[{ required: true, message: 'Please add your role' }]}>
-          <Select
-            showArrow
-            style={{ width: '100%' }}
-            options={optionsRole}
-            placeholder="Please select your role"
-          />
+          <RoleSelector />
         </Form.Item>
         <Form.Item label="Start Time" name="stime" rules={[{ required: true, message: 'Please select start time!' }]}>
           <DatePicker picker="month" disabledDate={current => {

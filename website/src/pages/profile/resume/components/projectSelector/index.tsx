@@ -2,7 +2,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import Avatar from 'antd/es/avatar';
 import Button from 'antd/es/button';
 import Form from 'antd/es/form';
-import Input, { InputRef } from 'antd/es/input';
+import Input from 'antd/es/input';
 import Modal from 'antd/es/modal';
 import Select from 'antd/es/select'
 import { useRef, useState } from 'react';
@@ -32,7 +32,6 @@ const ProjectSelector: React.FC<ProjectSelectorProps> = (props) => {
   const [value, setValue] = useState(defaultValue);
   const [open, setOpen] = useState(false)
   const [isAddProject, setIsAddProject] = useState(false)
-  const [newProject, setNewProject] = useState<Project>()
   const formRef = useRef(null)
   const [form] = Form.useForm()
   const user = useAccount()
@@ -66,7 +65,6 @@ const ProjectSelector: React.FC<ProjectSelectorProps> = (props) => {
       ...form.getFieldsValue(),
       icon: form.getFieldValue('icon')[0],
     }
-    console.log('params', params)
     // setItems()
     setIsAddProject(false)
     // 刷新项目列表数据
@@ -112,11 +110,6 @@ const ProjectSelector: React.FC<ProjectSelectorProps> = (props) => {
             ref={formRef}
             form={form}
             name="match"
-            initialValues={{
-              name: newProject?.name,
-              icon: newProject?.icon,
-              url: newProject?.url,
-            }}
             layout="vertical"
           >
               <Form.Item label="PROJECT NAME" name="name" rules={[{ required: true, message: 'Please input project name!' }]}>

@@ -49,9 +49,9 @@ const ResumeCard = (input: ResumeCardInput) => {
   return (
     <div className="pt-4 px-4 hover:bg-gray-50 rounded-md w-full">
       {/* Title */}
-      <div className='font-ArchivoNarrow-Medium'>
+      <div className='font-bold my-2 text-lg'>
         <span>{data.projectName}</span>
-        <span>{data.role}</span>
+        <span className='ml-4 font-ArchivoNarrow-Medium'>{data.role}</span>
       </div>
       <div className="flex justify-between items-center">
         <div className="font-bold my-2 text-lg">{data.title}</div>
