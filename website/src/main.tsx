@@ -43,7 +43,7 @@ root.render(
               colorPrimary: '#6525FF',
             },
             Input: {
-              borderRadius: 0,
+              // borderRadius: 0,
             },
           },
         }}

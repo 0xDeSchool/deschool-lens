@@ -3,15 +3,16 @@ import { v4 as uuid } from 'uuid'
 import Modal from 'antd/es/modal'
 import Form from 'antd/es/form'
 import Input from 'antd/es/input'
-import dayjs, { Dayjs } from 'dayjs'
+import dayjs from 'dayjs'
 import DatePicker from 'antd/es/date-picker'
 import Image from 'antd/es/image'
 import VerifiedIcon from '@mui/icons-material/Verified'
 import fallbackImage from '~/assets/images/fallbackImage'
 import Tooltip from 'antd/es/tooltip'
 import type { CardEditorInput, ResumeCardData, SbtInfo } from '../../types'
-import Button from 'antd/es/button'
 import Checkbox from 'antd/es/checkbox/Checkbox'
+import Select from 'antd/es/select'
+import ProjectSelector from '../projectSelector'
 const { TextArea } = Input
 
 const SbtItem = (props: { list: string[]; toggleList: (key: string) => void; item: SbtInfo }) => {
@@ -101,12 +102,22 @@ const SbtSelectList = (props: { sbtList: SbtInfo[]; originalList: SbtInfo[] | un
   )
 }
 
+const optionsRole= [
+  {value: 'Developer'},
+  {value: 'Designer'},
+  {value: 'Product Manager'},
+  {value: 'Marketing'},
+  {value: 'Business'},
+  {value: 'Other'}
+];
 const CardEditor = (input: CardEditorInput) => {
   const { isEditCard, handleOk, handleCancel, originalData, isCreateCard, sbtList } = input
 
   const [proofs, setProofs] = useState<SbtInfo[]>([])
   const formRef = useRef(null)
   const [form] = Form.useForm()
+  const presentValue = Form.useWatch('isPresent', form);
+
   const checkValidateFields = async (): Promise<boolean> => {
     let valid = true
     try {
@@ -125,6 +136,8 @@ const CardEditor = (input: CardEditorInput) => {
     }
     const newCard: ResumeCardData | undefined = {
       title: form.getFieldValue('title'),
+      projectName: form.getFieldValue('projectName'),
+      role: form.getFieldValue('role'),
       description: form.getFieldValue('description'),
       startTime: dayjs(form.getFieldValue('stime')),
       endTime: dayjs(form.getFieldValue('etime')),
@@ -141,6 +154,8 @@ const CardEditor = (input: CardEditorInput) => {
     if (formRef.current) {
       form.setFieldsValue({
         title: originalData?.title,
+        projectName: originalData?.projectName,
+        role: originalData?.role,
         description: originalData?.description,
         stime: originalData?.startTime,
         etime: originalData?.endTime,
@@ -158,6 +173,8 @@ const CardEditor = (input: CardEditorInput) => {
         name="match"
         initialValues={{
           title: originalData?.title,
+          projectName: originalData?.projectName,
+          role: originalData?.role,
           stime: originalData?.startTime,
           etime: originalData?.endTime,
           description: originalData?.description,
@@ -170,6 +187,21 @@ const CardEditor = (input: CardEditorInput) => {
           rules={[{ required: true, message: 'Please input your experience title' }]}>
           <Input placeholder="Please input your experience title" />
         </Form.Item>
+        <Form.Item
+          label='Project' name="projectName"
+          rules={[{ required: true, message: 'Please add your projects' }]}>
+          <ProjectSelector />
+        </Form.Item>
+        <Form.Item
+          label='Role' name="role"
+          rules={[{ required: true, message: 'Please add your role' }]}>
+          <Select
+            showArrow
+            style={{ width: '100%' }}
+            options={optionsRole}
+            placeholder="Please select your role"
+          />
+        </Form.Item>
         <Form.Item label="Start Time" name="stime" rules={[{ required: true, message: 'Please select start time!' }]}>
           <DatePicker picker="month" disabledDate={current => {
             // 如果选择至今，则开始时间不能大于当前时间
@@ -180,18 +212,16 @@ const CardEditor = (input: CardEditorInput) => {
             return dayjs(form.getFieldValue('etime')).isBefore(current)}
           }/>
         </Form.Item>
-        <div className='frc-start'>
-          <Form.Item label="End Time" name="etime" rules={[{ required: true, message: 'Please select end time!' }]}>
-            <DatePicker
-              picker="month"
-              // 开始时间不能大于结束时间
-              disabledDate={current => !dayjs(form.getFieldValue('stime')).isBefore(current)}
-            />
-          </Form.Item>
-          <Form.Item label=" " name="isPresent" valuePropName="checked" className='ml-4'>
-            <Checkbox>Present</Checkbox>
-          </Form.Item>
-        </div>
+        <Form.Item hidden={presentValue} label="End Time" name="etime" rules={[{ required: true, message: 'Please select end time!' }]}>
+          <DatePicker
+            picker="month"
+            // 开始时间不能大于结束时间
+            disabledDate={current => !dayjs(form.getFieldValue('stime')).isBefore(current)}
+          />
+        </Form.Item>
+        <Form.Item name="isPresent" valuePropName="checked">
+          <Checkbox>Currently working here</Checkbox>
+        </Form.Item>
         <Form.Item label="Description" name="description" rules={[{ required: true, message: 'Please input description' }]}>
           <TextArea rows={4} />
         </Form.Item>

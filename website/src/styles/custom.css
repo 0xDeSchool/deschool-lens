@@ -22,14 +22,6 @@ h6 {
   top: 0px;
 }
 
-.ant-select:not(.ant-select-customize-input) .ant-select-selector {
-  border: 2px solid black;
-}
-
-.ant-input {
-  border: 2px solid #000000;
-}
-
 /* upload component */
 .ant-upload-list-item {
   padding: 0 !important;
@@ -167,10 +159,6 @@ label [type='checkbox']:focus,
 .ant-form input[type='radio']:focus,
 .ant-form input[type='checkbox']:focus {
   outline: none;
-}
-
-.ant-select {
-  font-size: 20px;
 }
 
 .ant-image-preview-img {

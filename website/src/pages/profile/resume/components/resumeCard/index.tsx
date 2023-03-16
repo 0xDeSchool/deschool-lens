@@ -49,20 +49,23 @@ const ResumeCard = (input: ResumeCardInput) => {
   return (
     <div className="pt-4 px-4 hover:bg-gray-50 rounded-md w-full">
       {/* Title */}
+      <div className='font-ArchivoNarrow-Medium'>
+        <span>{data.projectName}</span>
+        <span>{data.role}</span>
+      </div>
       <div className="flex justify-between items-center">
         <div className="font-bold my-2 text-lg">{data.title}</div>
         {/* Period */}
         <div className="italic">
           {data.startTime?.year()} {data.startTime?.month() !== undefined ? monthNames[data.startTime?.month()] : ''}
           {' - '}
-          {data.isPresent && 'Present'}
+          {data.isPresent && 'Currently working here'}
           {!data.isPresent && data.endTime?.year()} {!data.isPresent && data.endTime?.month() !== undefined ? monthNames[data.endTime?.month()] : ''}
         </div>
       </div>
 
       {/* Descriptions */}
       <div className="mt-1">{data.description}</div>
-
       {/* SBTs Title */}
       {data.proofs && data.proofs.length > 0 && <div className="font-bold mt-8 mb-2">Proofs of Commitments</div>}
       {/* Proofs of Work */}
