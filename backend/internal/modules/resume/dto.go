@@ -4,6 +4,7 @@ import "strings"
 
 type ProjectCreateInput struct {
 	Name        string `json:"name" binding:"required"`
+	Icon        string `json:"icon"`
 	Url         string `json:"url"`
 	Description string `json:"description"`
 }
@@ -12,6 +13,7 @@ func (p *ProjectCreateInput) ToEntity() *Project {
 	return &Project{
 		Name:           p.Name,
 		Url:            p.Url,
+		Icon:           p.Icon,
 		Description:    p.Description,
 		NormalizedName: strings.ToUpper(p.Name),
 	}
@@ -20,6 +22,7 @@ func (p *ProjectCreateInput) ToEntity() *Project {
 type ProjectDto struct {
 	Id          string `json:"id"`
 	Name        string `json:"name"`
+	Icon        string `json:"icon"`
 	Url         string `json:"url"`
 	Description string `json:"description"`
 }
@@ -28,6 +31,7 @@ func NewProjectDto(p *Project) *ProjectDto {
 	return &ProjectDto{
 		Id:          p.ID.Hex(),
 		Name:        p.Name,
+		Icon:        p.Icon,
 		Url:         p.Url,
 		Description: p.Description,
 	}

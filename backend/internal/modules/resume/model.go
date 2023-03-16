@@ -12,6 +12,7 @@ type Project struct {
 	ddd.AuditEntityBase `bson:",inline"`
 	Name                string `bson:"name"`
 	NormalizedName      string `bson:"normalizedName"`
+	Icon                string `bson:"icon"`
 	Description         string `bson:"description"`
 	Url                 string `bson:"url"`
 }
