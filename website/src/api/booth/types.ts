@@ -51,9 +51,7 @@ export interface UserInfo {
   avatar?: string
   bio?: string
   platforms?: UserPlatform[]
-  FollowingCount?: number
-  FollowerCount?: number
-  IsFollowing?: boolean
+  contacts?: Contact[]
 }
 
 // 新用户信息
