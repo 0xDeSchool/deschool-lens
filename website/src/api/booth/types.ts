@@ -106,6 +106,7 @@ export interface UpdateUserInfo {
   displayName?: string
   avatar?: string
   bio?: string
+  contacts?: Contact[]
 }
 
 export interface LoginResponse {

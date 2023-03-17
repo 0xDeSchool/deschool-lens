@@ -1,7 +1,6 @@
 import Input from 'antd/es/input'
 import React, { useEffect, useState } from 'react'
 
-import { useTranslation } from 'react-i18next'
 import Button from 'antd/es/button'
 import { useAccount } from '~/account'
 import { EditOutlined } from '@ant-design/icons'
@@ -16,7 +15,6 @@ const contractOptions: Contact[] = [
 
 const ContactBoard: React.FC = () => {
   const user = useAccount()
-  const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
   const [edit, setEdit] = useState(false)
   const [contacts, setContacts] = useState<Contact[]>([])
@@ -36,7 +34,7 @@ const ContactBoard: React.FC = () => {
     try {
       await updateUserInfo({
         ...user,
-        contacts: contacts,
+        contacts,
       })
     } catch (e) {
       console.log('error', e)
