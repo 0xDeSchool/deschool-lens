@@ -26,6 +26,7 @@ import { randomConfetti } from './utils/confetti'
 import type { VisitType } from '../utils/visitCase';
 import { getVisitCase } from '../utils/visitCase'
 import Congradulations from './components/congradulations'
+import { getUserSBTs } from '~/api/go/account'
 
 type PublishType = 'CyberConnect' | 'Lens'
 
@@ -107,7 +108,6 @@ const Resume = () => {
   const handleEditOrCreateCardSave = async (newData: ResumeCardData) => {
     let dataIndex: number | undefined
     const bt = newData.blockType
-
     let newResumeData: ResumeData | undefined
     // 场景一：创造卡片
     if (isCreateCard) {
@@ -264,23 +264,36 @@ const Resume = () => {
     if (!resumeAddress) {
       return message.error("fetchUserSbtList Error: resumeAddress can't be null")
     }
+
+    const sbtArr: SbtInfo[] = []
+    const sbts = await getUserSBTs(resumeAddress)
+    sbts.forEach((sbt) => {
+      sbtArr.push({
+        address: sbt.contractAddr,
+        tokenId: sbt.tokenId.toString(),
+        img: sbt.url,
+        name: sbt.name,
+        description: sbt.description,
+      })
+    })
+
     const result = await getIdSbt(resumeAddress)
     if (result === undefined || !result.sbts) {
       return
     }
-    const sbtArr: SbtInfo[] = []
     for (let i = 0; i < result.sbts.length; i++) {
       const sbt = result.sbts[i]
-      const url = sbt.normalized_metadata.image
+      const url = sbt.normalized_metadata?.image
       const newUrl = ipfsUrl(url)
       sbtArr.push({
         address: sbt.token_address,
         tokenId: sbt.token_id,
         img: newUrl,
-        name: sbt.normalized_metadata.name,
+        name: sbt.normalized_metadata?.name,
         description: sbt.normalized_metadata.description,
       })
     }
+
     setSbtList(sbtArr)
   }
 
