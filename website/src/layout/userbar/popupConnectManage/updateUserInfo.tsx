@@ -79,11 +79,10 @@ const UpdateUsername: React.FC = () => {
           height={68}
           onChange={(list: string[]) => setAvatar(list[0])}
           imageList={[avatar]}
-          albumname="sbts"
+          albumname="booth/avatar"
           userId={user?.address}
           imgCropProps={{
             modalTitle: '',
-            shape: 'round',
           }}
           onChangeStatus={(status) => {setUploading(status)}}
         />
