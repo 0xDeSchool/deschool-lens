@@ -49,17 +49,17 @@ const ResumeCard = (input: ResumeCardInput) => {
   return (
     <div className="pt-4 px-4 hover:bg-gray-50 rounded-md w-full">
       {/* Title */}
-      <div className="flex justify-between items-center">
+      <div className="frc-between flex-wrap mb-2">
         {/* 展示用户编辑的项目和role */}
         {(data?.project && data?.role) && <div className='font-bold my-2 text-lg frc-start'>
-          <img className='w-24px h-24px rounded-full mr-1' src={data?.project?.icon} />
-          <span>{data?.project?.name}</span>
+          {data?.project?.icon && <img className='w-24px h-24px rounded-full mr-1' src={data?.project?.icon} />}
+          <span className='text-20px'>{data?.project?.name}</span>
           <span className='ml-4 font-ArchivoNarrow-Medium'>{data.role}</span>
         </div>}
         {/* 兼容旧数据 */}
         {!(data?.project && data?.role) && <div className="font-bold my-2 text-lg">{data.title}</div>}
         {/* Period */}
-        <div className="italic">
+        <div className="italic whitespace-nowrap">
           {data.startTime?.year()} {data.startTime?.month() !== undefined ? monthNames[data.startTime?.month()] : ''}
           {' - '}
           {data.isPresent && 'Currently working here'}
@@ -72,8 +72,8 @@ const ResumeCard = (input: ResumeCardInput) => {
       {/* SBTs Title */}
       {data.proofs && data.proofs.length > 0 && <div className="font-bold mt-8 mb-2">Proofs of Commitments</div>}
       {/* Proofs of Work */}
-      <div className="flex justify-between">
-        <div className="flex flex-wrap flex-1">
+      <div className="flex justify-between w-full">
+        <div className="flex flex-wrap flex-1 w-full">
           {data.proofs &&
             data.proofs.map(item => (
               <div key={`sbt-${item.address}-${item.tokenId}`} className="w-[110px] mr-2 relative">
@@ -90,23 +90,19 @@ const ResumeCard = (input: ResumeCardInput) => {
             ))}
         </div>
         {/* 删除本 Card Icon */}
-        <div className="flex flex-col justify-end">
+        {isEditResume && <div className="flex flex-col justify-end">
           <div className="w-90px flex justify-between">
-            {isEditResume && (
-              <EditOutlined
-                onClick={() => handleEditCard(data.blockType, data.id)}
-                className="text-blue-4 hover:text-blue-6! w-40px h-40px hover:rounded-full hover:bg-blue-2 hover:border hover:border-blue-3 frc-center"
-              />
-            )}
-            {isEditResume && (
-              <DeleteOutlined
-                color="red"
-                onClick={showDeleteConfirm}
-                className="text-red-4 hover:text-red-6! w-40px h-40px hover:rounded-full hover:bg-red-2 hover:border hover:border-red-3 frc-center"
-              />
-            )}
+            <EditOutlined
+              onClick={() => handleEditCard(data.blockType, data.id)}
+              className="text-blue-4 hover:text-blue-6! w-40px h-40px hover:rounded-full hover:bg-blue-2 hover:border hover:border-blue-3 frc-center"
+            />
+            <DeleteOutlined
+              color="red"
+              onClick={showDeleteConfirm}
+              className="text-red-4 hover:text-red-6! w-40px h-40px hover:rounded-full hover:bg-red-2 hover:border hover:border-red-3 frc-center"
+            />
           </div>
-        </div>
+        </div>}
       </div>
 
       {/* Divider */}
