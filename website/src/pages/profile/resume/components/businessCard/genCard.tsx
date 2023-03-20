@@ -16,6 +16,7 @@ const BusinessCard = () => {
   const [loading, setLoading] = useState(false)
   const user = useAccount()
   const { t } = useTranslation()
+  const [resumeCardUrl, setResumeCardUrl] = useState('')
 
   const contacts = useMemo(() => {
     return user?.contacts?.filter((item) => item.name) || []
@@ -47,10 +48,11 @@ const BusinessCard = () => {
         canvas.toBlob((blob) => {
           if (blob === null) return;
           const url = URL.createObjectURL(blob);
-          download(url, `${user?.displayName}-business-card.png`)
+          setResumeCardUrl(url)
+          // download(url, `${user?.displayName}-business-card.png`)
           setLoading(false)
           // 释放URL对象
-          URL.revokeObjectURL(url);
+          // URL.revokeObjectURL(url);
           message.success(t('saveSuccess'))
         }, 'image/png');
       });
@@ -68,7 +70,7 @@ const BusinessCard = () => {
     <Modal
       wrapClassName=""
       open={open}
-      width='=800px'
+      width='800px'
       title={null}
       footer={null}
       closable={false}
@@ -83,7 +85,7 @@ const BusinessCard = () => {
         setOpen(false)
       }}
     >
-      <>
+      <div className='frc-between'>
         <div className='business-card w-327px min-w-327px h-734px bg-gradient-to-b from-#6525FF to-#9163FE drop-shadow-md shadow-md text-white'>
           <img crossOrigin="anonymous" src={user?.avatar} alt={user?.displayName} className="w-327px h-327px mb-16px"/>
           <div className='text-28px font-Anton px-12px mb-4'>
@@ -103,8 +105,8 @@ const BusinessCard = () => {
                 size={80}
                 color="#333333"
                 bordered={false}
-                value={`https://booth.ink/profile/${user?.address}/resume`}
-                style={{ border: 'none', padding: 0, margin: 0, height: '80px', width: '80px' }}
+                value={`https://booth.ink/profile/${user?.address}/resume/${user?.id}`}
+                style={{ border: 'none', borderRadius: '4px', padding: 0, margin: 0, height: '80px', width: '80px' }}
               />
             </div>
           </div>
@@ -127,9 +129,12 @@ const BusinessCard = () => {
           </div>
         </div>
         <div className='frc-center mt-8'>
-          <Button type='primary' loading={loading} onClick={handleOk} >保存名片</Button>
+          <Button type='primary' loading={loading} onClick={handleOk} >GEN</Button>
         </div>
-      </>
+        <div className='w-327px min-w-327px h-734px border-1 bg-gray-100'>
+          {resumeCardUrl && <img src={resumeCardUrl} alt="resume card" className='w-full h-full'/>}
+        </div>
+      </div>
     </Modal>
     </>
   )

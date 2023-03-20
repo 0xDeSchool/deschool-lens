@@ -32,6 +32,7 @@ const RouterObj = () => (
         <Route path="profile/:address" element={<Profile />}>
           <Route path="activities" element={<Activities />} />
           <Route path="resume" element={<Resume />} />
+          <Route path="resume/:userId" element={<Resume />} />
         </Route>
         <Route path="sbtIntro/:contractAddress/:tokenId" element={<PoskIntro />} />
         <Route path="roadmap" element={<Roadmap />} />

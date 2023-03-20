@@ -12,7 +12,7 @@ import { getShortAddress } from '~/utils/format';
 import Button from 'antd/es/button';
 import DeschoolFollowersModal from './deschoolModal'
 import LensAvatar from './avatar';
-import BusinessCard from '../resume/components/ businessCard';
+import BusinessCard from '../resume/components/businessCard';
 
 type DeschoolCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人

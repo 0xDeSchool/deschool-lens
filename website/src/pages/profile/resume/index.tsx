@@ -30,7 +30,7 @@ import Congradulations from './components/congradulations'
 type PublishType = 'CyberConnect' | 'Lens'
 
 const Resume = () => {
-  const { address } = useParams()
+  const { address, userId } = useParams() // userId，如果有 userId，说明是来自名片的访问
   const [query] = useSearchParams()
   const user = useAccount()
   const lensProfile = user?.lensProfile()
@@ -427,7 +427,8 @@ const Resume = () => {
             OF <span className="ml-1 text-gray-5 font-ArchivoNarrow">{currentUser?.displayName || user?.displayName}</span>
           </span>
         </div>
-        <div className="flex">
+        {/* mobile not allow edit */}
+        <div className={userId ? 'hidden' : "flex"}>
           {visitCase === 0 && !isEditResume && (
             <>
               {user?.lensProfile() && <Button
@@ -466,7 +467,7 @@ const Resume = () => {
             </Button>
           )}
           {visitCase === 0 && <CopyToClipboard
-            text={`https://booth.ink/profile/${user?.address}/resume`}
+            text={`https://booth.ink/profile/${user?.address}/resume/${user?.id}`}
             onCopy={() => {
               message.success('Copied')
             }}
