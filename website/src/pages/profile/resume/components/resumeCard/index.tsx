@@ -51,7 +51,8 @@ const ResumeCard = (input: ResumeCardInput) => {
       {/* Title */}
       <div className="flex justify-between items-center">
         {/* 展示用户编辑的项目和role */}
-        {(data?.project && data?.role) && <div className='font-bold my-2 text-lg'>
+        {(data?.project && data?.role) && <div className='font-bold my-2 text-lg frc-start'>
+          <img className='w-24px h-24px rounded-full mr-1' src={data?.project?.icon} />
           <span>{data?.project?.name}</span>
           <span className='ml-4 font-ArchivoNarrow-Medium'>{data.role}</span>
         </div>}
