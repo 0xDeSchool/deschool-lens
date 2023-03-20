@@ -17,7 +17,7 @@ const Match = () => {
   }
 
   return (
-    <div className="w-full fcc-start">
+    <div className="w-full fcc-start p-4">
       <h1 className="text-2xl font-bold font-ArchivoNarrowBold">Match Your Potential Friends / Partners</h1>
       {/* 雷达图 */}
       <TalentRadar />

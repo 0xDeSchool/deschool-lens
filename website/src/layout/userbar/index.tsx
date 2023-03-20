@@ -12,7 +12,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { getUserManager } from '~/account'
 import Logo from '../logo'
 import SwitchLanguage from './SwitchLanguage'
-import WalletConnectBoard from './WalletConnectBoard'
+import WalletConnectBoard, { PopoverAccountInfo } from './WalletConnectBoard'
 
 const UserBar = () => {
   const { t } = useTranslation()
@@ -21,6 +21,7 @@ const UserBar = () => {
   const { currentWidth } = useLayout()
   const [visible, setVisible] = useState(false) // 控制抽屉是否显示
   const [activeNav, setActiveNav] = useState('/landing') // 当前激活的路由
+  const { setConnectBoardVisible } = useLayout()
 
   const navs = [
     // {
@@ -110,21 +111,33 @@ const UserBar = () => {
                     currentWidth <= 768 ? 'flex-col items-start justify-center' : 'flex-row'
                   } text-black`}
                 >
+                  {/* wallet connect */}
+                  <PopoverAccountInfo open={() => setConnectBoardVisible(true)} />
+                  <div className='w-full h-1px bg-gray-100 my-6'></div>
                   {navs.map((nav, index) => (
                     <span
                       key={index.toString() + nav.name}
-                      className={`cursor-pointer text-xl text-black font-ArchivoNarrow mr-10 ${currentWidth <= 768 ? 'mt-4' : ''} ${
+                      className={`cursor-pointer text-xl text-black font-ArchivoNarrow mt-4 ${
                         activeNav === nav.path ? 'nav-button-active text-#774FF8' : 'nav-button-normal border-white text-#181818D9'
                       }`}
                     >
                       <NavLink to={nav.path}>{nav.name}</NavLink>
                     </span>
                   ))}
+                  <span
+                    className={`cursor-pointer uppercase text-xl font-ArchivoNarrow mt-4 ${
+                      activeNav === '/profile/resume' ? 'nav-button-active text-#774FF8' : 'nav-button-normal border-white text-#181818D9'
+                    }`}
+                    onClick={() => navigate('/profile/resume')}
+                  >
+                    {t('profile.resume')}
+                  </span>
                 </div>
               </div>
             </Drawer>
           </div>
         ) : (
+          <>
           <div className="flex-1 relative frc-between mr-8 col-span-6 h-8 leading-8 text-black">
             <div className="frc-center space-x-5">
               {navs.map((nav, index) => (
@@ -148,11 +161,12 @@ const UserBar = () => {
               {t('profile.resume')}
             </span>
           </div>
+          {/* language switch */}
+          <SwitchLanguage/>
+          {/* wallet connect */}
+          <WalletConnectBoard />
+          </>
         )}
-        {/* language switch */}
-        <SwitchLanguage/>
-        {/* wallet connect */}
-        <WalletConnectBoard />
       </div>
     </div>
   )

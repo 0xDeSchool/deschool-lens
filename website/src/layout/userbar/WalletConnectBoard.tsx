@@ -15,7 +15,7 @@ import message from 'antd/es/message'
 type PopoverAccountInfoProps = {
   open: () => void
 }
-const PopoverAccountInfo: React.FC<PopoverAccountInfoProps> = (props) => {
+export const PopoverAccountInfo: React.FC<PopoverAccountInfoProps> = (props) => {
   const { open } = props
   const userManager = getUserManager()
   const user = useAccount()
