@@ -6,8 +6,10 @@ import { useAccount } from '~/account'
 import html2canvas from 'html2canvas';
 import { download } from '~/utils';
 import { useTranslation } from 'react-i18next';
-import { DiscordIcon, TelegramIcon } from '~/components/icon';
-import { TwitterOutlined } from '@ant-design/icons';
+import { DiscordIcon, EmailIcon } from '~/components/icon';
+import { TwitterOutlined, WechatOutlined } from '@ant-design/icons';
+import IconDeschool from '~/assets/icons/deschool.svg'
+
 
 const BusinessCard = () => {
   const [open, setOpen] = useState(false)
@@ -40,9 +42,8 @@ const BusinessCard = () => {
       return
     }
     setLoading(true)
-    cacheImage(user?.avatar).then(res => {
+    cacheImage(user?.avatar).then(() => {
       html2canvas(document.querySelector('.business-card')!, { useCORS: true }).then((canvas) => {
-        document.body.appendChild(canvas);
         canvas.toBlob((blob) => {
           if (blob === null) return;
           const url = URL.createObjectURL(blob);
@@ -83,7 +84,7 @@ const BusinessCard = () => {
       }}
     >
       <>
-        <div className='business-card w-327px min-w-327px h-734px bg-#6525FF drop-shadow-md shadow-md text-white'>
+        <div className='business-card w-327px min-w-327px h-734px bg-gradient-to-b from-#6525FF to-#9163FE drop-shadow-md shadow-md text-white'>
           <img crossOrigin="anonymous" src={user?.avatar} alt={user?.displayName} className="w-327px h-327px mb-16px"/>
           <div className='text-28px font-Anton px-12px mb-4'>
             {user?.displayName === user?.address ? user?.address : user?.displayName}
@@ -110,14 +111,19 @@ const BusinessCard = () => {
           <div className='w-full grid grid-cols-2 gap-2 font-ArchivoNarrow px-12px'>
             {contacts?.map((item) => {
               return (
-                <div key={item.contactType} className="h-43px w-full rounded-2 border-1 frc-center">
-                  {item.contactType === 'Discord' && <DiscordIcon style={{ fontSize: 14, color: 'white', width: 20, height: 20 }} />}
-                  {item.contactType === 'Telegram' && <TelegramIcon style={{ fontSize: 14, color: 'white', width: 20, height: 20 }} />}
-                  {item.contactType === 'Twitter' && <TwitterOutlined style={{ fontSize: 18, color: 'white' }} />}
+                <div key={item.contactType} className="frc-center h-43px w-full rounded-2 border-2 border-#FFFFFF20">
+                  {item.contactType === 'Discord' && <DiscordIcon style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
+                  {item.contactType === 'Twitter' && <TwitterOutlined style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
+                  {item.contactType === 'Wechat' && <WechatOutlined style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
+                  {item.contactType === 'Email' && <EmailIcon style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
                   <span className='ml-2 text-14px'>@{item.name}</span>
                 </div>
               )
             })}
+          </div>
+          <div className='absolute bottom-24px left-0 right-0 frc-center'>
+            <img src={IconDeschool} alt="deschool" width={24} height={24} />
+            <div className={`ml-2 text-white text-16px font-ArchivoNarrow`}>DeSchool & Booth</div>
           </div>
         </div>
         <div className='frc-center mt-8'>

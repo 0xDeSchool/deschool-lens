@@ -10,6 +10,7 @@ import { updateUserInfo } from '~/api/booth/account'
 const contractOptions: Contact[] = [
   { contactType: 'Twitter', name: ''},
   { contactType: 'Discord', name: '' },
+  { contactType: 'Wechat', name: '' },
   { contactType: 'Email', name: '' },
 ]
 
@@ -24,7 +25,7 @@ const ContactBoard: React.FC = () => {
     if (!user?.address) {
       setContacts(contractOptions)
     } else {
-      setContacts(user?.contacts || contractOptions)
+      setContacts(contractOptions)
     }
   }, [user])
 
