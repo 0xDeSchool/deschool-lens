@@ -467,7 +467,7 @@ const Resume = () => {
             </Button>
           )}
           {visitCase === 0 && <CopyToClipboard
-            text={`https://booth.ink/profile/${user?.address}/resume/${user?.id}`}
+            text={`${location.origin}/profile/${user?.address}/resume/${user?.id}`}
             onCopy={() => {
               message.success('Copied')
             }}

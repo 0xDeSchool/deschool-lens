@@ -105,7 +105,7 @@ const BusinessCard = () => {
                 size={80}
                 color="#333333"
                 bordered={false}
-                value={`https://booth.ink/profile/${user?.address}/resume/${user?.id}`}
+                value={`${location.origin}/profile/${user?.address}/resume/${user?.id}`}
                 style={{ border: 'none', borderRadius: '4px', padding: 0, margin: 0, height: '80px', width: '80px' }}
               />
             </div>

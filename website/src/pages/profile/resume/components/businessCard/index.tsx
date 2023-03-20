@@ -67,7 +67,7 @@ const BusinessCard = () => {
           if (blob === null) return;
           const url = URL.createObjectURL(blob);
           setResumeCardUrl(url)
-          // download(url, `${user?.displayName}-business-card.png`)
+          download(url, `${user?.displayName}-business-card.png`)
           setLoading(false)
           // 释放URL对象
           // URL.revokeObjectURL(url);
@@ -87,7 +87,7 @@ const BusinessCard = () => {
 
   return (
     <>
-    <div className='mx-auto w-327px min-w-327px bg-gradient-to-b from-#6525FF to-#9163FE drop-shadow-md shadow-md text-white' style={{boxShadow: 'inset 0px 0px 20px rgba(119, 79, 248, 0.1)'}}>
+    <div onClick={handleGenerate} className='mx-auto w-327px min-w-327px bg-gradient-to-b from-#6525FF to-#9163FE drop-shadow-md shadow-md text-white' style={{boxShadow: 'inset 0px 0px 20px rgba(119, 79, 248, 0.1)'}}>
       <div className='relative w-327px h-327px mb-16px'>
         <img crossOrigin="anonymous" src={user?.avatar} alt={user?.displayName} className="w-327px h-327px"/>
         <div className='absolute left-0 bottom-0 right-0 z-1 w-full h-48px frc-center gap-4 bg-#18181826'>
@@ -130,7 +130,7 @@ const BusinessCard = () => {
           size={80}
           color="#333333"
           bordered={false}
-          value={`https://booth.ink/profile/${user?.address}/resume/${user?.id}`}
+          value={`${location.origin}/profile/${user?.address}/resume/${user?.id}`}
           style={{ border: 'none', borderRadius: '4px', padding: 0, margin: 0, height: '80px', width: '80px' }}
         />
       </div>
@@ -190,7 +190,7 @@ const BusinessCard = () => {
                 size={80}
                 color="#333333"
                 bordered={false}
-                value={`https://booth.ink/profile/${user?.address}/resume/${user?.id}`}
+                value={`${location.origin}/profile/${user?.address}/resume/${user?.id}`}
                 style={{ border: 'none', borderRadius: '4px', padding: 0, margin: 0, height: '80px', width: '80px' }}
               />
             </div>
