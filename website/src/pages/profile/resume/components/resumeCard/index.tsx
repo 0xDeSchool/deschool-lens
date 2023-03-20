@@ -47,7 +47,7 @@ const ResumeCard = (input: ResumeCardInput) => {
   }
 
   return (
-    <div className="pt-4 px-4 hover:bg-gray-50 rounded-md w-full">
+    <div className="pt-4 md:px-4 hover:bg-gray-50 rounded-md w-full">
       {/* Title */}
       <div className="frc-between flex-wrap mb-2">
         {/* 展示用户编辑的项目和role */}

@@ -418,7 +418,7 @@ const Resume = () => {
   }, [query, user])
 
   return (
-    <div className="bg-white p-8">
+    <div className="p-8 bg-#FFFFFF"  style={{boxShadow: 'inset 0px 0px 20px rgba(119, 79, 248, 0.1)'}}>
       {/* 简历标题 + 编辑按钮 */}
       <div className="flex justify-between">
         <div className="text-2xl font-bold font-ArchivoNarrow">

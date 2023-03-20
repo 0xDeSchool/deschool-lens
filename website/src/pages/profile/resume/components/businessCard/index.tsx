@@ -10,7 +10,6 @@ import { DiscordIcon, EmailIcon } from '~/components/icon';
 import { TwitterOutlined, WechatOutlined } from '@ant-design/icons';
 import IconDeschool from '~/assets/icons/deschool.svg'
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { UserFollower, UserFollowing } from '~/api/booth/types';
 import { useParams } from 'react-router';
 import { getLatestUsers } from '~/api/booth';
 
@@ -87,7 +86,7 @@ const BusinessCard = () => {
 
   return (
     <>
-    <div onClick={handleGenerate} className='mx-auto w-327px min-w-327px bg-gradient-to-b from-#6525FF to-#9163FE drop-shadow-md shadow-md text-white' style={{boxShadow: 'inset 0px 0px 20px rgba(119, 79, 248, 0.1)'}}>
+    <div className='mx-auto mb-4 rounded-1 w-327px min-w-327px bg-gradient-to-b from-#6525FF to-#9163FE text-white'>
       <div className='relative w-327px h-327px mb-16px'>
         <img crossOrigin="anonymous" src={user?.avatar} alt={user?.displayName} className="w-327px h-327px"/>
         <div className='absolute left-0 bottom-0 right-0 z-1 w-full h-48px frc-center gap-4 bg-#18181826'>
