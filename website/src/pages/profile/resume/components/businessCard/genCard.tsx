@@ -83,8 +83,8 @@ const BusinessCard = () => {
           <div className='flex-1 frc-between w-full px-16px mb-2'>
             <div className='text-16px font-ArchivoNarrow-Medium mb-2'>{role}</div>
           </div>
-          <div className='frc-center'>
-            <div className='w-full px-16px align-middle'>
+          <div className='w-full frc-center px-16px gap-16px'>
+            <div className='w-full align-middle'>
               {contacts?.map((item) => (
                 <div key={item.contactType} className="frc-start align-middle h-48px px-2 rounded-2 border-1 border-#FFFFFF30">
                   {item.contactType === 'Discord' && <DiscordIcon style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
