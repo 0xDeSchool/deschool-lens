@@ -12,7 +12,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { getUserManager } from '~/account'
 import Logo from '../logo'
 import SwitchLanguage from './SwitchLanguage'
-import WalletConnectBoard, { PopoverAccountInfo } from './WalletConnectBoard'
+import WalletConnectBoard from './WalletConnectBoard'
 import { isMobile } from '~/utils/ua'
 import Modal from 'antd/es/modal/Modal'
 
@@ -24,7 +24,6 @@ const UserBar = () => {
   const [visible, setVisible] = useState(false) // 控制抽屉是否显示
   const [activeNav, setActiveNav] = useState('/landing') // 当前激活的路由
   const [open, setOpen] = useState(false) // 控制钱包连接弹窗是否显示
-  const { setConnectBoardVisible } = useLayout()
   const mobile = isMobile()
 
   const navs = [
