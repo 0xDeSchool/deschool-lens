@@ -78,25 +78,7 @@ const Resume = () => {
 
   // 提交用户简历
 
-  // 进入简历编辑 or 保存查看状态
-  const onClickEditResume = async () => {
-    if (isEditResume) {
-      if (user?.address) {
-        setPutting(true)
-        const dataStr = JSON.stringify(resumeData)
-        await putResume({ data: dataStr })
-        setPutting(false)
-        fetchUserResume(user?.address)
-      }
-    } else {
-      // 深拷贝 // no 浅拷贝
-      const prevStr = JSON.stringify(resumeData)
-      const prevObj = covertCareerAndEdu(prevStr)
 
-      setPrev(prevObj)
-    }
-    setIsEditResume(!isEditResume)
-  }
 
   // 取消编辑整个简历
   const handleCancelEditing = () => {
@@ -303,6 +285,26 @@ const Resume = () => {
     setSbtList(sbtArr)
   }
 
+  // 进入简历编辑 or 保存查看状态
+  const onClickEditResume = async () => {
+    if (isEditResume) {
+      if (user?.address) {
+        setPutting(true)
+        const dataStr = JSON.stringify(resumeData)
+        await putResume({ data: dataStr })
+        setPutting(false)
+        fetchUserResume(user?.address)
+      }
+    } else {
+      // 深拷贝 // no 浅拷贝
+      const prevStr = JSON.stringify(resumeData)
+      const prevObj = covertCareerAndEdu(prevStr)
+
+      setPrev(prevObj)
+    }
+    setIsEditResume(!isEditResume)
+  }
+
   // Lens 上发布个人简历
   const handlePublish = async () => {
     try {
@@ -419,7 +421,7 @@ const Resume = () => {
   }, [query, user])
 
   return (
-    <div className="p-8 bg-#FFFFFF"  style={{boxShadow: 'inset 0px 0px 20px rgba(119, 79, 248, 0.1)'}}>
+    <div className="p-8 bg-#FFFFFF" style={{ boxShadow: 'inset 0px 0px 20px rgba(119, 79, 248, 0.1)' }}>
       {/* 简历标题 + 编辑按钮 */}
       <div className="flex justify-between">
         <div className="text-2xl font-bold font-ArchivoNarrow">
