@@ -68,7 +68,7 @@ const ResumeCard = (input: ResumeCardInput) => {
       </div>
 
       {/* Descriptions */}
-      <div className="mt-1">{data.description}</div>
+      <div className="mt-1 whitespace-pre-line overflow-auto">{data.description}</div>
       {/* SBTs Title */}
       {data.proofs && data.proofs.length > 0 && <div className="font-bold mt-8 mb-2">Proofs of Commitments</div>}
       {/* Proofs of Work */}
