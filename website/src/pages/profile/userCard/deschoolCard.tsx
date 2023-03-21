@@ -35,7 +35,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
   const { t } = useTranslation()
   const user = useAccount()
 
-  const contacts = useMemo(() => user?.contacts?.filter((item) => item.name) || [], [user])
+  const contacts = useMemo(() => currentUser?.contacts?.filter((item) => item.name) || [], [currentUser])
 
   // 根据不同情况初始化用户信息
   const initUserInfo = async () => {
@@ -161,7 +161,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
     <div >
       <div className='mx-auto mb-4 rounded-1 w-full min-w-327px bg-gradient-to-b from-#6525FF to-#9163FE text-white'>
       <div className='relative w-full mb-16px'>
-        <img crossOrigin={user?.avatar?.includes('deschool.s3.amazonaws.com')?undefined:"anonymous"} src={user?.avatar} alt={user?.displayName} className="w-full aspect-[1/1]"/>
+        <img crossOrigin={currentUser?.avatar?.includes('deschool.s3.amazonaws.com')?undefined:"anonymous"} src={currentUser?.avatar} alt={currentUser?.displayName} className="w-full aspect-[1/1]"/>
         <div className='absolute left-0 bottom-0 right-0 z-1 w-full h-48px frc-center gap-4 bg-#18181826 backdrop-blur-sm'>
           {contacts?.map((item, index) => (
               <>
@@ -184,7 +184,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
             ))}
         </div>
         <div className='text-28px font-Anton px-12px mb-4'>
-          {user?.displayName === user?.address ? user?.address : user?.displayName}
+          {currentUser?.displayName === currentUser?.address ? currentUser?.address : currentUser?.displayName}
         </div>
         <div className='flex-1 frc-between w-full px-12px mb-34px'>
           <div className='flex-1'>
@@ -198,7 +198,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
             size={100}
             color="#333333"
             bordered={false}
-            value={`${location.origin}/resume/${user?.address}`}
+            value={`${location.origin}/resume/${currentUser?.address}`}
             style={{ border: 'none', borderRadius: '4px', padding: 0, margin: 0, height: '80px', width: '80px' }}
           />
         </div>
