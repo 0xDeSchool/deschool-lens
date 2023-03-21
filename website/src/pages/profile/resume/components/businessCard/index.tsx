@@ -15,7 +15,7 @@ const BusinessCard = () => {
   const { t } = useTranslation()
   const [followings, setFollowings] = useState<number>()
   const [followers, setFollowers] = useState<number>(0)
-  const {userId } = useParams()
+  const { userId } = useParams()
 
   const contacts = useMemo(() => user?.contacts?.filter((item) => item.name) || [], [user])
 
@@ -37,37 +37,39 @@ const BusinessCard = () => {
   return (
     <div className='mx-auto mb-4 rounded-1 w-full min-w-327px bg-gradient-to-b from-#6525FF to-#9163FE text-white'>
       <div className='relative w-full mb-16px'>
-        <img crossOrigin={user?.avatar?.includes('deschool.s3.amazonaws.com')?undefined:"anonymous"} src={user?.avatar} alt={user?.displayName} className="w-full aspect-[1/1]"/>
+        <img crossOrigin={user?.avatar?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"} src={user?.avatar} alt={user?.displayName} className="w-full aspect-[1/1]" />
         <div className='absolute left-0 bottom-0 right-0 z-1 w-full h-48px frc-center gap-4 bg-#18181826 backdrop-blur-sm'>
           {contacts?.map((item, index) => (
-              <>
-                <CopyToClipboard
-                  text={item.name}
-                  onCopy={() => {
-                    message.success('Copied')
-                  }}
-                >
-                  <div key={item.contactType} className="frc-center">
-                    {item.contactType === 'Discord' && <DiscordIcon style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
-                    {item.contactType === 'Twitter' && <TwitterOutlined style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
-                    {item.contactType === 'Wechat' && <WechatOutlined style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
-                    {item.contactType === 'Email' && <EmailIcon style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
-                    {/* <span className='ml-2 text-14px'>@{item.name}</span> */}
-                  </div>
-                </CopyToClipboard>
-                {index < contacts.length - 1 && <div className='w-1px h-13px bg-#FFFFFF73' />}
-              </>
-            ))}
+            <>
+              <CopyToClipboard
+                text={item.name}
+                onCopy={() => {
+                  message.success('Copied')
+                }}
+              >
+                <div key={item.contactType} className="frc-center">
+                  {item.contactType === 'Discord' && <DiscordIcon style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
+                  {item.contactType === 'Twitter' && <TwitterOutlined style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
+                  {item.contactType === 'Wechat' && <WechatOutlined style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
+                  {item.contactType === 'Email' && <EmailIcon style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
+                  {/* <span className='ml-2 text-14px'>@{item.name}</span> */}
+                </div>
+              </CopyToClipboard>
+              {index < contacts.length - 1 && <div className='w-1px h-13px bg-#FFFFFF73' />}
+            </>
+          ))}
         </div>
       </div>
       <div className='text-28px font-Anton px-12px mb-4'>
-        {user?.displayName === user?.address ? user?.address : user?.displayName}
+        {/* eslint-disable-next-line no-nested-ternary */}
+        {user?.displayName === user?.address ? getShortAddress(user?.address) : (user?.displayName && user?.displayName.length > 15 ? getShortAddress(user?.displayName) : user?.displayName)}
+
       </div>
       <div className='flex-1 frc-between w-full px-12px mb-34px'>
         <div className='flex-1'>
           <div className='text-18px font-ArchivoNarrow-Medium mb-2'>{user?.resumeInfo?.role}</div>
           <div className='frc-start'>
-            <img crossOrigin={user?.resumeInfo?.project?.icon?.includes('deschool.s3.amazonaws.com')?undefined:"anonymous"} src={user?.resumeInfo?.project?.icon} alt="project icon" className='w-24px h-24px rounded-full mr-2'/>
+            <img crossOrigin={user?.resumeInfo?.project?.icon?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"} src={user?.resumeInfo?.project?.icon} alt="project icon" className='w-24px h-24px rounded-full mr-2' />
             <div className='font-ArchivoNarrow-Semibold'>{user?.resumeInfo?.project?.name}</div>
           </div>
         </div>
