@@ -1,4 +1,3 @@
-import Button from 'antd/es/button'
 import { message, QRCode } from 'antd';
 import { useEffect, useMemo, useState } from 'react'
 import { useAccount } from '~/account'
