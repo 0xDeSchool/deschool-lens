@@ -30,7 +30,7 @@ import Congradulations from './components/congradulations'
 type PublishType = 'CyberConnect' | 'Lens'
 
 const Resume = () => {
-  const { address, userId } = useParams() // userId，如果有 userId，说明是来自名片的访问
+  const { address } = useParams() // userId，如果有 userId，说明是来自名片的访问
   const [query] = useSearchParams()
   const user = useAccount()
   const lensProfile = user?.lensProfile()
@@ -419,7 +419,7 @@ const Resume = () => {
   }, [query, user])
 
   return (
-    <div className="p-8 bg-#FFFFFF"  style={{boxShadow: 'inset 0px 0px 20px rgba(119, 79, 248, 0.1)'}}>
+    <div className="p-8 bg-#FFFFFF" style={{ boxShadow: 'inset 0px 0px 20px rgba(119, 79, 248, 0.1)' }}>
       {/* 简历标题 + 编辑按钮 */}
       <div className="flex justify-between">
         <div className="text-2xl font-bold font-ArchivoNarrow">
@@ -429,7 +429,7 @@ const Resume = () => {
           </span>
         </div>
         {/* mobile not allow edit */}
-        <div className={userId ? 'hidden' : "flex"}>
+        <div className={"flex"}>
           {visitCase === 0 && !isEditResume && (
             <>
               {user?.lensProfile() && <Button

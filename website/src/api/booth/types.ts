@@ -76,6 +76,7 @@ export interface Contact {
   description?: string
   icon?: string
   url?: string
+  placeholder?: string
 }
 
 export interface UserInfo {
