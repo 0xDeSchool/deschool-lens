@@ -5,7 +5,6 @@ import Skeleton from 'antd/es/skeleton'
 import { useTranslation } from 'react-i18next'
 import type { FollowRelationType } from '~/api/booth/follow';
 import { followUser, unfollowUser, checkfollowUser } from '~/api/booth/follow'
-import { useAccount } from '~/account'
 import type { UserInfo } from '~/api/booth/types';
 import { getUserInfo } from '~/api/booth';
 import Button from 'antd/es/button';
@@ -33,8 +32,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
   const [isFollowedByMe, setIsFollowedByMe] = useState<boolean>(false)
   const [updateTrigger, setUpdateTrigger] = useState(0)
   const { t } = useTranslation()
-  const user = useAccount()
-  const { project, role, followings, followers } = useProfileResume()
+  const { project, role, followings, followers, user } = useProfileResume()
 
   const contacts = useMemo(() => currentUser?.contacts?.filter((item) => item.name) || [], [currentUser])
 

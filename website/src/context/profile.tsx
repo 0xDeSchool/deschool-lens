@@ -127,6 +127,7 @@ export const ProfileContextProvider = ({ children }: { children: ReactElement })
   const initData = () => {
     const currentAddress = address || account?.address
     if (currentAddress) {
+      console.log('currentAddress', currentAddress)
       fetchUserInfoByAddress(currentAddress)
       fetchUserResume(currentAddress)
     }
