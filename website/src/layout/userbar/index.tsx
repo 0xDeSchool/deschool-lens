@@ -13,6 +13,8 @@ import { getUserManager } from '~/account'
 import Logo from '../logo'
 import SwitchLanguage from './SwitchLanguage'
 import WalletConnectBoard, { PopoverAccountInfo } from './WalletConnectBoard'
+import { isMobile } from '~/utils/ua'
+import Modal from 'antd/es/modal/Modal'
 
 const UserBar = () => {
   const { t } = useTranslation()
@@ -21,7 +23,9 @@ const UserBar = () => {
   const { currentWidth } = useLayout()
   const [visible, setVisible] = useState(false) // 控制抽屉是否显示
   const [activeNav, setActiveNav] = useState('/landing') // 当前激活的路由
+  const [open, setOpen] = useState(false) // 控制钱包连接弹窗是否显示
   const { setConnectBoardVisible } = useLayout()
+  const mobile = isMobile()
 
   const navs = [
     // {
@@ -78,7 +82,26 @@ const UserBar = () => {
     setVisible(false)
   }
 
+  // 跳转到首页
+  const handleLanding = () => {
+    if (mobile) {
+      setOpen(true)
+      return
+    }
+    navigate('/landing')
+  }
+
+  // 路由导航
+  const handleNavClick = (path: string) => {
+    if (mobile) {
+      setOpen(true)
+      return
+    }
+    navigate(path)
+  }
+
   return (
+    <>
     <div className="select-none fixed z-4 w-full bg-#FFFFFF8A border-b-1px border-#1818180F" style={{ backdropFilter: 'blur(12px)' }}>
       <div className="flex flex-row items-center justify-between w-auto leading-8 py-4 px-6 xl:px-8 text-xl">
         {/* logo */}
@@ -101,9 +124,7 @@ const UserBar = () => {
             >
               <div className="flex flex-col justify-start">
                 <div style={{ width: '260px', height: '26px' }} className="flex">
-                  <NavLink to="/landing">
-                    <Logo />
-                  </NavLink>
+                  <div onClick={handleLanding}><Logo /></div>
                   <SwitchLanguage />
                 </div>
                 <div
@@ -112,7 +133,7 @@ const UserBar = () => {
                   } text-black`}
                 >
                   {/* wallet connect */}
-                  <PopoverAccountInfo open={() => setConnectBoardVisible(true)} />
+                  {/* <PopoverAccountInfo open={() => setConnectBoardVisible(true)} /> */}
                   <div className='w-full h-1px bg-gray-100 my-6' />
                   {navs.map((nav, index) => (
                     <span
@@ -120,8 +141,9 @@ const UserBar = () => {
                       className={`cursor-pointer text-xl text-black font-ArchivoNarrow mt-4 ${
                         activeNav === nav.path ? 'nav-button-active text-#774FF8' : 'nav-button-normal border-white text-#181818D9'
                       }`}
+                      onClick={() => handleNavClick(nav.path)}
                     >
-                      <NavLink to={nav.path}>{nav.name}</NavLink>
+                      {nav.name}
                     </span>
                   ))}
                   <span
@@ -169,6 +191,18 @@ const UserBar = () => {
         )}
       </div>
     </div>
+    <Modal
+      open={open}
+      onOk={() => setOpen(false)}
+      cancelButtonProps={{ style: { display: 'none' } }}
+      onCancel={() => {
+        setOpen(false)
+      }}>
+      <div className="flex flex-col items-center justify-center w-full h-full">
+        For full functionalities, please check out the desktop version of booth.ink
+      </div>
+    </Modal>
+    </>
   )
 }
 
