@@ -9,7 +9,7 @@ import { scrollToTop } from '~/utils/common'
 import { appWallet } from '~/wallet/booth'
 import Footer from './footer'
 import UserBar from './userbar'
-
+import { isMobile } from '~/utils/ua'
 /*
  * @description: Layout
  * @author: Victor
@@ -20,6 +20,7 @@ const Layout = () => {
   const [isSwitchingUser, setIsSwitchingUser] = useState(false)
   const [pageLayout, setPageLayout] = useState('w-full')
   const [footerLayout, setFooterLayout] = useState('')
+  const mobile = isMobile()
 
   const { t } = useTranslation()
 
@@ -76,7 +77,7 @@ const Layout = () => {
             <Outlet />
           </div>
         </div>
-        {location.pathname.startsWith('/profile') ? null : <Footer footerLayout={footerLayout} />}
+        {(location.pathname.startsWith('/profile') || mobile) ? null : <Footer footerLayout={footerLayout} />}
       </div>
       <Modal
         title={<h1>{t('system.notify_title')}</h1>}

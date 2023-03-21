@@ -7,19 +7,27 @@ import { TwitterOutlined, WechatOutlined } from '@ant-design/icons';
 import IconDeschool from '~/assets/icons/deschool.svg'
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { useParams } from 'react-router';
-import { getLatestUsers } from '~/api/booth';
-
+import { getLatestUsers, getUserInfo } from '~/api/booth';
+import { getShortAddress } from '~/utils/format';
 
 const BusinessCard = () => {
   const user = useAccount()
   const { t } = useTranslation()
   const [followings, setFollowings] = useState<number>()
   const [followers, setFollowers] = useState<number>(0)
-  const {userId } = useParams()
+  const {address } = useParams()
 
   const contacts = useMemo(() => user?.contacts?.filter((item) => item.name) || [], [user])
 
-  const fetchFollowInfo = async () => {
+  const fetchUserInfoByAddress = async () => {
+    const result = await getUserInfo(address)
+    if (result?.displayName === address) {
+      result.displayName = getShortAddress(address)
+    }
+    fetchFollowInfo(result.userId)
+  }
+
+  const fetchFollowInfo = async (userId: string) => {
     if (!userId) {
       return
     }
@@ -31,7 +39,7 @@ const BusinessCard = () => {
   }
 
   useEffect(() => {
-    fetchFollowInfo()
+    fetchUserInfoByAddress()
   }, [])
 
   return (
