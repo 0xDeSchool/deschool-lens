@@ -25,7 +25,9 @@ const BusinessCard = () => {
   const cacheImage = async (src: string) => {
     return new Promise((resolve, reject) => {
       let img = new Image();
-      img.crossOrigin = 'Anonymous'
+      if(src&&!src.includes('deschool.s3.amazonaws.com')){
+        img.crossOrigin = "anonymous"
+      }
       img.onload = (blob) => {
         console.log('图片加载成功', blob)
         resolve('');
