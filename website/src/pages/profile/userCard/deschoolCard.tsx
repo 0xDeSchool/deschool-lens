@@ -14,6 +14,7 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { DiscordIcon, EmailIcon } from '~/components/icon';
 import { TwitterOutlined, WechatOutlined } from '@ant-design/icons';
 import IconDeschool from '~/assets/icons/deschool.svg'
+import { getShortAddress } from '~/utils/format';
 import BusinessCard from '../resume/components/businessCard/genCard';
 import DeschoolFollowersModal from './deschoolModal'
 import { useProfileResume } from '~/context/profile';
@@ -162,10 +163,10 @@ const DeschoolCard = (props: DeschoolCardProps) => {
   return (
     <div >
       <div className='mx-auto mb-4 rounded-1 w-full min-w-327px bg-gradient-to-b from-#6525FF to-#9163FE text-white'>
-      <div className='relative w-full mb-16px'>
-        <img crossOrigin={currentUser?.avatar?.includes('deschool.s3.amazonaws.com')?undefined:"anonymous"} src={currentUser?.avatar} alt={currentUser?.displayName} className="w-full aspect-[1/1]"/>
-        <div className='absolute left-0 bottom-0 right-0 z-1 w-full h-48px frc-center gap-4 bg-#18181826 backdrop-blur-sm'>
-          {contacts?.map((item, index) => (
+        <div className='relative w-full mb-16px'>
+          <img crossOrigin={user?.avatar?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"} src={user?.avatar} alt={user?.displayName} className="w-full aspect-[1/1]" />
+          <div className='absolute left-0 bottom-0 right-0 z-1 w-full h-48px frc-center gap-4 bg-#18181826 backdrop-blur-sm'>
+            {contacts?.map((item, index) => (
               <>
                 <CopyToClipboard
                   text={item.name}
@@ -184,24 +185,29 @@ const DeschoolCard = (props: DeschoolCardProps) => {
                 {index < contacts.length - 1 && <div className='w-1px h-13px bg-#FFFFFF73' />}
               </>
             ))}
+          </div>
         </div>
         <div className='text-28px font-Anton px-12px mb-4'>
-          {currentUser?.displayName === currentUser?.address ? currentUser?.address : currentUser?.displayName}
+          {/* eslint-disable-next-line no-nested-ternary */}
+          {user?.displayName === user?.address ? getShortAddress(user?.address) : (user?.displayName && user?.displayName.length > 15 ? getShortAddress(user?.displayName) : user?.displayName)}
         </div>
         <div className='flex-1 frc-between w-full px-12px mb-34px'>
           <div className='flex-1'>
             <div className='text-18px font-ArchivoNarrow-Medium mb-2'>{role}</div>
             <div className='frc-start'>
-              <img crossOrigin={project?.icon?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"} src={project?.icon} alt="project icon" className='w-24px h-24px rounded-full mr-2' />
+              <img crossOrigin={project?.icon?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"}
+                src={project?.icon}
+                alt="project icon"
+                className='w-24px h-24px rounded-full mr-2' />
               <div className='font-ArchivoNarrow-Semibold'>{project?.name}</div>
             </div>
           </div>
           <QRCode
-            size={100}
+            size={120}
             color="#333333"
             bordered={false}
-            value={`${location.origin}/resume/${currentUser?.address}`}
-            style={{ border: 'none', borderRadius: '4px', padding: 0, margin: 0, height: '80px', width: '80px' }}
+            value={`${location.origin}/resume/${user?.address}`}
+            style={{ border: 'none', borderRadius: '4px', padding: 0, margin: 0 }}
           />
         </div>
         <div className='w-full px-12px frc-center mb-24px'>
@@ -209,11 +215,11 @@ const DeschoolCard = (props: DeschoolCardProps) => {
             <div className={`text-16px ${followers?.length > 0 ? 'hover:underline hover:cursor-pointer' : ''}`} onClick={() => {
               handleJumpFollowers(followers?.length)
             }}>
-            <span className='text-#774FF8 mr-1 font-bold font-ArchivoNarrow-Medium'>{followers?.length || '-'}</span>
-            <span className='text-#181818A6'>{t('profile.followers')}</span>
-          </div>
-          <div className='w-3px h-28px bg-#18181840 rounded-4px mx-20px' />
-          <div className={`text-16px ${followings?.length > 0 ? 'hover:underline hover:cursor-pointer' : ''}`} onClick={() => {
+              <span className='text-#774FF8 mr-1 font-bold font-ArchivoNarrow-Medium'>{followers?.length || '-'}</span>
+              <span className='text-#181818A6'>{t('profile.followers')}</span>
+            </div>
+            <div className='w-3px h-28px bg-#18181840 rounded-4px mx-20px' />
+            <div className={`text-16px ${followings?.length > 0 ? 'hover:underline hover:cursor-pointer' : ''}`} onClick={() => {
               handleJumpFollowing(followings?.length)
             }}>
               <span className='text-#774FF8 mr-1 font-bold font-ArchivoNarrow-Medium'>{followings?.length || '-'}</span>
@@ -221,13 +227,12 @@ const DeschoolCard = (props: DeschoolCardProps) => {
             </div>
           </div>
         </div>
-      </div>
-      <div className='frc-center pb-24px'>
-        <img src={IconDeschool} alt="deschool" width={24} height={24} />
-        <div className="ml-2 text-white text-16px font-ArchivoNarrow">DeSchool & Booth</div>
-      </div>
-      {visitCase === 0 && (<div className='frc-center w-full mb--20px'><BusinessCard /></div>)}
-      {routeAddress && (
+        <div className='frc-center pb-24px'>
+          <img src={IconDeschool} alt="deschool" width={24} height={24} />
+          <div className="ml-2 text-white text-16px font-ArchivoNarrow">DeSchool & Booth</div>
+        </div>
+        {visitCase === 0 && (<div className='frc-center w-full mb--20px'><BusinessCard /></div>)}
+        {routeAddress && (
           <div className="m-10 text-right">
             <Button
               className="purple-border-button px-2 py-1 font-ArchivoNarrow"
