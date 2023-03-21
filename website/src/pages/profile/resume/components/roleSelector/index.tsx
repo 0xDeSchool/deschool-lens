@@ -1,7 +1,8 @@
 import { PlusOutlined } from '@ant-design/icons'
 import Button from 'antd/es/button'
 import Form from 'antd/es/form'
-import Input, { InputRef } from 'antd/es/input'
+import type { InputRef } from 'antd/es/input';
+import Input from 'antd/es/input'
 import Select from 'antd/es/select'
 import Space from 'antd/es/space'
 import { useEffect, useRef, useState } from 'react'
@@ -31,7 +32,7 @@ const RoleSelector: React.FC<RoleSelectorProps> = (props) => {
   const handleCreateResumeRole = async (name: string) => {
     await createResumeRole({
       name,
-      description: name
+      description: name,
     })
   }
 

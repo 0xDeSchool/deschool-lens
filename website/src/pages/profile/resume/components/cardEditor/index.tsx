@@ -9,10 +9,11 @@ import Image from 'antd/es/image'
 import VerifiedIcon from '@mui/icons-material/Verified'
 import fallbackImage from '~/assets/images/fallbackImage'
 import Tooltip from 'antd/es/tooltip'
-import type { CardEditorInput, ResumeCardData, SbtInfo } from '../../types'
 import Checkbox from 'antd/es/checkbox/Checkbox'
+import type { CardEditorInput, ResumeCardData, SbtInfo } from '../../types'
 import ProjectSelector from '../projectSelector'
 import RoleSelector from '../roleSelector'
+
 const { TextArea } = Input
 
 const SbtItem = (props: { list: string[]; toggleList: (key: string) => void; item: SbtInfo }) => {

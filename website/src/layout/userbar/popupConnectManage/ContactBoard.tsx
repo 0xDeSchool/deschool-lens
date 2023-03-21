@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import Button from 'antd/es/button'
 import { useAccount } from '~/account'
 import { EditOutlined } from '@ant-design/icons'
-import { Contact } from '~/api/booth/types'
+import type { Contact } from '~/api/booth/types'
 import { updateUserInfo } from '~/api/booth/account'
 
 const contractOptions: Contact[] = [
@@ -74,8 +74,7 @@ const ContactBoard: React.FC = () => {
           onClick={() => setEdit(false)}>CANCEL</Button>}
       </div>
       <div className='font-ArchivoNarrow fcc-start'>
-        {contacts && contacts.map((item, index) => {
-          return (
+        {contacts && contacts.map((item, index) => (
             <div className='frc-start mb-1' key={item.contactType}>
               <span className='text-gray text-14px text-right w-48px inline-block mr-2'>{item.contactType}</span>
               <Input
@@ -88,8 +87,7 @@ const ContactBoard: React.FC = () => {
                 minLength={1}
                 onChange={(e: any) => handleUpdateContact(index, e.target.value)}/>
             </div>
-          )
-        })}
+          ))}
       </div>
     </div>
   )

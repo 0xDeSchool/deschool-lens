@@ -1,5 +1,6 @@
 import http from '~/api/booth/http'
-import { CreatedResult, ErrorResult, PagedResult, ResumeProject, ResumeProjectCreateRequest, ResumeRole, ResumeRoleCreateRequest, searchQuery, SearchRequest } from './types'
+import type { CreatedResult, ErrorResult, PagedResult, ResumeProject, ResumeProjectCreateRequest, ResumeRole, ResumeRoleCreateRequest, SearchRequest } from './types';
+import { searchQuery } from './types'
 
 /**
  * 获取简历项目列表
@@ -8,7 +9,7 @@ import { CreatedResult, ErrorResult, PagedResult, ResumeProject, ResumeProjectCr
  */
 export function getResumeProjects(request: SearchRequest): Promise<PagedResult<ResumeProject>> {
   const query = searchQuery(request)
-  return http.get(`/resume/projects${query.length > 0 ? "?" + query : ""}`)
+  return http.get(`/resume/projects${query.length > 0 ? `?${  query}` : ""}`)
 }
 
 /**
@@ -27,7 +28,7 @@ export function createResumeProject(project: ResumeProjectCreateRequest): Promis
  */
 export function getResumeRoles(request: SearchRequest): Promise<PagedResult<ResumeRole>> {
   const query = searchQuery(request)
-  return http.get(`/resume/roles${query.length > 0 ? "?" + query : ""}`)
+  return http.get(`/resume/roles${query.length > 0 ? `?${  query}` : ""}`)
 }
 
 /**

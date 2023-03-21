@@ -33,7 +33,7 @@ const Footer = () => {
                   <a className="text-purple-6" href="https://t.me/deschoolcommunity" target="_blank" rel="noreferrer">
                     @{t('foot.deschoolCommunity')}
                   </a>
-                  {<span className="ml-1">{t('foot.communicate')}</span>}
+                  <span className="ml-1">{t('foot.communicate')}</span>
                 </p>
               </div>
               <div className="flex-2 flex flex-col items-start justify-start text-#181818D9 mb-16 md:mb-0">

@@ -8,7 +8,7 @@ import Select from 'antd/es/select'
 import { useEffect, useRef, useState } from 'react';
 import { useAccount } from '~/account';
 import { createResumeProject, getResumeProjects } from '~/api/booth/resume';
-import { ResumeProject } from '~/api/booth/types';
+import type { ResumeProject } from '~/api/booth/types';
 import UploadPicture from '~/components/uploadImage/uploadPicture';
 
 type ProjectSelectorProps = {
@@ -85,12 +85,10 @@ const ProjectSelector: React.FC<ProjectSelectorProps> = (props) => {
         placeholder="Search your projects"
         dropdownRender={() => (
           <>
-            {items.map((item) => {
-              return <div key={item.name} className='frc-start py-2 px-2 border-b-1 cursor-pointer' onClick={() => handleSelect(item)}>
+            {items.map((item) => (<div key={item.name} className='frc-start py-2 px-2 border-b-1 cursor-pointer' onClick={() => handleSelect(item)}>
                   <Avatar src={item.icon} />
                   <span className='ml-3'>{item.name}</span>
-                </div>
-            })}
+                </div>))}
             <Button type="text" icon={<PlusOutlined />} onClick={() => setIsAddProject(true)} className="frc-center mx-auto my-2">
               Create project
             </Button>
@@ -122,7 +120,7 @@ const ProjectSelector: React.FC<ProjectSelectorProps> = (props) => {
                 <UploadPicture
                   width={68}
                   height={68}
-                  albumname={'booth/icon'}
+                  albumname="booth/icon"
                   userId={user?.id}
                   onChange={() => {
 

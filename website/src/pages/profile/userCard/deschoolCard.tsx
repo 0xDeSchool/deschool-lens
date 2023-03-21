@@ -9,14 +9,13 @@ import { useAccount } from '~/account'
 import type { UserFollower, UserFollowing, UserInfo } from '~/api/booth/types';
 import { getUserInfo } from '~/api/booth';
 import Button from 'antd/es/button';
-import DeschoolFollowersModal from './deschoolModal'
-import BusinessCard from '../resume/components/businessCard/genCard';
 import QRCode from 'antd/es/qrcode';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { DiscordIcon, EmailIcon } from '~/components/icon';
 import { TwitterOutlined, WechatOutlined } from '@ant-design/icons';
 import IconDeschool from '~/assets/icons/deschool.svg'
-import { useParams } from 'react-router';
+import BusinessCard from '../resume/components/businessCard/genCard';
+import DeschoolFollowersModal from './deschoolModal'
 
 type DeschoolCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
@@ -35,11 +34,8 @@ const DeschoolCard = (props: DeschoolCardProps) => {
   const [updateTrigger, setUpdateTrigger] = useState(0)
   const { t } = useTranslation()
   const user = useAccount()
-  const {userId } = useParams()
 
-  const contacts = useMemo(() => {
-    return user?.contacts?.filter((item) => item.name) || []
-  }, [user])
+  const contacts = useMemo(() => user?.contacts?.filter((item) => item.name) || [], [user])
 
   // 根据不同情况初始化用户信息
   const initUserInfo = async () => {
@@ -167,8 +163,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
       <div className='relative w-full mb-16px'>
         <img crossOrigin={user?.avatar?.includes('deschool.s3.amazonaws.com')?undefined:"anonymous"} src={user?.avatar} alt={user?.displayName} className="w-full aspect-[1/1]"/>
         <div className='absolute left-0 bottom-0 right-0 z-1 w-full h-48px frc-center gap-4 bg-#18181826 backdrop-blur-sm'>
-          {contacts?.map((item, index) => {
-            return (
+          {contacts?.map((item, index) => (
               <>
                 <CopyToClipboard
                   text={item.name}
@@ -184,10 +179,9 @@ const DeschoolCard = (props: DeschoolCardProps) => {
                     {/* <span className='ml-2 text-14px'>@{item.name}</span> */}
                   </div>
                 </CopyToClipboard>
-                {index < contacts.length - 1 && <div className='w-1px h-13px bg-#FFFFFF73'></div>}
+                {index < contacts.length - 1 && <div className='w-1px h-13px bg-#FFFFFF73' />}
               </>
-            )
-          })}
+            ))}
         </div>
       </div>
       <div className='text-28px font-Anton px-12px mb-4'>
@@ -218,7 +212,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
             <span className='text-#774FF8 mr-1 font-bold font-ArchivoNarrow-Medium'>{followers?.length || '-'}</span>
             <span className='text-#181818A6'>{t('profile.followers')}</span>
           </div>
-          <div className='w-3px h-28px bg-#18181840 rounded-4px mx-20px'></div>
+          <div className='w-3px h-28px bg-#18181840 rounded-4px mx-20px' />
           <div className={`text-16px ${followings?.length > 0 ? 'hover:underline hover:cursor-pointer' : ''}`} onClick={() => {
               handleJumpFollowing(followings?.length)
             }}>
@@ -229,9 +223,9 @@ const DeschoolCard = (props: DeschoolCardProps) => {
       </div>
       <div className='frc-center pb-24px'>
         <img src={IconDeschool} alt="deschool" width={24} height={24} />
-        <div className={`ml-2 text-white text-16px font-ArchivoNarrow`}>DeSchool & Booth</div>
+        <div className="ml-2 text-white text-16px font-ArchivoNarrow">DeSchool & Booth</div>
       </div>
-      {visitCase === 0 && (<div className='frc-center w-full'><BusinessCard /></div>)}
+      {visitCase === 0 && (<div className='frc-center w-full mb--20px'><BusinessCard /></div>)}
       {routeAddress && (
           <div className="m-10 text-right">
             <Button
