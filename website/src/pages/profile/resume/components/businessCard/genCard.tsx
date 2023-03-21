@@ -10,6 +10,7 @@ import IconDeschool from '~/assets/icons/deschool.svg'
 import ShowMoreLoading from '~/components/loading/showMore';
 import { getShortAddress } from '~/utils/format';
 import { useProfileResume } from '~/context/profile';
+import { download } from '~/utils';
 
 const BusinessCard = () => {
   const [open, setOpen] = useState(false)
@@ -50,18 +51,21 @@ const BusinessCard = () => {
           const url = URL.createObjectURL(blob);
           tempBlob = blob
           setResumeCardUrl(url)
-          console.log('url', url)
-          // download(url, `${user?.displayName}-business-card.png`)
-          setLoading(false)
           // 释放URL对象
           // URL.revokeObjectURL(url);
-          message.success(t('saveSuccess'))
         }, tempBlob?.type || 'image/png');
       });
     } catch (error) {
       message.error('preload image error')
       console.log('====', error)
+    } finally {
+      setLoading(false)
     }
+  }
+
+  const handleSave = () => {
+    download(resumeCardUrl, `${user?.displayName}-business-card.png`)
+    message.success(t('saveSuccess'))
   }
 
   return (
@@ -132,9 +136,10 @@ const BusinessCard = () => {
           setOpen(false)
         }}
       >
-        <div className='w-327px min-w-327px h-610px frc-center p-0 m-0 rounded-lg'>
-          {(!loading && resumeCardUrl) && <img src={resumeCardUrl} alt="resume card" className='w-full h-full rounded-lg' />}
+        <div className='w-327px min-w-327px h-610px fcc-center p-0 m-0 rounded-lg'>
           {loading && <div><ShowMoreLoading /></div>}
+          {(!loading && resumeCardUrl) && <img src={resumeCardUrl} alt="resume card" className='w-full h-full rounded-lg' />}
+          {(!loading && resumeCardUrl) && <Button type='primary' className='absolute bottom--10' onClick={handleSave}>save</Button>}
         </div>
       </Modal>
     </>
