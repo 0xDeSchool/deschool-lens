@@ -4,7 +4,6 @@ import { message, QRCode } from 'antd';
 import { useMemo, useState } from 'react'
 import { useAccount } from '~/account'
 import html2canvas from 'html2canvas';
-import { download } from '~/utils';
 import { useTranslation } from 'react-i18next';
 import { DiscordIcon, EmailIcon } from '~/components/icon';
 import { TwitterOutlined, WechatOutlined } from '@ant-design/icons';
@@ -18,28 +17,24 @@ const BusinessCard = () => {
   const { t } = useTranslation()
   const [resumeCardUrl, setResumeCardUrl] = useState('')
 
-  const contacts = useMemo(() => {
-    return user?.contacts?.filter((item) => item.name) || []
-  }, [user])
+  const contacts = useMemo(() => user?.contacts?.filter((item) => item.name) || [], [user])
 
-  const cacheImage = async (src: string) => {
-    return new Promise((resolve, reject) => {
-      let img = new Image();
-      if (src && !src.includes('deschool.s3.amazonaws.com')) {
-        img.crossOrigin = "anonymous"
-      }
-      // img.crossOrigin = "anonymous"
-      img.onload = (blob) => {
-        console.log('图片加载成功', blob)
-        resolve('');
-      };
-      img.onerror = (e) => {
-        console.log(e);
-        reject(new Error('图片加载失败'));
-      };
-      img.src = src;
-    });
-  }
+  const cacheImage = (src: string) => new Promise((resolve, reject) => {
+    const img = new Image();
+    if (src && !src.includes('deschool.s3.amazonaws.com')) {
+      img.crossOrigin = "anonymous"
+    }
+    // img.crossOrigin = "anonymous"
+    img.onload = (blob) => {
+      console.log('图片加载成功blob', blob)
+      resolve('');
+    };
+    img.onerror = (e) => {
+      console.log(e);
+      reject(new Error('图片加载失败'));
+    };
+    img.src = src;
+  })
 
   const handleOk = async () => {
     setOpen(true)
@@ -48,9 +43,11 @@ const BusinessCard = () => {
       // await cacheImage(user?.avatar || '')
       //await cacheImage(user?.resumeInfo?.project?.icon || '')
       html2canvas(document.querySelector('.business-card')!, { useCORS: true }).then((canvas) => {
+        let tempBlob: any
         canvas.toBlob((blob) => {
           if (blob === null) return;
           const url = URL.createObjectURL(blob);
+          tempBlob = blob
           setResumeCardUrl(url)
           console.log('url', url)
           // download(url, `${user?.displayName}-business-card.png`)
@@ -58,7 +55,7 @@ const BusinessCard = () => {
           // 释放URL对象
           // URL.revokeObjectURL(url);
           message.success(t('saveSuccess'))
-        }, 'image/png');
+        }, tempBlob?.type || 'image/png');
       });
     } catch (error) {
       message.error('preload image error')

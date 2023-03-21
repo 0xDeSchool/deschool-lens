@@ -113,7 +113,7 @@ const UserBar = () => {
                 >
                   {/* wallet connect */}
                   <PopoverAccountInfo open={() => setConnectBoardVisible(true)} />
-                  <div className='w-full h-1px bg-gray-100 my-6'></div>
+                  <div className='w-full h-1px bg-gray-100 my-6' />
                   {navs.map((nav, index) => (
                     <span
                       key={index.toString() + nav.name}

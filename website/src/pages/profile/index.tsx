@@ -4,9 +4,9 @@
  * @exports {UserProfile}
  */
 import { Outlet, useParams } from 'react-router'
+import Footer from '~/layout/footer/index.mobile'
 import UserCard from './userCard'
 import BusinessUserCard from './resume/components/businessCard/index'
-import Footer from '~/layout/footer/index.mobile'
 
 const UserProfile = () => {
   const { address, userId } = useParams()

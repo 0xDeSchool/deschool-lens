@@ -1,4 +1,3 @@
-import Button from 'antd/es/button'
 import { message, QRCode } from 'antd';
 import { useEffect, useMemo, useState } from 'react'
 import { useAccount } from '~/account'
@@ -18,9 +17,7 @@ const BusinessCard = () => {
   const [followers, setFollowers] = useState<number>(0)
   const {userId } = useParams()
 
-  const contacts = useMemo(() => {
-    return user?.contacts?.filter((item) => item.name) || []
-  }, [user])
+  const contacts = useMemo(() => user?.contacts?.filter((item) => item.name) || [], [user])
 
   const fetchFollowInfo = async () => {
     if (!userId) {
@@ -38,13 +35,11 @@ const BusinessCard = () => {
   }, [])
 
   return (
-    <>
     <div className='mx-auto mb-4 rounded-1 w-full min-w-327px bg-gradient-to-b from-#6525FF to-#9163FE text-white'>
       <div className='relative w-full mb-16px'>
         <img crossOrigin={user?.avatar?.includes('deschool.s3.amazonaws.com')?undefined:"anonymous"} src={user?.avatar} alt={user?.displayName} className="w-full aspect-[1/1]"/>
         <div className='absolute left-0 bottom-0 right-0 z-1 w-full h-48px frc-center gap-4 bg-#18181826 backdrop-blur-sm'>
-          {contacts?.map((item, index) => {
-            return (
+          {contacts?.map((item, index) => (
               <>
                 <CopyToClipboard
                   text={item.name}
@@ -60,10 +55,9 @@ const BusinessCard = () => {
                     {/* <span className='ml-2 text-14px'>@{item.name}</span> */}
                   </div>
                 </CopyToClipboard>
-                {index < contacts.length - 1 && <div className='w-1px h-13px bg-#FFFFFF73'></div>}
+                {index < contacts.length - 1 && <div className='w-1px h-13px bg-#FFFFFF73' />}
               </>
-            )
-          })}
+            ))}
         </div>
       </div>
       <div className='text-28px font-Anton px-12px mb-4'>
@@ -92,7 +86,7 @@ const BusinessCard = () => {
             <span className='text-#774FF8 mr-1 font-bold font-ArchivoNarrow-Medium'>{followers || '-'}</span>
             <span className='text-#181818A6'>{t('profile.followers')}</span>
           </div>
-          <div className='w-3px h-28px bg-#18181840 rounded-4px mx-20px'></div>
+          <div className='w-3px h-28px bg-#18181840 rounded-4px mx-20px' />
           <div className='text-16px'>
             <span className='text-#774FF8 mr-1 font-bold font-ArchivoNarrow-Medium'>{followings || '-'}</span>
             <span className='text-#181818A6'>{t('profile.following')}</span>
@@ -101,10 +95,9 @@ const BusinessCard = () => {
       </div>
       <div className='frc-center pb-24px'>
         <img src={IconDeschool} alt="deschool" width={24} height={24} />
-        <div className={`ml-2 text-white text-16px font-ArchivoNarrow`}>DeSchool & Booth</div>
+        <div className="ml-2 text-white text-16px font-ArchivoNarrow">DeSchool & Booth</div>
       </div>
     </div>
-    </>
   )
 }
 
