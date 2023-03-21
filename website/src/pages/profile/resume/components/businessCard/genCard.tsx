@@ -45,8 +45,8 @@ const BusinessCard = () => {
       return
     }
     setLoading(true)
-    cacheImage(user?.avatar).then(() => {
-      cacheImage(user?.resumeInfo?.project?.icon).then(() => {
+    // cacheImage(user?.avatar).then(() => {
+      // cacheImage(user?.resumeInfo?.project?.icon).then(() => {
         console.log('开始生成图片')
         html2canvas(document.querySelector('.business-card')!, { useCORS: true }).then((canvas) => {
           canvas.toBlob((blob) => {
@@ -61,8 +61,8 @@ const BusinessCard = () => {
             message.success(t('saveSuccess'))
           }, 'image/png');
         });
-      })
-    })
+      // })
+    // })
   }
 
   return (
@@ -80,8 +80,8 @@ const BusinessCard = () => {
           <div className='flex-1'>
             <div className='text-18px font-ArchivoNarrow-Medium mb-2'>{user?.resumeInfo?.role}</div>
             <div className='frc-start'>
-              <img src={user?.resumeInfo?.project?.icon} alt="project icon" className='w-24px h-24px rounded-full mr-2'/>
-              <div className='font-ArchivoNarrow-Semibold'>{user?.resumeInfo?.project?.name}</div>
+              <img src={user?.resumeInfo?.project?.icon} alt="project icon" className='w-24px h-24px rounded-full mr-2 mt-9px'/>
+              <div className='font-ArchivoNarrow-Semibold inline-flex h-24px leading-24px align-mid'>{user?.resumeInfo?.project?.name}</div>
             </div>
           </div>
           <div className='w-80px h-80px self-end preload-resume-qrcode'>
@@ -103,14 +103,14 @@ const BusinessCard = () => {
                 {item.contactType === 'Twitter' && <TwitterOutlined style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
                 {item.contactType === 'Wechat' && <WechatOutlined style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
                 {item.contactType === 'Email' && <EmailIcon style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
-                <span className='ml-2 text-14px'>@{item.name}</span>
+                <span className='ml-2 text-14px mt--10px'>@{item.name}</span>
               </div>
             )
           })}
         </div>
         <div className='absolute bottom-24px left-0 right-0 frc-center'>
           <img src={IconDeschool} alt="deschool" width={24} height={24} />
-          <div className={`ml-2 text-white text-16px font-ArchivoNarrow`}>DeSchool & Booth</div>
+          <div className={`ml-2 text-white text-16px font-ArchivoNarrow mt--12px`}>DeSchool & Booth</div>
         </div>
       </div>
     </div>
@@ -135,7 +135,7 @@ const BusinessCard = () => {
       }}
     >
       <div className='w-327px min-w-327px h-734px border-1 bg-gray-100 frc-center'>
-        {resumeCardUrl && <img src={resumeCardUrl} alt="resume card" className='w-full h-full'/>}
+        {(!loading && resumeCardUrl) && <img src={resumeCardUrl} alt="resume card" className='w-full h-full'/>}
         {loading && <div><ShowMoreLoading /></div>}
       </div>
     </Modal>
