@@ -27,7 +27,7 @@ const UserProfile = () => {
           <div className="mb-10 overflow-auto md:p-6 md:border md:shadow-md md:rounded-xl">
             <Outlet />
           </div>
-          <Footer />
+          {isMoble && <Footer />}
         </div>
       </div>
     </ProfileContextProvider>
