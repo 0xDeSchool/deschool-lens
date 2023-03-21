@@ -2,7 +2,6 @@ import Button from 'antd/es/button'
 import Modal from 'antd/es/modal/Modal'
 import { message, QRCode } from 'antd';
 import { useMemo, useState } from 'react'
-import { useAccount } from '~/account'
 import html2canvas from 'html2canvas';
 import { useTranslation } from 'react-i18next';
 import { DiscordIcon, EmailIcon } from '~/components/icon';
@@ -15,10 +14,9 @@ import { useProfileResume } from '~/context/profile';
 const BusinessCard = () => {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
-  const user = useAccount()
   const { t } = useTranslation()
   const [resumeCardUrl, setResumeCardUrl] = useState('')
-  const { project, role } = useProfileResume()
+  const { project, role, user } = useProfileResume()
 
   const contacts = useMemo(() => user?.contacts?.filter((item) => item.name) || [], [user])
 

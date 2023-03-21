@@ -4,9 +4,9 @@ import message from 'antd/es/message'
 import Skeleton from 'antd/es/skeleton'
 import { useTranslation } from 'react-i18next'
 import type { FollowRelationType } from '~/api/booth/follow';
-import { getFollowings, getFollowers, followUser, unfollowUser, checkfollowUser } from '~/api/booth/follow'
+import { followUser, unfollowUser, checkfollowUser } from '~/api/booth/follow'
 import { useAccount } from '~/account'
-import type { UserFollower, UserFollowing, UserInfo } from '~/api/booth/types';
+import type { UserInfo } from '~/api/booth/types';
 import { getUserInfo } from '~/api/booth';
 import Button from 'antd/es/button';
 import QRCode from 'antd/es/qrcode';
@@ -31,12 +31,10 @@ const DeschoolCard = (props: DeschoolCardProps) => {
   const [modal, setModal] = useState<{ type: 'followers' | 'following'; visible: boolean }>({ type: 'followers', visible: false })
   const [currentUser, setCurrentUser] = useState<UserInfo | null>(null)
   const [isFollowedByMe, setIsFollowedByMe] = useState<boolean>(false)
-  const [followings, setFollowings] = useState<UserFollowing[]>([])
-  const [followers, setFollowers] = useState<UserFollower[]>([])
   const [updateTrigger, setUpdateTrigger] = useState(0)
   const { t } = useTranslation()
   const user = useAccount()
-  const { project, role } = useProfileResume()
+  const { project, role, followings, followers } = useProfileResume()
 
   const contacts = useMemo(() => currentUser?.contacts?.filter((item) => item.name) || [], [currentUser])
 
@@ -48,14 +46,6 @@ const DeschoolCard = (props: DeschoolCardProps) => {
         // 访问自己的空间
         case 0:
           if (user) {
-            const resFollowings = await getFollowings(user.id)
-            if (resFollowings) {
-              setFollowings(resFollowings)
-            }
-            const resFollowers = await getFollowers(user.id)
-            if (resFollowers) {
-              setFollowers(resFollowers)
-            }
             setCurrentUser(user)
           }
           break
@@ -70,14 +60,6 @@ const DeschoolCard = (props: DeschoolCardProps) => {
               bio: userInfo.bio,
               displayName: userInfo.displayName,
             })
-            const resFollowings = await getFollowings(userInfo.id, user?.id)
-            if (resFollowings) {
-              setFollowings(resFollowings)
-            }
-            const resFollowers = await getFollowers(userInfo.id, user?.id)
-            if (resFollowers) {
-              setFollowers(resFollowers)
-            }
 
             // 我登录了
             if (user) {
@@ -94,8 +76,6 @@ const DeschoolCard = (props: DeschoolCardProps) => {
         }
         default:
           setIsFollowedByMe(false)
-          setFollowers([])
-          setFollowings([])
           setCurrentUser(null)
           break
       }
@@ -212,17 +192,17 @@ const DeschoolCard = (props: DeschoolCardProps) => {
         </div>
         <div className='w-full px-12px frc-center mb-24px'>
           <div className='w-full h-52px frc-center rounded-4px bg-white'>
-            <div className={`text-16px ${followers?.length > 0 ? 'hover:underline hover:cursor-pointer' : ''}`} onClick={() => {
-              handleJumpFollowers(followers?.length)
+            <div className={`text-16px ${followers > 0 ? 'hover:underline hover:cursor-pointer' : ''}`} onClick={() => {
+              handleJumpFollowers(followers)
             }}>
-              <span className='text-#774FF8 mr-1 font-bold font-ArchivoNarrow-Medium'>{followers?.length || '-'}</span>
+              <span className='text-#774FF8 mr-1 font-bold font-ArchivoNarrow-Medium'>{followers || '-'}</span>
               <span className='text-#181818A6'>{t('profile.followers')}</span>
             </div>
             <div className='w-3px h-28px bg-#18181840 rounded-4px mx-20px' />
-            <div className={`text-16px ${followings?.length > 0 ? 'hover:underline hover:cursor-pointer' : ''}`} onClick={() => {
-              handleJumpFollowing(followings?.length)
+            <div className={`text-16px ${followings > 0 ? 'hover:underline hover:cursor-pointer' : ''}`} onClick={() => {
+              handleJumpFollowing(followings)
             }}>
-              <span className='text-#774FF8 mr-1 font-bold font-ArchivoNarrow-Medium'>{followings?.length || '-'}</span>
+              <span className='text-#774FF8 mr-1 font-bold font-ArchivoNarrow-Medium'>{followings || '-'}</span>
               <span className='text-#181818A6'>{t('profile.following')}</span>
             </div>
           </div>
@@ -251,11 +231,10 @@ const DeschoolCard = (props: DeschoolCardProps) => {
         )}
       </div>
       <DeschoolFollowersModal
+        userId={user?.id}
         type={modal.type}
         visible={modal.visible}
         closeModal={closeModal}
-        followings={followings}
-        followers={followers}
         setUpdateTrigger={setUpdateTrigger}
       />
     </div>

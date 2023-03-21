@@ -18,6 +18,7 @@ type ProfileContextProps = {
   project: ResumeProject | null
   role: string | null
   resumeData: any
+  fetchUserResume: (resumeAddress: string) => void
   // setUser: Dispatch<SetStateAction<UserInfo | null>>
   // setFollowers: Dispatch<SetStateAction<number>>
   // setFollowings: Dispatch<SetStateAction<number>>
@@ -33,6 +34,7 @@ export const ProfileContext = createContext<ProfileContextProps>({
   project: null,
   role: null,
   resumeData: null,
+  fetchUserResume: () => {},
   // setUser: () => {},
   // setFollowers: () => {},
   // setFollowings: () => {},
@@ -48,19 +50,8 @@ export const ProfileContextProvider = ({ children }: { children: ReactElement })
   const [project, setProject] = useState<ResumeProject | null>(null)
   const [role, setRole] = useState<string | null>(null)
   const [resumeData, setResumeData] = useState<any>(null)
-  const {address } = useParams()
+  const { address } = useParams()
   const account = useAccount()
-
-  const profileMemo = useMemo(() => {
-    return {
-      user,
-      followers,
-      followings,
-      project,
-      role,
-      resumeData,
-    }
-  }, [user, followers, followings, project, role, resumeData])
 
   const fetchUserInfoByAddress = async (resumeAddress: string) => {
     const result = await getUserInfo(resumeAddress)
@@ -133,15 +124,35 @@ export const ProfileContextProvider = ({ children }: { children: ReactElement })
     // setLoading(false)
   }
 
-  useEffect(() => {
+  const initData = () => {
     const currentAddress = address || account?.address
     if (currentAddress) {
       fetchUserInfoByAddress(currentAddress)
       fetchUserResume(currentAddress)
     }
+  }
+
+  const profileMemo = useMemo(() => {
+    return {
+      user,
+      followers,
+      followings,
+      project,
+      role,
+      resumeData,
+    }
+  }, [user, followers, followings, project, role, resumeData])
+
+  const providerValue = {
+    ...profileMemo,
+    fetchUserResume,
+  }
+
+  useEffect(() => {
+    initData()
   }, [address, account])
 
-  return <ProfileContext.Provider value={profileMemo}>{children}</ProfileContext.Provider>
+  return <ProfileContext.Provider value={providerValue}>{children}</ProfileContext.Provider>
 }
 
 export const useProfileResume = () => {
