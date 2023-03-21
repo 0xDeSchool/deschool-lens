@@ -25,10 +25,10 @@ const BusinessCard = () => {
   const cacheImage = async (src: string) => {
     return new Promise((resolve, reject) => {
       let img = new Image();
-      // if(src&&!src.includes('deschool.s3.amazonaws.com')){
-      //   img.crossOrigin = "anonymous"
-      // }
-      img.crossOrigin = "anonymous"
+      if(src&&!src.includes('deschool.s3.amazonaws.com')){
+        img.crossOrigin = "anonymous"
+      }
+      // img.crossOrigin = "anonymous"
       img.onload = (blob) => {
         console.log('图片加载成功', blob)
         resolve('');
@@ -47,7 +47,7 @@ const BusinessCard = () => {
     try {
       await cacheImage(user?.avatar || '')
       await cacheImage(user?.resumeInfo?.project?.icon || '')
-      html2canvas(document.querySelector('.business-card')!, { useCORS: true }).then((canvas) => {
+      html2canvas(document.querySelector('.business-card')!, { useCORS: !user?.avatar?.includes('deschool.s3.amazonaws.com') }).then((canvas) => {
         canvas.toBlob((blob) => {
           if (blob === null) return;
           const url = URL.createObjectURL(blob);
