@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import message from 'antd/es/message'
 import Skeleton from 'antd/es/skeleton'
@@ -8,11 +8,15 @@ import { getFollowings, getFollowers, followUser, unfollowUser, checkfollowUser 
 import { useAccount } from '~/account'
 import type { UserFollower, UserFollowing, UserInfo } from '~/api/booth/types';
 import { getUserInfo } from '~/api/booth';
-import { getShortAddress } from '~/utils/format';
 import Button from 'antd/es/button';
 import DeschoolFollowersModal from './deschoolModal'
-import LensAvatar from './avatar';
 import BusinessCard from '../resume/components/businessCard/genCard';
+import QRCode from 'antd/es/qrcode';
+import CopyToClipboard from 'react-copy-to-clipboard';
+import { DiscordIcon, EmailIcon } from '~/components/icon';
+import { TwitterOutlined, WechatOutlined } from '@ant-design/icons';
+import IconDeschool from '~/assets/icons/deschool.svg'
+import { useParams } from 'react-router';
 
 type DeschoolCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
@@ -31,6 +35,11 @@ const DeschoolCard = (props: DeschoolCardProps) => {
   const [updateTrigger, setUpdateTrigger] = useState(0)
   const { t } = useTranslation()
   const user = useAccount()
+  const {userId } = useParams()
+
+  const contacts = useMemo(() => {
+    return user?.contacts?.filter((item) => item.name) || []
+  }, [user])
 
   // 根据不同情况初始化用户信息
   const initUserInfo = async () => {
@@ -146,67 +155,101 @@ const DeschoolCard = (props: DeschoolCardProps) => {
     setUpdateTrigger(new Date().getTime())
   }
 
+  if (loading) {
+    return (<div className="h-400px fcc-center">
+      <Skeleton active />
+    </div>)
+  }
+
   return (
     <div >
-      <div className='relative w-full frc-center'>
-        <LensAvatar avatarUrl={currentUser?.avatar} />
+      <div className='mx-auto mb-4 rounded-1 w-full min-w-327px bg-gradient-to-b from-#6525FF to-#9163FE text-white'>
+      <div className='relative w-full mb-16px'>
+        <img crossOrigin="anonymous" src={user?.avatar} alt={user?.displayName} className="w-full aspect-[1/1]"/>
+        <div className='absolute left-0 bottom-0 right-0 z-1 w-full h-48px frc-center gap-4 bg-#18181826 backdrop-blur-sm'>
+          {contacts?.map((item, index) => {
+            return (
+              <>
+                <CopyToClipboard
+                  text={item.name}
+                  onCopy={() => {
+                    message.success('Copied')
+                  }}
+                >
+                  <div key={item.contactType} className="frc-center">
+                    {item.contactType === 'Discord' && <DiscordIcon style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
+                    {item.contactType === 'Twitter' && <TwitterOutlined style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
+                    {item.contactType === 'Wechat' && <WechatOutlined style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
+                    {item.contactType === 'Email' && <EmailIcon style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
+                    {/* <span className='ml-2 text-14px'>@{item.name}</span> */}
+                  </div>
+                </CopyToClipboard>
+                {index < contacts.length - 1 && <div className='w-1px h-13px bg-#FFFFFF73'></div>}
+              </>
+            )
+          })}
+        </div>
       </div>
-      {loading ?
-        (<div className="h-400px fcc-center">
-          <Skeleton active />
-        </div>)
-        : <>
-          {/* 处理数据为空的情况 */}
-          <div className="mt-70px w-full px-6 pb-6 fcc-center font-ArchivoNarrow">
-            <span className="text-center text-xl w-200px overflow-hidden text-ellipsis">
-              {currentUser?.displayName || getShortAddress(routeAddress)}
-            </span>
+      <div className='text-28px font-Anton px-12px mb-4'>
+        {user?.displayName === user?.address ? user?.address : user?.displayName}
+      </div>
+      <div className='flex-1 frc-between w-full px-12px mb-34px'>
+        <div className='flex-1'>
+          <div className='text-18px font-ArchivoNarrow-Medium mb-2'>{user?.resumeInfo?.role}</div>
+          <div className='frc-start'>
+            <img crossOrigin="anonymous" src={user?.resumeInfo?.project?.icon} alt="project icon" className='w-24px h-24px rounded-full mr-2'/>
+            <div className='font-ArchivoNarrow-Semibold'>{user?.resumeInfo?.project?.name}</div>
           </div>
-          <div className="mx-10 frc-center flex-wrap">
-            <a
-              className={`${followers?.length > 0 ? 'hover:underline hover:cursor-pointer' : ''
-                } text-xl mr-4 font-ArchivoNarrow `}
+        </div>
+        <QRCode
+          errorLevel="M"
+          size={80}
+          color="#333333"
+          bordered={false}
+          value={`${location.origin}/profile/${user?.address}/resume/${user?.id}`}
+          style={{ border: 'none', borderRadius: '4px', padding: 0, margin: 0, height: '80px', width: '80px' }}
+        />
+      </div>
+      <div className='w-full px-12px frc-center mb-24px'>
+        <div className='w-full h-52px frc-center rounded-4px bg-white'>
+          <div className={`text-16px ${followers?.length > 0 ? 'hover:underline hover:cursor-pointer' : ''}`} onClick={() => {
+              handleJumpFollowers(followers?.length)
+            }}>
+            <span className='text-#774FF8 mr-1 font-bold font-ArchivoNarrow-Medium'>{followers?.length || '-'}</span>
+            <span className='text-#181818A6'>{t('profile.followers')}</span>
+          </div>
+          <div className='w-3px h-28px bg-#18181840 rounded-4px mx-20px'></div>
+          <div className={`text-16px ${followings?.length > 0 ? 'hover:underline hover:cursor-pointer' : ''}`} onClick={() => {
+              handleJumpFollowing(followings?.length)
+            }}>
+            <span className='text-#774FF8 mr-1 font-bold font-ArchivoNarrow-Medium'>{followings?.length || '-'}</span>
+            <span className='text-#181818A6'>{t('profile.following')}</span>
+          </div>
+        </div>
+      </div>
+      <div className='frc-center pb-24px'>
+        <img src={IconDeschool} alt="deschool" width={24} height={24} />
+        <div className={`ml-2 text-white text-16px font-ArchivoNarrow`}>DeSchool & Booth</div>
+      </div>
+      {visitCase === 0 && (<div className='frc-center w-full'><BusinessCard /></div>)}
+      {routeAddress && (
+          <div className="m-10 text-right">
+            <Button
+              className="purple-border-button px-2 py-1 font-ArchivoNarrow"
+              disabled={!user || routeAddress === user?.address}
               onClick={() => {
-                handleJumpFollowers(followers?.length)
+                if (isFollowedByMe && currentUser) {
+                  handleUnFollow()
+                } else if (currentUser) {
+                  handleFollow()
+                }
               }}
             >
-              <span className="text-black">{followers?.length || '-'} </span>
-              <span className="text-gray-5 font-ArchivoNarrow">{t('profile.followers')}</span>
-            </a>
-            <a
-              className={`${followings?.length > 0 ? 'hover:underline hover:cursor-pointer' : ''
-                } text-xl`}
-              onClick={() => {
-                handleJumpFollowing(followings?.length)
-              }}
-            >
-              <span className="text-black">{followings?.length || '-'} </span>
-              <span className="text-gray-5 font-ArchivoNarrow">{t('profile.following')}</span>
-            </a>
+              {isFollowedByMe ? t('UnFollow') : t('Follow')}
+            </Button>
           </div>
-
-          <p className="m-10 text-xl  line-wrap three-line-wrap" style={{wordBreak: 'break-word'}}>
-            {currentUser?.bio || (visitCase === 0 ? '' : "The user hasn't given a bio for self yet :)")}
-          </p>
-          {visitCase === 0 && <div className='frc-center mb-4'><BusinessCard /></div>}
-          {routeAddress && (
-            <div className="m-10 text-right">
-              <Button
-                className="purple-border-button px-2 py-1 font-ArchivoNarrow"
-                disabled={!user || routeAddress === user?.address}
-                onClick={() => {
-                  if (isFollowedByMe && currentUser) {
-                    handleUnFollow()
-                  } else if (currentUser) {
-                    handleFollow()
-                  }
-                }}
-              >
-                {isFollowedByMe ? t('UnFollow') : t('Follow')}
-              </Button>
-            </div>
-          )}
-        </>}
+        )}
+    </div>
       <DeschoolFollowersModal
         type={modal.type}
         visible={modal.visible}

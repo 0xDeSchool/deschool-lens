@@ -23,7 +23,7 @@ const BusinessCard = () => {
     return user?.contacts?.filter((item) => item.name) || []
   }, [user])
 
-  const cacheImage = (src: string) => {
+  const cacheImage = async (src: string) => {
     return new Promise((resolve, reject) => {
       let img = new Image();
       img.crossOrigin = 'Anonymous'
@@ -39,36 +39,35 @@ const BusinessCard = () => {
     });
   }
 
-  const handleOk = () => {
+  const handleOk = async () => {
     setOpen(true)
-    if (!user?.avatar && !user?.resumeInfo?.project?.icon) {
-      return
-    }
     setLoading(true)
-    // cacheImage(user?.avatar).then(() => {
-      // cacheImage(user?.resumeInfo?.project?.icon).then(() => {
-        console.log('开始生成图片')
-        html2canvas(document.querySelector('.business-card')!, { useCORS: true }).then((canvas) => {
-          canvas.toBlob((blob) => {
-            if (blob === null) return;
-            const url = URL.createObjectURL(blob);
-            setResumeCardUrl(url)
-            console.log('url', url)
-            // download(url, `${user?.displayName}-business-card.png`)
-            setLoading(false)
-            // 释放URL对象
-            // URL.revokeObjectURL(url);
-            message.success(t('saveSuccess'))
-          }, 'image/png');
-        });
-      // })
-    // })
+    try {
+      await cacheImage(user?.avatar || '')
+      await cacheImage(user?.resumeInfo?.project?.icon || '')
+      html2canvas(document.querySelector('.business-card')!, { useCORS: true }).then((canvas) => {
+        canvas.toBlob((blob) => {
+          if (blob === null) return;
+          const url = URL.createObjectURL(blob);
+          setResumeCardUrl(url)
+          console.log('url', url)
+          // download(url, `${user?.displayName}-business-card.png`)
+          setLoading(false)
+          // 释放URL对象
+          // URL.revokeObjectURL(url);
+          message.success(t('saveSuccess'))
+        }, 'image/png');
+      });
+    } catch (error) {
+      message.error('preload image error')
+      console.log('====', error)
+    }
   }
 
   return (
     <>
     <div>
-      <Button onClick={handleOk}>Generate</Button>
+      <Button type='text' style={{color: '#ffffff'}} onClick={handleOk}>Generate</Button>
     </div>
     <div className='absolute z--1'>
       <div className='business-card w-327px min-w-327px h-734px bg-gradient-to-b from-#6525FF to-#9163FE drop-shadow-md shadow-md text-white'>

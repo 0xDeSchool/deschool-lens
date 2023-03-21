@@ -53,10 +53,7 @@ const UserCard = (props: UserCardProps) => {
           className="h-60! object-cover! object-center! rounded-t-xl"
           wrapperClassName="w-full"
         />)
-        : (<div className="h-60 object-cover object-center rounded-t-xl overflow-hidden">
-            <Jazzicon paperStyles={{ borderRadius: '10px' }} diameter={400} seed={Math.floor(Math.random() * 30)} />
-          </div>)
-        }
+        : null}
         </div>
       {profileType === PlatformType.LENS &&
         <LensCard
