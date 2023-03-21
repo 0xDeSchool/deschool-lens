@@ -19,7 +19,7 @@ const UserProfile = () => {
         {userId && <BusinessUserCard />}
         {/* {location.pathname.includes('/profile/resume') && !address|| user?.address && user.address == address ?  <Verified/> : null} */}
       </div>
-      <div className="w-full xl:w-auto xl:ml-3 flex-1 relative font-ArchivoNarrow">
+      <div className="w-full xl:w-auto xl:ml-3 flex-1 relative font-ArchivoNarrow overflow-auto">
         <div className="mb-10 overflow-auto md:p-6 md:border md:shadow-md md:rounded-xl">
           <Outlet />
         </div>
