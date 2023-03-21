@@ -17,6 +17,7 @@ import { getShortAddress } from '~/utils/format';
 import BusinessCard from '../resume/components/businessCard/genCard';
 import DeschoolFollowersModal from './deschoolModal'
 import { useProfileResume } from '~/context/profile';
+import { useAccount } from '~/account';
 
 type DeschoolCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
@@ -32,7 +33,8 @@ const DeschoolCard = (props: DeschoolCardProps) => {
   const [isFollowedByMe, setIsFollowedByMe] = useState<boolean>(false)
   const [updateTrigger, setUpdateTrigger] = useState(0)
   const { t } = useTranslation()
-  const { project, role, followings, followers, user } = useProfileResume()
+  const user = useAccount()
+  const { project, role, followings, followers } = useProfileResume()
 
   const contacts = useMemo(() => currentUser?.contacts?.filter((item) => item.name) || [], [currentUser])
 
@@ -139,10 +141,10 @@ const DeschoolCard = (props: DeschoolCardProps) => {
   }
 
   return (
-    <div >
-      <div className='mx-auto mb-4 rounded-1 w-full min-w-327px bg-gradient-to-b from-#6525FF to-#9163FE text-white'>
+    < >
+      <div className='h-100% mx-auto mb-4 rounded-1 w-full min-w-327px bg-gradient-to-b from-#6525FF to-#9163FE text-white'>
         <div className='relative w-full mb-16px'>
-          <img crossOrigin={user?.avatar?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"} src={user?.avatar} alt={user?.displayName} className="w-full aspect-[1/1]" />
+          <img crossOrigin={currentUser?.avatar?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"} src={currentUser?.avatar} alt={currentUser?.displayName} className="w-full aspect-[1/1]" />
           <div className='absolute left-0 bottom-0 right-0 z-1 w-full h-48px frc-center gap-4 bg-#18181826 backdrop-blur-sm'>
             {contacts?.map((item, index) => (
               <>
@@ -167,7 +169,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
         </div>
         <div className='text-28px font-Anton px-12px mb-4'>
           {/* eslint-disable-next-line no-nested-ternary */}
-          {user?.displayName === user?.address ? getShortAddress(user?.address) : (user?.displayName && user?.displayName.length > 15 ? getShortAddress(user?.displayName) : user?.displayName)}
+          {currentUser?.displayName === currentUser?.address ? getShortAddress(currentUser?.address) : (currentUser?.displayName && currentUser?.displayName.length > 15 ? getShortAddress(currentUser?.displayName) : currentUser?.displayName)}
         </div>
         <div className='flex-1 frc-between w-full px-12px mb-34px'>
           <div className='flex-1'>
@@ -211,10 +213,11 @@ const DeschoolCard = (props: DeschoolCardProps) => {
         </div>
         {visitCase === 0 && (<div className='frc-center w-full mb--20px'><BusinessCard /></div>)}
         {routeAddress && (
-          <div className="m-10 text-right">
+          <div className="p-10 text-right">
             <Button
-              className="purple-border-button px-2 py-1 font-ArchivoNarrow"
+              className="purple-border-button px-2 py-1 font-ArchivoNarrow text-white"
               disabled={!user || routeAddress === user?.address}
+              style={{ color: '#fff', borderColor: '#fff' }}
               onClick={() => {
                 if (isFollowedByMe && currentUser) {
                   handleUnFollow()
@@ -235,7 +238,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
         closeModal={closeModal}
         setUpdateTrigger={setUpdateTrigger}
       />
-    </div>
+    </>
   )
 }
 
