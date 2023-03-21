@@ -10,7 +10,6 @@ import { DiscordIcon, EmailIcon } from '~/components/icon';
 import { TwitterOutlined, WechatOutlined } from '@ant-design/icons';
 import IconDeschool from '~/assets/icons/deschool.svg'
 import ShowMoreLoading from '~/components/loading/showMore';
-import './genCard.module.css'
 
 const BusinessCard = () => {
   const [open, setOpen] = useState(false)
