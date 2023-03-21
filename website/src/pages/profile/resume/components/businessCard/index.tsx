@@ -8,6 +8,7 @@ import IconDeschool from '~/assets/icons/deschool.svg'
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { useParams } from 'react-router';
 import { getLatestUsers } from '~/api/booth';
+import { getShortAddress } from '~/utils/format';
 
 
 const BusinessCard = () => {
