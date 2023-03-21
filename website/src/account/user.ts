@@ -1,6 +1,6 @@
 import { getSignMessage, getUserInfo, login, unlinkPlatform } from "~/api/booth/account"
 import { PlatformType } from "~/api/booth/booth"
-import type { Contact, LinkPlatformRequest, ResumeProject, UserInfo, UserPlatform } from "~/api/booth/types";
+import type { Contact, LinkPlatformRequest, UserInfo, UserPlatform } from "~/api/booth/types";
 import { SignMsgType } from "~/api/booth/types"
 import { getShortAddress } from "~/utils/format"
 import { getWallet } from "~/wallet"
@@ -22,11 +22,6 @@ export class AccountInfo {
 
   platforms?: UserPlatform[]
 
-  resumeInfo?: null | {
-    project: ResumeProject
-    role: string
-  }
-
   constructor(info: UserInfo) {
     this.id = info.id
     this.address = info.address
@@ -35,7 +30,6 @@ export class AccountInfo {
     this.bio = info.bio
     this.platforms = info.platforms
     this.contacts = info.contacts
-    this.resumeInfo = null
   }
 
   platform(platform: PlatformType): UserPlatform | undefined {
@@ -68,10 +62,6 @@ export class AccountInfo {
 
   deschoolProfileList(): UserPlatform[] | undefined {
     return this.platforms?.filter(p => p.platform === PlatformType.DESCHOOL)
-  }
-
-  setResumeInfo(project: ResumeProject, role: string) {
-    this.resumeInfo = { project, role }
   }
 }
 

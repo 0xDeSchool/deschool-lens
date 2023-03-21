@@ -1,6 +1,5 @@
 import { message, QRCode } from 'antd';
 import { useEffect, useMemo, useState } from 'react'
-import { useAccount } from '~/account'
 import { useTranslation } from 'react-i18next';
 import { DiscordIcon, EmailIcon } from '~/components/icon';
 import { TwitterOutlined, WechatOutlined } from '@ant-design/icons';
@@ -9,22 +8,28 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { useParams } from 'react-router';
 import { getLatestUsers, getUserInfo } from '~/api/booth';
 import { getShortAddress } from '~/utils/format';
+import { UserInfo } from '~/api/booth/types';
+import { useProfileResume } from '~/context/profile';
 
 const BusinessCard = () => {
-  const user = useAccount()
   const { t } = useTranslation()
   const [followings, setFollowings] = useState<number>()
   const [followers, setFollowers] = useState<number>(0)
+  const [currentUser, setCurrentUser] = useState<UserInfo | null>(null)
   const {address } = useParams()
+  const {project, role} = useProfileResume()
 
-  const contacts = useMemo(() => user?.contacts?.filter((item) => item.name) || [], [user])
+  const contacts = useMemo(() => currentUser?.contacts?.filter((item) => item.name) || [], [currentUser])
 
   const fetchUserInfoByAddress = async () => {
     const result = await getUserInfo(address)
     if (result?.displayName === address) {
       result.displayName = getShortAddress(address)
     }
-    fetchFollowInfo(result.userId)
+    setCurrentUser(result)
+    if (result?.id) {
+      fetchFollowInfo(result.id)
+    }
   }
 
   const fetchFollowInfo = async (userId: string) => {
@@ -45,7 +50,7 @@ const BusinessCard = () => {
   return (
     <div className='mx-auto mb-4 rounded-1 w-full min-w-327px bg-gradient-to-b from-#6525FF to-#9163FE text-white'>
       <div className='relative w-full mb-16px'>
-        <img crossOrigin={user?.avatar?.includes('deschool.s3.amazonaws.com')?undefined:"anonymous"} src={user?.avatar} alt={user?.displayName} className="w-full aspect-[1/1]"/>
+        <img crossOrigin={currentUser?.avatar?.includes('deschool.s3.amazonaws.com')?undefined:"anonymous"} src={currentUser?.avatar} alt={currentUser?.displayName} className="w-full aspect-[1/1]"/>
         <div className='absolute left-0 bottom-0 right-0 z-1 w-full h-48px frc-center gap-4 bg-#18181826 backdrop-blur-sm'>
           {contacts?.map((item, index) => (
               <>
@@ -69,14 +74,14 @@ const BusinessCard = () => {
         </div>
       </div>
       <div className='text-28px font-Anton px-12px mb-4'>
-        {user?.displayName === user?.address ? user?.address : user?.displayName}
+        {currentUser?.displayName === currentUser?.address ? currentUser?.address : currentUser?.displayName}
       </div>
       <div className='flex-1 frc-between w-full px-12px mb-34px'>
         <div className='flex-1'>
-          <div className='text-18px font-ArchivoNarrow-Medium mb-2'>{user?.resumeInfo?.role}</div>
+          <div className='text-18px font-ArchivoNarrow-Medium mb-2'>{role}</div>
           <div className='frc-start'>
-            <img crossOrigin={user?.resumeInfo?.project?.icon?.includes('deschool.s3.amazonaws.com')?undefined:"anonymous"} src={user?.resumeInfo?.project?.icon} alt="project icon" className='w-24px h-24px rounded-full mr-2'/>
-            <div className='font-ArchivoNarrow-Semibold'>{user?.resumeInfo?.project?.name}</div>
+            <img crossOrigin={project?.icon?.includes('deschool.s3.amazonaws.com')?undefined:"anonymous"} src={project?.icon} alt="project icon" className='w-24px h-24px rounded-full mr-2'/>
+            <div className='font-ArchivoNarrow-Semibold'>{project?.name}</div>
           </div>
         </div>
         <QRCode
@@ -84,7 +89,7 @@ const BusinessCard = () => {
           size={80}
           color="#333333"
           bordered={false}
-          value={`${location.origin}/profile/${user?.address}/resume/${user?.id}`}
+          value={`${location.origin}/profile/${currentUser?.address}/resume/${currentUser?.id}`}
           style={{ border: 'none', borderRadius: '4px', padding: 0, margin: 0, height: '80px', width: '80px' }}
         />
       </div>

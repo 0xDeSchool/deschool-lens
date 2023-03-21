@@ -16,6 +16,7 @@ import { TwitterOutlined, WechatOutlined } from '@ant-design/icons';
 import IconDeschool from '~/assets/icons/deschool.svg'
 import BusinessCard from '../resume/components/businessCard/genCard';
 import DeschoolFollowersModal from './deschoolModal'
+import { useProfileResume } from '~/context/profile';
 
 type DeschoolCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
@@ -34,6 +35,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
   const [updateTrigger, setUpdateTrigger] = useState(0)
   const { t } = useTranslation()
   const user = useAccount()
+  const { project, role } = useProfileResume()
 
   const contacts = useMemo(() => currentUser?.contacts?.filter((item) => item.name) || [], [currentUser])
 
@@ -171,7 +173,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
                     message.success('Copied')
                   }}
                 >
-                  <div key={item.contactType} className="frc-center">
+                  <div key={item.contactType + item.name} className="frc-center">
                     {item.contactType === 'Discord' && <DiscordIcon style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
                     {item.contactType === 'Twitter' && <TwitterOutlined style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
                     {item.contactType === 'Wechat' && <WechatOutlined style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
@@ -188,10 +190,10 @@ const DeschoolCard = (props: DeschoolCardProps) => {
         </div>
         <div className='flex-1 frc-between w-full px-12px mb-34px'>
           <div className='flex-1'>
-            <div className='text-18px font-ArchivoNarrow-Medium mb-2'>{user?.resumeInfo?.role}</div>
+            <div className='text-18px font-ArchivoNarrow-Medium mb-2'>{role}</div>
             <div className='frc-start'>
-              <img crossOrigin={user?.resumeInfo?.project?.icon?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"} src={user?.resumeInfo?.project?.icon} alt="project icon" className='w-24px h-24px rounded-full mr-2' />
-              <div className='font-ArchivoNarrow-Semibold'>{user?.resumeInfo?.project?.name}</div>
+              <img crossOrigin={project?.icon?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"} src={project?.icon} alt="project icon" className='w-24px h-24px rounded-full mr-2' />
+              <div className='font-ArchivoNarrow-Semibold'>{project?.name}</div>
             </div>
           </div>
           <QRCode

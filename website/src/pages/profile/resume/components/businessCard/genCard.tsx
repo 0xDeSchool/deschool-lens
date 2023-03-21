@@ -9,6 +9,7 @@ import { DiscordIcon, EmailIcon } from '~/components/icon';
 import { TwitterOutlined, WechatOutlined } from '@ant-design/icons';
 import IconDeschool from '~/assets/icons/deschool.svg'
 import ShowMoreLoading from '~/components/loading/showMore';
+import { useProfileResume } from '~/context/profile';
 
 const BusinessCard = () => {
   const [open, setOpen] = useState(false)
@@ -16,6 +17,7 @@ const BusinessCard = () => {
   const user = useAccount()
   const { t } = useTranslation()
   const [resumeCardUrl, setResumeCardUrl] = useState('')
+  const { resumeData } = useProfileResume()
 
   const contacts = useMemo(() => user?.contacts?.filter((item) => item.name) || [], [user])
 
@@ -41,7 +43,7 @@ const BusinessCard = () => {
     setLoading(true)
     try {
       // await cacheImage(user?.avatar || '')
-      //await cacheImage(user?.resumeInfo?.project?.icon || '')
+      //await cacheImage(user?.resumeData?.project?.icon || '')
       html2canvas(document.querySelector('.business-card')!, { useCORS: true }).then((canvas) => {
         let tempBlob: any
         canvas.toBlob((blob) => {
@@ -76,10 +78,10 @@ const BusinessCard = () => {
           </div>
           <div className='flex-1 frc-between w-full px-12px mb-34px'>
             <div className='flex-1'>
-              <div className='text-18px font-ArchivoNarrow-Medium mb-2'>{user?.resumeInfo?.role}</div>
+              <div className='text-18px font-ArchivoNarrow-Medium mb-2'>{resumeData?.role}</div>
               <div className='frc-start'>
-                <img crossOrigin={user?.resumeInfo?.project?.icon?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"} src={user?.resumeInfo?.project?.icon} alt="project icon" className='w-24px h-24px rounded-full mr-2 mt-9px' />
-                <div className='font-ArchivoNarrow-Semibold inline-flex h-24px leading-24px align-mid'>{user?.resumeInfo?.project?.name}</div>
+                <img crossOrigin={resumeData?.project?.icon?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"} src={resumeData?.project?.icon} alt="project icon" className='w-24px h-24px rounded-full mr-2 mt-9px' />
+                <div className='font-ArchivoNarrow-Semibold inline-flex h-24px leading-24px align-mid'>{resumeData?.project?.name}</div>
               </div>
             </div>
             <div className='w-80px h-80px self-end preload-resume-qrcode'>
