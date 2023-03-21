@@ -72,7 +72,7 @@ const BusinessCard = () => {
     </div>
     <div className='absolute z--1'>
       <div className='business-card w-327px min-w-327px h-734px bg-gradient-to-b from-#6525FF to-#9163FE drop-shadow-md shadow-md text-white'>
-        <img crossOrigin="anonymous" src={user?.avatar} alt={user?.displayName} className="w-327px h-327px mb-16px"/>
+        <img crossOrigin={user?.avatar?.includes('deschool.s3.amazonaws.com')?undefined:"anonymous"} src={user?.avatar} alt={user?.displayName} className="w-327px h-327px mb-16px"/>
         <div className='text-28px font-Anton px-12px mb-4'>
           {user?.displayName === user?.address ? user?.address : user?.displayName}
         </div>
@@ -80,7 +80,7 @@ const BusinessCard = () => {
           <div className='flex-1'>
             <div className='text-18px font-ArchivoNarrow-Medium mb-2'>{user?.resumeInfo?.role}</div>
             <div className='frc-start'>
-              <img src={user?.resumeInfo?.project?.icon} alt="project icon" className='w-24px h-24px rounded-full mr-2 mt-9px'/>
+              <img crossOrigin={user?.resumeInfo?.project?.icon?.includes('deschool.s3.amazonaws.com')?undefined:"anonymous"} src={user?.resumeInfo?.project?.icon} alt="project icon" className='w-24px h-24px rounded-full mr-2 mt-9px'/>
               <div className='font-ArchivoNarrow-Semibold inline-flex h-24px leading-24px align-mid'>{user?.resumeInfo?.project?.name}</div>
             </div>
           </div>
