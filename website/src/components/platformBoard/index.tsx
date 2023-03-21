@@ -43,7 +43,7 @@ const PlatformBoard: React.FC<PlatformBoardProps> = (props) => {
         <div className={`ml-2 text-#00501E text-18px font-ArchivoNarrow ${active === PlatformType.LENS ? 'block' : 'hidden'}`}>Lens</div>
       </div>
       <div
-        className={`cursor-pointer bg-#774ff8 rounded-full h-36px min-h-36px min-w-36px transition-all transition-500 ${active === PlatformType.DESCHOOL ? activeClass : normalClass}`}
+        className={`cursor-pointer rounded-full h-36px min-h-36px min-w-36px transition-all transition-500 ${active === PlatformType.DESCHOOL ? ` bg-#18181826 backdrop-blur-sm ${activeClass} ` : `bg-#774ff8 ${normalClass}`}`}
         onClick={() => setActive(PlatformType.DESCHOOL)}
       >
         <img src={IconDeschool} alt="deschool" width={24} height={24} />
