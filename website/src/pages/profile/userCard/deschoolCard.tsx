@@ -188,7 +188,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
           <p className="m-10 text-xl  line-wrap three-line-wrap" style={{wordBreak: 'break-word'}}>
             {currentUser?.bio || (visitCase === 0 ? '' : "The user hasn't given a bio for self yet :)")}
           </p>
-          <div className='frc-center mb-4'><BusinessCard /></div>
+          {visitCase === 0 && <div className='frc-center mb-4'><BusinessCard /></div>}
           {routeAddress && (
             <div className="m-10 text-right">
               <Button

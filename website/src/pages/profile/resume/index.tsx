@@ -86,6 +86,7 @@ const Resume = () => {
         const dataStr = JSON.stringify(resumeData)
         await putResume({ data: dataStr })
         setPutting(false)
+        fetchUserResume(user?.address)
       }
     } else {
       // 深拷贝 // no 浅拷贝
