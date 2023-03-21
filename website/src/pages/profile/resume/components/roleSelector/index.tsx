@@ -1,5 +1,6 @@
 import { PlusOutlined } from '@ant-design/icons'
 import Button from 'antd/es/button'
+import Form from 'antd/es/form'
 import Input, { InputRef } from 'antd/es/input'
 import Select from 'antd/es/select'
 import Space from 'antd/es/space'
@@ -15,25 +16,9 @@ const RoleSelector: React.FC<RoleSelectorProps> = (props) => {
   const { defaultValue, onChange } = props
   const [value, setValue] = useState(defaultValue || '')
   const [optionsRole, setOptionsRole] = useState<{value: string}[]>([])
-  const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
   const inputRef = useRef<InputRef>(null);
-
-  const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value);
-  };
-
-  const addItem = async (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
-    e.preventDefault();
-    setLoading(true);
-    await handleCreateResumeRole()
-    await fetchProjectRole()
-    setLoading(false);
-    setTimeout(() => {
-      setName('');
-      inputRef.current?.focus();
-    }, 0);
-  };
+  const [form] = Form.useForm();
 
   const fetchProjectRole = () => {
     getResumeRoles({query: ''}).then((res) => {
@@ -43,7 +28,7 @@ const RoleSelector: React.FC<RoleSelectorProps> = (props) => {
     });
   }
 
-  const handleCreateResumeRole = async () => {
+  const handleCreateResumeRole = async (name: string) => {
     await createResumeRole({
       name,
       description: name
@@ -56,6 +41,14 @@ const RoleSelector: React.FC<RoleSelectorProps> = (props) => {
       onChange(val)
     }
   }
+
+  const onFinish = async (values: any) => {
+    setLoading(true);
+    await handleCreateResumeRole(values.name)
+    await fetchProjectRole()
+    form.resetFields();
+    setLoading(false);
+  };
 
   // 获取角色列表
   useEffect(() => {
@@ -73,16 +66,25 @@ const RoleSelector: React.FC<RoleSelectorProps> = (props) => {
       dropdownRender={(menu) => (
         <>
           {menu}
-          <Space style={{ padding: '8px 8px 4px' }}>
-            <Input
-              placeholder="Please enter item"
-              ref={inputRef}
-              value={name}
-              onChange={onNameChange}
-            />
-            <Button type="text" loading={loading} icon={<PlusOutlined />} onClick={addItem} className="frc-center">
-              Add Role
-            </Button>
+          <Space style={{ padding: 8 }}>
+            <Form
+              form={form}
+              layout="inline"
+              name="role-manage"
+              onFinish={onFinish}
+            >
+              <Form.Item name="name" rules={[{ required: true, message: 'Please input role name!' }]}>
+                <Input
+                  placeholder="Please enter item"
+                  ref={inputRef}
+                />
+              </Form.Item>
+              <Form.Item >
+                <Button type="text" htmlType="submit" loading={loading} icon={<PlusOutlined />} className="frc-center">
+                  Add Role
+                </Button>
+              </Form.Item>
+            </Form>
           </Space>
         </>
       )}

@@ -122,7 +122,7 @@ const ProjectSelector: React.FC<ProjectSelectorProps> = (props) => {
                 <UploadPicture
                   width={68}
                   height={68}
-                  albumname={'project_icon'}
+                  albumname={'booth/icon'}
                   userId={user?.id}
                   onChange={() => {
 
