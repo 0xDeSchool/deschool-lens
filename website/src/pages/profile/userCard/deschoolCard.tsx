@@ -144,9 +144,11 @@ const DeschoolCard = (props: DeschoolCardProps) => {
     < >
       <div className='h-100% mx-auto mb-4 rounded-1 w-full min-w-327px bg-gradient-to-b from-#6525FF to-#9163FE text-white'>
         <div className='relative w-full mb-16px'>
-          <img crossOrigin={currentUser?.avatar?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"}
-          src={currentUser?.avatar}
-          alt={currentUser?.displayName} className="w-full aspect-[1/1]" />
+          <img
+            crossOrigin={currentUser?.avatar?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"}
+            src={currentUser?.avatar}
+            alt={currentUser?.displayName}
+            className="w-full aspect-[1/1] rounded-t-1" />
           <div className='absolute left-0 bottom-0 right-0 z-1 w-full h-48px frc-center gap-4 bg-#18181826 backdrop-blur-sm'>
             {contacts?.map((item, index) => (
               <>
@@ -156,7 +158,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
                     message.success('Copied')
                   }}
                 >
-                  <div key={item.contactType + item.name} className="frc-center">
+                  <div key={item.contactType + item.name} className="frc-center cursor-pointer">
                     {item.contactType === 'Discord' && <DiscordIcon style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
                     {item.contactType === 'Twitter' && <TwitterOutlined style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
                     {item.contactType === 'Wechat' && <WechatOutlined style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
