@@ -117,6 +117,13 @@ export default defineConfig(({ mode }) => {
             'x-pinata-gateway-token':'6aiuIxB2BLgtHohX8bbyn7rA8CFFxqffIvMZwePri0iM-z2H_PkgyuRv5j7r8URF'
           },
           rewrite: pathGoapi => pathGoapi.replace(/^\/mypinata/, ''),
+        },
+        '/awsResource':{
+          target: 'https://deschool.s3.amazonaws.com/',
+          secure: false,
+          ws: true,
+          changeOrigin: true,
+          rewrite: pathGoapi => pathGoapi.replace(/^\/awsResource/, ''),
         }
       },
     },

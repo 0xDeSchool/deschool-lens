@@ -78,6 +78,12 @@
   force = true
 
 [[redirects]]
+  from = "/awsResource/*"
+  to = "https://deschool.s3.amazonaws.com/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200

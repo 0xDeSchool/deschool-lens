@@ -75,7 +75,11 @@ const BusinessCard = () => {
       </div>
       <div className='absolute z--1'>
         <div className='business-card w-327px min-w-327px h-fit bg-gradient-to-b fcs-center from-#6525FF to-#9163FEdd text-white'>
-          <img crossOrigin={user?.avatar?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"} src={user?.avatar} alt={user?.displayName} className="w-300px h-300px rounded-lg m-auto mt-14px" />
+          <img
+            crossOrigin={user?.avatar?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"}
+            src={user?.avatar?.replace('https://deschool.s3.amazonaws.com/', `${location.origin}/awsResource/`)}
+            alt={user?.displayName}
+            className="w-300px h-300px rounded-lg m-auto mt-14px" />
           <div className='px-16px my-4 w-full frc-between'>
             {/* eslint-disable-next-line no-nested-ternary */}
             <span className='font-Anton text-24px break-all'>{user?.displayName === user?.address ? getShortAddress(user?.address) : (user?.displayName && user?.displayName.length > 15 ? getShortAddress(user?.displayName) : user?.displayName)}</span>

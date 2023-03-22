@@ -144,7 +144,9 @@ const DeschoolCard = (props: DeschoolCardProps) => {
     < >
       <div className='h-100% mx-auto mb-4 rounded-1 w-full min-w-327px bg-gradient-to-b from-#6525FF to-#9163FE text-white'>
         <div className='relative w-full mb-16px'>
-          <img crossOrigin={currentUser?.avatar?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"} src={currentUser?.avatar} alt={currentUser?.displayName} className="w-full aspect-[1/1]" />
+          <img crossOrigin={currentUser?.avatar?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"}
+          src={currentUser?.avatar}
+          alt={currentUser?.displayName} className="w-full aspect-[1/1]" />
           <div className='absolute left-0 bottom-0 right-0 z-1 w-full h-48px frc-center gap-4 bg-#18181826 backdrop-blur-sm'>
             {contacts?.map((item, index) => (
               <>
@@ -175,10 +177,10 @@ const DeschoolCard = (props: DeschoolCardProps) => {
           <div className='flex-1'>
             <div className='text-18px font-ArchivoNarrow-Medium mb-2'>{role}</div>
             <div className='frc-start'>
-              <img crossOrigin={project?.icon?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"}
+              {project?.icon && <img crossOrigin={project?.icon?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"}
                 src={project?.icon}
                 alt="project icon"
-                className='w-24px h-24px rounded-full mr-2' />
+                className='w-24px h-24px rounded-full mr-2' />}
               <div className='font-ArchivoNarrow-Semibold'>{project?.name}</div>
             </div>
           </div>
