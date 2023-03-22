@@ -7,6 +7,7 @@ import { useNavigate, NavLink } from 'react-router-dom';
 import Empty from 'antd/es/empty';
 import RecommnadEventMatch from './componnets/RecommnadEventMatch';
 import RecommandEventCard from './componnets/RecommandEventCard';
+import { route } from '~/utils/route';
 
 const LearnTogether = () => {
   const { t } = useTranslation()
@@ -44,7 +45,7 @@ const LearnTogether = () => {
         </div>
         <p className="text-#666">To view your customized events recommendation, please complete your profile setup in Match</p>
         <div className="text-center mt-10">
-          <Button type='primary' onClick={() => navigate('/profile/match')}>go to match</Button>
+          <Button type='primary' onClick={(e) => route('/profile/match', navigate, e)}>go to match</Button>
         </div>
       </div>}
       {/* 加载更多的过渡 */}

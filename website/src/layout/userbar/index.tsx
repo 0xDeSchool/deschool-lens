@@ -15,6 +15,7 @@ import SwitchLanguage from './SwitchLanguage'
 import WalletConnectBoard from './WalletConnectBoard'
 import { isMobile } from '~/utils/ua'
 import Modal from 'antd/es/modal/Modal'
+import { route } from '~/utils/route'
 
 const UserBar = () => {
   const { t } = useTranslation()
@@ -82,21 +83,21 @@ const UserBar = () => {
   }
 
   // 跳转到首页
-  const handleLanding = () => {
+  const handleLanding = (e: any) => {
     if (mobile) {
       setOpen(true)
       return
     }
-    navigate('/landing')
+    route('/landing', navigate, e)
   }
 
   // 路由导航
-  const handleNavClick = (path: string) => {
+  const handleNavClick = (path: string, event: any) => {
     if (mobile) {
       setOpen(true)
       return
     }
-    navigate(path)
+    route(path, navigate, event)
   }
 
   return (
@@ -140,7 +141,7 @@ const UserBar = () => {
                       className={`cursor-pointer text-xl text-black font-ArchivoNarrow mt-4 ${
                         activeNav === nav.path ? 'nav-button-active text-#774FF8' : 'nav-button-normal border-white text-#181818D9'
                       }`}
-                      onClick={() => handleNavClick(nav.path)}
+                      onClick={(e) => handleNavClick(nav.path, e)}
                     >
                       {nav.name}
                     </span>
@@ -149,7 +150,7 @@ const UserBar = () => {
                     className={`cursor-pointer uppercase text-xl font-ArchivoNarrow mt-4 ${
                       activeNav === '/profile/resume' ? 'nav-button-active text-#774FF8' : 'nav-button-normal border-white text-#181818D9'
                     }`}
-                    onClick={() => navigate('/profile/resume')}
+                    onClick={(e) => handleNavClick('/profile/resume', e)}
                   >
                     {t('profile.resume')}
                   </span>
@@ -167,7 +168,7 @@ const UserBar = () => {
                   className={`cursor-pointer text-xl font-ArchivoNarrow ${
                     activeNav === nav.path ? 'nav-button-active text-#774FF8' : 'nav-button-normal border-white text-#181818D9'
                   }`}
-                  onClick={() => navigate(nav.path)}
+                  onClick={(e) => handleNavClick(nav.path, e)}
                 >
                   {nav.name}
                 </div>
@@ -177,7 +178,7 @@ const UserBar = () => {
               className={`cursor-pointer uppercase text-xl font-ArchivoNarrow ${
                 activeNav === '/profile/resume' ? 'nav-button-active text-#774FF8' : 'nav-button-normal border-white text-#181818D9'
               }`}
-              onClick={() => navigate('/profile/resume')}
+              onClick={(e) => handleNavClick('/profile/resume', e)}
             >
               {t('profile.resume')}
             </span>

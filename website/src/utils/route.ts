@@ -1,4 +1,5 @@
 import { createBrowserHistory } from 'history'
+import { NavigateFunction } from 'react-router'
 
 const history = createBrowserHistory()
 /**
@@ -17,6 +18,17 @@ const routeJump = (route: string, e?: React.MouseEvent<HTMLElement> | undefined,
     history.push(route)
     history.go(0)
   }
+}
+
+export const route = (route: string, navigate?: NavigateFunction, event?: any) => {
+  if (navigate && event) {
+    // 检测ctrl键或command键是否被按下
+    if (event.ctrlKey || event.metaKey) {
+      window.open(route)
+    }
+    navigate(route)
+  }
+  return route
 }
 
 /**
