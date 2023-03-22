@@ -84,8 +84,12 @@ const BusinessCard = () => {
             {/* eslint-disable-next-line no-nested-ternary */}
             <span className='font-Anton text-24px break-all'>{user?.displayName === user?.address ? getShortAddress(user?.address) : (user?.displayName && user?.displayName.length > 15 ? getShortAddress(user?.displayName) : user?.displayName)}</span>
             <div className='inline-flex frc-start text-16px'>
-              <img crossOrigin={project?.icon?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"} src={project?.icon} alt="project icon" className='w-24px h-24px rounded-full mr-2' />
-              <span className='font-ArchivoNarrow'>{project?.name}</span>
+              <img
+                crossOrigin={project?.icon?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"}
+                src={project?.icon?.replace('https://deschool.s3.amazonaws.com/', `${location.origin}/awsResource/`)}
+                alt="project icon"
+                className='w-24px h-24px rounded-full mr-2 mt-10px' />
+              <span className='font-ArchivoNarrow '>{project?.name}</span>
             </div>
           </div>
           <div className='flex-1 frc-between w-full px-16px mb-2'>
