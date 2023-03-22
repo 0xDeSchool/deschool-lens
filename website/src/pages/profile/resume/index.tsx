@@ -26,6 +26,7 @@ import { randomConfetti } from './utils/confetti'
 import type { VisitType } from '../utils/visitCase';
 import { getVisitCase } from '../utils/visitCase'
 import Congradulations from './components/congradulations'
+import { isMobile } from '~/utils/ua'
 
 type PublishType = 'CyberConnect' | 'Lens'
 
@@ -54,6 +55,7 @@ const Resume = () => {
   const [loadingCyber, setLoadingCyber] = useState(false)
   const [visitCase, setVisitCase] = useState<VisitType>(-1) // 0-自己访问自己 1-自己访问别人 -1-没登录访问自己
   const ccInstance = useCyberConnect()
+  const mobile = isMobile()
 
   // 组装简历数据，添加id，转换时间格式
   const convertResumeCardData = (input: ResumeCardData[]) => input.map((item: ResumeCardData, index: number) => ({
@@ -418,7 +420,7 @@ const Resume = () => {
           </span>
         </div>
         {/* mobile not allow edit */}
-        <div className={"flex"}>
+        <div className={mobile ? 'hidden' : 'flex'}>
           {visitCase === 0 && !isEditResume && (
             <>
               {user?.lensProfile() && <Button
