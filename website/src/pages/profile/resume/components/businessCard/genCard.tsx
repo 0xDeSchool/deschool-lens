@@ -113,7 +113,7 @@ const BusinessCard = () => {
                 size={120}
                 color="#333333"
                 bordered={false}
-                value={`${location.origin}/profile/${user?.address}/resume/${user?.id}`}
+                value={`${location.origin}/resume/${user?.address}`}
                 style={{ border: 'none', borderRadius: '4px', padding: 0, margin: 0 }}
               />
             </div>
