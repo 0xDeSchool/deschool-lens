@@ -3,8 +3,7 @@ import { useEffect, useState } from 'react'
 import message from 'antd/es/message'
 import Skeleton from 'antd/es/skeleton'
 import { useTranslation } from 'react-i18next'
-import type { FollowRelationType } from '~/api/booth/follow';
-import { followUser, unfollowUser, checkfollowUser } from '~/api/booth/follow'
+import { followUser, unfollowUser } from '~/api/booth/follow'
 import Button from 'antd/es/button';
 import QRCode from 'antd/es/qrcode';
 import CopyToClipboard from 'react-copy-to-clipboard';
