@@ -87,6 +87,7 @@ export interface UserInfo {
   bio?: string
   platforms?: UserPlatform[]
   contacts?: Contact[]
+  isFollowedByMe?: boolean
 }
 
 // 新用户信息

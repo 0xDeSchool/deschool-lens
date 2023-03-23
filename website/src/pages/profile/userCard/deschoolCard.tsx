@@ -1,12 +1,10 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import message from 'antd/es/message'
 import Skeleton from 'antd/es/skeleton'
 import { useTranslation } from 'react-i18next'
 import type { FollowRelationType } from '~/api/booth/follow';
 import { followUser, unfollowUser, checkfollowUser } from '~/api/booth/follow'
-import type { UserInfo } from '~/api/booth/types';
-import { getUserInfo } from '~/api/booth';
 import Button from 'antd/es/button';
 import QRCode from 'antd/es/qrcode';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -27,76 +25,26 @@ type DeschoolCardProps = {
 // 0-自己访问自己 1-自己访问别人
 const DeschoolCard = (props: DeschoolCardProps) => {
   const { visitCase, routeAddress } = props
-  const [loading, setLoading] = useState(false)
   const [modal, setModal] = useState<{ type: 'followers' | 'following'; visible: boolean }>({ type: 'followers', visible: false })
-  const [currentUser, setCurrentUser] = useState<UserInfo | null>(null)
-  const [isFollowedByMe, setIsFollowedByMe] = useState<boolean>(false)
   const [updateTrigger, setUpdateTrigger] = useState(0)
+  const [isFollowLoading, setIsFollowLoading] = useState(false)
   const { t } = useTranslation()
-  const user = useAccount()
-  const { project, role, followings, followers } = useProfileResume()
-
-  const contacts = useMemo(() => currentUser?.contacts?.filter((item) => item.name) || [], [currentUser])
-
+  const account = useAccount()
+  const { loading, project, role, followings, followers, user, refreshUserInfo } = useProfileResume()
   // 根据不同情况初始化用户信息
-  const initUserInfo = async () => {
-    setLoading(true)
-    try {
-      switch (visitCase) {
-        // 访问自己的空间
-        case 0:
-          if (user) {
-            setCurrentUser(user)
-          }
-          break
-        // 访问他人的空间
-        case 1: {
-          const userInfo = await getUserInfo(routeAddress) // 此case下必不为空
-          if (userInfo) {
-            setCurrentUser({
-              id: userInfo.id,
-              address: userInfo.address,
-              avatar: userInfo.avatar,
-              bio: userInfo.bio,
-              displayName: userInfo.displayName,
-            })
-
-            // 我登录了
-            if (user) {
-              const isFollowed: FollowRelationType | any = await checkfollowUser(userInfo.id, user.id)
-              setIsFollowedByMe(isFollowed.fromFollowedTo || false) // 我A(from)=>他人B(to)
-            }
-            // 没登录
-            else {
-              setIsFollowedByMe(false)
-            }
-          }
-
-          break
-        }
-        default:
-          setIsFollowedByMe(false)
-          setCurrentUser(null)
-          break
-      }
-    } finally {
-      setLoading(false)
-    }
-  }
 
   useEffect(() => {
     setModal({ type: 'followers', visible: false })
   }, [routeAddress])
 
   useEffect(() => {
-    initUserInfo()
     if (updateTrigger > 0) {
       setModal({
         type: 'followers',
         visible: false,
       })
     }
-  }, [updateTrigger, visitCase, user])
+  }, [updateTrigger, visitCase, account])
 
   const handleJumpFollowers = (num: number | undefined) => {
     if (num && num > 0) {
@@ -123,15 +71,21 @@ const DeschoolCard = (props: DeschoolCardProps) => {
   }
 
   const handleFollow = async () => {
-    await followUser(currentUser?.id!, user?.id!)
-    message.success(`success following ${currentUser?.address}`)
+    setIsFollowLoading(true)
+    await followUser(user?.id!, account?.id!)
+    message.success(`success following ${user?.address}`)
     setUpdateTrigger(new Date().getTime())
+    setIsFollowLoading(false)
+    refreshUserInfo()
   }
 
   const handleUnFollow = async () => {
-    await unfollowUser(currentUser?.id!, user?.id!)
-    message.success(`success unfollow ${currentUser?.address}`)
+    setIsFollowLoading(true)
+    await unfollowUser(user?.id!, account?.id!)
+    message.success(`success unfollow ${user?.address}`)
     setUpdateTrigger(new Date().getTime())
+    setIsFollowLoading(false)
+    refreshUserInfo()
   }
 
   if (loading) {
@@ -141,17 +95,17 @@ const DeschoolCard = (props: DeschoolCardProps) => {
   }
 
   return (
-    < >
+    <>
       <div className='h-100% mx-auto mb-4 rounded-1 w-full min-w-327px bg-gradient-to-b from-#6525FF to-#9163FE text-white'>
         <div className='relative w-full mb-16px'>
           <img
-            crossOrigin={currentUser?.avatar?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"}
-            src={currentUser?.avatar}
-            alt={currentUser?.displayName}
+            crossOrigin={user?.avatar?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"}
+            src={user?.avatar}
+            alt={user?.displayName}
             className="w-full aspect-[1/1] rounded-t-1" />
-          <div className='absolute left-0 bottom-0 right-0 z-1 w-full h-48px frc-center gap-4 bg-#18181826 backdrop-blur-sm'>
-            {contacts?.map((item, index) => (
-              <>
+          <div className='absolute left-0 bottom-0 right-0 z-1 w-full frc-center gap-4 h-48px bg-#18181826 backdrop-blur-sm'>
+            {user?.contacts?.map((item, index) => (
+              <div key={item.contactType} className="frc-center gap-4 ">
                 <CopyToClipboard
                   text={item.name}
                   onCopy={() => {
@@ -166,14 +120,14 @@ const DeschoolCard = (props: DeschoolCardProps) => {
                     {/* <span className='ml-2 text-14px'>@{item.name}</span> */}
                   </div>
                 </CopyToClipboard>
-                {index < contacts.length - 1 && <div className='w-1px h-13px bg-#FFFFFF73' />}
-              </>
+                {index + 1 < (user?.contacts?.length || 0) && <div className='w-1px h-13px bg-#FFFFFF73' />}
+              </div>
             ))}
           </div>
         </div>
         <div className='text-28px font-Anton px-12px mb-4'>
           {/* eslint-disable-next-line no-nested-ternary */}
-          {currentUser?.displayName === currentUser?.address ? getShortAddress(currentUser?.address) : (currentUser?.displayName && currentUser?.displayName.length > 15 ? getShortAddress(currentUser?.displayName) : currentUser?.displayName)}
+          {user?.displayName === user?.address ? getShortAddress(user?.address) : (user?.displayName && user?.displayName.length > 15 ? getShortAddress(user?.displayName) : user?.displayName)}
         </div>
         <div className='flex-1 frc-between w-full px-12px mb-34px'>
           <div className='flex-1'>
@@ -220,17 +174,18 @@ const DeschoolCard = (props: DeschoolCardProps) => {
           <div className="p-10 text-right">
             <Button
               className="purple-border-button px-2 py-1 font-ArchivoNarrow text-white"
-              disabled={!user || routeAddress === user?.address}
+              disabled={!account || routeAddress === account?.address}
               style={{ color: '#fff', borderColor: '#fff' }}
+              loading={isFollowLoading}
               onClick={() => {
-                if (isFollowedByMe && currentUser) {
+                if (user?.isFollowedByMe) {
                   handleUnFollow()
-                } else if (currentUser) {
+                } else if (user) {
                   handleFollow()
                 }
               }}
             >
-              {isFollowedByMe ? t('UnFollow') : t('Follow')}
+              {user?.isFollowedByMe ? t('UnFollow') : t('Follow')}
             </Button>
           </div>
         )}

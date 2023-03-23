@@ -7,11 +7,13 @@ import { useParams } from 'react-router'
 import { useAccount } from '~/account'
 import { getLatestUsers, getUserInfo } from '~/api/booth'
 import { getResume } from '~/api/booth/booth'
+import { checkfollowUser, FollowRelationType } from '~/api/booth/follow'
 import { ResumeProject, UserInfo } from '~/api/booth/types'
 import { ResumeCardData, ResumeData } from '~/pages/profile/resume/types'
 import { getShortAddress } from '~/utils/format'
 
 type ProfileContextProps = {
+  loading: boolean
   user: UserInfo | null
   followers: number
   followings: number
@@ -19,15 +21,11 @@ type ProfileContextProps = {
   role: string | null
   resumeData: any
   fetchUserResume: (resumeAddress: string) => void
-  // setUser: Dispatch<SetStateAction<UserInfo | null>>
-  // setFollowers: Dispatch<SetStateAction<number>>
-  // setFollowings: Dispatch<SetStateAction<number>>
-  // setProject: Dispatch<SetStateAction<ResumeProject | null>>
-  // setRole: Dispatch<SetStateAction<string | null>>
-  // setResumeData: Dispatch<SetStateAction<any>>
+  refreshUserInfo: () => void
 }
 
 export const ProfileContext = createContext<ProfileContextProps>({
+  loading: true,
   user: null,
   followers: 0,
   followings: 0,
@@ -35,15 +33,11 @@ export const ProfileContext = createContext<ProfileContextProps>({
   role: null,
   resumeData: null,
   fetchUserResume: () => {},
-  // setUser: () => {},
-  // setFollowers: () => {},
-  // setFollowings: () => {},
-  // setProject: () => {},
-  // setRole: () => {},
-  // setResumeData: () => {},
+  refreshUserInfo: () => {},
 })
 
 export const ProfileContextProvider = ({ children }: { children: ReactElement }) => {
+  const [loading, setLoading] = useState<boolean>(true)
   const [user, setUser] = useState<UserInfo | null>(null)
   const [followers, setFollowers] = useState<number>(0)
   const [followings, setFollowings] = useState<number>(0)
@@ -53,14 +47,29 @@ export const ProfileContextProvider = ({ children }: { children: ReactElement })
   const { address } = useParams()
   const account = useAccount()
 
-  const fetchUserInfoByAddress = async (resumeAddress: string) => {
-    const result = await getUserInfo(resumeAddress)
-    if (result?.displayName === resumeAddress) {
-      result.displayName = getShortAddress(resumeAddress)
+  // 检查是否关注
+  const checkfollowRelationship = async (userId: string): Promise<boolean> => {
+    // 如果是自己，不需要检查
+    if (userId === account?.id) {
+      return false
     }
-    setUser(result)
-    if (result?.id) {
-      fetchFollowInfo(result.id)
+    if (account?.id && userId) {
+      const isFollowed: FollowRelationType | any = await checkfollowUser(userId, account?.id)
+      return isFollowed.fromFollowedTo || false
+    }
+    return false
+  }
+
+  const fetchUserInfoByAddress = async (resumeAddress: string) => {
+    const resUserInfo = await getUserInfo(resumeAddress)
+    if (resUserInfo?.displayName === resumeAddress) {
+      resUserInfo.displayName = getShortAddress(resumeAddress)
+    }
+    const isFollowedByMe = await checkfollowRelationship(resUserInfo.id)
+    resUserInfo.isFollowedByMe = isFollowedByMe
+    setUser(resUserInfo)
+    if (resUserInfo?.id) {
+      fetchFollowInfo(resUserInfo.id)
     }
   }
 
@@ -126,23 +135,38 @@ export const ProfileContextProvider = ({ children }: { children: ReactElement })
 
   const initData = () => {
     const currentAddress = address || account?.address
+    try {
+      setLoading(true)
+      if (currentAddress) {
+        fetchUserResume(currentAddress)
+        fetchUserInfoByAddress(currentAddress)
+      }
+    } catch (error) {
+
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const refreshUserInfo = () => {
+    const currentAddress = address || account?.address
     if (currentAddress) {
-      console.log('currentAddress', currentAddress)
       fetchUserInfoByAddress(currentAddress)
-      fetchUserResume(currentAddress)
     }
   }
 
   const profileMemo = useMemo(() => {
     return {
+      loading,
       user,
       followers,
       followings,
       project,
       role,
       resumeData,
+      refreshUserInfo,
     }
-  }, [user, followers, followings, project, role, resumeData])
+  }, [loading, user, followers, followings, project, role, resumeData])
 
   const providerValue = {
     ...profileMemo,
