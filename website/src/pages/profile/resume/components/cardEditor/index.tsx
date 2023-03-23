@@ -123,7 +123,6 @@ const CardEditor = (input: CardEditorInput) => {
   };
 
   const onSubmit = async () => {
-    console.log('onSubmit', form.getFieldsValue())
     const valid = await checkValidateFields()
     if (!valid) {
       return
@@ -203,7 +202,7 @@ const CardEditor = (input: CardEditorInput) => {
             return dayjs(form.getFieldValue('etime')).isBefore(current)}
           }/>
         </Form.Item>
-        <Form.Item hidden={presentValue} label="End Time" name="etime" rules={[{ required: true, message: 'Please select end time!' }]}>
+        <Form.Item hidden={presentValue} label="End Time" name="etime" rules={[{ required: form.getFieldValue('isPresent') ? false : true, message: 'Please select end time!' }]}>
           <DatePicker
             picker="month"
             // 开始时间不能大于结束时间

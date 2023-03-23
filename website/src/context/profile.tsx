@@ -19,8 +19,9 @@ type ProfileContextProps = {
   followings: number
   project: ResumeProject | null
   role: string | null
+  loadingResume: boolean
   resumeData: any
-  fetchUserResume: (resumeAddress: string) => void
+  refreshUserResume: (resumeAddress: string) => void
   refreshUserInfo: () => void
 }
 
@@ -32,8 +33,9 @@ export const ProfileContext = createContext<ProfileContextProps>({
   project: null,
   role: null,
   resumeData: null,
-  fetchUserResume: () => {},
+  loadingResume: true,
   refreshUserInfo: () => {},
+  refreshUserResume: () => {},
 })
 
 export const ProfileContextProvider = ({ children }: { children: ReactElement }) => {
@@ -119,19 +121,26 @@ export const ProfileContextProvider = ({ children }: { children: ReactElement })
     }
   }
 
-  // 获取当前用户的简历
-  const fetchUserResume = async (resumeAddress: string) => {
+  const refreshUserResume = async (resumeAddress: string) => {
     if (!resumeAddress) {
       return message.error("fetchUserResume Error: resumeAddress can't be null")
     }
+    const result = await getResume(resumeAddress)
+    if (result?.data) {
+      const resumeObj = covertCareerAndEdu(result.data)
+      setResumeData(resumeObj)
+      fetchUserLatestCareer(resumeObj)
+    }
+  }
+
+  // 获取当前用户的简历
+  const fetchUserResume = async (resumeAddress: string) => {
     try {
-      setLoadingResume(true)
-      const result = await getResume(resumeAddress)
-      if (result?.data) {
-        const resumeObj = covertCareerAndEdu(result.data)
-        setResumeData(resumeObj)
-        fetchUserLatestCareer(resumeObj)
+      if (loadingResume) {
+        return
       }
+      setLoadingResume(true)
+      refreshUserResume(resumeAddress)
     } catch (error) {
       console.log(error)
     } finally {
@@ -142,6 +151,9 @@ export const ProfileContextProvider = ({ children }: { children: ReactElement })
   const initData = () => {
     const currentAddress = address || account?.address
     try {
+      if (loading) {
+        return
+      }
       setLoading(true)
       if (currentAddress) {
         fetchUserResume(currentAddress)
@@ -169,14 +181,15 @@ export const ProfileContextProvider = ({ children }: { children: ReactElement })
       followings,
       project,
       role,
+      loadingResume,
       resumeData,
-      refreshUserInfo,
     }
-  }, [loading, user, followers, followings, project, role, resumeData])
+  }, [loading, user, followers, followings, project, role, loadingResume, resumeData])
 
   const providerValue = {
     ...profileMemo,
-    fetchUserResume,
+    refreshUserInfo,
+    refreshUserResume,
   }
 
   useEffect(() => {
