@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import message from 'antd/es/message'
 import Skeleton from 'antd/es/skeleton'
@@ -31,6 +31,10 @@ const DeschoolCard = (props: DeschoolCardProps) => {
   const account = useAccount()
   const { loading, project, role, followings, followers, user, refreshUserInfo } = useProfileResume()
   // 根据不同情况初始化用户信息
+
+  const contacts = useMemo(() => {
+    return user?.contacts?.filter((item) => !!item.url) || []
+  }, [user?.contacts])
 
   useEffect(() => {
     setModal({ type: 'followers', visible: false })
@@ -103,15 +107,15 @@ const DeschoolCard = (props: DeschoolCardProps) => {
             alt={user?.displayName}
             className="w-full aspect-[1/1] rounded-t-1" />
           <div className='absolute left-0 bottom-0 right-0 z-1 w-full frc-center gap-4 h-48px bg-#18181826 backdrop-blur-sm'>
-            {user?.contacts?.map((item, index) => (
+            {contacts?.map((item, index) => (
               <div key={item.contactType} className="frc-center gap-4 ">
                 <CopyToClipboard
-                  text={item.name}
+                  text={item.url!}
                   onCopy={() => {
                     message.success('Copied')
                   }}
                 >
-                  <div key={item.contactType + item.name} className="frc-center cursor-pointer">
+                  <div className="frc-center cursor-pointer">
                     {item.contactType === 'Discord' && <DiscordIcon style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
                     {item.contactType === 'Twitter' && <TwitterOutlined style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
                     {item.contactType === 'Wechat' && <WechatOutlined style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
@@ -119,7 +123,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
                     {/* <span className='ml-2 text-14px'>@{item.name}</span> */}
                   </div>
                 </CopyToClipboard>
-                {index + 1 < (user?.contacts?.length || 0) && <div className='w-1px h-13px bg-#FFFFFF73' />}
+                {index + 1 < (contacts?.length || 0) && <div className='w-1px h-13px bg-#FFFFFF73' />}
               </div>
             ))}
           </div>

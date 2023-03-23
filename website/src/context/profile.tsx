@@ -43,6 +43,7 @@ export const ProfileContextProvider = ({ children }: { children: ReactElement })
   const [followings, setFollowings] = useState<number>(0)
   const [project, setProject] = useState<ResumeProject | null>(null)
   const [role, setRole] = useState<string | null>(null)
+  const [loadingResume, setLoadingResume] = useState<boolean>(true)
   const [resumeData, setResumeData] = useState<any>(null)
   const { address } = useParams()
   const account = useAccount()
@@ -123,14 +124,19 @@ export const ProfileContextProvider = ({ children }: { children: ReactElement })
     if (!resumeAddress) {
       return message.error("fetchUserResume Error: resumeAddress can't be null")
     }
-    const result = await getResume(resumeAddress)
-
-    if (result?.data) {
-      const resumeObj = covertCareerAndEdu(result.data)
-      setResumeData(resumeObj)
-      fetchUserLatestCareer(resumeObj)
+    try {
+      setLoadingResume(true)
+      const result = await getResume(resumeAddress)
+      if (result?.data) {
+        const resumeObj = covertCareerAndEdu(result.data)
+        setResumeData(resumeObj)
+        fetchUserLatestCareer(resumeObj)
+      }
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setLoadingResume(false)
     }
-    // setLoading(false)
   }
 
   const initData = () => {
