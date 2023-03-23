@@ -166,10 +166,6 @@ label [type='checkbox']:focus,
 }
 /*********** radio ***********/
 
-.share-card-modal .ant-modal .ant-modal-content {
-  padding: 0;
-}
-
 .one-line-wrap {
   display: -webkit-box;
   -webkit-box-orient: vertical;

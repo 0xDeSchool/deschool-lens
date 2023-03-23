@@ -11,6 +11,7 @@ import ShowMoreLoading from '~/components/loading/showMore';
 import { getShortAddress } from '~/utils/format';
 import { useProfileResume } from '~/context/profile';
 import { download } from '~/utils';
+import './genCard.css'
 
 const BusinessCard = () => {
   const [open, setOpen] = useState(false)
