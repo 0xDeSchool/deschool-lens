@@ -86,7 +86,6 @@ function registerError() {
       user: {
         address: user?.address || '--',
         id: user?.id || '--',
-        name: user?.displayName || '--',
       },
     })
   })

@@ -3,7 +3,7 @@ import http from '~/api/go/http'
 export interface ErrorLog {
   appName: string
   executionTime: string
-  extra: string
+  extra: string // 附加信息, 任何信息可以
   level: number
   message: string
   stackTrace: string
@@ -11,7 +11,7 @@ export interface ErrorLog {
   user: {
     address: string
     id: string
-    name: string
+    name?: string
   }
 }
 
