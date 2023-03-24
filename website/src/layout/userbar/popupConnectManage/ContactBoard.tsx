@@ -29,7 +29,6 @@ const ContactBoard: React.FC = () => {
   const [contacts, setContacts] = useState<Contact[]>([])
 
   useEffect(() => {
-    console.log('contuseracts', user)
     if (user && user.contacts) {
       setContacts(user.contacts)
     } else {
