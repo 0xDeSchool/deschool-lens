@@ -39,13 +39,13 @@ export const ProfileContext = createContext<ProfileContextProps>({
 })
 
 export const ProfileContextProvider = ({ children }: { children: ReactElement }) => {
-  const [loading, setLoading] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(false)
   const [user, setUser] = useState<UserInfo | null>(null)
   const [followers, setFollowers] = useState<number>(0)
   const [followings, setFollowings] = useState<number>(0)
   const [project, setProject] = useState<ResumeProject | null>(null)
   const [role, setRole] = useState<string | null>(null)
-  const [loadingResume, setLoadingResume] = useState<boolean>(true)
+  const [loadingResume, setLoadingResume] = useState<boolean>(false)
   const [resumeData, setResumeData] = useState<any>(null)
   const { address } = useParams()
   const account = useAccount()
@@ -151,16 +151,13 @@ export const ProfileContextProvider = ({ children }: { children: ReactElement })
   const initData = () => {
     const currentAddress = address || account?.address
     try {
-      if (loading) {
-        return
-      }
       setLoading(true)
       if (currentAddress) {
         fetchUserResume(currentAddress)
         fetchUserInfoByAddress(currentAddress)
       }
     } catch (error) {
-
+      console.log(error)
     } finally {
       setLoading(false)
     }
