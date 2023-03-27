@@ -104,7 +104,7 @@ const ContactBoard: React.FC = () => {
           icon={<EditOutlined />}
           size='small'
           loading={loading}
-          disabled={loading}
+          disabled={loading || !user?.address}
           className="ml-12 mr-2 frc-center"
           onClick={() => handleToggle()}>{edit ? 'SAVE' : 'EDIT'}</Button>
         {edit && <Button size='small' disabled={!user?.address}
