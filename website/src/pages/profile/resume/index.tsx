@@ -1,5 +1,5 @@
 import Divider from 'antd/es/divider'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Button from 'antd/es/button'
 import message from 'antd/es/message'
 import Modal from 'antd/es/modal'
@@ -8,7 +8,7 @@ import CopyToClipboard from 'react-copy-to-clipboard'
 import { v4 as uuid } from 'uuid'
 import ReactLoading from 'react-loading'
 import { useParams, useSearchParams } from 'react-router-dom'
-import { getIdSbt, getResume, putResume } from '~/api/booth/booth'
+import { getIdSbt, putResume } from '~/api/booth/booth'
 import { createPost, pollAndIndexPost } from '~/api/lens/publication/post'
 import { getShortAddress } from '~/utils/format'
 import useCyberConnect from '~/hooks/useCyberConnect'
@@ -26,12 +26,14 @@ import { randomConfetti } from './utils/confetti'
 import type { VisitType } from '../utils/visitCase';
 import { getVisitCase } from '../utils/visitCase'
 import Congradulations from './components/congradulations'
+import { isMobile } from '~/utils/ua'
+import { useProfileResume } from '~/context/profile'
 import { getUserSBTs } from '~/api/go/account'
 
 type PublishType = 'CyberConnect' | 'Lens'
 
 const Resume = () => {
-  const { address } = useParams()
+  const { address } = useParams() // userId，如果有 userId，说明是来自名片的访问
   const [query] = useSearchParams()
   const user = useAccount()
   const lensProfile = user?.lensProfile()
@@ -40,11 +42,9 @@ const Resume = () => {
   const [isEditResume, setIsEditResume] = useState(false)
   const [isCreateCard, setIsCreateCard] = useState(false)
   const [isEditCard, setIsEditCard] = useState(false)
-  const [resumeData, setResumeData] = useState<ResumeData>()
+  const [resumeLocalData, setResumeLocalData] = useState<ResumeData>()
   const [cardData, setCardData] = useState<ResumeCardData | undefined>()
-  const [loading, setLoading] = useState(true)
   const [putting, setPutting] = useState(false)
-  const [prevData, setPrev] = useState<ResumeData | undefined>()
   const [sbtList, setSbtList] = useState<SbtInfo[]>([])
   const [congratulateVisible, setCongratulateVisible] = useState<boolean>(false)
   const [step, setStep] = useState<1 | 2>(1)
@@ -55,6 +55,12 @@ const Resume = () => {
   const [loadingCyber, setLoadingCyber] = useState(false)
   const [visitCase, setVisitCase] = useState<VisitType>(-1) // 0-自己访问自己 1-自己访问别人 -1-没登录访问自己
   const ccInstance = useCyberConnect()
+  const mobile = isMobile()
+  const { resumeData, loadingResume, refreshUserResume } = useProfileResume()
+
+  const resumeDataMemo = useMemo(() => {
+    return isEditResume ? resumeLocalData : resumeData
+  }, [resumeData, resumeLocalData, isEditResume, loadingResume])
 
   // 组装简历数据，添加id，转换时间格式
   const convertResumeCardData = (input: ResumeCardData[]) => input.map((item: ResumeCardData, index: number) => ({
@@ -77,30 +83,9 @@ const Resume = () => {
     return obj
   }
 
-  // 提交用户简历
-
-  // 进入简历编辑 or 保存查看状态
-  const onClickEditResume = async () => {
-    if (isEditResume) {
-      if (user?.address) {
-        setPutting(true)
-        const dataStr = JSON.stringify(resumeData)
-        await putResume({ data: dataStr })
-        setPutting(false)
-      }
-    } else {
-      // 深拷贝 // no 浅拷贝
-      const prevStr = JSON.stringify(resumeData)
-      const prevObj = covertCareerAndEdu(prevStr)
-
-      setPrev(prevObj)
-    }
-    setIsEditResume(!isEditResume)
-  }
-
   // 取消编辑整个简历
   const handleCancelEditing = () => {
-    setResumeData(prevData)
+    setResumeLocalData(resumeData)
     setIsEditResume(!isEditResume)
   }
 
@@ -111,7 +96,7 @@ const Resume = () => {
     let newResumeData: ResumeData | undefined
     // 场景一：创造卡片
     if (isCreateCard) {
-      newResumeData = resumeData
+      newResumeData = resumeLocalData
       if (newResumeData === undefined) {
         newResumeData = { career: [], edu: [] }
       }
@@ -134,7 +119,7 @@ const Resume = () => {
     }
     // 场景二：编辑卡片
     else {
-      newResumeData = resumeData
+      newResumeData = resumeLocalData
       if (newResumeData === undefined) {
         return
       }
@@ -155,7 +140,7 @@ const Resume = () => {
         return
       }
     }
-    setResumeData(newResumeData)
+    setResumeLocalData(newResumeData)
 
     // CL同学学会了：
     // loading && <div> 这样是真实销毁
@@ -165,9 +150,12 @@ const Resume = () => {
     // 清空卡片信息
     const emptyCardData: ResumeCardData = {
       title: '',
+      project: null,
+      role: '',
       description: '',
       startTime: undefined,
       endTime: undefined,
+      isPresent: false,
       proofs: [],
       blockType: bt,
       id: newData.id,
@@ -191,24 +179,24 @@ const Resume = () => {
   // 删除经历 - 确认
   const handleDeleteCard = (bt: BlockType, id: string) => {
     const newResumeData: ResumeData = { edu: [], career: [] }
-    if (bt === BlockType.CareerBlockType && resumeData?.career !== undefined) {
-      newResumeData.career = resumeData?.career?.filter(item => item.id !== id)
-      newResumeData.edu = resumeData?.edu
-    } else if (bt === BlockType.EduBlockType && resumeData?.edu !== undefined) {
-      newResumeData.edu = resumeData?.edu?.filter(item => item.id !== id)
-      newResumeData.career = resumeData?.career
+    if (bt === BlockType.CareerBlockType && resumeLocalData?.career !== undefined) {
+      newResumeData.career = resumeLocalData?.career?.filter(item => item.id !== id)
+      newResumeData.edu = resumeLocalData?.edu
+    } else if (bt === BlockType.EduBlockType && resumeLocalData?.edu !== undefined) {
+      newResumeData.edu = resumeLocalData?.edu?.filter(item => item.id !== id)
+      newResumeData.career = resumeLocalData?.career
     }
-    setResumeData(newResumeData)
+    setResumeLocalData(newResumeData)
   }
 
   // 开始编辑卡片
   const handleEditCard = (bt: BlockType, id: string) => {
     let card: ResumeCardData | undefined
 
-    if (bt === BlockType.CareerBlockType && resumeData?.career !== undefined) {
-      card = resumeData?.career?.find(item => item.id === id)
-    } else if (bt === BlockType.EduBlockType && resumeData?.edu !== undefined) {
-      card = resumeData?.edu?.find(item => item.id === id)
+    if (bt === BlockType.CareerBlockType && resumeLocalData?.career !== undefined) {
+      card = resumeLocalData?.career?.find(item => item.id === id)
+    } else if (bt === BlockType.EduBlockType && resumeLocalData?.edu !== undefined) {
+      card = resumeLocalData?.edu?.find(item => item.id === id)
     }
     if (!card) {
       return
@@ -222,8 +210,11 @@ const Resume = () => {
     const emptyCardData: ResumeCardData = {
       title: '',
       description: '',
+      project: null,
+      role: '',
       startTime: undefined,
       endTime: undefined,
+      isPresent: false,
       proofs: contractAddress && tokenId ? [{
         address: contractAddress,
         tokenId, img: '',
@@ -238,25 +229,11 @@ const Resume = () => {
 
   // 排序
   const handleSortCard = (bt: BlockType, list: ResumeCardData[]) => {
-    if (bt === BlockType.CareerBlockType && resumeData?.career !== undefined) {
-      setResumeData({ career: list, edu: resumeData.edu })
-    } else if (bt === BlockType.EduBlockType && resumeData?.edu !== undefined) {
-      setResumeData({ career: resumeData.career, edu: list })
+    if (bt === BlockType.CareerBlockType && resumeLocalData?.career !== undefined) {
+      setResumeLocalData({ career: list, edu: resumeLocalData.edu })
+    } else if (bt === BlockType.EduBlockType && resumeLocalData?.edu !== undefined) {
+      setResumeLocalData({ career: resumeLocalData.career, edu: list })
     }
-  }
-
-  // 获取当前用户的简历
-  const fetchUserResume = async (resumeAddress: string) => {
-    if (!resumeAddress) {
-      return message.error("fetchUserResume Error: resumeAddress can't be null")
-    }
-    const result = await getResume(resumeAddress)
-
-    if (result?.data) {
-      const resumeObj = covertCareerAndEdu(result.data)
-      setResumeData(resumeObj)
-    }
-    setLoading(false)
   }
 
   // 获取当前用户的 SBT 列表
@@ -295,6 +272,25 @@ const Resume = () => {
     }
 
     setSbtList(sbtArr)
+  }
+
+  // 进入简历编辑 or 保存查看状态
+  const onClickEditResume = async () => {
+    if (isEditResume) {
+      if (user?.address) {
+        setPutting(true)
+        const dataStr = JSON.stringify(resumeLocalData)
+        await putResume({ data: dataStr })
+        setPutting(false)
+        refreshUserResume(user?.address)
+      }
+    } else {
+      // 深拷贝 // no 浅拷贝
+      const prevStr = JSON.stringify(resumeData)
+      const prevObj = covertCareerAndEdu(prevStr)
+      setResumeLocalData(prevObj)
+    }
+    setIsEditResume(!isEditResume)
   }
 
   // Lens 上发布个人简历
@@ -375,7 +371,7 @@ const Resume = () => {
       // 0访问自己的地址，1访问他人地址（从路由拿）
       currentAddress = primaryCase === 0 ? user?.address : address
       if (currentAddress) {
-        await fetchUserResume(currentAddress)
+        await refreshUserResume(currentAddress)
         await fetchUserSbtList(currentAddress)
       } else {
         message.warning(`handlePrimaryCase Warning: case:${primaryCase},currentAddress:${currentAddress} error`)
@@ -413,7 +409,7 @@ const Resume = () => {
   }, [query, user])
 
   return (
-    <div className="bg-white p-8">
+    <div className="p-8 bg-#FFFFFF" style={{ boxShadow: 'inset 0px 0px 20px rgba(119, 79, 248, 0.1)' }}>
       {/* 简历标题 + 编辑按钮 */}
       <div className="flex justify-between">
         <div className="text-2xl font-bold font-ArchivoNarrow">
@@ -422,7 +418,8 @@ const Resume = () => {
             OF <span className="ml-1 text-gray-5 font-ArchivoNarrow">{currentUser?.displayName || user?.displayName}</span>
           </span>
         </div>
-        <div className="flex">
+        {/* mobile not allow edit */}
+        <div className={mobile ? 'hidden' : 'flex'}>
           {visitCase === 0 && !isEditResume && (
             <>
               {user?.lensProfile() && <Button
@@ -461,7 +458,7 @@ const Resume = () => {
             </Button>
           )}
           {visitCase === 0 && <CopyToClipboard
-            text={`https://booth.ink/profile/${user?.address}/resume`}
+            text={`${location.origin}/profile/${user?.address}/resume/${user?.id}`}
             onCopy={() => {
               message.success('Copied')
             }}
@@ -476,13 +473,13 @@ const Resume = () => {
       </div>
       <Divider />
 
-      {visitCase !== -1 && loading && <ReactLoading type="bars" />}
-      {visitCase !== -1 && !loading && (
+      {visitCase !== -1 && loadingResume && <ReactLoading type="bars" />}
+      {visitCase !== -1 && !loadingResume && (
         <>
           {/* 职业板块数据 */}
           <ResumeBlock
             blockType={BlockType.CareerBlockType}
-            dataArr={resumeData?.career || []}
+            dataArr={resumeDataMemo?.career || []}
             handleEditCard={handleEditCard}
             handleDeleteCard={handleDeleteCard}
             handleCreateCard={handleCreateCard}
@@ -493,13 +490,15 @@ const Resume = () => {
           {/* 教育板块数据 */}
           <ResumeBlock
             blockType={BlockType.EduBlockType}
-            dataArr={resumeData?.edu || []}
+            dataArr={resumeDataMemo?.edu || []}
             handleEditCard={handleEditCard}
             handleDeleteCard={handleDeleteCard}
             handleCreateCard={handleCreateCard}
             handleSortCard={handleSortCard}
             isEditResume={isEditResume}
           />
+
+          <div className='frc-center font-ArchivoNarrow-Medium text-16px text-#18181865 mt-16px'>Supported by <a href='https://deschool.app/' target="_blank" className='ml-4px text-#6525FF'>DeSchool</a></div>
 
           {/* 一段经历编辑器 */}
           <CardEditor

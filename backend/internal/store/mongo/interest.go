@@ -2,7 +2,7 @@ package mongo
 
 import (
 	"context"
-	"github.com/0xdeschool/deschool-lens/backend/internal/interest"
+	"github.com/0xdeschool/deschool-lens/backend/internal/modules/interest"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/errx"
 	"go.mongodb.org/mongo-driver/bson"

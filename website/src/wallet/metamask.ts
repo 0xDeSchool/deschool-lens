@@ -7,7 +7,7 @@ import type { ethers } from 'ethers'
 import type { ProviderRpcError } from '~/auth'
 import { onAccountchanged, onChainChange, onDisconnect } from '~/auth'
 import type { TransactionMessage, WalletConfig, WalletProvider } from './wallet'
-
+import { isMobile } from '~/utils/ua'
 const toHex = (num: number) => `0x${num.toString(16)}`
 
 export class MetaMaskProvider implements WalletProvider {
@@ -19,7 +19,7 @@ export class MetaMaskProvider implements WalletProvider {
 
   constructor(config: WalletConfig) {
     this.config = config
-    if (!window.ethereum) {
+    if (!window.ethereum && !isMobile()) {
       message.error('not Install MetaMask')
     }
     const p = checkProvider()

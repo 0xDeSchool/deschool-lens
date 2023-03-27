@@ -1,17 +1,18 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import message from 'antd/es/message'
 import Skeleton from 'antd/es/skeleton'
 import { useTranslation } from 'react-i18next'
-import type { FollowRelationType } from '~/api/booth/follow';
-import { getFollowings, getFollowers, followUser, unfollowUser, checkfollowUser } from '~/api/booth/follow'
-import { useAccount } from '~/account'
-import type { UserFollower, UserFollowing, UserInfo } from '~/api/booth/types';
-import { getUserInfo } from '~/api/booth';
-import { getShortAddress } from '~/utils/format';
+import { followUser, unfollowUser } from '~/api/booth/follow'
 import Button from 'antd/es/button';
+import QRCode from 'antd/es/qrcode';
+import IconDeschool from '~/assets/icons/deschool.svg'
+import { getShortAddress } from '~/utils/format';
+import BusinessCard from '../resume/components/businessCard/genCard';
 import DeschoolFollowersModal from './deschoolModal'
-import LensAvatar from './avatar';
+import { useProfileResume } from '~/context/profile';
+import { useAccount } from '~/account';
+import ResumeContacts from '~/components/contacts'
 
 type DeschoolCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
@@ -21,93 +22,30 @@ type DeschoolCardProps = {
 // 0-自己访问自己 1-自己访问别人
 const DeschoolCard = (props: DeschoolCardProps) => {
   const { visitCase, routeAddress } = props
-  const [loading, setLoading] = useState(false)
   const [modal, setModal] = useState<{ type: 'followers' | 'following'; visible: boolean }>({ type: 'followers', visible: false })
-  const [currentUser, setCurrentUser] = useState<UserInfo | null>(null)
-  const [isFollowedByMe, setIsFollowedByMe] = useState<boolean>(false)
-  const [followings, setFollowings] = useState<UserFollowing[]>([])
-  const [followers, setFollowers] = useState<UserFollower[]>([])
   const [updateTrigger, setUpdateTrigger] = useState(0)
+  const [isFollowLoading, setIsFollowLoading] = useState(false)
   const { t } = useTranslation()
-  const user = useAccount()
-
+  const account = useAccount()
+  const { loading, project, role, followings, followers, user, refreshUserInfo } = useProfileResume()
   // 根据不同情况初始化用户信息
-  const initUserInfo = async () => {
-    setLoading(true)
-    try {
-      switch (visitCase) {
-        // 访问自己的空间
-        case 0:
-          if (user) {
-            const resFollowings = await getFollowings(user.id)
-            if (resFollowings) {
-              setFollowings(resFollowings)
-            }
-            const resFollowers = await getFollowers(user.id)
-            if (resFollowers) {
-              setFollowers(resFollowers)
-            }
-            setCurrentUser(user)
-          }
-          break
-        // 访问他人的空间
-        case 1: {
-          const userInfo = await getUserInfo(routeAddress) // 此case下必不为空
-          if (userInfo) {
-            setCurrentUser({
-              id: userInfo.id,
-              address: userInfo.address,
-              avatar: userInfo.avatar,
-              bio: userInfo.bio,
-              displayName: userInfo.displayName,
-            })
-            const resFollowings = await getFollowings(userInfo.id, user?.id)
-            if (resFollowings) {
-              setFollowings(resFollowings)
-            }
-            const resFollowers = await getFollowers(userInfo.id, user?.id)
-            if (resFollowers) {
-              setFollowers(resFollowers)
-            }
 
-            // 我登录了
-            if (user) {
-              const isFollowed: FollowRelationType | any = await checkfollowUser(userInfo.id, user.id)
-              setIsFollowedByMe(isFollowed.fromFollowedTo || false) // 我A(from)=>他人B(to)
-            }
-            // 没登录
-            else {
-              setIsFollowedByMe(false)
-            }
-          }
-
-          break
-        }
-        default:
-          setIsFollowedByMe(false)
-          setFollowers([])
-          setFollowings([])
-          setCurrentUser(null)
-          break
-      }
-    } finally {
-      setLoading(false)
-    }
-  }
+  const contacts = useMemo(() => {
+    return user?.contacts?.filter((item) => !!item.url) || []
+  }, [user?.contacts])
 
   useEffect(() => {
     setModal({ type: 'followers', visible: false })
   }, [routeAddress])
 
   useEffect(() => {
-    initUserInfo()
     if (updateTrigger > 0) {
       setModal({
         type: 'followers',
         visible: false,
       })
     }
-  }, [updateTrigger, visitCase, user])
+  }, [updateTrigger, visitCase, account])
 
   const handleJumpFollowers = (num: number | undefined) => {
     if (num && num > 0) {
@@ -134,86 +72,109 @@ const DeschoolCard = (props: DeschoolCardProps) => {
   }
 
   const handleFollow = async () => {
-    await followUser(currentUser?.id!, user?.id!)
-    message.success(`success following ${currentUser?.address}`)
+    setIsFollowLoading(true)
+    await followUser(user?.id!, account?.id!)
+    message.success(`success following ${user?.address}`)
     setUpdateTrigger(new Date().getTime())
+    setIsFollowLoading(false)
+    refreshUserInfo()
   }
 
   const handleUnFollow = async () => {
-    await unfollowUser(currentUser?.id!, user?.id!)
-    message.success(`success unfollow ${currentUser?.address}`)
+    setIsFollowLoading(true)
+    await unfollowUser(user?.id!, account?.id!)
+    message.success(`success unfollow ${user?.address}`)
     setUpdateTrigger(new Date().getTime())
+    setIsFollowLoading(false)
+    refreshUserInfo()
+  }
+
+  if (loading) {
+    return (<div className="h-400px fcc-center">
+      <Skeleton active />
+    </div>)
   }
 
   return (
-    <div >
-      <div className='relative w-full frc-center'>
-        <LensAvatar avatarUrl={currentUser?.avatar} />
-      </div>
-      {loading ?
-        (<div className="h-400px fcc-center">
-          <Skeleton active />
-        </div>)
-        : <>
-          {/* 处理数据为空的情况 */}
-          <div className="mt-70px w-full px-6 pb-6 fcc-center font-ArchivoNarrow">
-            <span className="text-center text-xl w-200px overflow-hidden text-ellipsis">
-              {currentUser?.displayName || getShortAddress(routeAddress)}
-            </span>
-          </div>
-          <div className="mx-10 frc-center flex-wrap">
-            <a
-              className={`${followers?.length > 0 ? 'hover:underline hover:cursor-pointer' : ''
-                } text-xl mr-4 font-ArchivoNarrow `}
-              onClick={() => {
-                handleJumpFollowers(followers?.length)
-              }}
-            >
-              <span className="text-black">{followers?.length || '-'} </span>
-              <span className="text-gray-5 font-ArchivoNarrow">{t('profile.followers')}</span>
-            </a>
-            <a
-              className={`${followings?.length > 0 ? 'hover:underline hover:cursor-pointer' : ''
-                } text-xl`}
-              onClick={() => {
-                handleJumpFollowing(followings?.length)
-              }}
-            >
-              <span className="text-black">{followings?.length || '-'} </span>
-              <span className="text-gray-5 font-ArchivoNarrow">{t('profile.following')}</span>
-            </a>
-          </div>
-
-          <p className="m-10 text-xl  line-wrap three-line-wrap" style={{wordBreak: 'break-word'}}>
-            {currentUser?.bio || (visitCase === 0 ? '' : "The user hasn't given a bio for self yet :)")}
-          </p>
-          {routeAddress && (
-            <div className="m-10 text-right">
-              <Button
-                className="purple-border-button px-2 py-1 font-ArchivoNarrow"
-                disabled={!user || routeAddress === user?.address}
-                onClick={() => {
-                  if (isFollowedByMe && currentUser) {
-                    handleUnFollow()
-                  } else if (currentUser) {
-                    handleFollow()
-                  }
-                }}
-              >
-                {isFollowedByMe ? t('UnFollow') : t('Follow')}
-              </Button>
+    <>
+      <div className='h-100% mx-auto pb-4 rounded-1 w-full min-w-327px bg-gradient-to-b from-#6525FF to-#9163FE text-white'>
+        <div className='relative w-full mb-16px'>
+          <img
+            crossOrigin={user?.avatar?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"}
+            src={user?.avatar}
+            alt={user?.displayName}
+            className="w-full aspect-[1/1] rounded-t-1" />
+          <ResumeContacts contacts={contacts}/>
+        </div>
+        <div className='text-28px font-Anton px-12px mb-4'>
+          {/* eslint-disable-next-line no-nested-ternary */}
+          {user?.displayName === user?.address ? getShortAddress(user?.address) : (user?.displayName && user?.displayName.length > 15 ? getShortAddress(user?.displayName) : user?.displayName)}
+        </div>
+        <div className='flex-1 frc-between w-full px-12px mb-34px'>
+          <div className='flex-1'>
+            <div className='text-24px font-ArchivoNarrow-Medium mb-2'>{role}</div>
+            <div className='frc-start'>
+              {project?.icon && <img crossOrigin={project?.icon?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"}
+                src={project?.icon}
+                alt="project icon"
+                className='w-24px h-24px rounded-full mr-2' />}
+              <div className='text-18px font-ArchivoNarrow-Semibold'>{project?.name}</div>
             </div>
-          )}
-        </>}
+          </div>
+          {visitCase !== -1 && <QRCode
+            size={120}
+            color="#333333"
+            bordered={false}
+            value={`${location.origin}/resume/${user?.address}`}
+            style={{ border: 'none', borderRadius: '4px', padding: 0, margin: 0 }}
+          />}
+        </div>
+        <div className='w-full px-12px frc-center mb-24px'>
+          <div className='w-full h-52px frc-center rounded-4px bg-white'>
+            <div className={`text-16px ${followers > 0 ? 'hover:underline hover:cursor-pointer' : ''}`} onClick={() => {
+              handleJumpFollowers(followers)
+            }}>
+              <span className='text-#774FF8 mr-1 font-bold font-ArchivoNarrow-Medium'>{followers || '-'}</span>
+              <span className='text-#181818A6'>{t('profile.followers')}</span>
+            </div>
+            <div className='w-3px h-28px bg-#18181840 rounded-4px mx-20px' />
+            <div className={`text-16px ${followings > 0 ? 'hover:underline hover:cursor-pointer' : ''}`} onClick={() => {
+              handleJumpFollowing(followings)
+            }}>
+              <span className='text-#774FF8 mr-1 font-bold font-ArchivoNarrow-Medium'>{followings || '-'}</span>
+              <span className='text-#181818A6'>{t('profile.following')}</span>
+            </div>
+          </div>
+        </div>
+        {visitCase === 0 && (<div className='frc-center w-full mb--20px'><BusinessCard /></div>)}
+        {(routeAddress && account?.address) && (
+          <div className="p-10 text-right">
+            <Button
+              className="purple-border-button px-2 py-1 font-ArchivoNarrow text-white"
+              disabled={!account || routeAddress === account?.address}
+              style={{ color: '#fff', borderColor: '#fff' }}
+              loading={isFollowLoading}
+              onClick={() => {
+                if (user?.isFollowedByMe) {
+                  handleUnFollow()
+                } else if (user) {
+                  handleFollow()
+                }
+              }}
+            >
+              {user?.isFollowedByMe ? t('UnFollow') : t('Follow')}
+            </Button>
+          </div>
+        )}
+      </div>
       <DeschoolFollowersModal
+        userId={user?.id}
         type={modal.type}
         visible={modal.visible}
         closeModal={closeModal}
-        followings={followings}
-        followers={followers}
         setUpdateTrigger={setUpdateTrigger}
       />
-    </div>
+    </>
   )
 }
 

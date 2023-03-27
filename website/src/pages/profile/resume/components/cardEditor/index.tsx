@@ -9,7 +9,10 @@ import Image from 'antd/es/image'
 import VerifiedIcon from '@mui/icons-material/Verified'
 import fallbackImage from '~/assets/images/fallbackImage'
 import Tooltip from 'antd/es/tooltip'
+import Checkbox from 'antd/es/checkbox/Checkbox'
 import type { CardEditorInput, ResumeCardData, SbtInfo } from '../../types'
+import ProjectSelector from '../projectSelector'
+import RoleSelector from '../roleSelector'
 
 const { TextArea } = Input
 
@@ -42,7 +45,7 @@ const SbtItem = (props: { list: string[]; toggleList: (key: string) => void; ite
 const SbtSelectList = (props: { sbtList: SbtInfo[]; originalList: SbtInfo[] | undefined; setProofs: (list: SbtInfo[]) => void }) => {
   const [list, setList] = useState<string[]>([])
   const { sbtList, originalList, setProofs } = props
-  
+
   const toggleList = (key: string) => {
     const newList = list.slice()
     if (list.includes(key)) {
@@ -61,7 +64,7 @@ const SbtSelectList = (props: { sbtList: SbtInfo[]; originalList: SbtInfo[] | un
       return
     }
     const loadedList: string[] = []
-    sbtList.forEach(listItem => {
+    sbtList?.forEach(listItem => {
       const index = originalList.findIndex(
         originalItem => originalItem.address?.toLowerCase() === listItem.address.toLowerCase() && originalItem.tokenId && originalItem.tokenId === listItem.tokenId,
       )
@@ -106,6 +109,7 @@ const CardEditor = (input: CardEditorInput) => {
   const [proofs, setProofs] = useState<SbtInfo[]>([])
   const formRef = useRef(null)
   const [form] = Form.useForm()
+  const presentValue = Form.useWatch('isPresent', form);
 
   const checkValidateFields = async (): Promise<boolean> => {
     let valid = true
@@ -125,9 +129,12 @@ const CardEditor = (input: CardEditorInput) => {
     }
     const newCard: ResumeCardData | undefined = {
       title: form.getFieldValue('title'),
+      project: form.getFieldValue('project'),
+      role: form.getFieldValue('role'),
       description: form.getFieldValue('description'),
       startTime: dayjs(form.getFieldValue('stime')),
       endTime: dayjs(form.getFieldValue('etime')),
+      isPresent: form.getFieldValue('isPresent'),
       proofs,
       blockType: originalData?.blockType,
       id: originalData?.id === undefined ? uuid() : originalData?.id,
@@ -140,9 +147,12 @@ const CardEditor = (input: CardEditorInput) => {
     if (formRef.current) {
       form.setFieldsValue({
         title: originalData?.title,
+        project: originalData?.project,
+        role: originalData?.role,
         description: originalData?.description,
         stime: originalData?.startTime,
         etime: originalData?.endTime,
+        isPresent: originalData?.isPresent,
       })
     }
 
@@ -156,9 +166,12 @@ const CardEditor = (input: CardEditorInput) => {
         name="match"
         initialValues={{
           title: originalData?.title,
+          project: originalData?.project,
+          role: originalData?.role,
           stime: originalData?.startTime,
           etime: originalData?.endTime,
           description: originalData?.description,
+          isPresent: originalData?.isPresent,
         }}
         layout="vertical"
       >
@@ -167,11 +180,38 @@ const CardEditor = (input: CardEditorInput) => {
           rules={[{ required: true, message: 'Please input your experience title' }]}>
           <Input placeholder="Please input your experience title" />
         </Form.Item>
-        <Form.Item label="Start Time" name="stime" rules={[{ required: true, message: 'Please select start time!' }]}>
-          <DatePicker picker="month" />
+        <Form.Item
+          label='Project' name="project"
+          valuePropName="defaultValue"
+          rules={[{ required: true, message: 'Please add your projects' }]}>
+          <ProjectSelector />
         </Form.Item>
-        <Form.Item label="End Time" name="etime" rules={[{ required: true, message: 'Please select end time!' }]}>
-          <DatePicker picker="month" />
+        <Form.Item
+          label='Role' name="role"
+          valuePropName="defaultValue"
+          rules={[{ required: true, message: 'Please add your role' }]}>
+          <RoleSelector />
+        </Form.Item>
+        <Form.Item label="Start Time" name="stime" rules={[{ required: true, message: 'Please select start time!' }]}>
+          <DatePicker picker="month" disabledDate={current => {
+            // 如果选择至今，则开始时间不能大于当前时间
+            if (form.getFieldValue('isPresent')) {
+              return dayjs(form.getFieldValue('etime')).isBefore(dayjs())
+            }
+            // 如果选择了结束时间，则开始时间不能大于结束时间
+            return dayjs(form.getFieldValue('etime')).isBefore(current)}
+          }/>
+        </Form.Item>
+        <Form.Item hidden={presentValue} label="End Time" name="etime" rules={[{ required: form.getFieldValue('isPresent') ? false : true, message: 'Please select end time!' }]}>
+          <DatePicker
+            picker="month"
+            // 开始时间不能大于结束时间
+            disabledDate={current => !dayjs(form.getFieldValue('stime')).isBefore(current)}
+          />
+        </Form.Item>
+        <Form.Item name="isPresent" valuePropName="checked">
+          <Checkbox>Currently working here</Checkbox>
+          <p className='text-gray ml-24px'>*By checking this box, this experience will appear on your social card.</p>
         </Form.Item>
         <Form.Item label="Description" name="description" rules={[{ required: true, message: 'Please input description' }]}>
           <TextArea rows={4} />

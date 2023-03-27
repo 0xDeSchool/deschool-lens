@@ -35,9 +35,12 @@ export interface ResumeData {
 
 export interface ResumeCardData {
   title: string
+  project: ResumeProject
+  role: string
   description: string
   startTime: Dayjs | undefined
   endTime: Dayjs | undefined
+  isPresent: boolean | undefined // 是否至今
   proofs: SbtInfo[] | undefined
   blockType: BlockType | undefined
   id: string
@@ -47,6 +50,6 @@ export interface SbtInfo {
   address: string
   tokenId: string
   img: string
-  name?: string  
-  description?: string 
+  name?: string
+  description?: string
 }

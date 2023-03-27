@@ -6,6 +6,40 @@ export enum SignMsgType {
   LINK = 'link',
 }
 
+export interface ErrorResult {
+  code: number
+  message: string
+  data?: any
+}
+
+export interface pageRequest {
+  page?: number
+  pageSize?: number
+  sort?: string
+}
+
+export type SearchRequest = pageRequest & {
+  query?: string
+}
+
+export function searchQuery(r: SearchRequest): string {
+  const ps = new URLSearchParams()
+  if (r.page) {
+    ps.append('page', r.page.toString())
+  }
+  if (r.pageSize) {
+    ps.append('pageSize', r.pageSize.toString())
+  }
+  if (r.query) {
+    ps.append('q', r.query)
+  }
+  return ps.toString()
+}
+
+export interface CreatedResult {
+  id: string
+}
+
 export interface LoginRequest {
   address: string;
   sig: string;
@@ -36,6 +70,15 @@ export interface PagedResult<T> {
   items: T[]
 }
 
+export interface Contact {
+  contactType: string
+  name: string
+  description?: string
+  icon?: string
+  url?: string
+  placeholder?: string
+}
+
 export interface UserInfo {
   id: string
   address: string
@@ -43,9 +86,8 @@ export interface UserInfo {
   avatar?: string
   bio?: string
   platforms?: UserPlatform[]
-  FollowingCount?: number
-  FollowerCount?: number
-  IsFollowing?: boolean
+  contacts?: Contact[]
+  isFollowedByMe?: boolean
 }
 
 // 新用户信息
@@ -66,6 +108,7 @@ export interface UpdateUserInfo {
   displayName?: string
   avatar?: string
   bio?: string
+  contacts?: Contact[]
 }
 
 export interface LoginResponse {
@@ -118,4 +161,31 @@ export interface UserRequest {
   pageSize?: number
   userId?: string
   platform?: PlatformType
+}
+
+export interface ResumeProjectBase {
+  name: string
+  description?: string
+  url?: string
+  icon?: string
+}
+
+export interface ResumeProjectCreateRequest extends ResumeProjectBase {
+}
+
+export type ResumeProject = ResumeProjectBase & {
+  id: string
+}
+
+
+export interface ResumeRoleBase {
+  name: string
+  description?: string
+}
+
+export interface ResumeRoleCreateRequest extends ResumeRoleBase {
+}
+
+export type ResumeRole = ResumeRoleBase & {
+  id: string
 }

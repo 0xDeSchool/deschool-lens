@@ -1,0 +1,24 @@
+###
+GET {{host}}/api/resume/projects?pageSize=1
+
+
+###
+POST {{host}}/api/resume/projects
+
+{
+   "name": "SeeDAO",
+   "description": "SeeDAO description",
+   "Url": "https://seedao.xyz"
+}
+
+###
+GET {{host}}/api/resume/roles
+
+
+###
+POST {{host}}/api/resume/roles
+
+{
+   "name": "Product Manager",
+   "description": "Product Manager description"
+}

@@ -139,6 +139,10 @@ func (mr *MongoRepositoryBase[TEntity]) Exists(ctx context.Context, id primitive
 	return mr.Collection(ctx).Exists(ctx, id)
 }
 
+func (mr *MongoRepositoryBase[TEntity]) ExistsByField(ctx context.Context, field string, v any) bool {
+	return mr.Collection(ctx).ExistsByFilter(ctx, bson.D{{Key: field, Value: v}})
+}
+
 func (mr *MongoRepositoryBase[TEntity]) Update(ctx context.Context, id primitive.ObjectID, entity *TEntity) int {
 	return mr.Collection(ctx).UpdateByID(ctx, id, entity)
 }

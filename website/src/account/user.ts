@@ -1,6 +1,6 @@
 import { getSignMessage, getUserInfo, login, unlinkPlatform } from "~/api/booth/account"
 import { PlatformType } from "~/api/booth/booth"
-import type { LinkPlatformRequest, UserInfo, UserPlatform } from "~/api/booth/types";
+import type { Contact, LinkPlatformRequest, UserInfo, UserPlatform } from "~/api/booth/types";
 import { SignMsgType } from "~/api/booth/types"
 import { getShortAddress } from "~/utils/format"
 import { getWallet } from "~/wallet"
@@ -18,6 +18,8 @@ export class AccountInfo {
 
   bio?: string
 
+  contacts?: Contact[]
+
   platforms?: UserPlatform[]
 
   constructor(info: UserInfo) {
@@ -27,6 +29,7 @@ export class AccountInfo {
     this.avatar = info.avatar
     this.bio = info.bio
     this.platforms = info.platforms
+    this.contacts = info.contacts
   }
 
   platform(platform: PlatformType): UserPlatform | undefined {

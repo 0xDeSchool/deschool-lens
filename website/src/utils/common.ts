@@ -1,4 +1,4 @@
-export default function download(url: string) {
+export default function download(url: string, name?: string) {
   const a = document.createElement('a')
   a.href = url
   a.target = '_blank'
@@ -7,7 +7,7 @@ export default function download(url: string) {
     // TODO good alert
     return
   }
-  a.download = downloadUrl
+  a.download = name || downloadUrl
   document.body.appendChild(a)
   a.click()
   document.body.removeChild(a)

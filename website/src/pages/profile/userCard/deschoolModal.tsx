@@ -5,7 +5,7 @@ import Modal from 'antd/es/modal/Modal'
 import Skeleton from 'antd/es/skeleton'
 import message from 'antd/es/message'
 import Empty from 'antd/es/empty'
-import { followUser, unfollowUser } from '~/api/booth/follow'
+import { followUser, getFollowers, getFollowings, unfollowUser } from '~/api/booth/follow'
 import Jazzicon from 'react-jazzicon'
 import { getShortAddress } from '~/utils/format'
 import { Link } from 'react-router-dom'
@@ -15,14 +15,13 @@ import type { UserFollower, UserFollowing } from '~/api/booth/types'
 type FollowType = UserFollower & UserFollowing
 
 const DeschoolFollowersModal = (props: {
-  followers: UserFollower[]
-  followings: UserFollowing[]
+  userId: string | undefined
   type: 'followers' | 'following'
   visible: boolean
   closeModal: any
   setUpdateTrigger: Dispatch<SetStateAction<number>>
 }) => {
-  const { type, visible, closeModal, followers, followings, setUpdateTrigger } = props
+  const { userId, type, visible, closeModal, setUpdateTrigger } = props
   const { t } = useTranslation()
   const [follows, setFollows] = useState<FollowType[]>([])
   const [loading, setLoading] = useState(true)
@@ -31,10 +30,19 @@ const DeschoolFollowersModal = (props: {
   const initList = async () => {
     setLoading(true)
     try {
-      if (type === 'followers') {
-        setFollows(followers)
+      if (!userId) {
+        return
+      }
+      if (type === 'following') {
+        const resFollowings = await getFollowings(userId)
+        if (resFollowings) {
+          setFollows(resFollowings)
+        }
       } else {
-        setFollows(followings)
+        const resFollowers = await getFollowers(userId)
+        if (resFollowers) {
+          setFollows(resFollowers)
+        }
       }
     } catch (error: any) {
       if (error && error.name && error.message) message.error(`${error.name}:${error.message}`)

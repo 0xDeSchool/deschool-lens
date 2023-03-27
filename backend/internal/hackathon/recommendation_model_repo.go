@@ -20,7 +20,7 @@ type UserRecommendation struct {
 }
 
 type UserRecommendationRepository interface {
-	ddd.RepositoryBase[UserRecommendation]
+	ddd.Repository[UserRecommendation]
 
 	GetUsers(ctx context.Context, userId primitive.ObjectID) []primitive.ObjectID
 }

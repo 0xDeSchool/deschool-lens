@@ -1,7 +1,7 @@
 package http
 
 import (
-	"github.com/0xdeschool/deschool-lens/backend/internal/identity"
+	identity2 "github.com/0xdeschool/deschool-lens/backend/internal/modules/identity"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/db/mongodb"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/ddd"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/utils/linq"
@@ -51,7 +51,7 @@ func resumeGetHandler(ctx *gin.Context) {
 	if userIdOrAddr == "" {
 		ginx.PanicValidatition("key is required")
 	}
-	um := di.Get[identity.UserManager]()
+	um := di.Get[identity2.UserManager]()
 	user := um.Find(ctx, userIdOrAddr)
 	if user == nil {
 		ctx.JSON(http.StatusOK, nil)
@@ -120,7 +120,7 @@ func recommendationGetHandler(ctx *gin.Context) {
 	hm := *di.Get[hackathon.HackathonManager]()
 	userId := ctx.Query("userId")
 	result := hm.RunRecommendations(ctx, mongodb.IDFromHex(userId))
-	ur := *di.Get[identity.UserRepository]()
+	ur := *di.Get[identity2.UserRepository]()
 	u := ur.Get(ctx, result.TargetId)
 	ctx.JSON(http.StatusOK, NewRecommendUserResult(result, u))
 }
@@ -236,8 +236,8 @@ func filterEvents(ctx *gin.Context) {
 }
 
 func getUsers(ctx *gin.Context) {
-	um := *di.Get[identity.UserManager]()
-	var users []identity.User
+	um := *di.Get[identity2.UserManager]()
+	var users []identity2.User
 	userId := ctx.Query("userId")
 	query := ginx.OptionalString(ctx, "q")
 
@@ -252,9 +252,9 @@ func getUsers(ctx *gin.Context) {
 			p.Sort = "-createdAt"
 		}
 		p.PageSize += 1
-		var platformType *identity.UserPlatformType = nil
+		var platformType *identity2.UserPlatformType = nil
 		if platform >= 0 {
-			platformType = x.Ptr(identity.UserPlatformType(platform))
+			platformType = x.Ptr(identity2.UserPlatformType(platform))
 		}
 		users = um.Repo.GetUsers(ctx, query, platformType, p)
 		hasNext = len(users) >= int(p.PageSize)
@@ -265,7 +265,7 @@ func getUsers(ctx *gin.Context) {
 
 	um.ManyIncludePlatforms(ctx, users)
 
-	userIds := linq.Map(users, func(u *identity.User) primitive.ObjectID { return u.ID })
+	userIds := linq.Map(users, func(u *identity2.User) primitive.ObjectID { return u.ID })
 	currentUser := ginx.CurrentUser(ctx)
 	if currentUser.Authenticated() {
 		userIds = append(userIds, currentUser.ID)

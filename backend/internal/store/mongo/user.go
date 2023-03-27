@@ -2,7 +2,7 @@ package mongo
 
 import (
 	"context"
-	"github.com/0xdeschool/deschool-lens/backend/internal/identity"
+	identity2 "github.com/0xdeschool/deschool-lens/backend/internal/modules/identity"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/db/mongodb"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/errx"
@@ -16,17 +16,17 @@ import (
 )
 
 type MongoUserRepository struct {
-	*MongoRepositoryBase[identity.User]
+	*MongoRepositoryBase[identity2.User]
 }
 
-func NewMongoUserRepository(c *di.Container) *identity.UserRepository {
-	var repo identity.UserRepository = &MongoUserRepository{
-		MongoRepositoryBase: NewMongoRepositoryBase[identity.User]("users"),
+func NewMongoUserRepository(c *di.Container) *identity2.UserRepository {
+	var repo identity2.UserRepository = &MongoUserRepository{
+		MongoRepositoryBase: NewMongoRepositoryBase[identity2.User]("users"),
 	}
 	return &repo
 }
 
-func (m *MongoUserRepository) Find(ctx context.Context, address common.Address) *identity.User {
+func (m *MongoUserRepository) Find(ctx context.Context, address common.Address) *identity2.User {
 	filter := bson.D{{"address", address.Hex()}}
 	users := m.MongoRepositoryBase.Find(ctx, filter)
 	if len(users) == 0 {
@@ -35,13 +35,13 @@ func (m *MongoUserRepository) Find(ctx context.Context, address common.Address) 
 	return &users[0]
 }
 
-func (m *MongoUserRepository) GetManyByAddr(ctx context.Context, addresses []common.Address) []identity.User {
+func (m *MongoUserRepository) GetManyByAddr(ctx context.Context, addresses []common.Address) []identity2.User {
 	addrs := linq.Map(addresses, func(addr *common.Address) string { return addr.Hex() })
 	filter := bson.D{{"address", bson.D{{"$in", addrs}}}}
 	return m.MongoRepositoryBase.Find(ctx, filter)
 }
 
-func (m *MongoUserRepository) LinkPlatform(ctx context.Context, p *identity.UserPlatform) {
+func (m *MongoUserRepository) LinkPlatform(ctx context.Context, p *identity2.UserPlatform) {
 	filter := bson.D{
 		{"userId", p.UserId},
 		{"address", p.Address},
@@ -51,7 +51,7 @@ func (m *MongoUserRepository) LinkPlatform(ctx context.Context, p *identity.User
 	m.userPlatforms(ctx).UpdateOne(ctx, filter, p, options.Update().SetUpsert(true))
 }
 
-func (m *MongoUserRepository) UnlinkPlatform(ctx context.Context, userId primitive.ObjectID, address common.Address, handle string, platform identity.UserPlatformType) int {
+func (m *MongoUserRepository) UnlinkPlatform(ctx context.Context, userId primitive.ObjectID, address common.Address, handle string, platform identity2.UserPlatformType) int {
 	filter := bson.D{
 		{"userId", userId},
 		{"address", address.Hex()},
@@ -63,20 +63,20 @@ func (m *MongoUserRepository) UnlinkPlatform(ctx context.Context, userId primiti
 	return int(result.DeletedCount)
 }
 
-func (m *MongoUserRepository) GetManyPlatforms(ctx context.Context, userIds []primitive.ObjectID) []identity.UserPlatform {
+func (m *MongoUserRepository) GetManyPlatforms(ctx context.Context, userIds []primitive.ObjectID) []identity2.UserPlatform {
 	if len(userIds) == 0 {
-		return []identity.UserPlatform{}
+		return []identity2.UserPlatform{}
 	}
 	filter := bson.D{{"userId", bson.D{{"$in", userIds}}}}
 	return m.userPlatforms(ctx).Find(ctx, filter)
 }
 
-func (m *MongoUserRepository) GetPlatforms(ctx context.Context, userId primitive.ObjectID) []identity.UserPlatform {
+func (m *MongoUserRepository) GetPlatforms(ctx context.Context, userId primitive.ObjectID) []identity2.UserPlatform {
 	filter := bson.D{{"userId", userId}}
 	return m.userPlatforms(ctx).Find(ctx, filter)
 }
 
-func (m *MongoUserRepository) GetUsers(ctx context.Context, q *string, platform *identity.UserPlatformType, p *x.PageAndSort) []identity.User {
+func (m *MongoUserRepository) GetUsers(ctx context.Context, q *string, platform *identity2.UserPlatformType, p *x.PageAndSort) []identity2.User {
 	if platform != nil {
 		return m.filterByPlatform(ctx, q, *platform, p)
 	} else {
@@ -88,7 +88,7 @@ func (m *MongoUserRepository) GetUsers(ctx context.Context, q *string, platform 
 }
 
 // GetManyByAddr 通过简历更新时间排序
-func (m *MongoUserRepository) filterByUpdate(ctx context.Context, q *string, p *x.PageAndSort) []identity.User {
+func (m *MongoUserRepository) filterByUpdate(ctx context.Context, q *string, p *x.PageAndSort) []identity2.User {
 	filter := bson.D{}
 	if q != nil {
 		filter = bson.D{
@@ -114,13 +114,13 @@ func (m *MongoUserRepository) filterByUpdate(ctx context.Context, q *string, p *
 	pipe := mongo.Pipeline{match, lookup, sort, skip, limit}
 	cur, err := m.Collection(ctx).Col().Aggregate(ctx, pipe)
 	errx.CheckError(err)
-	data := make([]identity.User, 0)
+	data := make([]identity2.User, 0)
 	errx.CheckError(cur.All(ctx, &data))
 	return data
 }
 
 // GetManyByAddr 通过平台筛选，注册时间排序
-func (m *MongoUserRepository) filterByPlatform(ctx context.Context, q *string, platform identity.UserPlatformType, p *x.PageAndSort) []identity.User {
+func (m *MongoUserRepository) filterByPlatform(ctx context.Context, q *string, platform identity2.UserPlatformType, p *x.PageAndSort) []identity2.User {
 	filter := bson.D{}
 	if q != nil {
 		filter = bson.D{
@@ -160,13 +160,13 @@ func (m *MongoUserRepository) filterByPlatform(ctx context.Context, q *string, p
 	pipe := mongo.Pipeline{match, lookup, match2, lookup2, sort, skip, limit}
 	cur, err := m.Collection(ctx).Col().Aggregate(ctx, pipe)
 	errx.CheckError(err)
-	data := make([]identity.User, 0)
+	data := make([]identity2.User, 0)
 	errx.CheckError(cur.All(ctx, &data))
 	return data
 }
 
-func (m *MongoUserRepository) userPlatforms(ctx context.Context) *mongodb.Collection[identity.UserPlatform] {
+func (m *MongoUserRepository) userPlatforms(ctx context.Context) *mongodb.Collection[identity2.UserPlatform] {
 	c := m.MongoRepositoryBase.GetCollection(ctx, "user_platforms")
-	col := mongodb.NewCollection[identity.UserPlatform](c)
+	col := mongodb.NewCollection[identity2.UserPlatform](c)
 	return col
 }

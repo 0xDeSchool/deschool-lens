@@ -5,8 +5,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/0xdeschool/deschool-lens/backend/internal/identity"
-	"github.com/0xdeschool/deschool-lens/backend/internal/interest"
+	identity2 "github.com/0xdeschool/deschool-lens/backend/internal/modules/identity"
+	"github.com/0xdeschool/deschool-lens/backend/internal/modules/interest"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/db/mongodb"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/ddd"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
@@ -200,12 +200,12 @@ func getUserEventItems(ctx context.Context, data []interest.Interest, limit int)
 	return result
 }
 
-func includeUsers(ctx context.Context, userIds []primitive.ObjectID) map[primitive.ObjectID]*identity.User {
-	result := make(map[primitive.ObjectID]*identity.User)
+func includeUsers(ctx context.Context, userIds []primitive.ObjectID) map[primitive.ObjectID]*identity2.User {
+	result := make(map[primitive.ObjectID]*identity2.User)
 	if len(userIds) == 0 {
 		return result
 	}
-	repo := *di.Get[identity.UserRepository]()
+	repo := *di.Get[identity2.UserRepository]()
 	users := repo.GetMany(ctx, userIds)
 	for i := range users {
 		result[users[i].ID] = &users[i]

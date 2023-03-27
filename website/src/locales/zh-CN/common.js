@@ -69,6 +69,7 @@ const ZH_CN_COMMON = {
   includedIn: '学习本系列课程需先持有 NFT Pass：',
   Total: '总数',
   SeeMore: '发现更多',
+  saveSuccess: '保存成功',
 }
 
 export default ZH_CN_COMMON

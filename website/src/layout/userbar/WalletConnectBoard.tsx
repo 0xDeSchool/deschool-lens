@@ -9,13 +9,13 @@ import { DEFAULT_AVATAR, getUserManager, useAccount } from '~/account'
 import { CyberConnectIcon, DeschoolIcon, LensIcon } from '~/components/icon'
 import { getShortAddress } from '~/utils/format'
 import { useLayout } from '~/context/layout'
-import PopupConnectManage from './popupConnectManage'
 import message from 'antd/es/message'
+import PopupConnectManage from './popupConnectManage'
 
 type PopoverAccountInfoProps = {
   open: () => void
 }
-const PopoverAccountInfo: React.FC<PopoverAccountInfoProps> = (props) => {
+export const PopoverAccountInfo: React.FC<PopoverAccountInfoProps> = (props) => {
   const { open } = props
   const userManager = getUserManager()
   const user = useAccount()

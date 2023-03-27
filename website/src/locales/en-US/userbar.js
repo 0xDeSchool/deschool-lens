@@ -20,6 +20,7 @@ const EN_US_USERBAR = {
   foot: {
     join: 'Join us',
     contactus: 'contact us',
+    deschoolCommunity: "DeSchool Telegram Community",
   },
   search:{
     placeholder: "search by handle/address...",

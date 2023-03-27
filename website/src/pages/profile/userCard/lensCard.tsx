@@ -168,7 +168,7 @@ const LensCard = (props: LensCardProps) => {
   }
 
   return (
-    <div>
+    <div className='pb-1'>
       <div className='relative w-full frc-center'>
         <LensAvatar avatarUrl={currentUser?.avatar} />
       </div>

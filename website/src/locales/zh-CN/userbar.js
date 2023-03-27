@@ -19,6 +19,8 @@ const ZH_CN_USERBAR = {
   foot: {
     join: '了解我们',
     contactus: '联系我们',
+    communicate: '和我们交流',
+    deschoolCommunity: "DeSchool Telegram 社区",
   },
   search:{
     placeholder: "查询 handle/address...",

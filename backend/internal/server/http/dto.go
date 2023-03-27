@@ -2,7 +2,7 @@ package http
 
 import (
 	"github.com/0xdeschool/deschool-lens/backend/internal/hackathon"
-	"github.com/0xdeschool/deschool-lens/backend/internal/identity"
+	identity2 "github.com/0xdeschool/deschool-lens/backend/internal/modules/identity"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/db/mongodb"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -63,7 +63,7 @@ type RecommendUserResult struct {
 	Target   *UserItem          `json:"target"`
 }
 
-func NewRecommendUserResult(ur *hackathon.UserRecommendation, u *identity.User) *RecommendUserResult {
+func NewRecommendUserResult(ur *hackathon.UserRecommendation, u *identity2.User) *RecommendUserResult {
 	if ur == nil {
 		return nil
 	}
@@ -77,14 +77,14 @@ func NewRecommendUserResult(ur *hackathon.UserRecommendation, u *identity.User) 
 }
 
 type UserItem struct {
-	identity.UserInfo `json:",inline"`
-	FollowingCount    int  `json:"followingCount"`
-	FollowerCount     int  `json:"followerCount"`
-	IsFollowing       bool `json:"isFollowing"`
+	identity2.UserInfo `json:",inline"`
+	FollowingCount     int  `json:"followingCount"`
+	FollowerCount      int  `json:"followerCount"`
+	IsFollowing        bool `json:"isFollowing"`
 }
 
-func NewUserItem(u *identity.User) *UserItem {
+func NewUserItem(u *identity2.User) *UserItem {
 	return &UserItem{
-		UserInfo: *identity.NewUserInfo(u, false),
+		UserInfo: *identity2.NewUserInfo(u, false),
 	}
 }

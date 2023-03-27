@@ -9,7 +9,7 @@ import { scrollToTop } from '~/utils/common'
 import { appWallet } from '~/wallet/booth'
 import Footer from './footer'
 import UserBar from './userbar'
-
+import { isMobile } from '~/utils/ua'
 /*
  * @description: Layout
  * @author: Victor
@@ -68,15 +68,15 @@ const Layout = () => {
         id="container"
       >
         <div
-          className={`flex-1 overflow-auto w-full fcc-center bg-#fafafa ${
+          className={`flex-1 w-full fcc-center bg-#fafafa ${
             location.pathname.startsWith('/plaza') || location.pathname.startsWith('/landing') ? '' : 'pt-64px'
           }`}
         >
-          <div className={`flex-1 overflow-auto flex flex-col ${pageLayout}`}>
+          <div className={`flex-1 flex flex-col ${pageLayout}`}>
             <Outlet />
           </div>
         </div>
-        {location.pathname.startsWith('/profile') ? null : <Footer footerLayout={footerLayout} />}
+        {!isMobile() && <Footer footerLayout={footerLayout} />}
       </div>
       <Modal
         title={<h1>{t('system.notify_title')}</h1>}

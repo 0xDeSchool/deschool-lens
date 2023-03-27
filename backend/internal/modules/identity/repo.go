@@ -9,7 +9,7 @@ import (
 )
 
 type UserRepository interface {
-	ddd.RepositoryBase[User]
+	ddd.Repository[User]
 	Insert(ctx context.Context, u *User) primitive.ObjectID
 	Update(ctx context.Context, Id primitive.ObjectID, u *User) int
 	InsertMany(ctx context.Context, us []User, ignoreErr bool) []primitive.ObjectID

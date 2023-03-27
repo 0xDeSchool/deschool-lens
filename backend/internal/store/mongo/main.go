@@ -46,6 +46,8 @@ func AddRepositories(builder *app.AppBuilder) {
 		di.AddTransient(NewMongoUserRepository)
 		di.AddTransient(NewMongoInterestRepository)
 		di.AddTransient(NewMongoUserRecommendRepository)
+		di.AddTransient(NewMongoProjectRepository)
+		di.AddTransient(NewMongoRoleRepository)
 
 		return nil
 	})

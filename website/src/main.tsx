@@ -11,6 +11,10 @@ import 'antd/dist/reset.css'
 import './styles/custom.css'
 import './locales/i18n.ts'
 import { apolloClient } from './api/cc/apollo'
+import registerError from './utils/monitor'
+
+// 注册错误监控
+registerError()
 
 // import mockXHR from './mock'
 
@@ -43,7 +47,7 @@ root.render(
               colorPrimary: '#6525FF',
             },
             Input: {
-              borderRadius: 0,
+              // borderRadius: 0,
             },
           },
         }}

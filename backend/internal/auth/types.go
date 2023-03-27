@@ -1,6 +1,8 @@
 package auth
 
-import "github.com/0xdeschool/deschool-lens/backend/internal/identity"
+import (
+	"github.com/0xdeschool/deschool-lens/backend/internal/modules/identity"
+)
 
 type SignMessageInput struct {
 	Address  string            `json:"address" binding:"required"`

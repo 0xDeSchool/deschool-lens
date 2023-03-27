@@ -23,7 +23,7 @@ type Id struct {
 }
 
 type IdRepository interface {
-	ddd.RepositoryBase[Id]
+	ddd.Repository[Id]
 	GetListByAddress(ctx context.Context, address string) []Id
 	CheckExistsByAddrBaseAddrAndPltfm(ctx context.Context, address string, baseAddr string, platform PlatformType) bool
 	GetListByBaseAddr(ctx context.Context, baseAddr string) []Id

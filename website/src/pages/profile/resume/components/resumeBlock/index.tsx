@@ -7,6 +7,7 @@ import { MenuOutlined } from '@ant-design/icons'
 import ResumeCard from '../resumeCard'
 import { BlockType } from '../../enum'
 import type { ResumeBlockInput, ResumeCardData } from '../../types'
+import { isMobile } from '~/utils/ua'
 
 const CAREER_TITLE = 'Career Experiences'
 const EDU_TITLE = 'Education Experiences'
@@ -26,7 +27,7 @@ const ResumeBlock = (input: ResumeBlockInput) => {
           transition,
         }}
         {...attributes}
-        className="frc-center text-left text-xl px-2 bg-[#D9D9D933] mt-3 first:mt-0"
+        className="frc-center text-left text-xl md:px-2 md:bg-[#D9D9D933] mt-3 first:mt-0"
       >
         {/* 排序条件：编辑 & 数组 > 1 */}
         {isEditResume && dataArr.length > 1 && (
@@ -69,13 +70,13 @@ const ResumeBlock = (input: ResumeBlockInput) => {
   }
 
   return (
-    <div className="">
+    <>
       {/* Header */}
-      <div className="flex justify-between w-full items-center">
+      {!isMobile() && <div className="flex justify-between w-full items-center">
         {/* Title */}
         <div className="text-2xl font-bold">{input.blockType === BlockType.CareerBlockType ? CAREER_TITLE : EDU_TITLE}</div>
         {/* Edit / Save Button */}
-      </div>
+      </div>}
 
       {/* Resume Card Entires */}
       <div>
@@ -97,7 +98,7 @@ const ResumeBlock = (input: ResumeBlockInput) => {
           +
         </Button>
       )}
-    </div>
+    </>
   )
 }
 
