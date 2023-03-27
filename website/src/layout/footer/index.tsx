@@ -31,10 +31,13 @@ const Footer = (props: { footerLayout: string }) => {
         {!hidden ? (
           <div>
             <div className="mt-10 w-full m-auto font-normal flex flex-row items-start justify-between">
-              <div className="flex flex-col justify-between w-267px">
+              <div className="flex flex-col justify-between">
                 <Logo />
-                <p className="mt-8">
-                  <span className="mr-1 text-20px font-ArchivoNarrow">{t('foot.join')}</span>
+                <p className="mt-8 text-#181818A6 text-16px">
+                  <span className="mr-1">{t('foot.join')}</span>
+                  <a className="text-purple-6" href="https://t.me/deschoolcommunity" target="_blank" rel="noreferrer">
+                    @{t('foot.deschoolCommunity')}
+                  </a>
                 </p>
               </div>
               <div className="flex-1 flex flex-col items-end justify-start text-black">

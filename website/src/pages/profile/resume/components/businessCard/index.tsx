@@ -19,7 +19,7 @@ const BusinessCard = () => {
   }, [user?.contacts])
 
   return (
-    <div className='mx-auto mb-4 rounded-1 w-full min-w-327px bg-gradient-to-b from-#6525FF to-#9163FE text-white'>
+    <div className='mx-auto mb-4 rounded-1 w-full min-w-327px bg-gradient-to-b from-#6525FF to-#9163FE text-white pb-16px'>
       <div className='relative w-full mb-16px'>
         <img crossOrigin={user?.avatar?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"} src={user?.avatar} alt={user?.displayName} className="w-full aspect-[1/1]" />
         <ResumeContacts contacts={contacts}/>
@@ -58,10 +58,6 @@ const BusinessCard = () => {
             <span className='text-#181818A6'>{t('profile.following')}</span>
           </div>
         </div>
-      </div>
-      <div className='frc-center pb-24px'>
-        <img src={IconDeschool} alt="deschool" width={24} height={24} />
-        <div className="ml-2 text-white text-16px font-ArchivoNarrow">DeSchool & Booth</div>
       </div>
     </div>
   )

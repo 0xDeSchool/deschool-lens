@@ -484,6 +484,8 @@ const Resume = () => {
             isEditResume={isEditResume}
           />
 
+          {isMobile() && <div className='frc-center font-ArchivoNarrow-Medium text-16px text-#18181865'>Supported by DeSchool</div>}
+
           {/* 一段经历编辑器 */}
           <CardEditor
             isEditCard={isEditCard}

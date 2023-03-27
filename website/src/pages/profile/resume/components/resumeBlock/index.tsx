@@ -7,6 +7,7 @@ import { MenuOutlined } from '@ant-design/icons'
 import ResumeCard from '../resumeCard'
 import { BlockType } from '../../enum'
 import type { ResumeBlockInput, ResumeCardData } from '../../types'
+import { isMobile } from '~/utils/ua'
 
 const CAREER_TITLE = 'Career Experiences'
 const EDU_TITLE = 'Education Experiences'
@@ -71,11 +72,11 @@ const ResumeBlock = (input: ResumeBlockInput) => {
   return (
     <>
       {/* Header */}
-      <div className="flex justify-between w-full items-center">
+      {!isMobile() && <div className="flex justify-between w-full items-center">
         {/* Title */}
         <div className="text-2xl font-bold">{input.blockType === BlockType.CareerBlockType ? CAREER_TITLE : EDU_TITLE}</div>
         {/* Edit / Save Button */}
-      </div>
+      </div>}
 
       {/* Resume Card Entires */}
       <div>
