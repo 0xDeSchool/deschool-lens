@@ -211,6 +211,7 @@ const CardEditor = (input: CardEditorInput) => {
         </Form.Item>
         <Form.Item name="isPresent" valuePropName="checked">
           <Checkbox>Currently working here</Checkbox>
+          <p className='text-gray ml-24px'>*By checking this box, this experience will appear on your social card.</p>
         </Form.Item>
         <Form.Item label="Description" name="description" rules={[{ required: true, message: 'Please input description' }]}>
           <TextArea rows={4} />

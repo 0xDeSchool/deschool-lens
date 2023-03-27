@@ -112,13 +112,13 @@ const DeschoolCard = (props: DeschoolCardProps) => {
         </div>
         <div className='flex-1 frc-between w-full px-12px mb-34px'>
           <div className='flex-1'>
-            <div className='text-18px font-ArchivoNarrow-Medium mb-2'>{role}</div>
+            <div className='text-24px font-ArchivoNarrow-Medium mb-2'>{role}</div>
             <div className='frc-start'>
               {project?.icon && <img crossOrigin={project?.icon?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"}
                 src={project?.icon}
                 alt="project icon"
                 className='w-24px h-24px rounded-full mr-2' />}
-              <div className='font-ArchivoNarrow-Semibold'>{project?.name}</div>
+              <div className='text-18px font-ArchivoNarrow-Semibold'>{project?.name}</div>
             </div>
           </div>
           {visitCase !== -1 && <QRCode
@@ -145,10 +145,6 @@ const DeschoolCard = (props: DeschoolCardProps) => {
               <span className='text-#181818A6'>{t('profile.following')}</span>
             </div>
           </div>
-        </div>
-        <div className='frc-center pb-24px'>
-          <img src={IconDeschool} alt="deschool" width={24} height={24} />
-          <div className="ml-2 text-white text-16px font-ArchivoNarrow">DeSchool & Booth</div>
         </div>
         {visitCase === 0 && (<div className='frc-center w-full mb--20px'><BusinessCard /></div>)}
         {(routeAddress && account?.address) && (

@@ -48,9 +48,9 @@ const BusinessCard = () => {
       html2canvas(document.querySelector('.business-card')!, {
         useCORS: true,
         backgroundColor: '#6525FF',
-        width: 326,
-        x: 1,
-        y: -2,
+        // width: 326,
+        // x: 1,
+        // y: 0,
       }).then((canvas) => {
         let tempBlob: any
         canvas.toBlob((blob) => {
@@ -77,8 +77,8 @@ const BusinessCard = () => {
 
   return (
     <>
-      <div>
-        <Button size='large' type='text' style={{ color: '#ffffff' }} onClick={handleOk}>Generate</Button>
+      <div className='w-full relative'>
+        <Button size='large' type='primary' className='absolute bottom--48px left-0 right-0 h-40px' style={{ color: '#ffffff', width: '100%', height: '40px' }} onClick={handleOk}>Generate</Button>
       </div>
       <div className='absolute z--1'>
         <div className='business-card w-327px min-w-327px h-fit bg-gradient-to-b fcs-center from-#6525FF to-#9163FEdd text-white'>
@@ -87,7 +87,7 @@ const BusinessCard = () => {
             src={user?.avatar?.replace('https://deschool.s3.amazonaws.com/', `${location.origin}/awsResource/`)}
             alt={user?.displayName}
             className="w-300px h-300px rounded-lg m-auto mt-14px" />
-          <div className='px-16px my-4 w-full frc-between'>
+          <div className='px-16px mt-32px mb-24px w-full frc-between'>
             {/* eslint-disable-next-line no-nested-ternary */}
             <span className='font-Anton text-24px break-all'>{user?.displayName === user?.address ? getShortAddress(user?.address) : (user?.displayName && user?.displayName.length > 15 ? getShortAddress(user?.displayName) : user?.displayName)}</span>
             <div className='inline-flex frc-start text-16px'>
@@ -95,33 +95,33 @@ const BusinessCard = () => {
                 crossOrigin={project?.icon?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"}
                 src={project?.icon?.replace('https://deschool.s3.amazonaws.com/', `${location.origin}/awsResource/`)}
                 alt="project icon"
-                className='w-24px h-24px rounded-full mr-2 mt-10px' />
+                className='w-24px h-24px min-w-24px min-h-24px rounded-full mr-2 mt-10px' />
               <span className='font-ArchivoNarrow '>{project?.name}</span>
             </div>
           </div>
-          <div className='flex-1 frc-between w-full px-16px mb-2'>
-            <div className='text-16px font-ArchivoNarrow-Medium mb-2'>{role}</div>
+          <div className='flex-1 frc-between w-full px-16px mb-32px'>
+            <div className='text-16px font-ArchivoNarrow-Medium'>{role}</div>
           </div>
           <div className='w-full frc-center px-16px gap-16px'>
             <div className='w-full align-middle'>
               {contacts?.map((item) => (
-                <div key={item.contactType} className="frc-start align-middle h-48px px-2 rounded-2 border-1 border-#FFFFFF30">
+                <div key={item.contactType} className="frc-start align-middle h-36px leading-36px px-2 rounded-4px border-1 border-#FFFFFF20 mt-8px first:mt-0">
                   {item.contactType === 'Discord' && <DiscordIcon style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
                   {item.contactType === 'Twitter' && <TwitterOutlined style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
                   {item.contactType === 'Wechat' && <WechatOutlined style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
                   {item.contactType === 'Email' && <EmailIcon style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
-                  <span className='text-14px ml-1 mt--12px max-w-104px break-all align-middle'>{`${item.contactType === 'Twitter' ? "@" : ""}${item.name}`}</span>
+                  <span className='text-9px ml-8px mt--6px max-w-104px break-all align-middle'>{`${item.name}`}</span>
                 </div>
               ))}
             </div>
-            <div className='w-120px h-120px self-center preload-resume-qrcode'>
+            <div className='min-w-120px w-120px min-h-120px h-120px self-center preload-resume-qrcode'>
               <QRCode
                 errorLevel="M"
                 size={120}
                 color="#333333"
                 bordered={false}
                 value={`${location.origin}/resume/${user?.address}`}
-                style={{ border: 'none', borderRadius: '4px', padding: 0, margin: 0 }}
+                style={{ border: 'none', borderRadius: '4px', padding: 0, margin: 0, minWidth: '120px', minHeight: '120px' }}
               />
             </div>
           </div>
@@ -133,16 +133,16 @@ const BusinessCard = () => {
       </div>
       <Modal
         className='p-0 m-0'
-        wrapClassName="p-0 m-0 share-card-modal"
+        wrapClassName="p-0 m-0 share-card-modal bg-transparent"
         open={open}
-        width='327px'
+        width='280px'
         title={null}
         footer={null}
         closable={false}
         centered
         closeIcon={null}
         bodyStyle={{ padding: 0 }}
-        style={{ height: '610px', padding: 0 }}
+        style={{ height: '610px', padding: 0, background: 'transparent' }}
         destroyOnClose
         onCancel={() => {
           setOpen(false)
@@ -151,10 +151,10 @@ const BusinessCard = () => {
           setOpen(false)
         }}
       >
-        <div className='w-327px min-w-327px h-610px fcc-center p-0 m-0 rounded-lg'>
+        <div className='w-280px min-w-280px h-auto fcc-center p-0 m-0 rounded-lg'>
           {loading && <div><ShowMoreLoading /></div>}
-          {(!loading && resumeCardUrl) && <img src={resumeCardUrl} alt="resume card" className='w-full h-full rounded-lg' />}
-          {(!loading && resumeCardUrl) && <Button type='primary' className='absolute bottom--10' onClick={handleSave}>save</Button>}
+          {(!loading && resumeCardUrl) && <img src={resumeCardUrl} alt="resume card" className='w-full h-full rounded-lg mb-16px' />}
+          {(!loading && resumeCardUrl) && <Button type='primary' className='absolute bottom--10' style={{height: '40px', width: '280px'}} onClick={handleSave}>save</Button>}
         </div>
       </Modal>
     </>
