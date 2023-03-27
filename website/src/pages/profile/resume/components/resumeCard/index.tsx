@@ -2,12 +2,10 @@ import React from 'react'
 import Image from 'antd/es/image'
 import Modal from 'antd/es/modal'
 import { DeleteOutlined, EditOutlined, ExclamationCircleFilled } from '@ant-design/icons'
-import VerifiedIcon from '@mui/icons-material/Verified'
 import Divider from 'antd/es/divider'
 import { useNavigate } from 'react-router'
 import fallbackImage from '~/assets/images/fallbackImage'
 import type { ResumeCardInput } from '../../types'
-import { BlockType } from '../../enum'
 import { isMobile } from '~/utils/ua'
 
 const { confirm } = Modal
@@ -48,9 +46,9 @@ const ResumeCard = (input: ResumeCardInput) => {
   }
 
   return (
-    <div className={`${isMobile() ? '' : 'pt-4 hover:bg-gray-50 '} md:px-4 rounded-md w-full`}>
+    <div className={`${isMobile() ? '' : 'pt-4 '} md:px-4 rounded-md w-full`}>
       {/* Title */}
-      <div className={`${isMobile() ? 'mb-20px' : ''} frc-between flex-wrap mb-2`}>
+      <div className={`frc-between flex-wrap mb-20px`}>
         {/* 展示用户编辑的项目和role */}
         {(data?.project && data?.role) && <div className='font-ArchivoNarrow-Medium my-2 text-20px frc-start'>
           {/* {data?.project?.icon && <img className='w-24px h-24px rounded-full mr-1' alt="project.icon" src={data?.project?.icon} />} */}
@@ -60,7 +58,7 @@ const ResumeCard = (input: ResumeCardInput) => {
         {/* 兼容旧数据 */}
         {!(data?.project && data?.role) && <div className="font-bold my-2 text-20px">{data.title}</div>}
         {/* Period */}
-        <div className={`${isMobile() ? 'text-16px text-#18181865' : 'italic'} whitespace-nowrap`}>
+        <div className={`text-16px text-#18181865 whitespace-nowrap`}>
           {data.startTime?.year()} {data.startTime?.month() !== undefined ? monthNames[data.startTime?.month()] : ''}
           {' - '}
           {data.isPresent && 'Currently working here'}
@@ -71,15 +69,15 @@ const ResumeCard = (input: ResumeCardInput) => {
       {/* Descriptions */}
       <div className="mt-1 whitespace-pre-line overflow-auto text-18px text-#18181865 mb-24px">{data.description}</div>
       {/* SBTs Title */}
-      {(data.proofs && data.proofs.length > 0) && <div className={`${isMobile() ? 'text-18px text-#8181885 mb-16px' : 'font-bold mt-8 mb-2'} `}>Proofs of Commitments</div>}
+      {(data.proofs && data.proofs.length > 0) && <div className={`${isMobile() ? 'mb-16px' : 'mt-8 mb-2'} font-ArchivoNarrow-Medium text-18px text-#18181895`}>Proofs of Commitments</div>}
       {/* Proofs of Work */}
       <div className="flex justify-between w-full">
-        <div className={`${isMobile() ? 'flex-unwrap frc-center ' : 'frc-start flex-wrap'} flex-1 w-full`}>
+        <div className={`${isMobile() ? 'flex-unwrap' : 'flex-wrap'} frc-center flex-1 w-full`}>
           {data.proofs &&
             data.proofs.map(item => (
               <div
                 key={`sbt-${item.address}-${item.tokenId}`}
-                className={`${isMobile() ? 'flex-1 frc-center max-w-110px max-h-110px' : 'w-[110px] frc-start'}  mr-2 relative`}>
+                className={`${isMobile() ? 'max-w-110px max-h-110px' : 'w-120px max-w-120px'} flex-1 frc-center mr-2 relative`}>
                 <div
                   className="frc-center w-full h-full hover:cursor-pointer p-1 border border-white hover:border-#6525FF"
                   onClick={() => navigate(`/sbtIntro/${item.address}/${item.tokenId}`)}
@@ -88,9 +86,9 @@ const ResumeCard = (input: ResumeCardInput) => {
                     className={isMobile() ? 'w-full h-full min-w-48px min-h-48px max-w-160px max-h-160px rounded-6px aspect-[1/1]' : 'w-100px h-100px'}
                     style={{borderRadius: '4px'}}
                     src={item.img} fallback={fallbackImage} preview={false} />
-                  {!isMobile() && <div style={{ position: 'absolute', bottom: '0px', right: '0px' }}>
+                  {/* {!isMobile() && <div style={{ position: 'absolute', bottom: '0px', right: '0px' }}>
                     <VerifiedIcon style={{ color: blockType === BlockType.CareerBlockType ? '#009411' : '#266DE0', fontSize: 22 }} />
-                  </div>}
+                  </div>} */}
                 </div>
               </div>
             ))}
