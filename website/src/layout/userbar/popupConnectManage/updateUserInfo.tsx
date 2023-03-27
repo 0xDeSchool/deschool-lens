@@ -19,8 +19,7 @@ const UpdateUsername: React.FC = () => {
   const [bio, setBio] = useState<string>(user?.bio || '')
   const [uploading, setUploading] = useState<boolean>(false)
 
-  useEffect(() => {
-    // 没有登录的情况下，重制信息
+  const initData = () => {
     if (!user?.address) {
       setAvatar('')
       setUsername('')
@@ -30,6 +29,10 @@ const UpdateUsername: React.FC = () => {
       setAvatar(user?.avatar || '')
       setBio(user?.bio || '')
     }
+  }
+  useEffect(() => {
+    // 没有登录的情况下，重制信息
+    initData()
   }, [user?.address])
   // 检查 username 是否合法
   const checkUsername = () => {
@@ -70,6 +73,11 @@ const UpdateUsername: React.FC = () => {
     setEdit(!edit)
   }
 
+  const handleCancel = () => {
+    initData()
+    setEdit(false)
+  }
+
   return (
     <div className='frs-start gap-1 px-8 pt-12'>
       {!edit && <Avatar size={68} alt="user avatar" className='drop-shadow-xl shadow-lg' src={user && user.avatar || DEFAULT_AVATAR} />}
@@ -108,7 +116,7 @@ const UpdateUsername: React.FC = () => {
             className="ml-12 mr-2 frc-center"
             onClick={() => handleToggle()}>{edit ? 'SAVE' : 'EDIT'}</Button>
           {edit && <Button size='small' disabled={!user?.address}
-            onClick={() => setEdit(false)}>CANCEL</Button>}
+            onClick={() => handleCancel()}>CANCEL</Button>}
         </div>
         <TextArea
           rows={3}

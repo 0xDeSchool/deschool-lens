@@ -26,6 +26,7 @@ const ContactBoard: React.FC = () => {
   const [loading, setLoading] = useState(false)
   const [edit, setEdit] = useState(false)
   const [contacts, setContacts] = useState<Contact[]>([])
+  const [contactsPrev, setContactsPrev] = useState<Contact[]>([])
 
   useEffect(() => {
     if (user && user.contacts) {
@@ -83,10 +84,16 @@ const ContactBoard: React.FC = () => {
 
   const handleToggle = () => {
     if (!edit) {
+      setContactsPrev(JSON.parse(JSON.stringify(contacts)))
       setEdit(true)
     } else {
       handleUserInfoSubmit()
     }
+  }
+
+  const handleCancel = () => {
+    setContacts(contactsPrev)
+    setEdit(false)
   }
 
   return (
@@ -101,7 +108,7 @@ const ContactBoard: React.FC = () => {
           className="ml-12 mr-2 frc-center"
           onClick={() => handleToggle()}>{edit ? 'SAVE' : 'EDIT'}</Button>
         {edit && <Button size='small' disabled={!user?.address}
-          onClick={() => setEdit(false)}>CANCEL</Button>}
+          onClick={() => handleCancel()}>CANCEL</Button>}
       </div>
       <div className='font-ArchivoNarrow fcc-start'>
         {contacts && contacts.map((item, index) => (

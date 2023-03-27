@@ -110,7 +110,7 @@ const BusinessCard = () => {
                   {item.contactType === 'Twitter' && <TwitterOutlined style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
                   {item.contactType === 'Wechat' && <WechatOutlined style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
                   {item.contactType === 'Email' && <EmailIcon style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
-                  <span className='text-14px ml-1 mt--12px max-w-104px break-all align-middle'>{`${item.contactType === 'Twitter' ? "@" : ""}${item.url}`}</span>
+                  <span className='text-14px ml-1 mt--12px max-w-104px break-all align-middle'>{`${item.contactType === 'Twitter' ? "@" : ""}${item.name}`}</span>
                 </div>
               ))}
             </div>
@@ -126,8 +126,8 @@ const BusinessCard = () => {
             </div>
           </div>
           <div className='w-full frc-center align-middle mb-4 mt-6'>
-            <img src={IconDeschool} alt="deschool" className='inline' width={24} height={24} />
-            <span className="ml-2 text-white inline text-16px mt--10px font-ArchivoNarrow">DeSchool & Booth</span>
+            <img src={IconDeschool} alt="deschool" className='inline' width={12} height={12} />
+            <span className="ml-2 text-white inline text-8px mt--6px font-ArchivoNarrow">DeSchool & Booth</span>
           </div>
         </div>
       </div>
