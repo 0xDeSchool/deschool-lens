@@ -108,8 +108,6 @@ const ResumeCard = (input: ResumeCardInput) => {
           </div>
         </div>}
       </div>
-      {/* {(data.proofs && data?.proofs?.length > 0) && <div className='w-full frc-center text-18px text-#18181885'>Proofs of Commitments</div>} */}
-
       {/* Divider */}
       <Divider />
     </div>
