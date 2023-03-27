@@ -151,7 +151,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
           <div className="ml-2 text-white text-16px font-ArchivoNarrow">DeSchool & Booth</div>
         </div>
         {visitCase === 0 && (<div className='frc-center w-full mb--20px'><BusinessCard /></div>)}
-        {routeAddress && (
+        {(routeAddress && account?.address) && (
           <div className="p-10 text-right">
             <Button
               className="purple-border-button px-2 py-1 font-ArchivoNarrow text-white"
