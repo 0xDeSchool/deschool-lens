@@ -93,7 +93,7 @@ const UserBar = () => {
 
   // 路由导航
   const handleNavClick = (path: string, event: any) => {
-    if (mobile) {
+    if (mobile && path !== '/profile/resume') {
       setOpen(true)
       return
     }
@@ -105,10 +105,8 @@ const UserBar = () => {
     <div className="select-none fixed z-4 w-full bg-#FFFFFF8A border-b-1px border-#1818180F" style={{ backdropFilter: 'blur(12px)' }}>
       <div className="flex flex-row items-center justify-between w-auto leading-8 py-4 px-6 xl:px-8 text-xl">
         {/* logo */}
-        <div style={{ width: '174px', height: '26px', lineHeight: '32px' }}>
-          <NavLink to="/landing">
-            <Logo />
-          </NavLink>
+        <div style={{ width: '174px', height: '26px', lineHeight: '32px' }} onClick={handleLanding}>
+          <Logo />
         </div>
         {/* navs */}
         {currentWidth <= 1200 ? (
