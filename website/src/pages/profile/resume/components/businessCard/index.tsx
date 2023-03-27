@@ -7,6 +7,7 @@ import IconDeschool from '~/assets/icons/deschool.svg'
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { getShortAddress } from '~/utils/format';
 import { useProfileResume } from '~/context/profile';
+import ResumeContacts from '~/components/contacts';
 
 
 const BusinessCard = () => {
@@ -21,27 +22,7 @@ const BusinessCard = () => {
     <div className='mx-auto mb-4 rounded-1 w-full min-w-327px bg-gradient-to-b from-#6525FF to-#9163FE text-white'>
       <div className='relative w-full mb-16px'>
         <img crossOrigin={user?.avatar?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"} src={user?.avatar} alt={user?.displayName} className="w-full aspect-[1/1]" />
-        <div className='absolute left-0 bottom-0 right-0 z-1 w-full h-48px frc-center gap-4 bg-#18181826 backdrop-blur-sm'>
-          {contacts?.map((item, index) => (
-            <div key={item.contactType} className="frc-center gap-4 ">
-              <CopyToClipboard
-                text={item.name}
-                onCopy={() => {
-                  message.success('Copied')
-                }}
-              >
-                <div className="frc-center">
-                  {item.contactType === 'Discord' && <DiscordIcon style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
-                  {item.contactType === 'Twitter' && <TwitterOutlined style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
-                  {item.contactType === 'Wechat' && <WechatOutlined style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
-                  {item.contactType === 'Email' && <EmailIcon style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
-                  {/* <span className='ml-2 text-14px'>@{item.name}</span> */}
-                </div>
-              </CopyToClipboard>
-              {index < contacts.length - 1 && <div className='w-1px h-13px bg-#FFFFFF73' />}
-            </div>
-          ))}
-        </div>
+        <ResumeContacts contacts={contacts}/>
       </div>
       <div className='text-28px font-Anton px-12px mb-4'>
         {/* eslint-disable-next-line no-nested-ternary */}

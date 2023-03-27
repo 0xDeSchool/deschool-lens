@@ -6,15 +6,13 @@ import { useTranslation } from 'react-i18next'
 import { followUser, unfollowUser } from '~/api/booth/follow'
 import Button from 'antd/es/button';
 import QRCode from 'antd/es/qrcode';
-import CopyToClipboard from 'react-copy-to-clipboard';
-import { DiscordIcon, EmailIcon } from '~/components/icon';
-import { TwitterOutlined, WechatOutlined } from '@ant-design/icons';
 import IconDeschool from '~/assets/icons/deschool.svg'
 import { getShortAddress } from '~/utils/format';
 import BusinessCard from '../resume/components/businessCard/genCard';
 import DeschoolFollowersModal from './deschoolModal'
 import { useProfileResume } from '~/context/profile';
 import { useAccount } from '~/account';
+import ResumeContacts from '~/components/contacts'
 
 type DeschoolCardProps = {
   visitCase: 0 | 1 | -1 // 0-自己访问自己 1-自己访问别人
@@ -106,27 +104,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
             src={user?.avatar}
             alt={user?.displayName}
             className="w-full aspect-[1/1] rounded-t-1" />
-          <div className='absolute left-0 bottom-0 right-0 z-1 w-full frc-center gap-4 h-48px bg-#18181826 backdrop-blur-sm'>
-            {contacts?.map((item, index) => (
-              <div key={item.contactType} className="frc-center gap-4 ">
-                <CopyToClipboard
-                  text={item.url!}
-                  onCopy={() => {
-                    message.success('Copied')
-                  }}
-                >
-                  <div className="frc-center cursor-pointer">
-                    {item.contactType === 'Discord' && <DiscordIcon style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
-                    {item.contactType === 'Twitter' && <TwitterOutlined style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
-                    {item.contactType === 'Wechat' && <WechatOutlined style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
-                    {item.contactType === 'Email' && <EmailIcon style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
-                    {/* <span className='ml-2 text-14px'>@{item.name}</span> */}
-                  </div>
-                </CopyToClipboard>
-                {index + 1 < (contacts?.length || 0) && <div className='w-1px h-13px bg-#FFFFFF73' />}
-              </div>
-            ))}
-          </div>
+          <ResumeContacts contacts={contacts}/>
         </div>
         <div className='text-28px font-Anton px-12px mb-4'>
           {/* eslint-disable-next-line no-nested-ternary */}
