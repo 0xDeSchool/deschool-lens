@@ -19,6 +19,8 @@ const ResumeContacts: React.FC<ResumeContactsProps> = (props) => {
     message.success('Copied')
   }
 
+  const debounce = useDebounce(onCopySuccess, 100, [])
+
   return <div className='absolute left-0 bottom-0 right-0 z-1 w-full h-48px frc-center gap-4 bg-#18181826 backdrop-blur-sm'>
     {contacts?.map((item, index) => (
       <div key={item.contactType} className="frc-center gap-4 ">
@@ -26,13 +28,13 @@ const ResumeContacts: React.FC<ResumeContactsProps> = (props) => {
         {/* {item.contactType === 'Discord' && <a href={item.url} target="_blank" className="frc-center gap-4"><DiscordIcon style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} /></a>} */}
         {(item.contactType === 'Discord') && <CopyToClipboard
           text={item.name}
-          onCopy={onCopySuccess}
+          onCopy={debounce}
         >
           <DiscordIcon style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />
         </CopyToClipboard>}
         {item.contactType === 'Wechat' && <CopyToClipboard
           text={item.name}
-          onCopy={onCopySuccess}
+          onCopy={debounce}
         >
           <WechatOutlined style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />
         </CopyToClipboard>}
