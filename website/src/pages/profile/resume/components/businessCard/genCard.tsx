@@ -45,7 +45,13 @@ const BusinessCard = () => {
     try {
       // await cacheImage(user?.avatar || '')
       // await cacheImage(project?.icon || '')
-      html2canvas(document.querySelector('.business-card')!, { useCORS: true }).then((canvas) => {
+      html2canvas(document.querySelector('.business-card')!, {
+        useCORS: true,
+        backgroundColor: '#6525FF',
+        width: 326,
+        x: 1,
+        y: -2,
+      }).then((canvas) => {
         let tempBlob: any
         canvas.toBlob((blob) => {
           if (blob === null) return;
