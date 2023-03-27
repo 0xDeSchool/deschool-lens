@@ -150,7 +150,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
           <img src={IconDeschool} alt="deschool" width={24} height={24} />
           <div className="ml-2 text-white text-16px font-ArchivoNarrow">DeSchool & Booth</div>
         </div>
-        {visitCase === 0 && (<div className='frc-center w-full mb--20px'><BusinessCard /></div>)}
+        {true  && (<div className='frc-center w-full mb--20px'><BusinessCard /></div>)}
         {(routeAddress && account?.address) && (
           <div className="p-10 text-right">
             <Button

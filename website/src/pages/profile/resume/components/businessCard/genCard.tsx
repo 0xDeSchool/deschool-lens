@@ -78,7 +78,7 @@ const BusinessCard = () => {
   return (
     <>
       <div>
-        <Button type='text' style={{ color: '#ffffff' }} onClick={handleOk}>Generate</Button>
+        <Button size='large' type='text' style={{ color: '#ffffff' }} onClick={handleOk}>Generate</Button>
       </div>
       <div className='absolute z--1'>
         <div className='business-card w-327px min-w-327px h-fit bg-gradient-to-b fcs-center from-#6525FF to-#9163FEdd text-white'>
@@ -110,7 +110,7 @@ const BusinessCard = () => {
                   {item.contactType === 'Twitter' && <TwitterOutlined style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
                   {item.contactType === 'Wechat' && <WechatOutlined style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
                   {item.contactType === 'Email' && <EmailIcon style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
-                  <span className='text-14px ml-1 mt--12px max-w-104px break-all align-middle'>{`${item.contactType === 'Twitter' ? "@" : ""}${item.name}`}</span>
+                  <span className='text-14px ml-1 mt--12px max-w-104px break-all align-middle'>{`${item.contactType === 'Twitter' ? "@" : ""}${item.url}`}</span>
                 </div>
               ))}
             </div>

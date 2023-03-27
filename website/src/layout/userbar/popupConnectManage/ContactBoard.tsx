@@ -6,7 +6,6 @@ import { getUserManager, useAccount } from '~/account'
 import { EditOutlined } from '@ant-design/icons'
 import type { Contact } from '~/api/booth/types'
 import { updateUserInfo } from '~/api/booth/account'
-import { useProfileResume } from '~/context/profile'
 
 const contractOptions: Contact[] = [
   { contactType: 'Twitter', name: '' },
@@ -17,7 +16,7 @@ const contractOptions: Contact[] = [
 
 const placeholders: { [key: string]: string } = {
   "Twitter": 'https://twitter.com/...',
-  "Discord": 'https://discord.gg/...',
+  "Discord": 'Discord ID',
   "Wechat": 'Wechat Username',
   "Email": 'Email',
 }
@@ -44,7 +43,7 @@ const ContactBoard: React.FC = () => {
           item.name = item.url?.split('twitter.com/')?.[1]
           break
         case 'Discord':
-          item.name = item.url?.split('discord.gg/')?.[1]
+          item.name = item.url
           break
         case 'Wechat':
           item.name = item.url
