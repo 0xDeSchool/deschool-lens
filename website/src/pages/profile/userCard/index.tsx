@@ -40,7 +40,7 @@ const UserCard = (props: UserCardProps) => {
   }, [routeAddress, user])
 
   return (
-    <div className="w-full pb-1 shadow-md rounded-xl">
+    <div className="w-full shadow-md rounded-xl">
       <div className="relative w-full frc-center">
         <div className='absolute z-1 top-2 left-2 right-2'><PlatformBoard change={setProfileType}/></div>
         {profileType !== PlatformType.DESCHOOL ? (<Image

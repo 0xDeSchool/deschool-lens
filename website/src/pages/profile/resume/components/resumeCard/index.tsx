@@ -84,7 +84,7 @@ const ResumeCard = (input: ResumeCardInput) => {
                   className="frc-center w-full h-full hover:cursor-pointer p-1 border border-white hover:border-#6525FF"
                   onClick={() => navigate(`/sbtIntro/${item.address}/${item.tokenId}`)}
                 >
-                  <img
+                  <Image
                     className={isMobile() ? 'w-full h-full min-w-48px min-h-48px max-w-160px max-h-160px rounded-6px aspect-[1/1]' : 'w-100px h-100px'}
                     style={{borderRadius: '4px'}}
                     src={item.img} fallback={fallbackImage} preview={false} />

@@ -97,7 +97,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
 
   return (
     <>
-      <div className='h-100% mx-auto mb-4 rounded-1 w-full min-w-327px bg-gradient-to-b from-#6525FF to-#9163FE text-white'>
+      <div className='h-100% mx-auto pb-4 rounded-1 w-full min-w-327px bg-gradient-to-b from-#6525FF to-#9163FE text-white'>
         <div className='relative w-full mb-16px'>
           <img
             crossOrigin={user?.avatar?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"}

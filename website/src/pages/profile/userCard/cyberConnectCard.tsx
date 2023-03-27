@@ -108,7 +108,7 @@ const CyberCard = (props: CyberCardProps) => {
   };
 
   return (
-    <div>
+    <div className='pb-1'>
       <div className='relative w-full frc-center'>
         <LensAvatar avatarUrl={userProfile?.avatar} />
       </div>
