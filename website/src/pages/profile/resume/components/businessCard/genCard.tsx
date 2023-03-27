@@ -105,12 +105,12 @@ const BusinessCard = () => {
           <div className='w-full frc-center px-16px gap-16px'>
             <div className='w-full align-middle'>
               {contacts?.map((item) => (
-                <div key={item.contactType} className="frc-start align-middle h-36px leading-36px px-2 rounded-4px border-1 border-#FFFFFF20 mt-8px first:mt-0">
+                <div key={item.contactType} className="frc-start align-middle h-36px px-8px rounded-4px border-1 border-#FFFFFF20 mt-8px first:mt-0">
                   {item.contactType === 'Discord' && <DiscordIcon style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
                   {item.contactType === 'Twitter' && <TwitterOutlined style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
                   {item.contactType === 'Wechat' && <WechatOutlined style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
                   {item.contactType === 'Email' && <EmailIcon style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />}
-                  <span className='text-9px ml-8px mt--6px max-w-104px break-all align-middle'>{`${item.name}`}</span>
+                  <span className='text-9px ml-8px mt--6px break-words align-middle'>{`${item.name}`}</span>
                 </div>
               ))}
             </div>
