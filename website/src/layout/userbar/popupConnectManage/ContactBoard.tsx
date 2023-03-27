@@ -2,11 +2,11 @@ import Input from 'antd/es/input'
 import React, { useEffect, useState } from 'react'
 
 import Button from 'antd/es/button'
-import { useAccount } from '~/account'
+import { getUserManager, useAccount } from '~/account'
 import { EditOutlined } from '@ant-design/icons'
 import type { Contact } from '~/api/booth/types'
 import { updateUserInfo } from '~/api/booth/account'
-import { parse } from 'path'
+import { useProfileResume } from '~/context/profile'
 
 const contractOptions: Contact[] = [
   { contactType: 'Twitter', name: '' },
@@ -66,6 +66,7 @@ const ContactBoard: React.FC = () => {
         ...user,
         contacts,
       })
+      getUserManager().tryAutoLogin()
     } catch (e) {
       console.log('error', e)
     } finally {

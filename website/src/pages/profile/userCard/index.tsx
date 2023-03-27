@@ -24,14 +24,13 @@ const UserCard = (props: UserCardProps) => {
   const user = useAccount()
   const [visitCase, setVisitCase] = useState<VisitType>(-1) // 0-自己访问自己 1-自己访问别人 -1-没登录访问自己
   const [profileType, setProfileType] = useState<PlatformType>(PlatformType.DESCHOOL)
-
   useEffect(() => {
     // 没登录访问自己
-    if (user?.address) {
+    if (!user?.address && !routeAddress) {
       setVisitCase(-1)
     }
     // 访问自己的空间
-    if (!routeAddress || (routeAddress && routeAddress === user?.address)) {
+    else if ((!routeAddress && user?.address) || (routeAddress && routeAddress === user?.address)) {
       setVisitCase(0)
     }
     // 访问他人的空间

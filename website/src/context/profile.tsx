@@ -151,6 +151,9 @@ export const ProfileContextProvider = ({ children }: { children: ReactElement })
   const initData = () => {
     const currentAddress = address || account?.address
     try {
+      if (loading) {
+        return
+      }
       setLoading(true)
       if (currentAddress) {
         fetchUserResume(currentAddress)

@@ -143,13 +143,13 @@ const DeschoolCard = (props: DeschoolCardProps) => {
               <div className='font-ArchivoNarrow-Semibold'>{project?.name}</div>
             </div>
           </div>
-          <QRCode
+          {visitCase !== -1 && <QRCode
             size={120}
             color="#333333"
             bordered={false}
             value={`${location.origin}/resume/${user?.address}`}
             style={{ border: 'none', borderRadius: '4px', padding: 0, margin: 0 }}
-          />
+          />}
         </div>
         <div className='w-full px-12px frc-center mb-24px'>
           <div className='w-full h-52px frc-center rounded-4px bg-white'>
