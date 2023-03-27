@@ -1,6 +1,7 @@
 import http from '~/api/go/http'
 import type { UserInfoStruct } from '~/hooks/deschool'
 import type { Creator } from '~/lib/types/app'
+import { SBTInfo } from './types'
 
 /**
  * @method getOtherUsersProfile
@@ -35,7 +36,7 @@ export async function getUserProfile(userId?: string): Promise<UserInfoStruct | 
  * @param {Object}
  * @returns {Object}  Promise
  */
-export async function getUserSBTs(address?: string) {
+export async function getUserSBTs(address?: string): Promise<SBTInfo[]> {
   return address ? http.get(`/account/my-sbt?addr=${address}`) : http.get(`/account/my-sbt`)
 }
 
