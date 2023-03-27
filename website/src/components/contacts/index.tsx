@@ -18,7 +18,15 @@ const ResumeContacts: React.FC<ResumeContactsProps> = (props) => {
     {contacts?.map((item, index) => (
       <div key={item.contactType} className="frc-center gap-4 ">
         {item.contactType === 'Twitter' && <a href={item.url} target="_blank" className="frc-center gap-4"><TwitterOutlined style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} /></a>}
-        {item.contactType === 'Discord' && <a href={item.url} target="_blank" className="frc-center gap-4"><DiscordIcon style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} /></a>}
+        {/* {item.contactType === 'Discord' && <a href={item.url} target="_blank" className="frc-center gap-4"><DiscordIcon style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} /></a>} */}
+        {(item.contactType === 'Discord') && <CopyToClipboard
+          text={item.name}
+          onCopy={() => {
+            message.success('Copied')
+          }}
+        >
+          <DiscordIcon style={{ fontSize: 18, color: 'white', height: 18, width: 18 }} />
+        </CopyToClipboard>}
         {item.contactType === 'Wechat' && <CopyToClipboard
           text={item.name}
           onCopy={() => {
