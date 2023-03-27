@@ -72,12 +72,12 @@ const ResumeCard = (input: ResumeCardInput) => {
       {(data.proofs && data.proofs.length > 0) && <div className={`${isMobile() ? 'mb-16px' : 'mt-8 mb-2'} font-ArchivoNarrow-Medium text-18px text-#18181895`}>Proofs of Commitments</div>}
       {/* Proofs of Work */}
       <div className="flex justify-between w-full">
-        <div className={`${isMobile() ? 'flex-unwrap' : 'flex-wrap'} frc-center flex-1 w-full`}>
+        <div className={`grid ${isMobile() ? 'grid-cols-3' : 'grid-cols-3'} gap-4 w-full`}>
           {data.proofs &&
             data.proofs.map(item => (
               <div
                 key={`sbt-${item.address}-${item.tokenId}`}
-                className={`${isMobile() ? 'max-w-110px max-h-110px' : 'w-120px max-w-120px'} flex-1 frc-center mr-2 relative`}>
+                className={`${isMobile() ? 'max-w-110px max-h-110px' : 'w-160px max-w-160px'} flex-1 frc-center mr-2 relative`}>
                 <div
                   className="frc-center w-full h-full hover:cursor-pointer p-1 border border-white hover:border-#6525FF"
                   onClick={() => navigate(`/sbtIntro/${item.address}/${item.tokenId}`)}

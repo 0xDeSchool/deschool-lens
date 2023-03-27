@@ -484,7 +484,7 @@ const Resume = () => {
             isEditResume={isEditResume}
           />
 
-          {isMobile() && <div className='frc-center font-ArchivoNarrow-Medium text-16px text-#18181865'>Supported by DeSchool</div>}
+          <div className='frc-center font-ArchivoNarrow-Medium text-16px text-#18181865 mt-16px'>Supported by <a href='https://deschool.app/' target="_blank" className='ml-4px text-#6525FF'>DeSchool</a></div>
 
           {/* 一段经历编辑器 */}
           <CardEditor
