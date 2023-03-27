@@ -27,7 +27,7 @@ const ResumeBlock = (input: ResumeBlockInput) => {
           transition,
         }}
         {...attributes}
-        className="frc-center text-left text-xl md:px-2 md:bg-[#D9D9D933] mt-3 first:mt-0"
+        className="frc-center text-left text-xl md:px-2 mt-3 first:mt-0"
       >
         {/* 排序条件：编辑 & 数组 > 1 */}
         {isEditResume && dataArr.length > 1 && (
