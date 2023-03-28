@@ -11,15 +11,15 @@ type ResumeContactsProps = {
 const ResumeContacts: React.FC<ResumeContactsProps> = (props) => {
   const { contacts } = props
 
-  if (!(contacts?.length > 0)) {
-    return null
-  }
-
   const onCopySuccess = () => {
     message.success('Copied')
   }
 
   const debounce = useDebounce(onCopySuccess, 100, [])
+
+  if (!(contacts?.length > 0)) {
+    return <div></div>
+  }
 
   return <div className='absolute left-0 bottom-0 right-0 z-1 w-full h-48px frc-center gap-4 bg-#18181826 backdrop-blur-sm'>
     {contacts?.map((item, index) => (
