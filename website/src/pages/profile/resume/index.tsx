@@ -458,7 +458,7 @@ const Resume = () => {
             </Button>
           )}
           {visitCase === 0 && <CopyToClipboard
-            text={`${location.origin}/profile/${user?.address}/resume/${user?.id}`}
+            text={`${location.origin}/resume/${user?.address}`}
             onCopy={() => {
               message.success('Copied')
             }}
