@@ -75,6 +75,10 @@ const ProjectSelector: React.FC<ProjectSelectorProps> = (props) => {
     fetchResumeProject()
   }, [])
 
+  useEffect(() => {
+    setValue(defaultValue?.name || null)
+  }, [defaultValue])
+
   return (
     <>
       <Select

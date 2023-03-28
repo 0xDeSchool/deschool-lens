@@ -98,6 +98,7 @@ specifiers:
   rc-virtual-list: ^3.4.13
   react: ^18.2.0
   react-copy-to-clipboard: ^5.1.0
+  react-device-detect: ^2.2.3
   react-dnd: ^16.0.1
   react-dnd-html5-backend: ^16.0.1
   react-dom: ^18.2.0
@@ -184,6 +185,7 @@ dependencies:
   rc-virtual-list: 3.4.13_biqbaboplfbrettd7655fr4n2y
   react: 18.2.0
   react-copy-to-clipboard: 5.1.0_react@18.2.0
+  react-device-detect: 2.2.3_biqbaboplfbrettd7655fr4n2y
   react-dnd: 16.0.1_glye3pnrizqg4gu2xfqsafbxou
   react-dnd-html5-backend: 16.0.1
   react-dom: 18.2.0_react@18.2.0
@@ -227,7 +229,7 @@ devDependencies:
   '@typescript-eslint/parser': 5.48.1_iukboom6ndih5an6iafl45j2fe
   '@vitejs/plugin-legacy': 3.0.1_terser@5.16.1+vite@4.0.4
   '@vitejs/plugin-react': 3.0.1_vite@4.0.4
-  '@vitest/ui': 0.29.2
+  '@vitest/ui': 0.29.7
   array-move: 4.0.0
   autoprefixer: 10.4.13_postcss@8.4.21
   conventional-changelog-cli: 2.2.2
@@ -260,7 +262,7 @@ devDependencies:
   tsc-files: 1.1.3_typescript@4.9.4
   tsx: 3.12.2
   typescript: 4.9.4
-  vitest: 0.29.2_zawebjhdjqaoj25i5yovbn4wxa
+  vitest: 0.29.7_ybmsqyye6nziinhrgtdyz7sruy
 
 packages:
 
@@ -6237,30 +6239,30 @@ packages:
       - supports-color
     dev: true
 
-  /@vitest/expect/0.29.2:
-    resolution: {integrity: sha512-wjrdHB2ANTch3XKRhjWZN0UueFocH0cQbi2tR5Jtq60Nb3YOSmakjdAvUa2JFBu/o8Vjhj5cYbcMXkZxn1NzmA==}
+  /@vitest/expect/0.29.7:
+    resolution: {integrity: sha512-UtG0tW0DP6b3N8aw7PHmweKDsvPv4wjGvrVZW7OSxaFg76ShtVdMiMcUkZJgCE8QWUmhwaM0aQhbbVLo4F4pkA==}
     dependencies:
-      '@vitest/spy': 0.29.2
-      '@vitest/utils': 0.29.2
+      '@vitest/spy': 0.29.7
+      '@vitest/utils': 0.29.7
       chai: 4.3.7
     dev: true
 
-  /@vitest/runner/0.29.2:
-    resolution: {integrity: sha512-A1P65f5+6ru36AyHWORhuQBJrOOcmDuhzl5RsaMNFe2jEkoj0faEszQS4CtPU/LxUYVIazlUtZTY0OEZmyZBnA==}
+  /@vitest/runner/0.29.7:
+    resolution: {integrity: sha512-Yt0+csM945+odOx4rjZSjibQfl2ymxqVsmYz6sO2fiO5RGPYDFCo60JF6tLL9pz4G/kjY4irUxadeB1XT+H1jg==}
     dependencies:
-      '@vitest/utils': 0.29.2
+      '@vitest/utils': 0.29.7
       p-limit: 4.0.0
       pathe: 1.1.0
     dev: true
 
-  /@vitest/spy/0.29.2:
-    resolution: {integrity: sha512-Hc44ft5kaAytlGL2PyFwdAsufjbdOvHklwjNy/gy/saRbg9Kfkxfh+PklLm1H2Ib/p586RkQeNFKYuJInUssyw==}
+  /@vitest/spy/0.29.7:
+    resolution: {integrity: sha512-IalL0iO6A6Xz8hthR8sctk6ZS//zVBX48EiNwQguYACdgdei9ZhwMaBFV70mpmeYAFCRAm+DpoFHM5470Im78A==}
     dependencies:
       tinyspy: 1.0.2
     dev: true
 
-  /@vitest/ui/0.29.2:
-    resolution: {integrity: sha512-GpCExCMptrS1z3Xf6kz35Xdvjc2eTBy9OIIwW3HjePVxw9Q++ZoEaIBVimRTTGzSe40XiAI/ZyR0H0Ya9brqLA==}
+  /@vitest/ui/0.29.7:
+    resolution: {integrity: sha512-KeOztcAldlFU5i8DKCQcmGrih1dVowurZy/9iPz5JyQdPJzej+nW1nI4nYvc4ZmUtA8+IAe9uViqnU7IXc1RNw==}
     dependencies:
       fast-glob: 3.2.12
       flatted: 3.2.7
@@ -6269,13 +6271,12 @@ packages:
       sirv: 2.0.2
     dev: true
 
-  /@vitest/utils/0.29.2:
-    resolution: {integrity: sha512-F14/Uc+vCdclStS2KEoXJlOLAEyqRhnw0gM27iXw9bMTcyKRPJrQ+rlC6XZ125GIPvvKYMPpVxNhiou6PsEeYQ==}
+  /@vitest/utils/0.29.7:
+    resolution: {integrity: sha512-vNgGadp2eE5XKCXtZXL5UyNEDn68npSct75OC9AlELenSK0DiV1Mb9tfkwJHKjRb69iek+e79iipoJx8+s3SdA==}
     dependencies:
       cli-truncate: 3.1.0
       diff: 5.1.0
       loupe: 2.3.6
-      picocolors: 1.0.0
       pretty-format: 27.5.1
     dev: true
 
@@ -16723,6 +16724,17 @@ packages:
       react: 18.2.0
     dev: false
 
+  /react-device-detect/2.2.3_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-buYY3qrCnQVlIFHrC5UcUoAj7iANs/+srdkwsnNjI7anr3Tt7UY6MqNxtMLlr0tMBied0O49UZVK8XKs3ZIiPw==}
+    peerDependencies:
+      react: '>= 0.14.0'
+      react-dom: '>= 0.14.0'
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      ua-parser-js: 1.0.34
+    dev: false
+
   /react-dnd-html5-backend/16.0.1:
     resolution: {integrity: sha512-Wu3dw5aDJmOGw8WjH1I1/yTH+vlXEL4vmjk5p+MHxP8HuHJS1lAGeIdG/hze1AvNeXWo/JgULV87LyQOr+r5jw==}
     dependencies:
@@ -18624,8 +18636,8 @@ packages:
     resolution: {integrity: sha512-XPaBkWQJdsf3pLKJV9p4qN/S+fm2Oj8AIPo1BTUhg5oxkvm9+SVEGFdhyOz7tTdUTfvxMiAs4sp6/eZO2Ew+pw==}
     dev: false
 
-  /tinypool/0.3.1:
-    resolution: {integrity: sha512-zLA1ZXlstbU2rlpA4CIeVaqvWq41MTWqLY3FfsAXgC8+f7Pk7zroaJQxDgxn1xNudKW6Kmj4808rPFShUlIRmQ==}
+  /tinypool/0.4.0:
+    resolution: {integrity: sha512-2ksntHOKf893wSAH4z/+JbPpi92esw8Gn9N2deXX+B0EO92hexAVI9GIZZPx7P5aYo5KULfeOSt3kMOmSOy6uA==}
     engines: {node: '>=14.0.0'}
     dev: true
 
@@ -19005,6 +19017,10 @@ packages:
 
   /typical/2.6.1:
     resolution: {integrity: sha512-ofhi8kjIje6npGozTip9Fr8iecmYfEbS06i0JnIg+rh51KakryWF4+jX8lLKZVhy6N+ID45WYSFCxPOdTWCzNg==}
+    dev: false
+
+  /ua-parser-js/1.0.34:
+    resolution: {integrity: sha512-K9mwJm/DaB6mRLZfw6q8IMXipcrmuT6yfhYmwhAkuh+81sChuYstYA+znlgaflUPaYUa3odxKPKGw6Vw/lANew==}
     dev: false
 
   /ufo/0.8.6:
@@ -19419,8 +19435,8 @@ packages:
       redux: 4.2.0
     dev: false
 
-  /vite-node/0.29.2_qfz55zahqkp66vn23sxaaw3yfe:
-    resolution: {integrity: sha512-5oe1z6wzI3gkvc4yOBbDBbgpiWiApvuN4P55E8OI131JGrSuo4X3SOZrNmZYo4R8Zkze/dhi572blX0zc+6SdA==}
+  /vite-node/0.29.7_qfz55zahqkp66vn23sxaaw3yfe:
+    resolution: {integrity: sha512-PakCZLvz37yFfUPWBnLa1OYHPCGm5v4pmRrTcFN4V/N/T3I6tyP3z07S//9w+DdeL7vVd0VSeyMZuAh+449ZWw==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
     dependencies:
@@ -19498,8 +19514,8 @@ packages:
     optionalDependencies:
       fsevents: 2.3.2
 
-  /vitest/0.29.2_zawebjhdjqaoj25i5yovbn4wxa:
-    resolution: {integrity: sha512-ydK9IGbAvoY8wkg29DQ4ivcVviCaUi3ivuPKfZEVddMTenFHUfB8EEDXQV8+RasEk1ACFLgMUqAaDuQ/Nk+mQA==}
+  /vitest/0.29.7_ybmsqyye6nziinhrgtdyz7sruy:
+    resolution: {integrity: sha512-aWinOSOu4jwTuZHkb+cCyrqQ116Q9TXaJrNKTHudKBknIpR0VplzeaOUuDF9jeZcrbtQKZQt6yrtd+eakbaxHg==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
     peerDependencies:
@@ -19508,6 +19524,8 @@ packages:
       '@vitest/ui': '*'
       happy-dom: '*'
       jsdom: '*'
+      safaridriver: '*'
+      webdriverio: '*'
     peerDependenciesMeta:
       '@edge-runtime/vm':
         optional: true
@@ -19519,15 +19537,19 @@ packages:
         optional: true
       jsdom:
         optional: true
+      safaridriver:
+        optional: true
+      webdriverio:
+        optional: true
     dependencies:
       '@types/chai': 4.3.4
       '@types/chai-subset': 1.3.3
       '@types/node': 18.11.18
-      '@vitest/expect': 0.29.2
-      '@vitest/runner': 0.29.2
-      '@vitest/spy': 0.29.2
-      '@vitest/ui': 0.29.2
-      '@vitest/utils': 0.29.2
+      '@vitest/expect': 0.29.7
+      '@vitest/runner': 0.29.7
+      '@vitest/spy': 0.29.7
+      '@vitest/ui': 0.29.7
+      '@vitest/utils': 0.29.7
       acorn: 8.8.2
       acorn-walk: 8.2.0
       cac: 6.7.14
@@ -19542,10 +19564,10 @@ packages:
       std-env: 3.3.1
       strip-literal: 1.0.0
       tinybench: 2.3.1
-      tinypool: 0.3.1
+      tinypool: 0.4.0
       tinyspy: 1.0.2
       vite: 4.0.4_qfz55zahqkp66vn23sxaaw3yfe
-      vite-node: 0.29.2_qfz55zahqkp66vn23sxaaw3yfe
+      vite-node: 0.29.7_qfz55zahqkp66vn23sxaaw3yfe
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
       - less

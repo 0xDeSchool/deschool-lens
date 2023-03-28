@@ -8,7 +8,7 @@ import { MenuOutlined } from '@ant-design/icons'
 import Drawer from 'antd/es/drawer'
 import { useLayout } from '~/context/layout'
 import './userbar.css'
-import { NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { getUserManager } from '~/account'
 import Logo from '../logo'
 import SwitchLanguage from './SwitchLanguage'
@@ -84,6 +84,7 @@ const UserBar = () => {
 
   // 跳转到首页
   const handleLanding = (e: any) => {
+    onClose()
     if (mobile) {
       setOpen(true)
       return
@@ -93,6 +94,7 @@ const UserBar = () => {
 
   // 路由导航
   const handleNavClick = (path: string, event: any) => {
+    onClose()
     if (mobile && path !== '/profile/resume') {
       setOpen(true)
       return

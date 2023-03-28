@@ -28,6 +28,7 @@ const monthNames = [
 const ResumeCard = (input: ResumeCardInput) => {
   const { isEditResume, handleDeleteCard, data, blockType, handleEditCard } = input
   const navigate = useNavigate()
+  const [open, setOpen] = React.useState(false)
 
   const showDeleteConfirm = () => {
     confirm({
@@ -45,13 +46,21 @@ const ResumeCard = (input: ResumeCardInput) => {
     })
   }
 
+  const handleNavigate = (address: string, tokenId: string) => {
+    if (isMobile()) {
+      setOpen(true)
+      return
+    }
+    navigate(`/sbtIntro/${address}/${tokenId}`)
+  }
   return (
+    <>
     <div className={`${isMobile() ? '' : 'pt-4 '} md:px-4 rounded-md w-full`}>
       {/* Title */}
       <div className={`frc-between flex-wrap mb-20px`}>
         {/* 展示用户编辑的项目和role */}
         {(data?.project && data?.role) && <div className='font-ArchivoNarrow-Medium my-2 text-20px frc-start'>
-          {/* {data?.project?.icon && <img className='w-24px h-24px rounded-full mr-1' alt="project.icon" src={data?.project?.icon} />} */}
+          {data?.project?.icon && <img className='w-24px h-24px rounded-full mr-1' alt="project.icon" src={data?.project?.icon} />}
           <span className=''>{data?.project?.name}</span>
           <span className='ml-8px font-ArchivoNarrow-Medium'>{data.role}</span>
         </div>}
@@ -80,7 +89,7 @@ const ResumeCard = (input: ResumeCardInput) => {
                 className={`${isMobile() ? 'max-w-110px max-h-110px' : 'w-160px max-w-160px'} flex-1 frc-center mr-2 relative`}>
                 <div
                   className="frc-center w-full h-full hover:cursor-pointer p-1 border border-white hover:border-#6525FF"
-                  onClick={() => navigate(`/sbtIntro/${item.address}/${item.tokenId}`)}
+                  onClick={() => handleNavigate(item.address, item.tokenId)}
                 >
                   <Image
                     className={isMobile() ? 'w-full h-full min-w-48px min-h-48px max-w-160px max-h-160px rounded-6px aspect-[1/1]' : 'w-100px h-100px'}
@@ -111,6 +120,18 @@ const ResumeCard = (input: ResumeCardInput) => {
       {/* Divider */}
       <Divider />
     </div>
+    <Modal
+      open={open}
+      onOk={() => setOpen(false)}
+      cancelButtonProps={{ style: { display: 'none' } }}
+      onCancel={() => {
+        setOpen(false)
+      }}>
+      <div className="flex flex-col items-center justify-center w-full h-full">
+        For full functionalities, please check out the desktop version of booth.ink
+      </div>
+    </Modal>
+  </>
   )
 }
 

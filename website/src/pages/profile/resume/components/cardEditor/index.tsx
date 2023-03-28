@@ -155,8 +155,7 @@ const CardEditor = (input: CardEditorInput) => {
         isPresent: originalData?.isPresent,
       })
     }
-
-  }, [originalData])
+  }, [originalData, formRef.current])
 
   return (
     <Modal title={isCreateCard ? 'Create new experience' : 'Edit experience'} open={isEditCard} onOk={onSubmit} onCancel={handleCancel}>
@@ -164,15 +163,6 @@ const CardEditor = (input: CardEditorInput) => {
         ref={formRef}
         form={form}
         name="match"
-        initialValues={{
-          title: originalData?.title,
-          project: originalData?.project,
-          role: originalData?.role,
-          stime: originalData?.startTime,
-          etime: originalData?.endTime,
-          description: originalData?.description,
-          isPresent: originalData?.isPresent,
-        }}
         layout="vertical"
       >
         <Form.Item

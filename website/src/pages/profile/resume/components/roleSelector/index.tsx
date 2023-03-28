@@ -56,6 +56,10 @@ const RoleSelector: React.FC<RoleSelectorProps> = (props) => {
     fetchProjectRole();
   }, [])
 
+  useEffect(() => {
+    setValue(defaultValue || '')
+  }, [defaultValue])
+
   return (
     <Select
       showArrow
