@@ -48,9 +48,9 @@ const BusinessCard = () => {
       html2canvas(document.querySelector('.business-card')!, {
         useCORS: true,
         backgroundColor: '#6525FF',
-        // width: 326,
-        // x: 1,
-        // y: 0,
+        width: 326,
+        x: 0.5,
+        y: -2,
       }).then((canvas) => {
         let tempBlob: any
         canvas.toBlob((blob) => {
