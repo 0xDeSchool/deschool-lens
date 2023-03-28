@@ -23,6 +23,14 @@ const placeholders: { [key: string]: string } = {
   "Email": 'Email',
 }
 
+const prefixMap: Record<string, string> = {
+  "Twitter": 'https://twitter.com/',
+  "Telegram": 'https://t.me/',
+  "Discord": '',
+  "Wechat": '',
+  "Email": '',
+}
+
 const ContactBoard: React.FC = () => {
   const user = useAccount()
   const [loading, setLoading] = useState(false)
@@ -92,6 +100,18 @@ const ContactBoard: React.FC = () => {
     setContacts(newContacts)
   }
 
+  const handleBlur = (index: number, value: string) => {
+    const newContacts = [...contacts]
+    if (newContacts[index].contactType === 'Twitter' && value?.length > 0 && !value.startsWith('https://twitter.com/')) {
+      newContacts[index].url = `https://twitter.com/${value}`
+    }
+    if (newContacts[index].contactType === 'Telegram' && value?.length > 0 && !value.startsWith('https://t.me/')) {
+      newContacts[index].url = `https://t.me/${value}`
+    }
+    parseContacts(newContacts)
+    setContacts(newContacts)
+  }
+
   const handleToggle = () => {
     if (!edit) {
       setContactsPrev(JSON.parse(JSON.stringify(contacts)))
@@ -122,19 +142,21 @@ const ContactBoard: React.FC = () => {
       </div>
       <div className='font-ArchivoNarrow fcc-start'>
         {contacts && contacts.map((item, index) => (
-            <div className='frc-start mb-1' key={item.contactType}>
-              <span className='text-gray text-14px text-right w-48px inline-block mr-2'>{item.contactType}</span>
-              <Input
-                value={item.url}
-                style={{ width: '240px' }}
-                allowClear
-                disabled={!edit || loading}
-                placeholder={placeholders[item.contactType] ? placeholders[item.contactType] : `Please input ${item.contactType}`}
-                bordered={!(!edit || loading)}
-                minLength={1}
-                onChange={(e: any) => handleUpdateContact(index, e.target.value)} />
-            </div>
-          ))}
+          <div className='frc-start mb-1' key={item.contactType}>
+            <span className='text-gray text-14px text-right w-48px inline-block mr-2'>{item.contactType}</span>
+            <Input
+              value={item.url}
+              style={{ width: '240px' }}
+              allowClear
+              disabled={!edit || loading}
+              placeholder={placeholders[item.contactType] ? placeholders[item.contactType] : `Please input ${item.contactType}`}
+              bordered={!(!edit || loading)}
+              minLength={1}
+              onChange={(e: any) => handleUpdateContact(index, e.target.value)}
+              onBlur={(e: any) => handleBlur(index, e.target.value)}
+            />
+          </div>
+        ))}
       </div>
     </div>
   )

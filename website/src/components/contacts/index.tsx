@@ -18,7 +18,7 @@ const ResumeContacts: React.FC<ResumeContactsProps> = (props) => {
 
   // email 不展示
   const contactList = useMemo(() => {
-    return contacts?.filter(item => item.contactType !== 'Email')
+    return contacts?.filter(item => item.name && item.contactType !== 'Email')
   }, [contacts])
 
   const debounce = useDebounce(onCopySuccess, 100, [])
