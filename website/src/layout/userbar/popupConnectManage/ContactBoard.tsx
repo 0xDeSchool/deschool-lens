@@ -8,14 +8,16 @@ import type { Contact } from '~/api/booth/types'
 import { updateUserInfo } from '~/api/booth/account'
 
 const contractOptions: Contact[] = [
-  { contactType: 'Twitter', name: '' },
-  { contactType: 'Discord', name: '' },
-  { contactType: 'Wechat', name: '' },
-  { contactType: 'Email', name: '' },
+  { contactType: 'Twitter', name: '', url: '' },
+  { contactType: 'Telegram', name: '', url: '' },
+  { contactType: 'Discord', name: '', url: '' },
+  { contactType: 'Wechat', name: '', url: '' },
+  { contactType: 'Email', name: '', url: '' },
 ]
 
 const placeholders: { [key: string]: string } = {
   "Twitter": 'https://twitter.com/...',
+  "Telegram": 'https://t.me/...',
   "Discord": 'Discord ID',
   "Wechat": 'Wechat Username',
   "Email": 'Email',
@@ -30,10 +32,15 @@ const ContactBoard: React.FC = () => {
 
   useEffect(() => {
     if (user && user.contacts) {
-      setContacts(user.contacts)
-    } else {
-      setContacts(contractOptions)
+      contractOptions.map(item => {
+        const contact = user?.contacts?.find(contact => contact.contactType === item.contactType)
+        if (contact) {
+          item.url = contact.url
+          item.name = contact.name
+        }
+      })
     }
+    setContacts(contractOptions)
   }, [user])
 
   const parseContacts = (contacts: Contact[]) => {
@@ -42,6 +49,9 @@ const ContactBoard: React.FC = () => {
       switch (item.contactType) {
         case 'Twitter':
           item.name = item.url?.split('twitter.com/')?.[1]
+          break
+        case 'Telegram':
+          item.name = item.url?.split('t.me/')?.[1]
           break
         case 'Discord':
           item.name = item.url
