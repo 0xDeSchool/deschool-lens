@@ -6,32 +6,43 @@ import { checkIsExpectChain, checkProvider } from '~/utils'
 import type { ethers } from 'ethers'
 import type { ProviderRpcError } from '~/auth'
 import { onAccountchanged, onChainChange, onDisconnect } from '~/auth'
-import type { TransactionMessage, WalletConfig, WalletProvider } from './wallet'
-import { isMobile } from '~/utils/ua'
+import type { TransactionMessage, WalletConfig, WalletEnable, WalletProvider } from './wallet'
+import detectEthereumProvider from '@metamask/detect-provider'
 const toHex = (num: number) => `0x${num.toString(16)}`
 
 export class MetaMaskProvider implements WalletProvider {
   config: WalletConfig
 
-  private signer: ethers.providers.JsonRpcSigner
+  get signer(): ethers.providers.JsonRpcSigner {
+    const p = checkProvider()
+    if (!p) {
+      message.error('can not get ether provider')
+    }
+    return p.getSigner()
+  }
 
   private dispose?: () => void
 
   constructor(config: WalletConfig) {
     this.config = config
-    if (!window.ethereum && !isMobile()) {
-      message.error('not Install MetaMask')
+  }
+
+  async isEnabled(): Promise<WalletEnable> {
+    const provider = await detectEthereumProvider()
+    const result: WalletEnable = { isEnabled: false }
+    if (!provider) {
+      result.message = 'not install metamask'
+      return result
     }
-    const p = checkProvider()
-    if (!p) {
-      message.error('can not get ether provider')
+    return {
+      isEnabled: true,
     }
-    this.signer = p.getSigner()
   }
 
   async getConnectAccount(): Promise<string | undefined> {
     try {
-      const acts = await window.ethereum.request({
+      const eth = await this.getEth()
+      const acts = await eth.request({
         method: 'eth_accounts',
       })
       if (acts && acts.length > 0) {
@@ -49,8 +60,9 @@ export class MetaMaskProvider implements WalletProvider {
       return true
     }
     const chainid = toHex(this.config.chain.chainId)
+    const eth = await this.getEth()
     try {
-      await window.ethereum.request({
+      await eth.request({
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: chainid }],
       })
@@ -59,7 +71,7 @@ export class MetaMaskProvider implements WalletProvider {
       if (switchError.code === 4902) {
         // eslint-disable-next-line no-useless-catch
         try {
-          await window.ethereum.request({
+          await eth.request({
             method: 'wallet_addEthereumChain',
             params: [
               {
@@ -94,6 +106,7 @@ export class MetaMaskProvider implements WalletProvider {
 
 
   async requestAccount(): Promise<string | undefined> {
+    const eth = await this.getEth()
     const isChainRight = await this.checkChain()
     if (!isChainRight) {
       return
@@ -102,7 +115,7 @@ export class MetaMaskProvider implements WalletProvider {
     if (acts) {
       return acts
     }
-    acts = await window.ethereum.request({
+    acts = await eth.request({
       method: 'eth_requestAccounts',
     })
     if (acts && acts.length > 0) {
@@ -167,6 +180,14 @@ export class MetaMaskProvider implements WalletProvider {
     if (this.config.chainChanged) {
       this.config.chainChanged(chainId)
     }
+  }
+
+  protected async getEth(): Promise<any> {
+    const enable = await this.isEnabled()
+    if (!enable.isEnabled) {
+      throw new Error(enable.message)
+    }
+    return window.ethereum
   }
 }
 

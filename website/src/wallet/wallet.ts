@@ -32,6 +32,11 @@ export type WalletConfig = {
   chainChanged?: (chain: string) => Promise<void>
 }
 
+export type WalletEnable = {
+  isEnabled: boolean
+  message?: string
+}
+
 export class Wallet {
   private provider: WalletProvider | undefined
 
