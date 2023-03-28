@@ -147,8 +147,8 @@ const DeschoolCard = (props: DeschoolCardProps) => {
           </div>
         </div>
         {visitCase === 0 && (<div className='frc-center w-full mb--20px'><BusinessCard /></div>)}
-        {(routeAddress && account?.address) && (
-          <div className="p-10 text-right">
+        {(routeAddress && account?.address && visitCase === 1) && (
+          <div className="px-10 py-4 text-right">
             <Button
               className="purple-border-button px-2 py-1 font-ArchivoNarrow text-white"
               disabled={!account || routeAddress === account?.address}
