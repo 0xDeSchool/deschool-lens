@@ -168,7 +168,7 @@ const CardEditor = (input: CardEditorInput) => {
         <Form.Item
           label='Experience Title (eg "ECO Partner", "Product Lead", etc.)' name="title"
           hidden={isCreateCard}
-          rules={[{ required: true, message: 'Please input your experience title' }]}>
+          rules={[{ required: false, message: 'Please input your experience title' }]}>
           <Input placeholder="Please input your experience title" disabled={isEditCard}/>
         </Form.Item>
         <Form.Item
