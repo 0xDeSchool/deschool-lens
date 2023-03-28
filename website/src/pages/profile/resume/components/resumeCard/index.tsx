@@ -60,8 +60,10 @@ const ResumeCard = (input: ResumeCardInput) => {
       <div className={`frc-between flex-wrap mb-20px`}>
         {/* 展示用户编辑的项目和role */}
         {(data?.project && data?.role) && <div className='font-ArchivoNarrow-Medium my-2 text-20px frc-start'>
-          {data?.project?.icon && <img className='w-24px h-24px rounded-full mr-1' alt="project.icon" src={data?.project?.icon} />}
-          <span className=''>{data?.project?.name}</span>
+          <a className='frc-start cursor-pointer' href={data?.project?.url} target='_blank'>
+            {data?.project?.icon && <img className='w-24px h-24px rounded-full mr-1' alt="project.icon" src={data?.project?.icon} />}
+            <span className=''>{data?.project?.name}</span>
+          </a>
           <span className='ml-8px font-ArchivoNarrow-Medium'>{data.role}</span>
         </div>}
         {/* 兼容旧数据 */}
