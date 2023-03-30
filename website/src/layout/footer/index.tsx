@@ -75,7 +75,7 @@ const Footer = (props: { footerLayout: string }) => {
               style={{ fontSize: '20px' }}
               className="!flex cursor-pointer justify-center items-center border rounded-full bg-#1818180f w-10 h-10"
               onClick={() => {
-                window.open('https://twitter.com/DeSchool2022')
+                window.open('https://twitter.com/DeSchool_Booth')
               }}
             />
             <div className="!flex cursor-pointer justify-center items-center border rounded-full bg-#1818180f w-10 h-10">
