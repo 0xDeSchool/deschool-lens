@@ -11,7 +11,7 @@ import { getShortAddress } from '~/utils/format';
 import BusinessCard from '../resume/components/businessCard/genCard';
 import DeschoolFollowersModal from './deschoolModal'
 import { useProfileResume } from '~/context/profile';
-import { useAccount } from '~/account';
+import { DEFAULT_AVATAR, useAccount } from '~/account';
 import ResumeContacts from '~/components/contacts'
 
 type DeschoolCardProps = {
@@ -99,11 +99,15 @@ const DeschoolCard = (props: DeschoolCardProps) => {
     <>
       <div className='h-100% mx-auto pb-4 rounded-1 w-full min-w-327px bg-gradient-to-b from-#6525FF to-#9163FE text-white'>
         <div className='relative w-full mb-16px'>
-          <img
+          {user?.avatar ? <img
             crossOrigin={user?.avatar?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"}
             src={user?.avatar}
             alt={user?.displayName}
             className="w-full aspect-[1/1] rounded-t-1" />
+            : <img
+            src={DEFAULT_AVATAR}
+            alt={user?.displayName}
+            className="w-full aspect-[1/1] rounded-t-1" />}
           <ResumeContacts contacts={contacts}/>
         </div>
         <div className='text-28px font-Anton px-12px mb-4'>
