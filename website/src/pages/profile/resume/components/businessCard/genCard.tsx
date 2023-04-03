@@ -12,6 +12,7 @@ import { getShortAddress } from '~/utils/format';
 import { useProfileResume } from '~/context/profile';
 import { download } from '~/utils';
 import './gencard.css'
+const DEFAULT_AVATAR = 'https://deschool.s3.amazonaws.com/booth/avatar/0xCdFB2b0Fb88265C80C36C1Fc42C1a2Cc3B28BAf5d04536a8-a062-4077-98ac-04f148a07292.png'
 
 const BusinessCard = () => {
   const [open, setOpen] = useState(false)
@@ -83,11 +84,16 @@ const BusinessCard = () => {
       </div>
       <div className='absolute z--1'>
         <div className='business-card w-654px min-w-654px h-fit bg-gradient-to-b fcs-center from-#6525FF to-#9163FEdd text-white'>
-          <img
+          {user?.avatar ? <img
             crossOrigin={user?.avatar?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"}
             src={user?.avatar?.replace('https://deschool.s3.amazonaws.com/', `${location.origin}/awsResource/`)}
             alt={user?.displayName}
-            className="w-600px h-600px aspect-[1/1] rounded-lg mx-auto mt-28px" />
+            className='w-600px h-600px aspect-[1/1] rounded-lg mx-auto mt-28px' />
+            : <img
+            crossOrigin="anonymous"
+            src={DEFAULT_AVATAR?.replace('https://deschool.s3.amazonaws.com/', `${location.origin}/awsResource/`)}
+            alt={user?.displayName}
+            className='w-600px h-600px aspect-[1/1] rounded-lg mx-auto mt-28px' />}
           <div className='px-32px mt-64px mb-48px w-full frc-between'>
             {/* eslint-disable-next-line no-nested-ternary */}
             <span className='font-Anton text-48px break-all'>{user?.displayName === user?.address ? getShortAddress(user?.address) : (user?.displayName && user?.displayName.length > 15 ? getShortAddress(user?.displayName) : user?.displayName)}</span>
