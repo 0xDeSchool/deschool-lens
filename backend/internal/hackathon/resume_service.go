@@ -2,12 +2,54 @@ package hackathon
 
 import (
 	"context"
-
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+type ResumeContent struct {
+	Career []struct {
+		Title   string `json:"title"`
+		Project struct {
+			Id   string `json:"id"`
+			Name string `json:"name"`
+			//Icon        string `json:"icon"`
+			//Url         string `json:"url"`
+			//Description string `json:"description"`
+		} `json:"project,omitempty"`
+		Role        string `json:"role,omitempty"`
+		Description string `json:"description"`
+		//StartTime   time.Time `json:"startTime"`
+		//EndTime     time.Time `json:"endTime"`
+		//IsPresent   bool      `json:"isPresent,omitempty"`
+		//Proofs      []struct {
+		//	Address     string `json:"address"`
+		//	TokenId     string `json:"tokenId"`
+		//	Img         string `json:"img"`
+		//	Name        string `json:"name,omitempty"`
+		//	Description string `json:"description,omitempty"`
+		//} `json:"proofs"`
+		//BlockType int `json:"blockType"`
+		//Id        int `json:"id"`
+		//Order     int `json:"order,omitempty"`
+	} `json:"career"`
+	//Edu []struct {
+	//	Title       string    `json:"title"`
+	//	Description string    `json:"description"`
+	//	StartTime   time.Time `json:"startTime"`
+	//	EndTime     time.Time `json:"endTime"`
+	//	Proofs      []struct {
+	//		Address     string `json:"address"`
+	//		TokenId     string `json:"tokenId"`
+	//		Img         string `json:"img"`
+	//		Name        string `json:"name"`
+	//		Description string `json:"description"`
+	//	} `json:"proofs"`
+	//	BlockType int `json:"blockType"`
+	//	Id        int `json:"id"`
+	//} `json:"edu"`
+}
+
 // 查询用户简历
-func (hm *HackathonManager) GetResumeByAddr(ctx context.Context, userId primitive.ObjectID, address string, nonAutoGen bool) Resume {
+func (hm *HackathonManager) GetResumeByAddr(ctx context.Context, userId primitive.ObjectID, address string, nonAutoGen bool) *Resume {
 	existed := hm.resumeRepo.CheckExists(ctx, userId)
 	// 如果不存在 创建一个模板简历
 	if !existed {
@@ -21,7 +63,7 @@ func (hm *HackathonManager) GetResumeByAddr(ctx context.Context, userId primitiv
 		hm.Insert(ctx, userId, address, RESUME_DATA)
 	}
 	result := hm.resumeRepo.GetByUserId(ctx, userId)
-	return *result
+	return result
 }
 
 // 更新用户简历

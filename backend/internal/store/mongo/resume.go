@@ -28,7 +28,11 @@ func (r *MongoResumeRepository) GetByUserId(ctx context.Context, userId primitiv
 	filter := bson.D{
 		{Key: "userId", Value: userId},
 	}
-	return r.FindOne(ctx, filter)
+	cur := r.Find(ctx, filter)
+	if len(cur) > 0 {
+		return &cur[0]
+	}
+	return nil
 }
 
 func (r *MongoResumeRepository) CheckExists(ctx context.Context, userId primitive.ObjectID) bool {

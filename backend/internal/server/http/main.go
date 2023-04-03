@@ -69,6 +69,8 @@ func HackathonApi(sb *server.ServerBuiler) {
 		baseRoute.POST("/events", filterEvents)
 
 		baseRoute.GET("users", altAuth, getUsers)
+
+		s.Route.GET("html-meta/resume/:address", previewResumeCard)
 		return nil
 	})
 }

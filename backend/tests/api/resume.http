@@ -22,3 +22,7 @@ POST {{host}}/api/resume/roles
    "name": "Product Manager",
    "description": "Product Manager description"
 }
+
+
+###
+GET {{host}}/api/preview-card?address=0x85633C25D2518dC5E6e05B8c9Dc4596Db2918575
