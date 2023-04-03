@@ -36,7 +36,10 @@ func replaceResume(ctx *gin.Context, userAddr string) {
 			err := json.Unmarshal([]byte(resume.Data), &resumeContent)
 			if err == nil && len(resumeContent.Career) > 0 {
 				car := resumeContent.Career[0]
-				desc := "Check out my resume: " + car.Role + " of " + car.Project.Name
+				desc := "Check out my resume"
+				if car.Project.Name != "" && car.Role != "" {
+					desc += ": " + car.Role + " of " + car.Project.Name
+				}
 				content = replaceHtml(content, title, desc, u.Avatar)
 			}
 		}
