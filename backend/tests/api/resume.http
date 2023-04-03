@@ -25,4 +25,4 @@ POST {{host}}/api/resume/roles
 
 
 ###
-GET {{host}}/api/preview-card?address=0x85633C25D2518dC5E6e05B8c9Dc4596Db2918575
+GET {{host}}/html-meta/resume/0x85633C25D2518dC5E6e05B8c9Dc4596Db2918575

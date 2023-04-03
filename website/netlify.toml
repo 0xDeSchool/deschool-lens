@@ -9,11 +9,7 @@
   function = "botmeta"
 
 [[edge_functions]]
-  path = "/series/seriesintro/*"
-  function = "botmeta"
-
-[[edge_functions]]
-  path = "/courses/course/*"
+  path = "/resume/*"
   function = "botmeta"
 
 [[redirects]]
