@@ -5,20 +5,22 @@ import ConnectCyberBoard from './connectCyber'
 import ConnectDeschool from './connectDeschool'
 import UpdateUsername from './updateUserInfo'
 import ContactBoard from './ContactBoard'
+import { useAccount } from '~/account'
 
 type PopupConnectManageProps = {
   close: () => void
 }
 const PopupConnectManage: React.FC<PopupConnectManageProps> = (props) => {
   const { close } = props
+  const user = useAccount()
 
   return (
     <div>
       <div className='text-xl frc-between'>
-        <h1 className='text-2xl font-Anton'>Booth</h1>
+        <h1 className='text-2xl font-Anton '>Booth</h1>
         <Button shape='circle' size='large' icon={<CloseCircleOutlined style={{color: '#999'}} />} className="frc-center" onClick={() => close()} />
       </div>
-      <div className='border-b-1 frc-start'>
+      <div className={`border-b-1 frc-start ${user?.id ? '' : 'hidden'}`}>
         <UpdateUsername />
         <ContactBoard />
       </div>
