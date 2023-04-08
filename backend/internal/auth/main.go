@@ -40,6 +40,10 @@ func AddAuth(builder *server.ServerBuiler) {
 		mid.LoginResponse = jwtLoginResponse
 		mid.LogoutResponse = jwtLogoutResponse
 	})
+	builder.App.ConfigureServices(func() error {
+
+		return nil
+	})
 	configureRoutes(builder)
 }
 
