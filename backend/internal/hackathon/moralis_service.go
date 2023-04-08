@@ -81,7 +81,8 @@ func GetNftByWallet(address string) *NftByWalletOutput {
 		"&token_addresses%5B3%5D=0x45ddb27dd9791957ae20781a2159d780a9626630" +
 		"&token_addresses%5B4%5D=0x9d34D407D8586478b3e4c39BE633ED3D7be1c80C" +
 		"&token_addresses%5B5%5D=0x2221F5d189c611B09D7f7382Ce557ec66365C8fc" +
-		"&token_addresses%5B6%5D=0x2C436d61C5Af62bcbfeE40B1f0BE5B483DfA0E11"
+		"&token_addresses%5B6%5D=0x2C436d61C5Af62bcbfeE40B1f0BE5B483DfA0E11" +
+		"&token_addresses%5B7%5D=0xeDdD69ee4A30D0C48a1A935cB3ed0bCBE4579A2C"
 
 	// prepare http request
 	url := fmt.Sprintf("https://deep-index.moralis.io/api/v2/%s/nft?chain=polygon&format=decimal&disable_total=false%s&normalizeMetadata=true", address, TOKEN_ADDR_LIST_STR)
