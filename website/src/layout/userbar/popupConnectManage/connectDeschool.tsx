@@ -17,7 +17,12 @@ import type { UserPlatform } from '~/api/booth/types'
 import { getShortAddress } from '~/utils/format'
 import { isMobile } from '~/utils/ua'
 
-const ConnectDeschoolBoard: FC = () => {
+type ConnectBoardProps = {
+  callback?: () => void
+}
+
+const ConnectDeschoolBoard: FC<ConnectBoardProps> = (props) => {
+  const { callback } = props
   const userManager = getUserManager()
   const [loading, setLoading] = useState(false)
   const [loadingUniPass, setLoadingUniPass] = useState(false)
@@ -78,6 +83,9 @@ const ConnectDeschoolBoard: FC = () => {
     }
     try {
       await handleLoginByAddress(type)
+      if (callback) {
+        callback()
+      }
     } catch (err: any) {
       handleFailToConnect(err)
     } finally {
