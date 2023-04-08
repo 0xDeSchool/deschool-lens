@@ -15,11 +15,10 @@ import RegisterCard from './resume/components/registerCard'
 const UserProfile = () => {
   const { address } = useParams()
   const mobile = isMobile()
-  // prd
-  const isKCPRD = address?.toLowerCase() === '0x9672c0e1639f159334ca1288d4a24deb02117291'
-  // stg
-  const isKCSTG = address?.toLowerCase() === '0x726587f4f5c8643e0a49a142a758cea55598ae9c'
-  const isKC = import.meta.env.PROD ? isKCPRD : isKCSTG
+  const kcAddressPrd = '0x9672c0e1639f159334ca1288d4a24deb02117291'
+  const kcAddressStg = '0x726587f4f5c8643e0a49a142a758cea55598ae9c'
+  const addressList = [kcAddressPrd, kcAddressStg]
+  const isKC = !address ? false : addressList.includes(address?.toLowerCase())
   const [registerCardVisible, setRegisterCardVisible] = useState(isKC)
 
   return (
