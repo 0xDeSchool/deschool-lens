@@ -6,7 +6,7 @@ import message from 'antd/es/message'
 import { LoadingOutlined, LogoutOutlined } from '@ant-design/icons'
 import UnipassLogo from '~/assets/logos/unipass.svg'
 import MetaMaskImage from '~/assets/logos/mask.png'
-import { WalletType } from '~/wallet'
+import { WalletConfig, WalletType, createProvider, getWallet } from '~/wallet'
 import { PlatformType, postVerifiedIdentity } from '~/api/booth/booth'
 import DeschoolLogoDark from '~/assets/logos/logo-main.png'
 import IconDeschool from '~/assets/icons/deschool.svg'
@@ -38,7 +38,10 @@ const ConnectDeschoolBoard: FC = () => {
   }
 
   // 调用deschool接口签名并登录
-  const handleLoginByAddress = async () => {
+  const handleLoginByAddress = async (type: WalletType) => {
+    console.log('handleLoginByAddress', type)
+    const provider = createProvider({ type })
+    await getWallet().setProvider(type, provider)
     await userManager.login()
     if (userManager.user) {
       // 不管是deschool还是lens登录后,均提交此地址的绑定信息给后台，后台判断是否是第一次来发 Deschool-Booth-Onboarding SBT
@@ -72,7 +75,7 @@ const ConnectDeschoolBoard: FC = () => {
       setLoadingUniPass(true)
     }
     try {
-      await handleLoginByAddress()
+      await handleLoginByAddress(type)
     } catch (err: any) {
       handleFailToConnect(err)
     } finally {
