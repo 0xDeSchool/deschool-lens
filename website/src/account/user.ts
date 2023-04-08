@@ -4,7 +4,6 @@ import type { Contact, LinkPlatformRequest, UserInfo, UserPlatform } from "~/api
 import { SignMsgType } from "~/api/booth/types"
 import { getShortAddress } from "~/utils/format"
 import { getWallet } from "~/wallet"
-import { appWallet } from "~/wallet/booth";
 import { getCachedToken, removeToken, setToken } from "./token"
 
 export class AccountInfo {
@@ -105,7 +104,7 @@ export class UserManager {
   }
 
   async login(platform?: LinkPlatformRequest) {
-    const wallet = await appWallet()
+    const wallet = await getWallet()
     const address = await wallet.getAddress()
     if (!address) {
       return
@@ -132,7 +131,7 @@ export class UserManager {
   }
 
   async tryAutoLogin() {
-    const wallet = await appWallet()
+    const wallet = await getWallet()
     const address = await wallet.getConnectedAddress()
     if (!address) {
       return
