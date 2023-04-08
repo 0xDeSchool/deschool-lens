@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { getShortAddress } from '~/utils/format';
 import { useProfileResume } from '~/context/profile';
 import ResumeContacts from '~/components/contacts';
+import { DEFAULT_AVATAR } from '~/account';
 
 
 const BusinessCard = () => {
@@ -11,11 +12,12 @@ const BusinessCard = () => {
   const { user, followings, followers, project, role } = useProfileResume()
 
   const contacts = useMemo(() => user?.contacts?.filter((item) => !!item.url) || [], [user?.contacts])
-
+  const userAvatar = user?.avatar || DEFAULT_AVATAR
   return (
     <div className='mx-auto mb-4 rounded-1 w-full min-w-327px bg-gradient-to-b from-#6525FF to-#9163FE text-white pb-16px'>
       <div className='relative w-full mb-16px'>
-        <img crossOrigin={user?.avatar?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"} src={user?.avatar} alt={user?.displayName} className="w-full aspect-[1/1]" />
+        {user?.avatar && <img crossOrigin={user?.avatar?.includes('deschool.s3.amazonaws.com') ? undefined : "anonymous"} src={user?.avatar} alt={user?.displayName} className="w-full aspect-[1/1]" />}
+        {!user?.avatar && <img src={DEFAULT_AVATAR} alt={user?.displayName} className="w-full aspect-[1/1]" />}
         <ResumeContacts contacts={contacts}/>
       </div>
       <div className='text-28px font-Anton px-12px mb-4'>
