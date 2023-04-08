@@ -5,10 +5,10 @@
  */
 import { Outlet, useParams } from 'react-router'
 import Footer from '~/layout/footer/index.mobile'
-import UserCard from './userCard'
-import BusinessUserCard from './resume/components/businessCard/index'
 import { isMobile } from '~/utils/ua'
 import { ProfileContextProvider } from '~/context/profile'
+import UserCard from './userCard'
+import BusinessUserCard from './resume/components/businessCard/index'
 
 const UserProfile = () => {
   const { address } = useParams()
