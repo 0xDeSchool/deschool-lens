@@ -5,14 +5,19 @@
  */
 import { Outlet, useParams } from 'react-router'
 import Footer from '~/layout/footer/index.mobile'
-import UserCard from './userCard'
-import BusinessUserCard from './resume/components/businessCard/index'
 import { isMobile } from '~/utils/ua'
 import { ProfileContextProvider } from '~/context/profile'
+import { useState } from 'react'
+import UserCard from './userCard'
+import BusinessUserCard from './resume/components/businessCard/index'
+import RegisterCard from './resume/components/registerCard'
 
 const UserProfile = () => {
   const { address } = useParams()
   const mobile = isMobile()
+  const isKC = address?.toLowerCase() === '0x9672c0e1639f159334ca1288d4a24deb02117291'
+
+  const [registerCardVisible, setRegisterCardVisible] = useState(isKC)
 
   return (
     <ProfileContextProvider>
@@ -21,6 +26,7 @@ const UserProfile = () => {
           {/* 用戶面板信息從路由來或者自己緩存來 */}
           {!mobile && <UserCard routeAddress={address} />}
           {mobile && <BusinessUserCard />}
+          {mobile && <RegisterCard registerCardVisible={registerCardVisible} setRegisterCardVisible={setRegisterCardVisible} />}
           {/* {location.pathname.includes('/profile/resume') && !address|| user?.address && user.address == address ?  <Verified/> : null} */}
         </div>
         <div className="self-start w-full xl:w-auto xl:ml-3 flex-1 relative font-ArchivoNarrow md:overflow-auto">

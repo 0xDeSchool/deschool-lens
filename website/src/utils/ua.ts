@@ -4,6 +4,4 @@ import { isMobile as mobile } from 'react-device-detect'
  * @param {String} ua 根据ua判断，服务端时一定要传，客户端时可不传默认取客户端ua
  * @returns {Boolean}
  */
-export const isMobile = () => {
-  return mobile;
-}
+export const isMobile = () => mobile

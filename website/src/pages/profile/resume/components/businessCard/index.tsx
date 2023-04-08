@@ -1,10 +1,6 @@
-import { message, QRCode } from 'antd';
-import { useMemo, useState } from 'react'
+import { QRCode } from 'antd';
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next';
-import { DiscordIcon, EmailIcon } from '~/components/icon';
-import { TwitterOutlined, WechatOutlined } from '@ant-design/icons';
-import IconDeschool from '~/assets/icons/deschool.svg'
-import CopyToClipboard from 'react-copy-to-clipboard';
 import { getShortAddress } from '~/utils/format';
 import { useProfileResume } from '~/context/profile';
 import ResumeContacts from '~/components/contacts';
@@ -14,9 +10,7 @@ const BusinessCard = () => {
   const { t } = useTranslation()
   const { user, followings, followers, project, role } = useProfileResume()
 
-  const contacts = useMemo(() => {
-    return user?.contacts?.filter((item) => !!item.url) || []
-  }, [user?.contacts])
+  const contacts = useMemo(() => user?.contacts?.filter((item) => !!item.url) || [], [user?.contacts])
 
   return (
     <div className='mx-auto mb-4 rounded-1 w-full min-w-327px bg-gradient-to-b from-#6525FF to-#9163FE text-white pb-16px'>
