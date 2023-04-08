@@ -66,14 +66,14 @@ const RegisterCard = (props: RegisterCardProps) => {
       </Modal>
       <Modal
         className="p-0 m-0"
-        wrapClassName="p-0 m-0 z-10 mt-60px registerCard"
+        wrapClassName="p-0 m-0 z-10 mt-50% registerCard"
         open={unipassPanelVisible}
         width="100%"
         title={null}
         footer={null}
         closable
         centered
-        bodyStyle={{ height: '530px', padding: 0 }}
+        bodyStyle={{ padding: 0 }}
         maskStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.85)' }}
         closeIcon={<CloseCircleFilled style={{ color: 'white' }} />}
         style={{ height: '100%', padding: 0 }}
@@ -85,7 +85,7 @@ const RegisterCard = (props: RegisterCardProps) => {
           setUnipassPanelVisible(false)
         }}
       >
-        <div className="w-full h-full fcc-center p-0 m-0 mt-20px rounded-lg font-ArchivoNarrow text-16px leading-24px color-white">
+        <div className="w-full h-full fcc-center p-0 py-24 m-0 mt-20px rounded-lg font-ArchivoNarrow text-16px leading-24px color-white">
           <ConnectDeschool callback={handleCallback}/>
         </div>
       </Modal>
