@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "vite --port 3000 --mode development",
-    "stg": "vite --port 80 --mode staging",
+    "stg": "vite --host --port 80 --mode staging",
     "prd": "vite --port 80 --mode production",
     "build:dev": "pnpm run tsc && vite build --mode development",
     "build:stg": "pnpm run tsc && vite build --mode staging",
