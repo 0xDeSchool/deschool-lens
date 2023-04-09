@@ -21,7 +21,7 @@ type ConnectBoardProps = {
   callback?: () => void
 }
 
-const ConnectDeschoolBoard: FC<ConnectBoardProps> = (props) => {
+const ConnectDeschoolBoard: FC<ConnectBoardProps> = props => {
   const { callback } = props
   const userManager = getUserManager()
   const [loading, setLoading] = useState(false)
@@ -126,13 +126,15 @@ const ConnectDeschoolBoard: FC<ConnectBoardProps> = (props) => {
   if (mobile) {
     return (
       <div className="fcc-center w-3/4 mt-4">
-        <h3 className='mb-4'>{t('connectWallet')}</h3>
+        <h3 className="mb-4">{t('connectWallet')}</h3>
         <Button
           onClick={e => {
             e.preventDefault()
             handleConnect(WalletType.UniPass)
           }}
-          className="w-full h-12 border border-solid border-#6525FF bg-white hover:border-#6525FF66 hover:bg-#6525FF22"
+          className={`w-full h-12 border border-solid border-#6525FF bg-white hover:border-#6525FF66 ${
+            loadingUniPass ? 'hover:bg-#ffffff88' : 'hover:bg-#6525FF22 '
+          }`}
           disabled={loadingUniPass}
         >
           <div className="text-#6525FF text-[16px] w-full frc-between">

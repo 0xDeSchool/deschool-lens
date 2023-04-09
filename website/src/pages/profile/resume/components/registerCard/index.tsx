@@ -54,11 +54,11 @@ const RegisterCard = (props: RegisterCardProps) => {
         }}
       >
         <div className="w-286px h-full fcc-center p-0 m-0 mt-20px rounded-lg font-ArchivoNarrow text-16px leading-24px color-white">
-          <p>{t('registerCard.p1')}</p>
-          <p>{t('registerCard.p2')}</p>
+          <p className='w-full text-center'>{t('registerCard.p1')}</p>
+          <p className='w-full text-center'>{t('registerCard.p2')}</p>
           <Image preview={false} src={nfcSticker} alt="nfc sticker" width={205} height={193} />
           <div className="mb-4 text-sm text-gray-300">NFC {t('registerCard.sticker')}</div>
-          <p className="text-18px font-bold">{t('registerCard.p3')}</p>
+          <p className="w-full text-center text-18px font-bold">{t('registerCard.p3')}</p>
           <button type="button" className="bg-#8d65ff color-white w-172px h-44px text-18px px-55px py-8px mt-2" onClick={handleClick}>
             {t('registerCard.register')}
           </button>
