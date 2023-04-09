@@ -34,7 +34,7 @@ const RegisterCard = (props: RegisterCardProps) => {
     <>
       <Modal
         className="p-0 m-0"
-        wrapClassName="p-0 m-0 z-10 mt-60px registerCard"
+        wrapClassName="p-0 m-0 z-10 registerCard"
         open={registerCardVisible}
         width="100%"
         title={null}
@@ -66,7 +66,7 @@ const RegisterCard = (props: RegisterCardProps) => {
       </Modal>
       <Modal
         className="p-0 m-0"
-        wrapClassName="p-0 m-0 z-10 mt-50% registerCard"
+        wrapClassName="p-0 m-0 z-10 registerCard"
         open={unipassPanelVisible}
         width="100%"
         title={null}
@@ -85,7 +85,7 @@ const RegisterCard = (props: RegisterCardProps) => {
           setUnipassPanelVisible(false)
         }}
       >
-        <div className="w-full h-full fcc-center p-0 py-24 m-0 mt-20px rounded-lg font-ArchivoNarrow text-16px leading-24px color-white">
+        <div className="w-full h-full fcc-center p-0 py-24 m-0 mt-20px registerCard rounded-lg font-ArchivoNarrow text-16px leading-24px color-white">
           <ConnectDeschool callback={handleCallback}/>
         </div>
       </Modal>
