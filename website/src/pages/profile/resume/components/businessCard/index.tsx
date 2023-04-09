@@ -12,7 +12,6 @@ const BusinessCard = () => {
   const { user, followings, followers, project, role } = useProfileResume()
 
   const contacts = useMemo(() => user?.contacts?.filter((item) => !!item.url) || [], [user?.contacts])
-  const userAvatar = user?.avatar || DEFAULT_AVATAR
   return (
     <div className='mx-auto mb-4 rounded-1 w-full min-w-327px bg-gradient-to-b from-#6525FF to-#9163FE text-white pb-16px'>
       <div className='relative w-full mb-16px'>
