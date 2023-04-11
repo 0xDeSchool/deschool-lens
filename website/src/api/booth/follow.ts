@@ -54,21 +54,17 @@ export async function checkfollowUser(toUser: string, fromUser: string): Promise
 /**
  * @description 根据地址查询deschool的此地址下的Followings
  * @param userId string
- * @param visitorAddress string 如果传了值，就需要查followings与这个人的follow关系
  * @returns
  */
-export function getFollowings(userId: string, visitorUserId?: string): Promise<UserFollowing[]> {
-  const str = visitorUserId ? `/follow/following?userId=${userId}&visitorUserId=${visitorUserId}` : `/follow/following?userId=${userId}`
-  return http.get(str)
+export function getFollowings(userId: string): Promise<UserFollowing[]> {
+  return http.get(`/follow/following?userId=${userId}`)
 }
 
 /**
  * @description 根据地址查询deschool的此地址下的Followers
  * @param address string
- * @param visitorAddress string 如果传了值，就需要查followers与这个人的follow关系
  * @returns
  */
-export function getFollowers(userId: string, visitorUserId?: string): Promise<UserFollower[]> {
-  const str = visitorUserId ? `/follow/follower?userId=${userId}&visitorUserId=${visitorUserId}` : `/follow/follower?userId=${userId}`
-  return http.get(str)
+export function getFollowers(userId: string): Promise<UserFollower[]> {
+  return http.get(`/follow/follower?userId=${userId}`)
 }

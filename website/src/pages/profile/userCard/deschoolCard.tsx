@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 import { followUser, unfollowUser } from '~/api/booth/follow'
 import Button from 'antd/es/button';
 import QRCode from 'antd/es/qrcode';
-import IconDeschool from '~/assets/icons/deschool.svg'
 import { getShortAddress } from '~/utils/format';
 import BusinessCard from '../resume/components/businessCard/genCard';
 import DeschoolFollowersModal from './deschoolModal'
@@ -44,6 +43,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
         type: 'followers',
         visible: false,
       })
+      // 自己访问自己
       refreshUserInfo()
     }
   }, [updateTrigger, visitCase, account])

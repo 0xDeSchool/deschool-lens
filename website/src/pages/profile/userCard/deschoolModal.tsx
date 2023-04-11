@@ -58,16 +58,25 @@ const DeschoolFollowersModal = (props: {
     }
   }, [visible])
 
-  const handleFollow = async (address: string) => {
-    await followUser(address, user?.id!)
-    message.success(`success following ${address}`)
-    setUpdateTrigger(new Date().getTime())
+  const handleFollow = async (toUser: string) => {
+    try {
+      await followUser(toUser, user?.id!)
+      message.success(`success following ${toUser}`)
+      setUpdateTrigger(new Date().getTime())
+    } catch (error: any) {
+      console.log(error)
+    }
   }
 
-  const handleUnFollow = async (address: string) => {
-    await unfollowUser(address, user?.id!)
-    message.success(`success following ${address}`)
-    setUpdateTrigger(new Date().getTime())
+  const handleUnFollow = async (toUser: string) => {
+    try {
+      await unfollowUser(toUser, user?.id!)
+      message.success(`success following ${toUser}`)
+      setUpdateTrigger(new Date().getTime())
+    } catch (error: any) {
+      console.log(error)
+    }
+
   }
 
   return (
@@ -110,15 +119,15 @@ const DeschoolFollowersModal = (props: {
                         type="primary"
                         className="px-2 py-1"
                         style={{
-                          color: !follow?.vistorFollowedPerson ? 'white' : '#6525FF',
-                          backgroundColor: !follow?.vistorFollowedPerson ? '#6525FF' : 'white',
-                          border: !follow?.vistorFollowedPerson ? '1px solid #6525FF' : '1px solid #6525FF'
+                          color: follow?.vistorFollowedPerson ? '#6525FF' : 'white',
+                          backgroundColor: follow?.vistorFollowedPerson ? 'white' : '#6525FF',
+                          border: follow?.vistorFollowedPerson ? '1px solid #6525FF' : '1px solid #6525FF',
                         }}
                         disabled={follow.follower?.address === user?.address || follow.following?.address === user?.address}
                         onClick={() => {
                           if (follow?.vistorFollowedPerson) {
                             handleUnFollow((follow.follower?.id || follow?.following?.id)!)
-                          } else if (follow && !follow?.vistorFollowedPerson) {
+                          } else {
                             handleFollow((follow.follower?.id || follow?.following?.id)!)
                           }
                         }}
