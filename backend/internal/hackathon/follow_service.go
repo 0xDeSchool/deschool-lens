@@ -43,16 +43,19 @@ func (hm *HackathonManager) GetFollowing(ctx context.Context, userId primitive.O
 		if !ok {
 			continue
 		}
-		ret = append(ret, FollowingList{
+		f := FollowingList{
 			Following: &UserItem{
 				Id:          u.ID.Hex(),
 				Avatar:      u.Avatar,
 				DisplayName: u.DisplayName,
 				Address:     u.Address,
 			},
-			VistorFollowedPerson: hm.CheckFollowExists(ctx, vistorUserId, item.ToUser),
-			PersonFollowedVistor: hm.CheckFollowExists(ctx, item.ToUser, vistorUserId),
-		})
+		}
+		if !vistorUserId.IsZero() {
+			f.VistorFollowedPerson = hm.CheckFollowExists(ctx, vistorUserId, item.ToUser)
+			f.PersonFollowedVistor = hm.CheckFollowExists(ctx, item.ToUser, vistorUserId)
+		}
+		ret = append(ret, f)
 	}
 	return ret
 }
@@ -72,16 +75,19 @@ func (hm *HackathonManager) GetFollower(ctx context.Context, userId primitive.Ob
 		if !ok {
 			continue
 		}
-		ret = append(ret, FollowerList{
+		f := FollowerList{
 			Follower: &UserItem{
 				Id:          u.ID.Hex(),
 				Avatar:      u.Avatar,
 				DisplayName: u.DisplayName,
 				Address:     u.Address,
 			},
-			VistorFollowedPerson: hm.CheckFollowExists(ctx, vistorUserId, item.FromUser),
-			PersonFollowedVistor: hm.CheckFollowExists(ctx, item.FromUser, vistorUserId),
-		})
+		}
+		if !vistorUserId.IsZero() {
+			f.VistorFollowedPerson = hm.CheckFollowExists(ctx, vistorUserId, item.FromUser)
+			f.PersonFollowedVistor = hm.CheckFollowExists(ctx, item.FromUser, vistorUserId)
+		}
+		ret = append(ret, f)
 	}
 	return ret
 }
