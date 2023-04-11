@@ -118,6 +118,9 @@ export const ProfileContextProvider = ({ children }: { children: ReactElement })
     if (latestCareer?.project && latestCareer?.role) {
       setProject(latestCareer.project)
       setRole(latestCareer.role)
+    } else {
+      setProject(null)
+      setRole(null)
     }
   }
 

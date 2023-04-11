@@ -15,14 +15,21 @@ import { getUserManager, useAccount } from '~/account'
 import { linkPlatform } from '~/api/booth'
 import type { UserPlatform } from '~/api/booth/types'
 import { getShortAddress } from '~/utils/format'
+import { isMobile } from '~/utils/ua'
 
-const ConnectDeschoolBoard: FC = () => {
+type ConnectBoardProps = {
+  callback?: () => void
+}
+
+const ConnectDeschoolBoard: FC<ConnectBoardProps> = props => {
+  const { callback } = props
   const userManager = getUserManager()
   const [loading, setLoading] = useState(false)
   const [loadingUniPass, setLoadingUniPass] = useState(false)
   // MetaMask or UniPass
   const { t } = useTranslation()
   const user = useAccount()
+  const mobile = isMobile()
 
   /**
    * @description 连接失败的异常处理
@@ -76,6 +83,9 @@ const ConnectDeschoolBoard: FC = () => {
     }
     try {
       await handleLoginByAddress(type)
+      if (callback) {
+        callback()
+      }
     } catch (err: any) {
       handleFailToConnect(err)
     } finally {
@@ -113,25 +123,57 @@ const ConnectDeschoolBoard: FC = () => {
     }
   }
 
+  if (mobile) {
+    return (
+      <div className="fcc-center w-3/4 mt-4">
+        <h3 className="mb-4">{t('connectWallet')}</h3>
+        <Button
+          onClick={e => {
+            e.preventDefault()
+            handleConnect(WalletType.UniPass)
+          }}
+          className={`w-full h-12 border border-solid border-#6525FF bg-white hover:border-#6525FF66 ${
+            loadingUniPass ? 'hover:bg-#ffffff88' : 'hover:bg-#6525FF22 '
+          }`}
+          disabled={loadingUniPass}
+        >
+          <div className="text-#6525FF text-[16px] w-full frc-between">
+            <div className="frc-start">
+              <span className="mr-2">UniPass</span>
+              {loadingUniPass && <LoadingOutlined color="#6525FF" />}
+            </div>
+            <img alt="mask" src={UnipassLogo} style={{ width: '25px', height: '25px' }} />
+          </div>
+        </Button>
+      </div>
+    )
+  }
   return (
     <div className="fcc-between w-full min-h-360px p-4 rounded-lg drop-shadow-xl shadow-xl">
-      <div className='fcs-start w-full'>
+      <div className="fcs-start w-full">
         <div className="rounded-2 px-2 py-2 frc-start">
           <img src={DeschoolLogoDark} alt="lens" width={160} height={24} />
         </div>
         {user?.deschoolProfileList()?.map(deschoolProfile => (
-          <div key={deschoolProfile.handle} className='frc-between mt-4'>
+          <div key={deschoolProfile.handle} className="frc-between mt-4">
             <div className="frc-start">
               <div className="bg-#774ff8 rounded-50% w-28px h-28px frc-center">
                 <img src={IconDeschool} alt="deschool" width={20} height={20} />
               </div>
-              <span className='ml-2'>{getShortAddress(deschoolProfile.address)}</span>
+              <span className="ml-2">{getShortAddress(deschoolProfile.address)}</span>
             </div>
-            <Button type="primary" size='small' shape="circle" icon={<LogoutOutlined />} className="frc-center" onClick={() => handleUnlinkDeschool(deschoolProfile)} />
+            <Button
+              type="primary"
+              size="small"
+              shape="circle"
+              icon={<LogoutOutlined />}
+              className="frc-center"
+              onClick={() => handleUnlinkDeschool(deschoolProfile)}
+            />
           </div>
         ))}
       </div>
-      <div className='fcc-center w-full'>
+      <div className="fcc-center w-full">
         <div className="frc-center w-full">
           <Button
             onClick={e => {
@@ -143,10 +185,8 @@ const ConnectDeschoolBoard: FC = () => {
           >
             <div className="text-#6525FF text-[16px] w-full frc-between">
               <div className="frc-start">
-                <span className='mr-2'>MetaMask</span>
-                {loading && (
-                  <LoadingOutlined color="#6525FF" />
-                )}
+                <span className="mr-2">MetaMask</span>
+                {loading && <LoadingOutlined color="#6525FF" />}
               </div>
               <img alt="mask" src={MetaMaskImage} style={{ width: '25px', height: '25px' }} />
             </div>
@@ -163,10 +203,8 @@ const ConnectDeschoolBoard: FC = () => {
           >
             <div className="text-#6525FF text-[16px] w-full frc-between">
               <div className="frc-start">
-                <span className='mr-2'>UniPass</span>
-                {loadingUniPass && (
-                  <LoadingOutlined color="#6525FF" />
-                )}
+                <span className="mr-2">UniPass</span>
+                {loadingUniPass && <LoadingOutlined color="#6525FF" />}
               </div>
               <img alt="mask" src={UnipassLogo} style={{ width: '25px', height: '25px' }} />
             </div>

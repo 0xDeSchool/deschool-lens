@@ -13,6 +13,12 @@ h6 {
   align-items: center;
 }
 
+.registerCard .ant-modal-content {
+  background: radial-gradient(circle, #7747ff, #161616);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
 .ant-message-custom-content.ant-message-warning {
   display: flex;
   justify-content: center;
