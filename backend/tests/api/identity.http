@@ -7,3 +7,8 @@ labels:["web3"]
 
 ###
 GET {{host}}/api/users?platform=3
+
+
+###
+GET {{host}}/api/users?sort=-createdAt&page=1&pageSize=9
+Authorization: {{token}}

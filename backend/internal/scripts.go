@@ -8,6 +8,7 @@ import (
 	"github.com/0xdeschool/deschool-lens/backend/pkg/di"
 	"github.com/0xdeschool/deschool-lens/backend/pkg/log"
 	"github.com/ethereum/go-ethereum/common"
+	"strings"
 )
 
 func Scripts(b *app.AppBuilder) {
@@ -20,10 +21,9 @@ var userRepo identity2.UserRepository
 
 func runFix() {
 	ctx := context.Background()
-	userRepo = *di.Get[identity2.UserRepository]()
+	//userRepo = *di.Get[identity2.UserRepository]()
 
-	fixResume(ctx)
-
+	fixEnsoulImage(ctx)
 }
 
 func fixUsers(ctx context.Context) {
@@ -130,6 +130,26 @@ func fixResume(ctx context.Context) {
 			}
 			r.UserId = u.ID
 			repo.Update(ctx, r.ID, r)
+		}
+	}
+}
+
+func fixEnsoulImage(ctx context.Context) {
+	repo := *di.Get[hackathon.ResumeRepository]()
+	resumes := repo.GetAll(ctx)
+	for i := range resumes {
+		r := resumes[i]
+		data := strings.Replace(
+			r.Data,
+			"https://www.ensoul.io/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fensoul-labs-image%2FqvsspbBooth-logos.jpeg&w=256&q=75",
+			"https://storage.googleapis.com/ensoul-labs-image/qvsspbBooth-logos.jpeg", -1)
+		data = strings.Replace(
+			data,
+			"https://www.ensoul.io/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fensoul-labs-image%2F9qdqo3Booth-logos.jpeg&w=256&q=75",
+			"https://storage.googleapis.com/ensoul-labs-image/9qdqo3Booth-logos.jpeg", -1)
+		if data != r.Data {
+			r.Data = data
+			repo.Update(ctx, r.ID, &r)
 		}
 	}
 }

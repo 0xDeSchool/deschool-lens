@@ -191,24 +191,17 @@ func followPostHandler(ctx *gin.Context) {
 
 func followingGetHandler(ctx *gin.Context) {
 	userId := ctx.Query("userId")
-
-	visitorUserId := ctx.Query("visitorUserId")
-	if visitorUserId == "" || visitorUserId == "undefined" {
-		visitorUserId = userId
-	}
+	currentUser := ginx.CurrentUser(ctx)
 	hm := *di.Get[hackathon.HackathonManager]()
-	result := hm.GetFollowing(ctx, mongodb.IDFromHex(userId), mongodb.IDFromHex(visitorUserId))
+	result := hm.GetFollowing(ctx, mongodb.IDFromHex(userId), currentUser.ID)
 	ctx.JSON(http.StatusOK, result)
 }
 
 func followerGetHandler(ctx *gin.Context) {
 	userId := ctx.Query("userId")
-	visitorUserId := ctx.Query("visitorUserId")
-	if visitorUserId == "" || visitorUserId == "undefined" {
-		visitorUserId = userId
-	}
+	currentUser := ginx.CurrentUser(ctx)
 	hm := *di.Get[hackathon.HackathonManager]()
-	result := hm.GetFollower(ctx, mongodb.IDFromHex(userId), mongodb.IDFromHex(visitorUserId))
+	result := hm.GetFollower(ctx, mongodb.IDFromHex(userId), currentUser.ID)
 	ctx.JSON(http.StatusOK, result)
 }
 
