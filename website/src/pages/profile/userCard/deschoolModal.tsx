@@ -11,6 +11,7 @@ import { getShortAddress } from '~/utils/format'
 import { Link } from 'react-router-dom'
 import { useAccount } from '~/account'
 import type { UserFollower, UserFollowing } from '~/api/booth/types'
+import Button from 'antd/es/button'
 
 type FollowType = UserFollower & UserFollowing
 
@@ -58,13 +59,13 @@ const DeschoolFollowersModal = (props: {
   }, [visible])
 
   const handleFollow = async (address: string) => {
-    await followUser(address, user?.address!)
+    await followUser(address, user?.id!)
     message.success(`success following ${address}`)
     setUpdateTrigger(new Date().getTime())
   }
 
   const handleUnFollow = async (address: string) => {
-    await unfollowUser(address, user?.address!)
+    await unfollowUser(address, user?.id!)
     message.success(`success following ${address}`)
     setUpdateTrigger(new Date().getTime())
   }
@@ -105,19 +106,25 @@ const DeschoolFollowersModal = (props: {
                     {/* 四、用户在看别人的 Follower，啥事都不能做，没有按钮。如果别人和他的关注者双向关注则用文字显示出来 */}
                     {/* TODO */}
                     {(((follow.follower || follow?.following)!) && user?.address) && (
-                      <button
-                        type="button"
-                        className="purple-border-button px-2 py-1"
+                      <Button
+                        type="primary"
+                        className="px-2 py-1"
+                        style={{
+                          color: !follow?.vistorFollowedPerson ? 'white' : '#6525FF',
+                          backgroundColor: !follow?.vistorFollowedPerson ? '#6525FF' : 'white',
+                          border: !follow?.vistorFollowedPerson ? '1px solid #6525FF' : '1px solid #6525FF'
+                        }}
+                        disabled={follow.follower?.address === user?.address || follow.following?.address === user?.address}
                         onClick={() => {
                           if (follow?.vistorFollowedPerson) {
-                            handleUnFollow((follow.follower?.address || follow?.following?.address)!)
+                            handleUnFollow((follow.follower?.id || follow?.following?.id)!)
                           } else if (follow && !follow?.vistorFollowedPerson) {
-                            handleFollow((follow.follower?.address || follow?.following?.address)!)
+                            handleFollow((follow.follower?.id || follow?.following?.id)!)
                           }
                         }}
                       >
                         {follow?.vistorFollowedPerson ? t('UnFollow') : t('Follow')}
-                      </button>
+                      </Button>
                     )}
                   </div>
                 </div>

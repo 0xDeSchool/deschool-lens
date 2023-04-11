@@ -44,6 +44,7 @@ const DeschoolCard = (props: DeschoolCardProps) => {
         type: 'followers',
         visible: false,
       })
+      refreshUserInfo()
     }
   }, [updateTrigger, visitCase, account])
 
