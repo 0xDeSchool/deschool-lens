@@ -62,8 +62,8 @@ func HackathonApi(sb *server.ServerBuiler) {
 		// Stage 5 - 临时
 		baseRoute.GET("/follow", followGetHandler)
 		baseRoute.POST("/follow", followPostHandler)
-		baseRoute.GET("/follow/following", followingGetHandler)
-		baseRoute.GET("/follow/follower", followerGetHandler)
+		baseRoute.GET("/follow/following", altAuth, followingGetHandler)
+		baseRoute.GET("/follow/follower", altAuth, followerGetHandler)
 		baseRoute.DELETE("/follow", followDeleteHandler)
 
 		baseRoute.POST("/events", filterEvents)
