@@ -7,6 +7,7 @@ import { getLatestUsers } from '~/api/booth'
 import type { NewUserInfo } from '~/api/booth/types'
 import ShowMoreLoading from '~/components/loading/showMore'
 import CelebrityCardNew from './CelebrityCardNew'
+import { useAccount } from '~/account'
 
 const PAGE_SIZE = 9
 const HotCelebrities = (props: { searchWord: string }) => {
@@ -18,6 +19,7 @@ const HotCelebrities = (props: { searchWord: string }) => {
   const [celebrities, setCelebrities] = useState<NewUserInfo[]>([])
   const [cacheCelebrities, setCacheCelebrities] = useState<NewUserInfo[]>([])
   const [page, setPage] = useState(1)
+  const user = useAccount()
 
   const initSeries = async () => {
     setLoading(true)
@@ -47,7 +49,7 @@ const HotCelebrities = (props: { searchWord: string }) => {
 
   useEffect(() => {
     initSeries()
-  }, [searchWord])
+  }, [searchWord, user?.address])
 
   return (
     <div className="fcc-center mb-20">
