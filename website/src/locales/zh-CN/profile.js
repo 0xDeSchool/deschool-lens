@@ -29,9 +29,10 @@ const ZH_CN_PROFILE = {
   registerCard: {
     register: "注册",
     sticker: "贴纸",
-    p1: "嗨，我是 Booth.ink 的产品经理和联合创始人 KC。很高兴认识你！",
+    kcp1: "嗨，我是 Booth.ink 的产品经理和联合创始人 KC。很高兴认识你！",
     p2: "我们准备了一个 NFC 贴纸作为礼物，让你的朋友可以通过 NFC 扫描了解你的信息。",
     p3: "请注册 Booth 并联系我，我会帮你设置好 NFC 贴纸。",
+    rp1: "嗨，我是 DeSchool&Booth 的联合创始人 Rebecca。很高兴认识你！",
   },
 }
 
