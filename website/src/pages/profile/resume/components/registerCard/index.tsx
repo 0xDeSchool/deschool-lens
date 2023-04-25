@@ -10,10 +10,11 @@ import { useNavigate } from 'react-router'
 type RegisterCardProps = {
   registerCardVisible: boolean
   setRegisterCardVisible: (visible: boolean) => void
+  who: string | null
 }
 
 const RegisterCard = (props: RegisterCardProps) => {
-  const { registerCardVisible, setRegisterCardVisible } = props
+  const { registerCardVisible, setRegisterCardVisible, who } = props
   const [unipassPanelVisible, setUnipassPanelVisible] = useState(false)
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -54,8 +55,8 @@ const RegisterCard = (props: RegisterCardProps) => {
         }}
       >
         <div className="w-286px h-full fcc-center p-0 m-0 mt-20px rounded-lg font-ArchivoNarrow text-16px leading-24px color-white">
-          <p className='w-full text-center'>{t('registerCard.p1')}</p>
-          <p className='w-full text-center'>{t('registerCard.p2')}</p>
+          <p className="w-full text-center">{who ? t(`registerCard.${who}p1`) : t('registerCard.kcp1')}</p>
+          <p className="w-full text-center">{t('registerCard.p2')}</p>
           <Image preview={false} src={nfcSticker} alt="nfc sticker" width={205} height={193} />
           <div className="mb-4 text-sm text-gray-300">NFC {t('registerCard.sticker')}</div>
           <p className="w-full text-center text-18px font-bold">{t('registerCard.p3')}</p>
@@ -86,7 +87,7 @@ const RegisterCard = (props: RegisterCardProps) => {
         }}
       >
         <div className="w-full h-full fcc-center p-0 py-24 m-0 mt-20px registerCard rounded-lg font-ArchivoNarrow text-16px leading-24px color-white">
-          <ConnectDeschool callback={handleCallback}/>
+          <ConnectDeschool callback={handleCallback} />
         </div>
       </Modal>
     </>

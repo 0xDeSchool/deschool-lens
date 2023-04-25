@@ -18,6 +18,9 @@ import type { UserInfo } from '~/api/booth/types'
 import { ShareAltOutlined } from '@ant-design/icons'
 import { ipfsUrl } from '~/utils/ipfs'
 import { useLayout } from '~/context/layout'
+import { isMobile } from '~/utils/ua'
+import { useProfileResume } from '~/context/profile'
+import { getUserSBTs } from '~/api/go/account'
 import CardEditor from './components/cardEditor'
 import ResumeBlock from './components/resumeBlock'
 import { BlockType } from './enum'
@@ -26,9 +29,6 @@ import { randomConfetti } from './utils/confetti'
 import type { VisitType } from '../utils/visitCase';
 import { getVisitCase } from '../utils/visitCase'
 import Congradulations from './components/congradulations'
-import { isMobile } from '~/utils/ua'
-import { useProfileResume } from '~/context/profile'
-import { getUserSBTs } from '~/api/go/account'
 
 type PublishType = 'CyberConnect' | 'Lens'
 
@@ -58,9 +58,7 @@ const Resume = () => {
   const mobile = isMobile()
   const { resumeData, loadingResume, refreshUserResume } = useProfileResume()
 
-  const resumeDataMemo = useMemo(() => {
-    return isEditResume ? resumeLocalData : resumeData
-  }, [resumeData, resumeLocalData, isEditResume, loadingResume])
+  const resumeDataMemo = useMemo(() => isEditResume ? resumeLocalData : resumeData, [resumeData, resumeLocalData, isEditResume, loadingResume])
 
   // 组装简历数据，添加id，转换时间格式
   const convertResumeCardData = (input: ResumeCardData[]) => input.map((item: ResumeCardData, index: number) => ({
@@ -498,7 +496,7 @@ const Resume = () => {
             isEditResume={isEditResume}
           />
 
-          <div className='frc-center font-ArchivoNarrow-Medium text-16px text-#18181865 mt-16px'>Supported by <a href='https://deschool.app/' target="_blank" className='ml-4px text-#6525FF'>DeSchool</a></div>
+          <div className='frc-center font-ArchivoNarrow-Medium text-16px text-#18181865 mt-16px'>Supported by <a href='https://deschool.app/' target="_blank" className='ml-4px text-#6525FF' rel="noreferrer">DeSchool</a></div>
 
           {/* 一段经历编辑器 */}
           <CardEditor

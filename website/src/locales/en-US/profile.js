@@ -30,9 +30,10 @@ const EN_US_PROFILE = {
   registerCard: {
     register: 'Register',
     sticker: 'Sticker',
-    p1: "Hey, this is KC, PM and cofounder of the product Booth.ink. Really glad to meet you in person!",
+    kcp1: "Hey, this is KC, PM and Co-Founder of Booth.ink. Really glad to meet you in person!",
     p2: "We prepared an NFC sticker as a gift so you could let people tap and learn more about you in <1s.",
     p3: "Feel free to register on Booth and ask me to set it up for you!",
+    rp1: "Hey, this is Rebecca, Co-Founder of DeSchool & Booth. Really glad to meet you in person!",
   },
 }
 

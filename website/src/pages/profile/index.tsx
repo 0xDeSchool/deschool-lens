@@ -17,10 +17,19 @@ const UserProfile = () => {
   const mobile = isMobile()
   const kcAddressPrd = '0x9672c0e1639f159334ca1288d4a24deb02117291'
   const kcAddressStg = '0x726587f4f5c8643e0a49a142a758cea55598ae9c'
-  const addressList = [kcAddressPrd, kcAddressStg]
-  const isKC = !address ? false : addressList.includes(address?.toLowerCase())
-  const [registerCardVisible, setRegisterCardVisible] = useState(isKC)
+  const rebeccaPrd = '0x13e283646f203ef6b24cd5c8ed5dbbf29dd0d39f'
+  const addressList = [kcAddressPrd, kcAddressStg, rebeccaPrd]
+  const isKCorRebecca = !address ? false : addressList.includes(address?.toLowerCase())
+  const [registerCardVisible, setRegisterCardVisible] = useState(isKCorRebecca)
 
+  let who
+  if (!address) {
+    who = null
+  } else {
+    // eslint-disable-next-line no-nested-ternary
+    who = [kcAddressPrd, kcAddressStg].includes(address?.toLowerCase()) ? 'kc' : rebeccaPrd === address?.toLowerCase() ? 'r' : null
+  }
+  
   return (
     <ProfileContextProvider>
       <div className="frc-between flex-wrap relative w-auto lg:mx-10 md:py-10 3xl:w-full 3xl:mx-auto 3xl:max-w-1440px 4xl:max-w-1680px h-full overflow-auto scroll-hidden">
@@ -28,7 +37,7 @@ const UserProfile = () => {
           {/* 用戶面板信息從路由來或者自己緩存來 */}
           {!mobile && <UserCard routeAddress={address} />}
           {mobile && <BusinessUserCard />}
-          {mobile && <RegisterCard registerCardVisible={registerCardVisible} setRegisterCardVisible={setRegisterCardVisible} />}
+          {mobile && <RegisterCard registerCardVisible={registerCardVisible} setRegisterCardVisible={setRegisterCardVisible} who={who} />}
           {/* {location.pathname.includes('/profile/resume') && !address|| user?.address && user.address == address ?  <Verified/> : null} */}
         </div>
         <div className="self-start w-full xl:w-auto xl:ml-3 flex-1 relative font-ArchivoNarrow md:overflow-auto">
