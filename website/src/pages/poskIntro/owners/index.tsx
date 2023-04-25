@@ -40,7 +40,7 @@ const OwnersOnLens = (props: { owners: string[] }) => {
     if (!owner) {
       return
     }
-    navigate(`/profile/${owner}`)
+    navigate(`/profile/${owner}/resume`)
   }
 
   return (

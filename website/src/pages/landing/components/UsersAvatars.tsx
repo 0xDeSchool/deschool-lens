@@ -12,7 +12,7 @@ const UsersAvatars = (props: UsersAvatarsProps) => {
   const navigate = useNavigate()
 
   const handleJumpProfile = (url: string | undefined) => {
-    if (url) navigate(`/profile/${url}`)
+    if (url) navigate(`/profile/${url}/resume`)
   }
 
   return (

@@ -20,7 +20,7 @@ const Students = (props: { users: Creator[]; count: number; textColor?: string; 
         <a
           className={`cursor-pointer ${sameColor === true ? textColor : ''}`}
           onClick={() => {
-            navigate(`/profile/${users[0].id}`)
+            navigate(`/profile/${users[0].id}/resume`)
           }}
         >{`${users[0].username.slice(0, 6)}${users[0].username.length > 6 ? '...' : ' '}`}</a>
         {count > 3 ? `+ ${count - 3} ${t('hotSeries.moreStudent')}` : t('hotSeries.moreStudent')}

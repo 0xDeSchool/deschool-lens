@@ -109,7 +109,7 @@ const PoskIntro = () => {
     if (!owner) {
       return
     }
-    navigate(`/profile/${owner}`)
+    navigate(`/profile/${owner}/resume`)
   }
 
   const handleAddMore = async () => {
